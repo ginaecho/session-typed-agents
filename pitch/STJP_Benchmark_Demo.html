@@ -200,6 +200,7 @@ kbd{font:11px var(--mono);background:var(--panel2);border:1px solid var(--border
   <a class="nl" href="#lab">Live replay</a>
   <a class="nl" href="#scoreboard">Scoreboard</a>
   <a class="nl" href="#design">Benchmark design</a>
+  <a class="nl" href="#findings">Findings</a>
   <span class="live" id="livebadge">real traces · Azure AI Foundry</span>
 </div></nav>
 
@@ -331,6 +332,69 @@ kbd{font:11px var(--mono);background:var(--panel2);border:1px solid var(--border
       <li><b>Cost of success</b> — tokens ÷ GCR</li>
       <li><b>Contract overhead vs retry savings</b></li>
       <li><b>Wasted-work fraction</b></li></ul></div>
+  </div>
+</div></section>
+
+<!-- ════════ 6 · FINDINGS ════════ -->
+<style>
+  .ftable{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 8px}
+  .ftable th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:right;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.12)}
+  .ftable th:first-child,.ftable td:first-child{text-align:left}
+  .ftable td{padding:9px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums}
+  .ftable tr.hl td{background:rgba(102,255,194,.07);border-top:1px solid rgba(102,255,194,.35);border-bottom:1px solid rgba(102,255,194,.35);font-weight:600}
+  .ftable .good{color:#92ffd5}.ftable .bad{color:#ff4d68}.ftable .dim{color:var(--dim)}
+  .fnote{font-size:12px;color:var(--dim);margin:6px 0 0}
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:22px}
+  .fcard{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px 18px}
+  .fcard .fk{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--dim);margin-bottom:6px}
+  .fcard h3{margin:0 0 8px;font-size:15px}
+  .fcard p{margin:0;font-size:13px;color:var(--muted);line-height:1.55}
+  .fhead{background:linear-gradient(135deg,rgba(102,255,194,.10),rgba(93,214,255,.06));border:1px solid rgba(102,255,194,.3);border-radius:12px;padding:18px 22px;margin-top:18px;font-size:15px;line-height:1.6}
+</style>
+<section id="findings"><div class="wrap">
+  <div class="kicker">06 · Findings — pre-registered run, 2026-07-02</div>
+  <h2>The static contract that pays for itself</h2>
+  <p class="lead">Seven settings, 10 trials each, real Azure AI Foundry agents (gpt-5.4), predictions
+  committed to the repo <b>before</b> the run (<span style="font-family:var(--mono)">docs/EXPERIMENT_DESIGN_V3_EXECUTION.md</span>);
+  graded honestly in <span style="font-family:var(--mono)">docs/RUN_REPORT_2026-07-02.md</span>.</p>
+
+  <table class="ftable">
+    <tr><th>setting</th><th>goal completion</th><th>disasters (S4)</th><th>tokens/trial</th><th>calls</th><th>sec/trial</th><th>cost per delivered report</th></tr>
+    <tr><td>A · intent only</td><td class="bad">0%</td><td class="bad">18</td><td>71.3k</td><td>58</td><td>206</td><td class="bad">∞</td></tr>
+    <tr><td>B · global text + LLM orchestrator&thinsp;†</td><td>70%&thinsp;†</td><td>0</td><td>19.3k</td><td>11</td><td>37</td><td>27.6k&thinsp;†</td></tr>
+    <tr><td>B-dec · global text, decentralized</td><td class="good">100%</td><td class="good">0</td><td>120.3k</td><td>42</td><td>124</td><td>120.3k</td></tr>
+    <tr><td>C-min · projected skill, observer</td><td>60%</td><td class="good">0</td><td>86.5k</td><td>85</td><td>223</td><td>144.1k</td></tr>
+    <tr><td>C+min · projected skill + gate</td><td class="good">100%</td><td class="good">0</td><td>38.0k</td><td>34</td><td>96</td><td>38.0k</td></tr>
+    <tr class="hl"><td>STJP · projected skill + gate + EFSM scheduler</td><td class="good">100%</td><td class="good">0</td><td class="good">13.3k</td><td class="good">11.4</td><td class="good">32</td><td class="good">13.3k</td></tr>
+  </table>
+  <p class="fnote">† 3 of 10 orchestrated trials were lost to client-side HTTP 400 errors after a required library upgrade;
+  all 7 trials that ran completed. Treat as a caveated reference. Disasters = severity S4: an irreversible act
+  (filing the report) before its authorization.</p>
+
+  <div class="fhead"><b>The one-sentence result:</b> the full STJP stack — the interaction-safe skill, the enforcement
+  gate, and the scheduler, all <b>statically compiled from one validated protocol</b> — is simultaneously the safest
+  setting (100% completion, 0 disasters, 100% critical-property compliance) and the <b>cheapest and fastest</b>
+  (13.3k tokens · 11.4 calls · 32s per delivered report — <b>9× cheaper</b> than the same protocol pasted as text
+  on the same runner).</div>
+
+  <div class="fgrid">
+    <div class="fcard"><div class="fk">TOKENS · CONFIRMED</div><h3>The projection schedules for free</h3>
+      <p>With <b>identical prompts and identical enforcement</b>, the EFSM scheduler alone cut agent calls −66%
+      and tokens −65% vs round-robin. Prompt size per call was flat — the entire saving is
+      <b>never polling an idle agent</b>. A text-only setting cannot have this scheduler: deciding "who can act
+      now" from prose needs another LLM.</p></div>
+    <div class="fcard"><div class="fk">CORRECTNESS · HONESTLY GRADED</div><h3>The protocol does the work; the gate makes it a guarantee</h3>
+      <p>The pre-registered falsifier fired: pasted global text also reached 100% on this model — gpt-5.4
+      self-complies voluntarily. But the gate <b>rejected 10–12 stray sends per arm</b> (the model did try to
+      deviate), converting "unlikely to violate" into "cannot complete a violation" — with an audit trail.</p></div>
+    <div class="fcard"><div class="fk">SAFETY · UNCHANGED, STARK</div><h3>Intent-only agents are unsafe</h3>
+      <p>Without a protocol: 0% completion and <b>18 unauthorized irreversible actions</b> (report filed before
+      audit/approval) in 10 trials. Every protocol-holding setting: zero. The validated contract — however
+      delivered — is the safety layer.</p></div>
+    <div class="fcard"><div class="fk">SKILL VS TEXT · MIXED</div><h3>Projection needs its execution plane</h3>
+      <p>The projected skill alone (observer) stalls at 60% — liveness, not safety (0 violations). Paired with
+      the gate it matches global text at <b>⅓ of the cost</b>; with gate + scheduler, at <b>⅑</b>. Lean contracts
+      beat verbose ones under enforcement (100% vs 90%).</p></div>
   </div>
 </div></section>
 
