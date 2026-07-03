@@ -94,7 +94,7 @@ Set B has three lenses of increasing leniency — `strict` (exact
 (LLM-judged). Strict is N/A for arms with no protocol vocabulary. A
 `protocol_unprojectable` marker means the monitor was disabled for that arm, so
 its zero-violation count is **not** a success signal. See
-`docs/EXPERIMENT_DESIGN_v2.md`.
+`docs/archive/EXPERIMENT_DESIGN_v2.md`.
 
 ### How Scribble is extended (the layering model)
 
@@ -102,7 +102,7 @@ The vendored `scribble-java/` is **stock upstream, never forked or edited** —
 no grammar change, no new AST node. Every added capability is a *layer* beside
 the `.scr` or a Python component consuming Scribble's output. **Never modify
 `scribble-java/`; keep it a clean upstream checkout.** The three extensions
-(`docs/SCRIBBLE_EXTENSIONS.md`):
+(`docs/reference/SCRIBBLE_EXTENSIONS.md`):
 
 - **Conditional / refinement** — a `.refn` sidecar (same basename as the `.scr`)
   adds value-level predicates over payloads. Enforced at three points: the LLM
@@ -170,10 +170,10 @@ Design/reference lives in `docs/` and root `*.md`:
 
 | Doc | What it covers |
 |---|---|
-| `ROADMAP.md` | Three-phase plan. **Caveat: its Phase-2 status is aspirational** — files it references (`smt.py`, `subtype.py`, `cli.py`) do not exist. Trust the code on disk and the status matrix in `docs/SCRIBBLE_EXTENSIONS.md` §5 for what's actually built. |
-| `docs/SCRIBBLE_EXTENSIONS.md` | The layering model (refinement/composition/higher-order) + honest implemented-vs-roadmap matrix. |
-| `docs/EXPERIMENT_DESIGN_v2.md` | Set A / Set B / process-cost metric framework. |
-| `docs/FOUNDRY_VISIBILITY.md` | The 3 Foundry portal surfaces (agents / threads / tracing) and exact wiring. |
-| `docs/GAP_CLOSED.md` | The refinement call-site closure. |
-| `docs/DIARY.md` | Newest-first development log — best place to learn recent changes. |
+| `ROADMAP.md` | Three-phase plan. **Caveat: its Phase-2 status is aspirational** — files it references (`smt.py`, `subtype.py`, `cli.py`) do not exist. Trust the code on disk and the status matrix in `docs/reference/SCRIBBLE_EXTENSIONS.md` §5 for what's actually built. |
+| `docs/reference/SCRIBBLE_EXTENSIONS.md` | The layering model (refinement/composition/higher-order) + honest implemented-vs-roadmap matrix. |
+| `docs/archive/EXPERIMENT_DESIGN_v2.md` | Set A / Set B / process-cost metric framework. |
+| `docs/reference/FOUNDRY_VISIBILITY.md` | The 3 Foundry portal surfaces (agents / threads / tracing) and exact wiring. |
+| `docs/reference/GAP_CLOSED.md` | The refinement call-site closure. |
+| `docs/diary/DIARY.md` | Newest-first development log — best place to learn recent changes. |
 | `MPST_STATIC.md`, `SCRIBBLE.md`, `RESEARCH.md` | MPST/runtime model, the Scribble case, bibliography. |

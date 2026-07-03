@@ -82,7 +82,7 @@ monitor (one per role, plain Python, no LLM) flags:
 What is **NOT** a violation (corrected 2026-06-17): a *concurrent* interleaving —
 two actions on different channels happening in either order. Multiparty session
 types make those commute; the monitor now respects that (it previously
-over-flagged them, see `WHY_B_MATCHES_C_ANALYSIS.md`). So "forbidden" means
+over-flagged them, see `../archive/WHY_B_MATCHES_C_ANALYSIS.md`). So "forbidden" means
 "genuinely off your contract", not "different from one written linearization".
 
 A **deadlock** is a different failure: not a forbidden message, but the *absence*

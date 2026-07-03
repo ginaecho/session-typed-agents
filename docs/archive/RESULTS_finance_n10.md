@@ -35,7 +35,7 @@ per-role local type + monitor* → 60–100%.
 **Every arm receives the same 5 blocks** (held constant so the comparison is
 fair): an identity line, the natural-language **intent**, the **goal list**
 (G1–G6, below), prose **role descriptions**, and a JSON **output schema**.
-This is the matched control — see `docs/EXPERIMENT_DESIGN_v2.md` §2.
+This is the matched control — see `docs/archive/EXPERIMENT_DESIGN_v2.md` §2.
 
 **The one thing that varies is the protocol information layer on top:**
 
@@ -286,7 +286,7 @@ STJP is built on, now measured at n=10.
 The raw Set-A violation counts above are letter-of-the-law. Re-graded with
 `experiments/scripts/severity_grader.py` (semantic label alignment first, then
 S0 benign / S1 waste / S2 skipped obligation / S3 never-terminated /
-S4 unauthorized irreversible act — see `docs/BENCHMARK_DESIGN.md` v2.1):
+S4 unauthorized irreversible act — see `docs/archive/BENCHMARK_DESIGN.md` v2.1):
 
 | arm | raw viol. | S0 | S1 | S2 | S3 | **S4** | harmful attempts | P(fail \| S2+/S4) |
 |---|---|---|---|---|---|---|---|---|
@@ -314,4 +314,4 @@ Reading it:
 Severity sidecar: `experiments/cases/finance/protocols/severity.yaml`;
 per-run output: `runs/<ts>/severity.json`. The banking companion run
 (S4 = money moved before authorization) is in
-`docs/RUN_REPORT_2026-06-11.md` Part 2.
+`docs/archive/RUN_REPORT_2026-06-11.md` Part 2.

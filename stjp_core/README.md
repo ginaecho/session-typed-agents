@@ -302,10 +302,10 @@ python experiments/apps/live_demo/app.py               # Flask live demo        
 ## Pointers
 
 - `CLAUDE.md` — Foundry-first policy, env vars, agent/thread cleanup.
-- [`../docs/DIARY.md`](../docs/DIARY.md) — newest-first development log.
-- [`../docs/GLOSSARY.md`](../docs/GLOSSARY.md) — every term spelled out.
-- [`../docs/BENCHMARK_DESIGN.md`](../docs/BENCHMARK_DESIGN.md) — the gated-layer benchmark and its headline numbers.
-- [`../docs/SCRIBBLE_EXTENSIONS.md`](../docs/SCRIBBLE_EXTENSIONS.md) — how STJP extends Scribble (refinements, composition, higher-order).
+- [`../docs/diary/DIARY.md`](../docs/diary/DIARY.md) — newest-first development log.
+- [`../docs/reference/GLOSSARY.md`](../docs/reference/GLOSSARY.md) — every term spelled out.
+- [`../docs/archive/BENCHMARK_DESIGN.md`](../docs/archive/BENCHMARK_DESIGN.md) — the gated-layer benchmark and its headline numbers.
+- [`../docs/reference/SCRIBBLE_EXTENSIONS.md`](../docs/reference/SCRIBBLE_EXTENSIONS.md) — how STJP extends Scribble (refinements, composition, higher-order).
 - [`../ROADMAP.md`](../ROADMAP.md) — the three-phase project plan.
 - `experiments/` (development tree) — the multi-arm benchmark harness and Flask live demo.
 </content>

@@ -22,7 +22,7 @@ that calls one of four instruction builders in `baselines/instructions.py`:
 | `min_llmvalid_gate` | `build_spec_minimal_instructions(override=valid)` | lean projected local type + gate enforcement | LLM-drafted valid |
 | `min_llmvalid_sched` | `build_spec_minimal_instructions(override=valid)` | lean projected local type + gate + **EFSM enabled-sender scheduler** | LLM-drafted valid |
 
-Added 2026-07-02 (`docs/EXPERIMENT_DESIGN_V3_EXECUTION.md`, pre-registered):
+Added 2026-07-02 (`docs/archive/EXPERIMENT_DESIGN_V3_EXECUTION.md`, pre-registered):
 `min_llmvalid_gate` decomposes enforcement from contract verbosity (same prompt
 as `min_llmvalid`, same gate as `spec_llmvalid_gate`). `min_llmvalid_sched` is
 the full STJP execution plane — `FoundryRunner(schedule="efsm")` polls only

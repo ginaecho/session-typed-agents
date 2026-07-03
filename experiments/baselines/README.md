@@ -23,7 +23,7 @@ order; this README mirrors it.
 The variable that changes left-to-right is the **protocol information** the
 agents receive: none → validated global type as text → projected per-role
 local type. Everything else (intent, goals, role descriptions, output
-schema) is held constant — see `docs/EXPERIMENT_DESIGN_v2.md`.
+schema) is held constant — see `docs/archive/EXPERIMENT_DESIGN_v2.md`.
 
 ### What the matrix isolates (pairwise)
 

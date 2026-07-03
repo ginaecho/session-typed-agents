@@ -464,9 +464,9 @@ footer{border-top:1px solid var(--line);padding:30px 0 70px;font-family:var(--mo
  <div class="col"><p class="reveal">So &ldquo;the agents will get better on their own&rdquo; is not a lever you can pull. The dependable one is governance by structural design, applied where agents actually meet: their interactions. STJP delivers exactly that &mdash; coherence assured at the interaction level <b>by design</b>: proven at compile time, enforced live.</p></div>
 </div></section>
 
-<section><div class="wrap"><div class="ghost">03</div>
+<section><div class="wrap"><div class="ghost">06</div>
  <div class="col">
-  <div class="ey reveal"><span class="n">03 /</span> Why it&rsquo;s different</div>
+  <div class="ey reveal"><span class="n">06 /</span> Why it&rsquo;s different</div>
   <h2 class="reveal">What ASSERT and ACS don&rsquo;t do</h2>
   <p class="reveal">Microsoft just shipped two strong pieces for agent safety. Both are useful. Neither looks at the thing STJP looks at &mdash; <b>the conversation between agents</b>.</p>
  </div>
@@ -479,9 +479,27 @@ footer{border-top:1px solid var(--line);padding:30px 0 70px;font-family:var(--mo
  <div class="col"><p class="reveal">They don&rsquo;t compete &mdash; you&rsquo;d want all three: ASSERT to test, ACS to guard each agent, STJP to make the conversation sound. STJP can even hand its per-agent checklists straight to ACS to enforce. The freeze is exactly the failure ASSERT can miss and ACS can&rsquo;t see &mdash; and it&rsquo;s the most expensive one, because nothing breaks; the job just hangs. <b>STJP is the only piece that prevents it before it can start.</b></p></div>
 </div></section>
 
-<section><div class="wrap"><div class="ghost">06</div>
+<section><div class="wrap"><div class="ghost">07</div>
  <div class="col">
-  <div class="ey reveal"><span class="n">06 /</span> The ecosystem</div>
+  <div class="ey reveal"><span class="n">07 /</span> The measurement dividend</div>
+  <h2 class="reveal">Evaluation falls out of the gate &mdash; metrics without a judge</h2>
+  <p class="reveal">Every trace-evaluation stack today leans on one of two crutches: a <b>hand-written golden trajectory</b> to compare against, or <b>another LLM playing judge</b> &mdash; flaky, costly, and itself unaudited. The tooling is strong on <i>what</i> to measure (task completion, tool correctness, plan adherence &mdash; LangSmith, DeepEval, MLflow; TRACE&rsquo;s trajectory utility, WWW&nbsp;&rsquo;26) and stuck on <i>what to measure against</i>: an unconstrained agent leaves no structure to score a run by. <b>A proven protocol is that structure.</b> Because every STJP run is a path through the validated global type, a whole metric family becomes computable with no reference run and no judge:</p>
+ </div>
+ <div class="stack reveal">
+  <div class="layer"><div class="n">METRIC 1</div><div class="t">Conformance rate</div><p>Messages allowed vs. quietly fixed vs. blocked by the gate. This is Completion-under-Policy (ST-WebAgentBench) &mdash; but computed <i>mechanically, per message</i>, not judged after the fact.</p></div>
+  <div class="layer"><div class="n">METRIC 2</div><div class="t">Path distribution</div><p>Each run reduces to a named path through the global type: happy-path share, per-choice branch rates, loop counts. A retry-loop rate jumping 9%&nbsp;&rarr;&nbsp;40% after a change is a regression signal <i>no golden trajectory could have encoded</i>.</p></div>
+  <div class="layer"><div class="n">METRIC 3</div><div class="t">Goal progress</div><p>The protocol&rsquo;s goal markers give <i>measured</i> progress-to-goal per step &mdash; the deterministic replacement for LLM-judged &ldquo;milestone completion&rdquo;, and the tracker that catches an agent looping in place.</p></div>
+  <div class="layer"><div class="n">METRIC 4</div><div class="t">Detour cost</div><p>Steps taken vs. the shortest goal-reaching path &mdash; the compile-time witness doubles as the efficiency baseline, for free.</p></div>
+  <div class="layer"><div class="n">METRIC 5</div><div class="t">Repair burden</div><p>How often the Revisor had to fix messages &mdash; and whether that rate <i>declines</i>. The one number that shows the self-improvement loop is actually working.</p></div>
+ </div>
+ <div class="miss reveal"><div class="n">THE ARCHITECTURE &mdash; SENSOR, NOT JUDGE</div><div class="t">The Monitor emits; the metric engine evaluates</div><p>The deterministic Monitor stays in the hot path doing one job: emitting a <b>typed event log</b> in which every message is already labeled with role, protocol step, branch choice, gate verdict, and goal state. All five metrics are computed offline over that log &mdash; reference-free, judge-free, and <b>bit-reproducible</b>: anyone can re-run the metrics on the log and get identical numbers, even though the agents themselves are stochastic. Evaluation becomes a database query, not an inference problem. LLM judging survives only where semantics truly demand it &mdash; payload quality &mdash; batched, calibrated against human labels, and small.</p></div>
+ <div class="pull reveal">Everyone else needs a golden path or a judge. <span class="g">STJP&rsquo;s proof structure is the reference.</span></div>
+ <div class="col"><p class="reveal">One honest anchor remains: protocol-grounded metrics measure everything <i>except</i> whether the protocol itself deserved to run. So one sampled, human-labeled task-success measure stays outside the family &mdash; and when conformance looks perfect while users are unhappy, that divergence is the signal to re-draft the global type. Caught by design, like everything else here.</p></div>
+</div></section>
+
+<section><div class="wrap"><div class="ghost">08</div>
+ <div class="col">
+  <div class="ey reveal"><span class="n">08 /</span> The ecosystem</div>
   <h2 class="reveal">Where STJP sits next to Aleph and Arcade</h2>
  </div>
  <div class="peers reveal">
@@ -498,7 +516,7 @@ footer{border-top:1px solid var(--line);padding:30px 0 70px;font-family:var(--mo
 </div></section>
 
 <footer><div class="wrap">
- References &mdash; MAST: Cemri et&nbsp;al., <i>Why Do Multi-Agent LLM Systems Fail?</i> (2025), arXiv:2503.13657 &nbsp;·&nbsp; <i>The Hot Mess of AI</i>, H&auml;gele et&nbsp;al. (ICLR 2026), arXiv:2601.23045.<br>
+ References &mdash; MAST: Cemri et&nbsp;al., <i>Why Do Multi-Agent LLM Systems Fail?</i> (2025), arXiv:2503.13657 &nbsp;·&nbsp; <i>The Hot Mess of AI</i>, H&auml;gele et&nbsp;al. (ICLR 2026), arXiv:2601.23045 &nbsp;·&nbsp; TRACE: Chen et&nbsp;al., <i>Trajectory-Aware Comprehensive Evaluation</i> (WWW&nbsp;&rsquo;26) &nbsp;·&nbsp; CuP: <i>ST-WebAgentBench</i>, arXiv:2410.06703.<br>
  Diagrams editable as .drawio &middot; STJP one-pager companion document available as .docx.
 </div></footer>
 

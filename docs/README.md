@@ -1,48 +1,274 @@
-# docs/ — STJP documentation index
+# STJP Documentation
 
-Cleaned up 2026-06-12: superseded/historical docs moved to `archive/` (nothing
-deleted). All research/design/report documents live HERE (standing policy
-since 2026-06-12); `pitch/` keeps only presentation assets (demo HTML, decks).
+Clean, organized guides to Session-Typed Agents (STJP). Start with section 1; read others as needed.
 
-## Current
+**Reorganized: 2026-07-03. Plain language, no jargon. Every term explained.**
 
-| doc | what it is |
+---
+
+## 🚀 Quick navigation
+
+- **New to STJP?** → Start with `1_TECH_SETUP.md`
+- **Want to understand the testing?** → Read `2_TESTING_STRATEGIES.md`
+- **Need to run STJP locally?** → See `1_TECH_SETUP.md` section 5 ("Running STJP with Azure AI Foundry")
+- **Creating your own use case?** → Follow `4_HOW_TO_CREATE_USE_CASES.md` step by step
+- **Reading the benchmark results?** → Start with `5_RUN_REPORTS_EXPLAINED.md`
+- **Understanding why safety matters?** → See `6_USE_CASE_DEADLOCK_SAFETY.md`
+
+---
+
+## 📚 The Four Sections
+
+### Section 1: Tech Setup — `1_TECH_SETUP.md`
+
+Everything you need to understand STJP technically.
+
+What you'll learn:
+- What Scribble is and why it matters
+- How STJP extends Scribble (refinements, composition, higher-order)
+- How STJP works end-to-end
+- The glossary — every term explained in plain English
+- How to set up hosted agents with Azure AI Foundry
+- How the execution plane (scheduler) saves tokens
+
+**Read time:** 15 minutes
+
+---
+
+### Section 2: Testing Strategies — `2_TESTING_STRATEGIES.md`
+
+How we test STJP fairly, and why it took multiple tries to get it right.
+
+What you'll learn:
+- The four claims STJP makes (deadlock-freedom, interaction correctness, token savings, time savings)
+- The evolution of our testing approach (mistakes we made, lessons learned)
+- The fairness rules (one variable per comparison, no confounding)
+- Two axes and four task shapes (how to design an unconfounded benchmark)
+- How we grade results (GCR, CGC, cost-to-goal)
+- The current 7 arms and what changed between them
+
+**Read time:** 20 minutes
+
+**Why this matters:** Without fairness rules, benchmarks lie. This section teaches you what a good benchmark looks like.
+
+---
+
+### Section 3: Benchmark Design Explained — `3_BENCHMARK_DESIGN_EXPLAINED.md`
+
+How we measure STJP's impact and why the measurements matter.
+
+What you'll learn:
+- What a benchmark is (a fair comparison)
+- The measurements: correctness (GCR, CGC), efficiency (tokens, cost-to-goal), adherence (violations)
+- The three gating layers (completion → safety → efficiency)
+- Severity grading (S0 to S4, from benign to disaster)
+- Critical properties (C1 data provenance, C2 context completeness, C3 authorization)
+- A concrete example: the finance benchmark
+- Common benchmarking mistakes to avoid
+
+**Read time:** 20 minutes
+
+**Why this matters:** Understanding metrics prevents misinterpreting results. This section teaches you to read benchmark tables correctly.
+
+---
+
+### Section 4: How to Create Use Cases — `4_HOW_TO_CREATE_USE_CASES.md`
+
+Step-by-step guide to building your own benchmark task and running STJP on it.
+
+What you'll learn:
+- The anatomy of a use case (protocol.scr, refinements, agents, test harness)
+- How to write a Scribble protocol
+- How to add value-level guards (refinements)
+- How to implement agents
+- How to write a test harness and measure results
+- How to define success criteria
+- Use case design patterns (deadlock-prone, coordination-heavy, safety-critical, scale)
+- A checklist before running a benchmark
+
+**Read time:** 30 minutes (reference guide; read while building)
+
+**Why this matters:** If you want to test STJP on your own problem, this is the map.
+
+---
+
+### Section 5: Run Reports Explained — `5_RUN_REPORTS_EXPLAINED.md`
+
+Reading the benchmark results in plain English: what the numbers mean and why they matter.
+
+What you'll learn:
+- The headline result from the 2026-07-02 finance run
+- How to read the results table (each column explained)
+- What each arm represents and why it improved
+- The five pre-registered predictions and how they graded
+- Severity grading in real runs (S0–S4 examples)
+- Critical properties audit (C1, C2, C3 verified)
+- Common questions answered
+
+**Read time:** 25 minutes
+
+**Why this matters:** The 2026-07-02 run showed STJP as 9× cheaper than global protocol. This section explains how and why.
+
+---
+
+### Section 6: Use Cases — Why Interaction Safety Matters — `6_USE_CASE_DEADLOCK_SAFETY.md`
+
+Concrete examples where protocols catch real problems that would crash unreliable systems.
+
+What you'll learn:
+- **Deadlock:** Trade execution where agents wait for each other forever
+- **Wrong branch:** Revenue audit bypass (missing audit for high-revenue cases)
+- **Authorization bypass:** Loan filing before approval
+- **Data provenance:** Compliance agent guessing numbers instead of reading them
+- **Concurrency confusion:** Agents receiving messages in wrong order
+- For each: the scenario, failure mode, how STJP catches it, real-world impact
+
+**Read time:** 20 minutes
+
+**Why this matters:** This is why safety protocols aren't optional. These failures happen in production.
+
+---
+
+## 📁 File reference
+
+### Main documents (read these)
+
+| Document | Purpose |
 |---|---|
-| `TOKEN_EFFICIENCY_DEMO.md` | **Centerpiece (efficiency)**: same task 100% done by all, lean projected contract uses 8.8k tokens vs 24.1k intent-only (−63%); mechanism = less deliberation + smaller prompt. |
-| `DEADLOCK_DEMO.md` | **The centerpiece**: unchecked skills deadlock (0/6, 0 msgs) vs Scribble-validated (6/6); cost-of-deadlock; what a violation/forbidden interaction is. |
-| `STJP_RESEARCH_REPORT.md` / `.docx` | The full technical report (pipeline, benchmark, all runs incl. n=5 gate result, lessons). |
-| `TESTING_STRATEGY.md` | **Read first for benchmarking**: STJP's 4 claims (deadlock/static-check/token/time), the fairness rules, the 2-axis design, and an audit of which arm comparisons are fair vs confounded. |
-| `BENCHMARK_DESIGN.md` | Benchmark scoring spec: gated layers, GCR/adherence/cost + v2.1 S0–S4 consequence grading. |
-| `BENCHMARK_DESIGN_V2_FROZEN.md` | Frozen snapshot of the design behind the grand n=10 run — the fall-back/revert point. |
-| `BENCHMARK_DESIGN_V3_CRITICALITY.md` | Criticality-aware redesign: C1/C2/C3 critical-property gates, two-variant fairness design, CGC metric. |
-| `GOVERNANCE_TOOLKIT_ASSESSMENT.md` | STJP × MS Agent Governance Toolkit (Policy Engine): reuse + enhance analysis. |
-| `RELATED_WORK_DELM.md` | DeLM (arXiv 2606.10662) — not a threat; how STJP and DeLM compose. |
-| `RUN_REPORT_2026-06-17.md` | Smoke results: drafting prompt v1-vs-v2 A/B, criticality gates on grand traces. |
-| `SESSION_2026-06-17.md` | Index of the 2026-06-17 session (seven workstreams). |
-| `STJP_V3_PLAN.md` | Next-version architecture: STJP as governance policy-generator (toolkit) + verifier for a DeLM-style decentralized runtime. Roadmap. |
-| `DRAFTING_IMPROVEMENTS.md` | Why drafts failed ("Unfinished roles"), the deterministic fan-out normalizer (first-pass 0/4→3/4), and the SLM recommendation. |
-| `RUN_REPORT_2026-06-11.md` | Run-by-run report: cost anatomy, severity re-scoring, banking, why-typed-agents-still-err. |
-| `EVOLUTION_DEMO_DESIGN.md` | "The demand changed on Tuesday" demo/benchmark design (banking + ComplianceScreen). |
-| `GLOSSARY.md` | Plain-language meaning of every term/acronym used across the docs. |
-| `DIARY.md` | Project journal, newest first. The history of every decision. |
-| `EXPERIMENT_DESIGN_v2.md` | The working 8-arm experiment design (supersedes v1, now in archive). |
-| `EXPERIMENT_DESIGN_V3_EXECUTION.md` | **Pre-registered** unconfounded finance demo: same decentralized plane for all arms + the EFSM enabled-sender scheduler wired to real agents (`min_llmvalid_gate`, `min_llmvalid_sched` arms); predictions P1–P4. |
-| `RUN_REPORT_2026-07-02.md` | **Headline result**: the full STJP stack (projected skill + gate + EFSM scheduler) is 100% goal-complete, 0 disasters, AND the cheapest/fastest arm — 13.3k tokens & 32s per delivered report, 9× cheaper than global-text on the same runner; P1–P4 graded honestly. |
-| `RESULTS_finance_n10.md` | Canonical finance n=10 results with trace-level examples. |
-| `SCRIBBLE_EXTENSIONS.md` | How STJP extends Scribble: refinements, composition, higher-order sessions. |
-| `PROTOCOL_EVOLUTION.md` | Change-request → updated, re-validated global type (basis of the evolution demo). |
-| `GAP_CLOSED.md` | Refinement call-site closure record (referenced by `experiments/README.md`, `stjp_core/README.md`, copilot-instructions). |
-| `CHOICE_GUARDS_AND_GATE.md` | Value-dependent choice guards (.refn `[choice at Role]`) + the enforcement gate arm — which script does what, why, how (2026-06-12). |
-| `FOUNDRY_VISIBILITY.md` | How to make agents/threads/traces visible in the Azure AI Foundry portal. |
-| `monitoring_tool_from_intent.png` | Figure cited by `GAP_CLOSED.md`. |
-| `STJP topic collections.pptx` | Talk/topic material. |
+| `1_TECH_SETUP.md` | **Foundation.** What is Scribble? How does STJP work? How do I run it? |
+| `2_TESTING_STRATEGIES.md` | **Methodology.** How do we benchmark STJP fairly? What are the fairness rules? |
+| `3_BENCHMARK_DESIGN_EXPLAINED.md` | **Metrics.** What do we measure? How do we interpret results? |
+| `4_HOW_TO_CREATE_USE_CASES.md` | **Build guide.** How do I create my own test case? |
+| `5_RUN_REPORTS_EXPLAINED.md` | **Results.** How do I read benchmark results? What do the numbers mean? |
+| `6_USE_CASE_DEADLOCK_SAFETY.md` | **Safety cases.** Why do protocols matter? Real examples. |
 
-## archive/
+### `reference/` — technical deep-dives (current, for researchers)
 
-| doc | why archived |
+- `reference/GLOSSARY.md` — Plain-language glossary (same terms as `1_TECH_SETUP.md` section 4; the canonical version)
+- `reference/SCRIBBLE_EXTENSIONS.md` — Deep dive on how STJP extends Scribble (technical)
+- `reference/CHOICE_GUARDS_AND_GATE.md` — How value-dependent choice guards and the enforcement gate work (technical)
+- `reference/FOUNDRY_VISIBILITY.md` — Exact code to make agents/threads/traces visible in the Azure AI Foundry portal
+- `reference/STJP_V3_PLAN.md` — **Latest plan**: governance plane + decentralized execution plane (summarized in `1_TECH_SETUP.md` section 7)
+- `reference/PROTOCOL_EVOLUTION.md` — How to update a protocol and re-validate
+- `reference/GAP_CLOSED.md` — Refinement call-site closure record (referenced by `experiments/README.md` and `stjp_core/README.md`)
+
+### `results/` — the evidence behind the guides (current, plain English)
+
+Each follows the same template: at-a-glance summary → the story → how the test was set up → the numbers → what they mean → honest caveats → where the raw data is.
+
+- `results/RESULT_1_DEADLOCK.md` — **Only a static checker catches a deadlock**: unchecked rules 0/6 trials, 0 messages, ∞ cost; validated 6/6 first try. Plus the authoring-risk measurement (unchecked AI-drafted protocols are safe only 3/10 times; the checker caught all 7 unsafe drafts).
+- `results/RESULT_2_TOKEN_EFFICIENCY.md` — **Same task, one-third the tokens**: everyone completes 100%; lean projected contract 8.8k tokens vs 24.1k with no contract (−63%). Mechanism: less deliberation + smaller prompts.
+- `results/RESULT_3_PROTOCOL_LADDER.md` — **More protocol support, better outcomes** (8 settings, n=10): no protocol 0% → rejected protocol 10% → validated text 40% → projected contracts 60–100%. Also the best place to see, with real traces, exactly what "a violation" and "success" mean.
+- `results/RESULT_4_FULL_STACK.md` — **The latest headline** (pre-registered, 2026-07-02): full STJP stack is simultaneously the safest (100%, 0 disasters) and the cheapest/fastest (13.3k tokens, 32s per delivered report — 9× cheaper than the same protocol as text).
+
+Earlier run reports, kept here for history (technical, not rewritten):
+
+- `results/RUN_REPORT_2026-06-11.md` — cost anatomy, severity re-scoring, the banking companion run
+- `results/RUN_REPORT_2026-06-17.md` — drafting prompt A/B, criticality-gate smoke results
+- `results/RESULTS.md` — results from the deleted legacy runner (earliest run)
+
+### `diary/` — the project journal
+
+- `diary/DIARY.md` — newest-first development log; the history of every decision. (The former standalone `SESSION_2026-06-17.md` session index is merged into its 2026-06-17 entry.)
+
+### Archived documents (`archive/` — kept for reference, nothing deleted)
+
+| Document | Why archived |
 |---|---|
-| `EXPERIMENT_DESIGN.md` | v1 (4-scenario) design — superseded by `EXPERIMENT_DESIGN_v2.md`. |
-| `RESULTS.md` | Results from the deleted legacy runner (`experiment_4_scenarios.py`, `P1_v2.scr`). |
-| `SKILLS_COMPILER_PROPOSAL.md` | Skills files were retired from the live path on 2026-05-29. |
-| `APPLICATION_SCENE_VIEW_PROPOSAL.md` | Superseded by the built demo (`pitch/STJP_Benchmark_Demo.html` + `pitch/demo_build/`). |
-| `STJP_discussion_13May2025.md` | Meeting record (2026-05-13); decisions absorbed into GAP_CLOSED + v2 design. |
+| `TESTING_STRATEGY.md` | Superseded by `2_TESTING_STRATEGIES.md` (same content, plain English) |
+| `BENCHMARK_DESIGN_V3_CRITICALITY.md` | Superseded by `3_BENCHMARK_DESIGN_EXPLAINED.md` for readers; technical original of the C1/C2/C3 design |
+| `BENCHMARK_DESIGN.md` | v2 scoring spec — content absorbed into `3_BENCHMARK_DESIGN_EXPLAINED.md` |
+| `BENCHMARK_DESIGN_V2_FROZEN.md` | Frozen snapshot behind the grand n=10 run (revert point) |
+| `EXPERIMENT_DESIGN.md` | v1 (4-scenario) design |
+| `EXPERIMENT_DESIGN_v2.md` | The 8-arm design (superseded by v3 execution design) |
+| `EXPERIMENT_DESIGN_V3_EXECUTION.md` | The pre-registered design graded by `results/RESULT_4_FULL_STACK.md` |
+| `WHY_B_MATCHES_C_ANALYSIS.md` | The honest confound analysis — its conclusions now live in `2_TESTING_STRATEGIES.md` |
+| `RUN_REPORT_2026-07-02.md` | Technical original of the 2026-07-02 run — rewritten in plain English as `results/RESULT_4_FULL_STACK.md` |
+| `RESULTS_finance_n10.md` | Technical original of the n=10 finance run — rewritten as `results/RESULT_3_PROTOCOL_LADDER.md` |
+| `DEADLOCK_DEMO.md` | Technical original of the deadlock demo — rewritten as `results/RESULT_1_DEADLOCK.md` |
+| `TOKEN_EFFICIENCY_DEMO.md` | Technical original of the efficiency demo — rewritten as `results/RESULT_2_TOKEN_EFFICIENCY.md` |
+| `STJP_RESEARCH_REPORT.md` | The full technical report through the n=5 gate result |
+| `STJP_discussion_13May2025.md` | Meeting notes (the journal itself lives in `diary/`) |
+| `DRAFTING_IMPROVEMENTS.md` | Why early drafts failed + the fan-out normalizer fix |
+| `EVOLUTION_DEMO_DESIGN.md` | "The demand changed on Tuesday" demo design |
+| `GOVERNANCE_TOOLKIT_ASSESSMENT.md` / `RELATED_WORK_DELM.md` | Inputs synthesized into `reference/STJP_V3_PLAN.md` |
+| `SKILLS_COMPILER_PROPOSAL.md` / `APPLICATION_SCENE_VIEW_PROPOSAL.md` | Retired/superseded proposals |
+
+---
+
+## 🎯 Reading paths by role
+
+### "I'm new to STJP"
+1. `1_TECH_SETUP.md` (understand the foundation)
+2. `6_USE_CASE_DEADLOCK_SAFETY.md` (see why it matters)
+3. `2_TESTING_STRATEGIES.md` (learn how we measure it)
+4. `5_RUN_REPORTS_EXPLAINED.md` (see real results)
+
+### "I want to run STJP"
+1. `1_TECH_SETUP.md` section 5 (setup steps)
+2. `4_HOW_TO_CREATE_USE_CASES.md` (build a test case)
+3. Run locally and view traces in Azure AI Foundry
+
+### "I want to create a new use case"
+1. `1_TECH_SETUP.md` sections 1–3 (understand the basics)
+2. `2_TESTING_STRATEGIES.md` (understand fairness rules)
+3. `4_HOW_TO_CREATE_USE_CASES.md` (step-by-step guide)
+4. `3_BENCHMARK_DESIGN_EXPLAINED.md` (understand metrics)
+
+### "I'm reviewing the results"
+1. `3_BENCHMARK_DESIGN_EXPLAINED.md` (how we measure)
+2. `5_RUN_REPORTS_EXPLAINED.md` (what the numbers mean)
+3. `2_TESTING_STRATEGIES.md` (what was controlled/varied)
+
+### "I'm a researcher"
+1. `reference/GLOSSARY.md` (terms)
+2. `reference/SCRIBBLE_EXTENSIONS.md` (technical deep dive)
+3. `reference/STJP_V3_PLAN.md` (latest plan: governance + execution planes)
+4. `reference/GAP_CLOSED.md` (what's implemented)
+5. `archive/BENCHMARK_DESIGN_V3_CRITICALITY.md` + `archive/RELATED_WORK_DELM.md` (design history, related work)
+
+---
+
+## 🏗️ Document organization philosophy
+
+**As of 2026-07-03, `docs/` has exactly four layers:**
+
+```
+docs/
+├── 1_...md … 6_...md + README.md   ← the numbered guides (plain English; start here)
+├── reference/                       ← current technical deep-dives (glossary, Scribble
+│                                      extensions, gate internals, Foundry wiring, v3 plan)
+├── results/                         ← current evidence, plain English: RESULT_1_DEADLOCK,
+│                                      RESULT_2_TOKEN_EFFICIENCY, RESULT_3_PROTOCOL_LADDER,
+│                                      RESULT_4_FULL_STACK (latest headline)
+├── diary/                           ← the project journal (DIARY.md, newest-first)
+└── archive/                         ← superseded designs, earlier reports, technical
+                                       originals of the RESULT_* rewrites
+                                       (nothing deleted, nothing here is current)
+```
+
+Rules:
+- **Pitch is separate** — only presentation assets (demo HTML, slides) go in `pitch/`
+- **Plain language always** — every term explained; no unexplained acronyms
+- **A new doc goes into exactly one layer** and gets a one-line entry in this README
+- **When a doc is superseded**, move it to `archive/` and note what replaced it
+
+---
+
+## 🔄 Where to get the latest
+
+- **Latest plan:** `reference/STJP_V3_PLAN.md` (governance plane + execution plane; summarized in `1_TECH_SETUP.md` section 7)
+- **Latest results:** `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 trials — the pre-registered execution-plane run)
+- **Latest code status:** `reference/GAP_CLOSED.md`
+- **Latest experiment design:** `archive/EXPERIMENT_DESIGN_V3_EXECUTION.md` (pre-registered; graded by the 2026-07-02 run report)
+
+---
+
+## ❓ Didn't find what you're looking for?
+
+- Need to understand a specific term? → `1_TECH_SETUP.md` section 4 or `reference/GLOSSARY.md`
+- Want to know how to debug a protocol? → `4_HOW_TO_CREATE_USE_CASES.md` step 5
+- Curious about a specific benchmark arm? → `5_RUN_REPORTS_EXPLAINED.md` section 3
+- Want to understand why a particular result? → `5_RUN_REPORTS_EXPLAINED.md` section 6
+- Need to view traces? → `1_TECH_SETUP.md` section 5 or `reference/FOUNDRY_VISIBILITY.md`
+- Wondering if STJP applies to your use case? → `6_USE_CASE_DEADLOCK_SAFETY.md`

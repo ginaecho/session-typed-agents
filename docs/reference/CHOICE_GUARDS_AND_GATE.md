@@ -2,7 +2,7 @@
 
 *Implemented 2026-06-12. Companion: `SCRIBBLE_EXTENSIONS.md` (the layering
 this extends), `GAP_CLOSED.md` (the 2026-05-13 payload-guard closure this
-parallels), `docs/RUN_REPORT_2026-06-11.md` Part 3 (the failure analysis
+parallels), `docs/results/RUN_REPORT_2026-06-11.md` Part 3 (the failure analysis
 that motivated it).*
 
 ## 1. The problem this closes

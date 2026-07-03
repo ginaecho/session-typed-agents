@@ -16,7 +16,7 @@ flows (`apps/orchestrator.py` + `authoring/evolution_loop.py`) now take a
 
 ## Foundry portal visibility (3 surfaces)
 
-For details + code: `../docs/FOUNDRY_VISIBILITY.md`. The three surfaces are independent:
+For details + code: `../docs/reference/FOUNDRY_VISIBILITY.md`. The three surfaces are independent:
 
 1. **My agents** — `AgentsClient.create_agent(model=<project-deployed-name>)`
 2. **My threads** — at least one COMPLETED run per thread; FAILED runs do NOT

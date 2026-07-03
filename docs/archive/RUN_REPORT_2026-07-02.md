@@ -1,6 +1,6 @@
 # Run Report — 2026-07-02 (the pre-registered execution-plane run)
 
-Grades the predictions of `EXPERIMENT_DESIGN_V3_EXECUTION.md` (written and
+Grades the predictions of `../archive/EXPERIMENT_DESIGN_V3_EXECUTION.md` (written and
 committed before the run) against real data. Finance case, gpt-5.4, real Azure
 AI Foundry agents, n = 10 trials/arm, 7 arms, run dir
 `cases/finance/runs/20260702T093703-n10-dual`. Graded with the built-in Set A/B
@@ -123,7 +123,7 @@ instrumentation installed 2026-07-02.
 
 - This case/model shows the *protocol* (however delivered) fixes correctness;
   enforcement's necessity still needs the criticality two-variant design
-  (`BENCHMARK_DESIGN_V3_CRITICALITY.md`).
+  (`../archive/BENCHMARK_DESIGN_V3_CRITICALITY.md`).
 - The contract-size token lever is shown on `report_pipeline`
   (TOKEN_EFFICIENCY_DEMO), not here — finance is too small; this run isolates
   the scheduling lever.

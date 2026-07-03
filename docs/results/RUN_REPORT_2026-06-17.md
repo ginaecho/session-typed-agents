@@ -137,4 +137,4 @@ While the n=10 ran, four v3 roadmap steps were implemented and verified offline
 
 Code: `prompts.py` (v2 prompts), `architect.py` (toggle),
 `smoke_draft_prompt.py`, `criticality_gate.py`, `finance/protocols/criticality.yaml`.
-Docs: see `SESSION_2026-06-17.md`.
+Docs: see the 2026-06-17 entry in `../diary/DIARY.md`.

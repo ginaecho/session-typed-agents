@@ -7,7 +7,7 @@ a `cases/<case_id>/` directory; one case-agnostic runner
 
 The runner imports the STJP library from `../stjp_core/`. The arm definitions
 live in `baselines/` (see `baselines/README.md`); the metric design is in
-`../docs/EXPERIMENT_DESIGN_v2.md`.
+`../docs/archive/EXPERIMENT_DESIGN_v2.md`.
 
 ## Layout
 
@@ -147,7 +147,7 @@ python scripts/index_builder.py                    # refresh INDEX.html
 
 1. **Refinement-violation finding** — LLM agents handed a structural protocol
    still pick payload values that violate value-dependent constraints. Closed
-   at the call site via compiled refinement guards (see `../docs/GAP_CLOSED.md`).
+   at the call site via compiled refinement guards (see `../docs/reference/GAP_CLOSED.md`).
 2. **Sequencing-violation finding** — agents handed both protocol and
    refinement still pick the wrong *message label* at the right *state* (e.g.
    skipping the audit step). The benchmark characterises its prevalence across

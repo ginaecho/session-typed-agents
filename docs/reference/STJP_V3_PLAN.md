@@ -1,7 +1,7 @@
 # STJP v3 — plan: a governed, decentralized session-typed runtime
 
-**Drafted 2026-06-17.** Synthesizes `GOVERNANCE_TOOLKIT_ASSESSMENT.md` (MS Agent
-Governance Toolkit) and `RELATED_WORK_DELM.md` (DeLM) into a concrete next-version
+**Drafted 2026-06-17.** Synthesizes `../archive/GOVERNANCE_TOOLKIT_ASSESSMENT.md` (MS Agent
+Governance Toolkit) and `../archive/RELATED_WORK_DELM.md` (DeLM) into a concrete next-version
 architecture. The thesis in one line:
 
 > **v1/v2 proved STJP makes coordination correct. v3 makes it (a) *governed* —
@@ -72,7 +72,7 @@ ecosystem.
 ## 3. Plane B — Decentralized execution (compose with DeLM)
 
 **Goal:** replace our round-robin `foundry_runner` (whose cost is dominated by
-polling every role each turn — `RUN_REPORT_2026-06-11.md` §4.4) with a
+polling every role each turn — `../results/RUN_REPORT_2026-06-11.md` §4.4) with a
 DeLM-style **shared-context + async-claim** substrate, made *safe* by STJP.
 
 **✅ Prototype DONE 2026-06-17** — `stjp_core/runtime/delm_runner.py` +
