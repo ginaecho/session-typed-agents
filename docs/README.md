@@ -1,6 +1,6 @@
 # STJP Documentation
 
-Clean, organized guides to Session-Typed Agents (STJP). Start with section 1; read others as needed.
+Clean, organized guides to the Session-Typed Judge Panel (STJP) — the system for running session-typed agents safely. Start with section 1; read others as needed.
 
 **Reorganized: 2026-07-03. Plain language, no jargon. Every term explained.**
 

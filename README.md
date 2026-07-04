@@ -1,4 +1,4 @@
-# Session-Typed Skills (STJP) — Quick Start & Running Experiments
+# Session-Typed Judge Panel (STJP) — Quick Start & Running Experiments
 
 **A session-typed static compiler for safe interactions in multi-agent systems.**
 

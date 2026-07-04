@@ -1,6 +1,8 @@
-# Tech Setup — Session-Typed Agents (STJP)
+# Tech Setup — Session-Typed Judge Panel (STJP)
 
 Everything you need to understand how STJP works technically, and how to run it.
+(STJP is the *system*; the agents it runs are "session-typed agents" — the
+adjective describes the agents, while STJP names the system that governs them.)
 
 **Date: 2026-07-03**
 
