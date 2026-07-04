@@ -1,0 +1,1661 @@
+{
+  "case": "escrow_trade",
+  "arm": "unchecked",
+  "stjp_prompts": {},
+  "roles": [
+    "Buyer",
+    "Carrier",
+    "Escrow",
+    "Seller"
+  ],
+  "max_rounds": 4,
+  "round": 2,
+  "efsms": {
+    "Buyer": {
+      "initial": "6",
+      "accepting": [
+        "7"
+      ],
+      "transitions": [
+        [
+          "6",
+          "send",
+          "Escrow",
+          "Deposit",
+          "Double",
+          "8"
+        ],
+        [
+          "8",
+          "receive",
+          "Carrier",
+          "DeliverGoods",
+          "String",
+          "9"
+        ],
+        [
+          "9",
+          "send",
+          "Escrow",
+          "ConfirmReceipt",
+          "String",
+          "10"
+        ],
+        [
+          "10",
+          "receive",
+          "Escrow",
+          "SettlementComplete",
+          "String",
+          "7"
+        ]
+      ]
+    },
+    "Carrier": {
+      "initial": "16",
+      "accepting": [
+        "17"
+      ],
+      "transitions": [
+        [
+          "16",
+          "receive",
+          "Seller",
+          "ShipGoods",
+          "String",
+          "18"
+        ],
+        [
+          "18",
+          "send",
+          "Buyer",
+          "DeliverGoods",
+          "String",
+          "17"
+        ]
+      ]
+    },
+    "Escrow": {
+      "initial": "27",
+      "accepting": [
+        "28"
+      ],
+      "transitions": [
+        [
+          "27",
+          "receive",
+          "Buyer",
+          "Deposit",
+          "Double",
+          "29"
+        ],
+        [
+          "29",
+          "send",
+          "Seller",
+          "PaymentSecured",
+          "String",
+          "30"
+        ],
+        [
+          "30",
+          "receive",
+          "Buyer",
+          "ConfirmReceipt",
+          "String",
+          "31"
+        ],
+        [
+          "31",
+          "send",
+          "Buyer",
+          "SettlementComplete",
+          "String",
+          "32"
+        ],
+        [
+          "32",
+          "send",
+          "Seller",
+          "SettlementComplete",
+          "String",
+          "28"
+        ]
+      ]
+    },
+    "Seller": {
+      "initial": "39",
+      "accepting": [
+        "40"
+      ],
+      "transitions": [
+        [
+          "39",
+          "receive",
+          "Escrow",
+          "PaymentSecured",
+          "String",
+          "41"
+        ],
+        [
+          "41",
+          "send",
+          "Carrier",
+          "ShipGoods",
+          "String",
+          "42"
+        ],
+        [
+          "42",
+          "receive",
+          "Escrow",
+          "SettlementComplete",
+          "String",
+          "40"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 2,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 3,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 4,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 5,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 6,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 7,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 8,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 9,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 10,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 11,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 12,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 13,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 14,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 15,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 16,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 17,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 18,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 19,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 20,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 21,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 22,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 23,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 24,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 25,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 26,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 27,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 28,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 29,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 30,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 31,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 32,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 33,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 34,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 35,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 36,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 37,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 38,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 39,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 40,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 41,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 42,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 43,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 44,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 45,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 46,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 47,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 48,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 49,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 50,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 51,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 52,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 53,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 54,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 55,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 56,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 57,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 58,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 59,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 60,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 61,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 62,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 63,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 64,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 65,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 66,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 67,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 68,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 69,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 70,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 71,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 72,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 73,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 74,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 75,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 76,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 77,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 78,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 79,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 80,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 81,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 82,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 83,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 84,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 85,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 86,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 87,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 88,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 89,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 90,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 91,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 92,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 93,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 94,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 95,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 96,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 97,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 98,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 99,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    },
+    {
+      "trial": 100,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Buyer": "6",
+        "Carrier": "16",
+        "Escrow": "27",
+        "Seller": "39"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 8,
+      "malformed": 0
+    }
+  ]
+}

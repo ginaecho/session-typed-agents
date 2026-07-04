@@ -1,0 +1,14 @@
+module escrow_trade;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+
+global protocol EscrowTrade(role Buyer, role Carrier, role Escrow, role Seller) {
+    Deposit(Double) from Buyer to Escrow;
+    PaymentSecured(String) from Escrow to Seller;
+    ShipGoods(String) from Seller to Carrier;
+    DeliverGoods(String) from Carrier to Buyer;
+    ConfirmReceipt(String) from Buyer to Escrow;
+    SettlementComplete(String) from Escrow to Buyer;
+    SettlementComplete(String) from Escrow to Seller;
+}

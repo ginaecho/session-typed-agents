@@ -1,0 +1,886 @@
+{
+  "case": "escrow_trade",
+  "arm": "stjp",
+  "stjp_prompts": {
+    "Buyer": "You are the Buyer: you fund the purchase and confirm receipt of the goods.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Buyer \u2014 local contract\n\n**Protocol**: `EscrowTrade`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `6`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `6`: send `Deposit(Double)` to **Escrow** \u2192 state `8`\n- state `7`: TERMINAL \u2014 stop.\n- state `8`: wait to receive `DeliverGoods(String)` from **Carrier** \u2192 state `9`\n- state `9`: send `ConfirmReceipt(String)` to **Escrow** \u2192 state `10`\n- state `10`: wait to receive `SettlementComplete(String)` from **Escrow** \u2192 state `7`\n",
+    "Carrier": "You are the Carrier: you transport the goods from the Seller to the Buyer.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Carrier \u2014 local contract\n\n**Protocol**: `EscrowTrade`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `16`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `16`: wait to receive `ShipGoods(String)` from **Seller** \u2192 state `18`\n- state `17`: TERMINAL \u2014 stop.\n- state `18`: send `DeliverGoods(String)` to **Buyer** \u2192 state `17`\n",
+    "Escrow": "You are the Escrow: you hold the Buyer's funds and release settlement when the trade is safe.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Escrow \u2014 local contract\n\n**Protocol**: `EscrowTrade`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `27`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `27`: wait to receive `Deposit(Double)` from **Buyer** \u2192 state `29`\n- state `28`: TERMINAL \u2014 stop.\n- state `29`: send `PaymentSecured(String)` to **Seller** \u2192 state `30`\n- state `30`: wait to receive `ConfirmReceipt(String)` from **Buyer** \u2192 state `31`\n- state `31`: send `SettlementComplete(String)` to **Buyer** \u2192 state `32`\n- state `32`: send `SettlementComplete(String)` to **Seller** \u2192 state `28`\n",
+    "Seller": "You are the Seller: you provide the goods and must end up paid.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Seller \u2014 local contract\n\n**Protocol**: `EscrowTrade`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `39`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `39`: wait to receive `PaymentSecured(String)` from **Escrow** \u2192 state `41`\n- state `40`: TERMINAL \u2014 stop.\n- state `41`: send `ShipGoods(String)` to **Carrier** \u2192 state `42`\n- state `42`: wait to receive `SettlementComplete(String)` from **Escrow** \u2192 state `40`\n"
+  },
+  "roles": [
+    "Buyer",
+    "Carrier",
+    "Escrow",
+    "Seller"
+  ],
+  "max_rounds": 12,
+  "round": 7,
+  "efsms": {
+    "Buyer": {
+      "initial": "6",
+      "accepting": [
+        "7"
+      ],
+      "transitions": [
+        [
+          "6",
+          "send",
+          "Escrow",
+          "Deposit",
+          "Double",
+          "8"
+        ],
+        [
+          "8",
+          "receive",
+          "Carrier",
+          "DeliverGoods",
+          "String",
+          "9"
+        ],
+        [
+          "9",
+          "send",
+          "Escrow",
+          "ConfirmReceipt",
+          "String",
+          "10"
+        ],
+        [
+          "10",
+          "receive",
+          "Escrow",
+          "SettlementComplete",
+          "String",
+          "7"
+        ]
+      ]
+    },
+    "Carrier": {
+      "initial": "16",
+      "accepting": [
+        "17"
+      ],
+      "transitions": [
+        [
+          "16",
+          "receive",
+          "Seller",
+          "ShipGoods",
+          "String",
+          "18"
+        ],
+        [
+          "18",
+          "send",
+          "Buyer",
+          "DeliverGoods",
+          "String",
+          "17"
+        ]
+      ]
+    },
+    "Escrow": {
+      "initial": "27",
+      "accepting": [
+        "28"
+      ],
+      "transitions": [
+        [
+          "27",
+          "receive",
+          "Buyer",
+          "Deposit",
+          "Double",
+          "29"
+        ],
+        [
+          "29",
+          "send",
+          "Seller",
+          "PaymentSecured",
+          "String",
+          "30"
+        ],
+        [
+          "30",
+          "receive",
+          "Buyer",
+          "ConfirmReceipt",
+          "String",
+          "31"
+        ],
+        [
+          "31",
+          "send",
+          "Buyer",
+          "SettlementComplete",
+          "String",
+          "32"
+        ],
+        [
+          "32",
+          "send",
+          "Seller",
+          "SettlementComplete",
+          "String",
+          "28"
+        ]
+      ]
+    },
+    "Seller": {
+      "initial": "39",
+      "accepting": [
+        "40"
+      ],
+      "transitions": [
+        [
+          "39",
+          "receive",
+          "Escrow",
+          "PaymentSecured",
+          "String",
+          "41"
+        ],
+        [
+          "41",
+          "send",
+          "Carrier",
+          "ShipGoods",
+          "String",
+          "42"
+        ],
+        [
+          "42",
+          "receive",
+          "Escrow",
+          "SettlementComplete",
+          "String",
+          "40"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "Deposit",
+          "payload": "1000.00",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "PaymentSecured",
+          "payload": "paymentsecured_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Seller",
+          "receiver": "Carrier",
+          "label": "ShipGoods",
+          "payload": "shipgoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Carrier",
+          "receiver": "Buyer",
+          "label": "DeliverGoods",
+          "payload": "delivergoods_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Buyer",
+          "receiver": "Escrow",
+          "label": "ConfirmReceipt",
+          "payload": "confirmreceipt_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Escrow",
+          "receiver": "Buyer",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Escrow",
+          "receiver": "Seller",
+          "label": "SettlementComplete",
+          "payload": "settlementcomplete_confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Buyer": "7",
+        "Carrier": "17",
+        "Escrow": "28",
+        "Seller": "40"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 7,
+      "malformed": 0
+    }
+  ]
+}
