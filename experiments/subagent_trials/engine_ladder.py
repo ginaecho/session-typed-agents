@@ -345,22 +345,48 @@ def cmd_submit(args) -> int:
 
 # ── report (finance-style ladder metrics) ────────────────────────────────────
 
+def _causal_sequence_disasters(trace, policies):
+    """Round-aware safety check. A [sequence] policy 'before B, after A' is
+    violated when an 'after' event is NOT preceded by a matching 'before' event
+    in a STRICTLY EARLIER round — i.e. the actor could not have causally
+    observed the precondition when it acted. This catches premature actions in
+    the all-roles-polled observe arms, where same-round messages are recorded
+    in role-sort order and a plain trace-order check would be masked."""
+    def match(e, pat):
+        return (e["sender"] == pat.sender and e["receiver"] == pat.receiver
+                and e["label"] == pat.label)
+    disasters = 0
+    witnesses = []
+    for pol in policies:
+        if getattr(pol, "kind", None) != "sequence":
+            continue
+        befores = [e for e in trace if e["delivered"] and match(e, pol.before)]
+        afters = [e for e in trace if e["delivered"] and match(e, pol.after)]
+        for ae in afters:
+            if not any(be["round"] < ae["round"] for be in befores):
+                disasters += 1
+                witnesses.append(f"{pol.id}: {ae['sender']}->{ae['receiver']}:"
+                                 f"{ae['label']} at round {ae['round']} with no "
+                                 f"prior {pol.before.label}")
+    return disasters, witnesses
+
+
 def _disasters_and_findings(state, trial, efsms, policies):
     events = [TraceEvent(sender=e["sender"], receiver=e["receiver"],
                          label=e["label"], payload=e["payload"], step=i + 1)
               for i, e in enumerate(trial["trace"]) if e["delivered"]]
     verdicts = SessionMonitor(efsms).process_trace(events)
     mon_viol = sum(len(v.violations) for v in verdicts.values())
-    disasters = 0
     findings = 0
+    flow_disasters = 0
     if policies:
         rt = run_runtime_critic(
             [{"sender": e.sender, "receiver": e.receiver, "label": e.label}
              for e in events], policies)
         findings = len(rt.findings)
-        disasters = sum(1 for f in rt.findings
-                        if f.policy_kind in ("flow", "sequence"))
-    return mon_viol, disasters, findings
+        flow_disasters = sum(1 for f in rt.findings if f.policy_kind == "flow")
+    seq_disasters, _ = _causal_sequence_disasters(trial["trace"], policies or [])
+    return mon_viol, flow_disasters + seq_disasters, findings
 
 
 def cmd_report(args) -> int:

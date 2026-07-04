@@ -1,0 +1,82 @@
+{
+  "case": "revenue_audit",
+  "generated_at": "2026-07-04 13:02:40",
+  "cost_unit": "LLM agent-calls (no Foundry; tokens not metered)",
+  "rows": [
+    {
+      "arm": "intent",
+      "label": "A: Intent only",
+      "n": 10,
+      "reached": 10,
+      "clean": 0,
+      "missing": 0,
+      "GCR_pct": 100.0,
+      "CGC_pct": 0.0,
+      "disasters": 10,
+      "total_calls": 30,
+      "avg_calls_per_trial": 3.0,
+      "cost_to_goal_calls": 30.0,
+      "avg_seconds": 0.1
+    },
+    {
+      "arm": "global_text",
+      "label": "B: Global text",
+      "n": 10,
+      "reached": 10,
+      "clean": 0,
+      "missing": 0,
+      "GCR_pct": 100.0,
+      "CGC_pct": 0.0,
+      "disasters": 10,
+      "total_calls": 30,
+      "avg_calls_per_trial": 3.0,
+      "cost_to_goal_calls": 30.0,
+      "avg_seconds": 0.1
+    },
+    {
+      "arm": "local_obs",
+      "label": "C-min: Local contract",
+      "n": 10,
+      "reached": 10,
+      "clean": 10,
+      "missing": 0,
+      "GCR_pct": 100.0,
+      "CGC_pct": 100.0,
+      "disasters": 0,
+      "total_calls": 90,
+      "avg_calls_per_trial": 9.0,
+      "cost_to_goal_calls": 90.0,
+      "avg_seconds": 0.3
+    },
+    {
+      "arm": "local_gate",
+      "label": "C+spec: Local + gate",
+      "n": 10,
+      "reached": 10,
+      "clean": 10,
+      "missing": 0,
+      "GCR_pct": 100.0,
+      "CGC_pct": 100.0,
+      "disasters": 0,
+      "total_calls": 90,
+      "avg_calls_per_trial": 9.0,
+      "cost_to_goal_calls": 90.0,
+      "avg_seconds": 0.3
+    },
+    {
+      "arm": "stjp",
+      "label": "STJP: +scheduler",
+      "n": 10,
+      "reached": 10,
+      "clean": 10,
+      "missing": 0,
+      "GCR_pct": 100.0,
+      "CGC_pct": 100.0,
+      "disasters": 0,
+      "total_calls": 30,
+      "avg_calls_per_trial": 3.0,
+      "cost_to_goal_calls": 30.0,
+      "avg_seconds": 0.3
+    }
+  ]
+}
