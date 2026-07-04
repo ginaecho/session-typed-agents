@@ -46,3 +46,4 @@ Thumbs.db
 *.swp
 *.bak
 experiments/subagent_trials/runs/
+.trial_state/
