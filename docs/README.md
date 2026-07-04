@@ -94,20 +94,15 @@ What you'll learn:
 
 ### Section 5: Run Reports Explained — `5_RUN_REPORTS_EXPLAINED.md`
 
-Reading the benchmark results in plain English: what the numbers mean and why they matter.
+Reading the benchmark results in plain English: what the numbers mean and why they matter. Opens with a plain-English glossary so it is fully self-contained (every term — agent, protocol, gate, monitor, scheduler, GCR, cost-to-goal — defined before use).
 
 What you'll learn:
-- The headline result from the 2026-07-02 finance run
-- How to read the results table (each column explained)
-- What each arm represents and why it improved
-- The five pre-registered predictions and how they graded
-- Severity grading in real runs (S0–S4 examples)
-- Critical properties audit (C1, C2, C3 verified)
-- Common questions answered
+- **Part 1 (finance run, 2026-07-02):** the headline result; how to read the results table (each column explained); what each arm represents and why it improved; the five pre-registered predictions and how they graded; severity grading in real runs (S0–S4 examples); critical-properties audit (C1, C2, C3 verified)
+- **Part 2 (n=100 reliability run, 2026-07-04):** the seven experiments in plain English — each with *what it tests, why it was designed that way, and what impact the result has*: the instruments check (40/40), the safety checker (E1, 95%/0%), the security gate under attack (E2, 0→42→92→100%), the reliability math (E4, 17.6× tighter confidence), the meaning-preserving translator (E5, 300/300), the scaling behaviour (E6, 9→17×), and portability (E7, 59/59), plus the 100-run interaction trials (0/100 vs 100/100) with token/call figures
 
-**Read time:** 25 minutes
+**Read time:** 35 minutes
 
-**Why this matters:** The 2026-07-02 run showed STJP as 9× cheaper than global protocol. This section explains how and why.
+**Why this matters:** Part 1's run showed STJP as 9× cheaper than global protocol; Part 2 proves each piece holds up under pressure at 100× the trials. This section explains both in plain English.
 
 ---
 
@@ -158,6 +153,29 @@ What you'll learn:
 ### `results/` — the evidence behind the guides (current, plain English)
 
 Each follows the same template: at-a-glance summary → the story → how the test was set up → the numbers → what they mean → honest caveats → where the raw data is.
+
+> **Decoding the shorthand in this list.** The entries below are terse on
+> purpose (they are an index, not the report). If a term is unfamiliar, the
+> plain-English version is in `5_RUN_REPORTS_EXPLAINED.md` (which opens with a
+> glossary and explains every experiment). Quick key:
+> - **E1–E7** = the seven "Benchmark Plan v2" experiments, each stress-testing
+>   ONE piece of the system: **E1** = does the safety checker catch broken
+>   protocols (mutation testing); **E2** = can a hostile agent leak data past the
+>   gate (adversarial); **E3** = does the benefit hold across weak/strong models
+>   (capability sweep, pending); **E4** = how reliable across many runs
+>   (pass^k / Wilson stats); **E5** = does English→protocol translation keep the
+>   meaning (fidelity); **E6** = does it stay cheap as the team grows (roles
+>   sweep); **E7** = does it work outside our framework (portability).
+> - **verdict corpus** = a hand-labelled test set that checks our *measuring
+>   tools* are correct ("testing the testers").
+> - **FP** = false-positive rate (how often the checker wrongly rejects a *good*
+>   protocol — lower is better).
+> - **pass^k** / **pass^10** = the chance that ALL of the next k runs succeed —
+>   the reliability an unattended deployment actually needs. **@floor** =
+>   computed at the pessimistic edge of the confidence range.
+> - **Wilson CI** = Wilson confidence interval — a statistically honest range for
+>   a success rate given a finite number of trials. A narrow range = more certain.
+> - **n=10 / n=100** = how many times each setting was run.
 
 - `results/RESULT_1_DEADLOCK.md` — **Only a static checker catches a deadlock**: unchecked rules 0/6 trials, 0 messages, ∞ cost; validated 6/6 first try. Plus the authoring-risk measurement (unchecked AI-drafted protocols are safe only 3/10 times; the checker caught all 7 unsafe drafts).
 - `results/RESULT_2_TOKEN_EFFICIENCY.md` — **Same task, one-third the tokens**: everyone completes 100%; lean projected contract 8.8k tokens vs 24.1k with no contract (−63%). Mechanism: less deliberation + smaller prompts.
@@ -237,16 +255,18 @@ Earlier run reports, kept here for history (technical, not rewritten):
 
 ## 🏗️ Document organization philosophy
 
-**As of 2026-07-03, `docs/` has exactly four layers:**
+**As of 2026-07-04, `docs/` has six layers:**
 
 ```
 docs/
 ├── 1_...md … 6_...md + README.md   ← the numbered guides (plain English; start here)
 ├── reference/                       ← current technical deep-dives (glossary, Scribble
-│                                      extensions, gate internals, Foundry wiring, v3 plan)
-├── results/                         ← current evidence, plain English: RESULT_1_DEADLOCK,
-│                                      RESULT_2_TOKEN_EFFICIENCY, RESULT_3_PROTOCOL_LADDER,
-│                                      RESULT_4_FULL_STACK (latest headline)
+│                                      extensions, gate internals, Foundry wiring, v3 plan,
+│                                      Benchmark Plan v2)
+├── results/                         ← current evidence, plain English: RESULT_1_DEADLOCK …
+│                                      RESULT_7_N100_SCALE (latest)
+├── predictions/                     ← pre-registered predictions (written BEFORE a run,
+│                                      graded after) — e.g. BENCHMARK_V2_PREREGISTRATION
 ├── diary/                           ← the project journal (DIARY.md, newest-first)
 └── archive/                         ← superseded designs, earlier reports, technical
                                        originals of the RESULT_* rewrites
@@ -254,7 +274,7 @@ docs/
 ```
 
 Rules:
-- **Pitch is separate** — only presentation assets (demo HTML, slides) go in `pitch/`
+- **Pitch is separate** — only presentation assets (demo HTML, slides) go in the repo-root `pitch/` directory (not under `docs/`)
 - **Plain language always** — every term explained; no unexplained acronyms
 - **A new doc goes into exactly one layer** and gets a one-line entry in this README
 - **When a doc is superseded**, move it to `archive/` and note what replaced it
@@ -264,7 +284,7 @@ Rules:
 ## 🔄 Where to get the latest
 
 - **Latest plan:** `reference/STJP_V3_PLAN.md` (governance plane + execution plane; summarized in `1_TECH_SETUP.md` section 7)
-- **Latest results:** `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 trials — the pre-registered execution-plane run)
+- **Latest results:** `results/RESULT_7_N100_SCALE.md` (all deterministic benchmarks at n=100) and `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 — the pre-registered live-model run)
 - **Latest code status:** `reference/GAP_CLOSED.md`
 - **Latest experiment design:** `archive/EXPERIMENT_DESIGN_V3_EXECUTION.md` (pre-registered; graded by the 2026-07-02 run report)
 

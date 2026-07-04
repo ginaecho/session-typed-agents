@@ -19,6 +19,17 @@ STJP makes four distinct promises. Each one is testable only in isolation:
 
 **Why separate them?** If you report one number per arm and say "this proves all four claims," you're deceiving yourself. You need separate tests.
 
+> **What's an "arm"?** An *arm* is one configuration being compared in an
+> experiment — e.g. "agents with a protocol" vs "agents without one" — the same
+> way a clinical trial has a treatment arm and a control arm. This document
+> compares seven arms (listed in §7).
+>
+> **Acronyms used below:** **MPST** = Multiparty Session Types (the theory that
+> guarantees a protocol can't deadlock); **EFSM** = Extended Finite-State
+> Machine (the step-by-step turn map the scheduler follows); **MAF** = Microsoft
+> Agent Framework (one of the agent runtimes we test against); **projection** =
+> automatically splitting the whole protocol into one contract per agent.
+
 ---
 
 ## 2. The evolution: what we learned the hard way

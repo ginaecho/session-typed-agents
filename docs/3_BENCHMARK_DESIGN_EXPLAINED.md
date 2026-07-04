@@ -12,7 +12,7 @@ A benchmark is a **fair comparison** that answers a specific question. For STJP:
 
 **Question:** "Does giving agents a protocol make them work better, cheaper, or faster?"
 
-**Fair comparison:** Same task, same model, same runtime, except one arm has a protocol and one doesn't.
+**Fair comparison:** Same task, same model, same runtime, except one arm has a protocol and one doesn't. (An *arm* is one configuration in the comparison — like the treatment and control arms of a clinical trial. A *runtime* is the machinery that carries messages between agents.)
 
 Without fairness rules, benchmarks lie. For example:
 

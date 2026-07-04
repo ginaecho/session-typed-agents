@@ -4,6 +4,10 @@ Concrete examples where protocols catch real problems that would crash unreliabl
 
 **Date: 2026-07-03**
 
+> Two acronyms appear near the end of this file: **SLA** = Service Level
+> Agreement (a contractual promise about uptime or response time) and **QoS** =
+> Quality of Service (how responsive and reliable the system feels in practice).
+
 ---
 
 ## 1. The deadlock nightmare: Trade execution

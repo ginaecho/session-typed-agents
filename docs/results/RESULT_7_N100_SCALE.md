@@ -23,9 +23,13 @@ n=100, the Wilson 95% CI for the STJP arm narrows from [72%, 100%] to
 1. **n=100 resolves the statistical weakness.** The Wilson CI width for a 100%
    arm drops from 28 points (n=10) to 3.7 points (n=100). A deployment operator
    now has pass^10 = 0.686 at the confidence floor — credible enough for
-   production gating. At n=10 (pass^10@floor = 0.039), a "perfect" arm still
-   has a 1-in-25 chance of a failed batch. At n=100, that shrinks to 1-in-3.
-   The n=30 plan target (pass^10@floor ≈ 0.300) sits halfway.
+   production gating. (pass^10@floor is the chance that *all ten* of the next
+   ten runs pass, computed at the pessimistic edge of the confidence range.) At
+   n=10 (pass^10@floor = 0.039), even a "perfect" 10/10 arm is consistent with a
+   true rate low enough that a full ten-run batch would pass only about 1 in 25
+   times — i.e. it would *fail* a batch almost every time. At n=100
+   (pass^10@floor = 0.686), a full batch passes about 2 in 3 times. The n=30
+   plan target (pass^10@floor ≈ 0.300) sits halfway.
 
 2. **The STJP infrastructure works correctly at scale.** 100 consecutive trials,
    each with a 7-message protocol, all completed successfully with zero gate

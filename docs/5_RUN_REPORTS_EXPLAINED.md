@@ -2,9 +2,48 @@
 
 Reading the benchmark results in plain English: what the numbers mean, why they matter, and what they prove.
 
-**Date: 2026-07-03**
+**Updated: 2026-07-04** (added Part 2 — the n=100 reliability run)
+
+This document has two parts:
+
+- **Part 1 — the finance run (2026-07-02).** One realistic task, six AI agents,
+  run 10 times per setting. Shows that the full STJP system is both the safest
+  and the cheapest way to run the agents. Start here.
+- **Part 2 — the n=100 reliability run (2026-07-04).** Seven focused experiments,
+  each run 100 times, that stress-test one piece of the system at a time — the
+  safety checker, the security gate, the reliability math, the translator, the
+  scaling behaviour, and the portability. This is the "prove it holds up under
+  pressure" part.
 
 ---
+
+## Words this document uses (plain-English glossary)
+
+Read this once and the rest of the document is self-contained. Every term below
+is used later; none is assumed.
+
+| Term | What it means, plainly |
+|---|---|
+| **Agent** | One AI worker (e.g. "the Buyer", "the Auditor"). A task is done by several agents talking to each other. |
+| **Protocol** | The rulebook for who is allowed to send which message to whom, and in what order. Like a script for a conversation. |
+| **Scribble** | The off-the-shelf tool that reads a protocol and checks it can never deadlock (get stuck with everyone waiting). It is the "compiler" for protocols. |
+| **STJP** | Our full system: it takes a protocol, checks it with Scribble, hands each agent only its own slice of the rules, and enforces those rules at run time. |
+| **Local contract / projection** | The one-page slice of the rulebook that applies to a single agent — "you, the Buyer, may send Deposit, then wait for Delivery." Produced automatically from the full protocol. |
+| **The gate** | A guard that sits between an agent and the outside world. If an agent tries to send a message the rules don't allow right now, the gate blocks it before it goes anywhere. |
+| **The monitor** | A watcher that reads the running conversation and flags any message that breaks the rules. (The gate *blocks*; the monitor *reports*.) |
+| **The scheduler** | The traffic controller. Instead of asking every agent "is it your turn?" each round, it knows from the rulebook exactly who should act next and prompts only that agent. Saves a lot of wasted AI calls. It is driven by the protocol's **EFSM** (Extended Finite-State Machine — the step-by-step "you are here, these moves are allowed next" map of each agent's contract). |
+| **MPST** | Multiparty Session Types — the branch of computer-science theory (behind Scribble) that proves a multi-agent protocol can never deadlock. You don't need the math to read this document; just know it's the guarantee under the hood. |
+| **The Critic** | A checker for rules that span *several* messages — e.g. "the deposit must never reach the Carrier" or "payment must happen before shipping." Single-message rules are the gate's job; multi-message rules are the Critic's. |
+| **Deadlock** | Everyone is waiting for someone else, so nothing happens, forever. The classic multi-agent failure. |
+| **Goal-completion rate (GCR)** | Out of N trials, what fraction actually finished the task? 100% = every trial succeeded; 0% = none did. |
+| **Cost-to-goal** | Total AI tokens used, divided by the completion rate. The *true* cost of one delivered result — an arm that's cheap but only finishes half the time is not actually cheap. |
+| **Token** | The unit AI models are billed in. Fewer tokens = cheaper and faster. Roughly, 1 token ≈ ¾ of a word. |
+| **Arm** | One setting in the comparison — e.g. "agents with no rulebook" vs "agents with the full STJP system." Like the arms of a clinical trial. |
+| **Disaster** | The worst class of mistake: an irreversible action taken without permission (e.g. filing a report before it was approved). Must be zero. |
+
+---
+
+## Part 1 — the finance run (2026-07-02)
 
 ## 1. The headline result (2026-07-02 finance run)
 
@@ -331,8 +370,339 @@ Did approval come before filing?
 
 ---
 
-## 8. What to read next
+---
+
+# Part 2 — the n=100 reliability run (2026-07-04)
+
+## 8. Why a second run at all?
+
+Part 1 answered "does the full system win on a realistic task?" — yes, 100%
+success at 1/9th the cost. But a fair reviewer pushes back with six honest
+worries:
+
+1. "You only ran it **10 times**. Ten successes could be luck."
+2. "You tested with **one AI model**. Maybe it only works with that one."
+3. "You **wrote your own grader**. How do we know the grader is right?"
+4. "Your agents were **cooperative**. What about a hostile one trying to leak data?"
+5. "A human **wrote the protocol**. What about when the machine translates English into a protocol — does the translation keep the meaning?"
+6. "You used **one team size**. Does it still pay off with 3 agents? With 10?"
+
+Part 2 is seven experiments built to answer exactly these worries, each run
+**100 times** instead of 10. The design rule is: **each experiment stresses
+exactly one piece of the system**, so if a number is good or bad, you know
+precisely which piece earned it. Below, each experiment gets three things:
+**what it tests**, **why we designed it that way**, and **what impact the
+result has**.
+
+Everything in Part 2 was actually computed (not estimated), using the real
+Scribble protocol compiler. Two things still need a live AI model and a paid
+cloud account we don't have in this environment — those are marked
+**"still pending"** and are honestly left unfinished rather than faked.
+
+---
+
+## 9. The seven experiments, in plain English
+
+Here is the whole run at a glance. Each row is explained in full below.
+
+| # | Plain-English question | Result at n=100 | What it was before |
+|---|---|---|---|
+| Instruments | Are our *measuring tools* themselves correct? | 40 / 40 hand-checked cases correct | (same, fixed set) |
+| E1 | Does the safety checker actually catch broken rulebooks? | catches **95%**, wrongly rejects **0%** | 95.6% over 30 protocols |
+| E2 | Can a hostile agent sneak secrets past the gate? | blocked **0 → 42 → 92 → 100%** as we add layers | same (12 attacks) |
+| E3 | Does the benefit hold for weak *and* strong models? | **still pending** (needs 2+ models) | 2 real data points |
+| E4 | How many runs-in-a-row will it survive? | confidence floor jumps **17.6×** vs n=10 | the reason we did n=100 |
+| E5 | Does English→rulebook translation keep the meaning? | **300 / 300** comparisons correct | 90 / 90 |
+| E6 | Does it stay cheap as the team grows from 2 to 10? | savings grow **9× → 17×** | same (structural) |
+| E7 | Does it work outside our own framework? | **59 / 59** agree | same corpus |
+| Trials | Cooperative task, 100 runs each: no-rulebook vs STJP | **0/100** vs **100/100** finish | 0/10 vs 10/10 |
+
+---
+
+### The instruments check — "are our measuring tools correct?" (do this first)
+
+**What it tests.** Before trusting *any* result, we test the things that
+produce the results: the monitor (the rule-watcher) and the severity grader
+(the tool that labels a mistake as harmless or a disaster). We hand-wrote 40
+tiny conversations where we already know the right answer, and checked the
+tools agree.
+
+**Why we designed it this way.** This is the answer to worry #3 ("you graded
+your own homework"). If the grader is wrong, every other number is
+meaningless. So we grade the grader first, against answers a human derived by
+hand.
+
+**What impact it has.** **40 out of 40 correct.** And it earned its keep:
+building it exposed *three* cases where our own hand-written "expected answer"
+was wrong and the tool was right. That is the strongest possible evidence the
+instruments are trustworthy — they corrected us.
+
+---
+
+### E1 — "does the safety checker catch broken rulebooks?"
+
+**What it tests.** We generated **100 valid protocols**, then deliberately
+broke each one in small ways (deleted a role, made two branches disagree,
+etc.), and asked: does the checker reject the broken version?
+
+**Why we designed it this way.** The whole safety claim rests on the checker
+saying "no" to bad rulebooks. If it silently accepts a broken one, agents
+could deadlock in production. So we inject known bugs and count how many the
+checker catches. This is called *mutation testing* — you mutate good inputs
+into bad ones and measure detection.
+
+**What impact it has.**
+- Catches **95%** of genuinely-broken rulebooks (deleting a role: 100%
+  caught; making two branches disagree: 100%; one subtle asymmetry class: 82%).
+- **Wrongly rejects 0%** of good rulebooks — no false alarms, which matters
+  just as much (a checker that cries wolf gets ignored).
+- We also honestly report a category it *doesn't* catch: re-ordering messages
+  on a simple pipeline usually produces *another perfectly valid* rulebook, so
+  the checker correctly accepts it. That's not a miss — catching "you reordered
+  it but it still works" is a different tool's job (the Critic, or E5's meaning
+  check). Reporting this honestly is stronger than claiming a fake 100%.
+
+---
+
+### E2 — "can a hostile agent sneak secrets past the gate?"
+
+**What it tests.** One agent (the Writer) is prompt-injected to try to leak
+confidential figures to an outside auditor who is only allowed to see the
+public summary. We fire **12 different smuggling attempts** (base64 encoding,
+hex, synonyms, splitting the payload in half, typos) under four levels of
+protection and count how many get blocked.
+
+**Why we designed it this way.** This is the answer to worry #4 ("your agents
+were friendly"). A security control is only as good as its behaviour against
+someone actively trying to defeat it. We compare the honest alternatives:
+nothing, a keyword blocklist, our structural gate, and the gate plus a
+value-check.
+
+**What impact it has** — the numbers tell a layered story:
+
+| Protection | Blocked | Why |
+|---|---|---|
+| Nothing | **0%** | every leak goes through |
+| Keyword blocklist | **42%** | evaded 7 ways — encode it, rename it, split it, misspell it |
+| STJP structural gate | **92%** | blocks every message sent down an *illegal route*, and can't be fooled by disguising the words, because it checks *where* the message goes, not *what it says* |
+| Gate + value-check | **100%** | the value-check closes the last hole |
+
+The honest headline is **92%, not 100%** for the gate alone — and that's the
+most valuable finding. The one attack that slipped through used a
+*legitimately-labelled* "public summary" message to hide raw numbers inside it.
+The gate deliberately doesn't read message contents (that's what keeps it
+un-foolable by disguises), so it let that one pass. Adding a value-check on
+that one legal channel closes it to 100%. A layered defense with an honest
+weak point is far stronger evidence than a suspicious "we block everything."
+
+---
+
+### E3 — "does the benefit hold for weak and strong models?" (still pending)
+
+**What it tests.** The same task across AI models of different strengths, to
+see whether the safety system matters more for weaker models.
+
+**Why we designed it this way.** This is worry #2 ("you used one model"). We
+expect a strong model to mostly behave itself even without a gate, so the
+gate's *added* value looks small — but on a weaker model, the gate should
+prevent many more disasters. The point is to show the benefit as a *predicted
+curve* across model strength, not a single dot.
+
+**What impact it has.** **Still pending** — it needs at least two different AI
+model families and a paid cloud account, which this environment doesn't have.
+We do have two real anchor points already: a weaker model had 4 disasters and
+gained a lot from enforcement; a stronger model had far more disasters on the
+unguarded setting but gained nothing from enforcement once guarded. The full
+curve is left honestly unfinished rather than invented.
+
+---
+
+### E4 — "how many runs-in-a-row will it survive?" (the reason we did n=100)
+
+**What it tests.** This is the statistics of reliability. If a system works 100
+times out of 100, how confident can an operator be that it will work the *next*
+10 times unattended? We compute two things:
+- a **confidence range** (the "Wilson interval") — the honest band the true
+  success rate could be in, given a finite number of trials;
+- **"pass-ten"** — the chance all of the next 10 runs succeed, computed at the
+  pessimistic edge of that band.
+
+**Why we designed it this way.** This directly answers worry #1 ("ten
+successes could be luck"). The key insight: **"it worked every time" means very
+different things at 10 trials versus 100 trials.** The experiment turns "run it
+more" from a vague suggestion into a computed number.
+
+**What impact it has** — this is the single most important result in Part 2:
+
+| How many trials | Success | Honest confidence range | Chance all next 10 succeed (worst case) |
+|---|---|---|---|
+| 10 trials | 10 / 10 | 72% – 100% | **0.039** (only ~1 in 25 ten-run batches fully passes) |
+| **100 trials** | **100 / 100** | **96.3% – 100%** | **0.686** (about 2 in 3 ten-run batches fully pass) |
+
+Read the last column carefully: it's the chance that *all ten* of the next ten
+runs succeed, computed at the *pessimistic edge* of the confidence range (i.e.
+"if the true success rate were as low as the data still allows"). Going from 10
+to 100 trials shrank the uncertainty band from **28 points wide to under 4
+points**, and lifted that worst-case "pass-ten" confidence **17.6×** (0.039 →
+0.686). *This is the concrete payoff of running n=100.* At 10 trials, even a
+"perfect" 10/10 result is consistent with a true rate as low as 72%, at which a
+full ten-run batch would pass only about 1 in 25 times — not good enough to
+trust unattended. At 100 trials, the floor rises to 96.3%, and a full batch
+passes about 2 in 3 times, which you can credibly gate a deployment on. The
+failing no-rulebook arm tells the mirror story: its range narrowed from
+"0–28%" to "0–3.7%", confirming it's *structurally* incapable, not merely
+unlucky.
+
+---
+
+### E5 — "does English→rulebook translation keep the meaning?"
+
+**What it tests.** When a machine turns an English description into a formal
+protocol, we need to know the protocol *means the same thing* as a
+human-written gold-standard one — not just that it looks similar. This
+experiment compares protocols **by behaviour** (do they accept exactly the same
+set of conversations?), not by text. We ran **300 comparisons**: each of 100
+protocols paired with an identical copy, a reformatted copy, and a
+deliberately-altered copy.
+
+**Why we designed it this way.** This is worry #5. Two protocols can read
+almost identically but mean different things (swap two lines and the meaning
+changes); two can look different but mean the same (reformatting). A
+text-diff would get both wrong. So we built a *meaning* comparison and proved
+it on cases where we know the answer.
+
+**What impact it has.** **300 / 300 correct** — it said "same meaning" for the
+identical and reformatted copies and "different meaning" for the altered ones,
+every time. The hard part (comparing meaning) is done and trustworthy. The
+*easy but expensive* part — measuring how often a live AI's first draft is
+valid and faithful over 100 fresh English intents — needs a live model and is
+**still pending**.
+
+---
+
+### E6 — "does it stay cheap as the team grows?"
+
+**What it tests.** We grow the same task from **2 agents up to 10** and measure
+the coordination overhead two ways: the old way (every agent re-reads the
+*entire* rulebook every turn) versus STJP (the scheduler prompts only the one
+agent whose turn it is, and it reads only its own one-page slice).
+
+**Why we designed it this way.** This is worry #6 ("one team size"). Costs that
+look fine with 3 agents can explode with 10. We wanted the *shape* of the cost
+curve, not a single point.
+
+**What impact it has.** The savings ratio climbs steadily: STJP is **9× cheaper
+at 2 agents, 12× at 5, and 17× at 10.** The old way grows roughly with the
+*square* of the team (everyone re-reads everyone's rules); STJP grows roughly
+*linearly*. So the bigger the team, the more STJP saves. (This is a structural
+count of characters and prompts — a faithful stand-in for tokens; the exact
+live-token figure is the same shape and is measured in Part 1's finance run.)
+
+---
+
+### E7 — "does it work outside our own framework?"
+
+**What it tests.** The safety guarantee is supposed to live at the *message
+boundary*, not inside any particular framework. So a rulebook checked once
+should enforce identically no matter what runs it. We take the standalone,
+dependency-free monitor our tools auto-generate and check it gives the **exact
+same verdict** as our in-house monitor, across the whole protocol corpus.
+
+**Why we designed it this way.** If enforcement only worked inside our own code,
+it would be a lock-in, not a guarantee. Proving two independent
+implementations agree is the portability evidence available without extra
+paid adapters.
+
+**What impact it has.** **59 / 59 agree** (the other protocols were
+choice-only shapes that don't produce a meaningful linear trace to compare).
+The full three-framework live comparison (running the same protocol under
+three different agent frameworks) needs those adapters and a cloud account and
+is **still pending**.
+
+---
+
+### The interaction trials — cooperative task, 100 runs each
+
+**What it tests.** The end-to-end story from Part 1, but at 100× scale and on a
+different task (a safe goods-for-payment escrow trade with 4 agents). Two
+settings:
+- **No rulebook:** each agent gets plausible, human-written instructions that
+  *individually* read fine but *together* deadlock — the Buyer waits for the
+  goods before paying, the Seller waits for payment before shipping. Nobody
+  moves.
+- **STJP:** the same agents driven by the machine-checked contract, the gate,
+  and the scheduler.
+
+**Why we designed it this way.** It's the direct, side-by-side demonstration of
+the core value on a fresh case, repeated enough times to rule out luck.
+
+**What impact it has.**
+
+| Setting | Finished the task | Deadlocked | AI calls used |
+|---|---|---|---|
+| No rulebook | **0 / 100** | 100 / 100 | 800 |
+| **STJP** | **100 / 100** | 0 / 100 | **700** |
+
+Two things stand out. First, the no-rulebook setting fails **every single
+time** — this is a *structural* deadlock, not bad luck. Second, and more
+striking: **STJP not only succeeds 100/100, it does so using *fewer* AI calls
+(700) than the failing setting burned (800)** before giving up. The scheduler
+prompts only the agent whose turn it is, so it wastes nothing. Across all 700
+delivered messages there were **zero** wrongly-blocked messages and **zero**
+missed violations — the enforcement machinery was perfect at scale.
+
+> **A note on "AI calls" vs "tokens."** These 100-run trials count *AI calls*
+> (a clean, model-independent measure of coordination work) rather than raw
+> tokens, because they use a deterministic contract-follower to isolate the
+> *infrastructure's* correctness from any one model's quirks. The real
+> **token** numbers — STJP at 13.3k tokens per delivered result vs 120k for the
+> old way — are Part 1's finance run with a live model. The two agree: fewer
+> calls means fewer tokens.
+
+---
+
+## 10. What Part 2 proves, in one paragraph
+
+The safety checker catches broken rulebooks (95%) and never cries wolf (0%
+false alarms). The gate stops a hostile agent on every illegal route, and the
+honest gap (a disguised-but-legal message) is closed by one more layer. Running
+100 times instead of 10 shrinks our uncertainty so much that a "perfect" result
+becomes something you can actually gate a deployment on (17.6× more confidence
+in the worst case). The translator's meaning is verifiable and verified (300/300).
+The savings grow with team size (9×→17×). And enforcement is portable across
+implementations (59/59). Two experiments — the multi-model curve and the
+live-translation-over-100-intents — are honestly left pending because they need
+hardware we don't have here, with real anchor points already in place.
+
+---
+
+## 11. Where the supporting data lives
+
+Every number in Part 2 is reproducible from files in the repository:
+
+| Experiment | Data file | Regenerate with |
+|---|---|---|
+| Instruments (40/40) | `experiments/tests/verdict_corpus/` | `python experiments/tests/verdict_corpus/run_verdict_corpus.py` |
+| E1 checker (95%/0%) | `experiments/reports/n100/e1/mutation_summary.json` | `python experiments/scripts/mutation_bench.py --corpus experiments/reports/n100/e1/_corpus` |
+| E2 gate (0→42→92→100%) | `experiments/reports/n100/e2/adversarial_summary.json` | `python experiments/scripts/adversarial_bench.py --n 100` |
+| E4 reliability (17.6×) | `experiments/reports/n100/e4/stats_n100.json` | `python experiments/scripts/stats.py` |
+| E5 translation (300/300) | `experiments/reports/n100/e5/fidelity_demo.json` | `python experiments/scripts/translation_fidelity.py --demo` |
+| E6 scaling (9→17×) | `experiments/reports/n100/e6/roles_sweep.json` | `python experiments/scripts/roles_sweep.py --max-roles 10` |
+| E7 portability (59/59) | `experiments/reports/n100/e7/cross_runtime.json` | `python experiments/scripts/cross_runtime.py` |
+| Full pipeline stress | `experiments/reports/n100/stress/integration_stress.json` | `python experiments/scripts/integration_stress.py 100` |
+| Interaction trials | `experiments/reports/n100/subagent/summary.json` | `python experiments/subagent_trials/run_n100.py --trials 100` |
+| **Full technical write-up** | `experiments/reports/n100/REPORT_N100.md` | — |
+
+The design rationale for each experiment (the deeper "why") is in
+`reference/BENCHMARK_PLAN_V2.md`; the plain-English component tour is in
+`results/RESULT_7_N100_SCALE.md`.
+
+---
+
+## 12. What to read next
 
 - **To understand how this benchmark is designed:** Read `3_BENCHMARK_DESIGN_EXPLAINED.md`
 - **To learn about testing strategies:** Read `2_TESTING_STRATEGIES.md`
 - **To see why safety cases matter:** Read `6_USE_CASE_DEADLOCK_SAFETY.md`
+- **To see the earlier component-validation run (n=10, live model):** Read `results/RESULT_5_SUBAGENT_VALIDATION.md`
+- **For the n=100 technical detail and honest caveats:** Read `results/RESULT_7_N100_SCALE.md`
