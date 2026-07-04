@@ -1,0 +1,219 @@
+file,class,verdict,error
+corpus_000.scr,BASELINE,accept,
+corpus_001.scr,BASELINE,accept,
+corpus_002.scr,BASELINE,accept,
+corpus_003.scr,BASELINE,accept,
+corpus_004.scr,BASELINE,accept,
+corpus_005.scr,BASELINE,accept,
+corpus_006.scr,BASELINE,accept,
+corpus_007.scr,BASELINE,accept,
+corpus_008.scr,BASELINE,accept,
+corpus_009.scr,BASELINE,accept,
+corpus_010.scr,BASELINE,accept,
+corpus_011.scr,BASELINE,accept,
+corpus_012.scr,BASELINE,accept,
+corpus_013.scr,BASELINE,accept,
+corpus_014.scr,BASELINE,accept,
+corpus_015.scr,BASELINE,accept,
+corpus_016.scr,BASELINE,accept,
+corpus_017.scr,BASELINE,accept,
+corpus_018.scr,BASELINE,accept,
+corpus_019.scr,BASELINE,accept,
+corpus_020.scr,BASELINE,accept,
+corpus_021.scr,BASELINE,accept,
+corpus_022.scr,BASELINE,accept,
+corpus_023.scr,BASELINE,accept,
+corpus_024.scr,BASELINE,accept,
+corpus_025.scr,BASELINE,accept,
+corpus_026.scr,BASELINE,accept,
+corpus_027.scr,BASELINE,accept,
+corpus_028.scr,BASELINE,accept,
+corpus_029.scr,BASELINE,accept,
+corpus_000.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_001.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_002.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_003.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_004.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_005.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_006.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_007.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_008.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_009.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_010.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_011.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_012.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_013.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_014.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_015.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_016.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_017.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_018.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_019.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_020.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_021.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_022.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_023.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_024.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_025.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_026.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_027.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_028.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_029.scr,undeclare_role,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_000.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_001.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_003.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_005.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_007.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_008.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_009.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_011.scr,branch_asymmetry,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_013.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_015.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_016.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_017.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_019.scr,branch_asymmetry,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_021.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_023.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_024.scr,branch_asymmetry,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_025.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_027.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_029.scr,branch_asymmetry,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_000.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_001.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_003.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_005.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_007.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_008.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_009.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_011.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_013.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_015.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_016.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_017.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_019.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_021.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_023.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_024.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_025.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_027.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_029.scr,flip_branch_subject,caught,Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/root/.ccr/java-truststore.p12 -Djavax.net.ssl.trustStorePasswor
+corpus_000.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_001.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_002.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_003.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_004.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_005.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_006.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_007.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_008.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_009.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_010.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_011.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_012.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_013.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_014.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_015.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_016.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_017.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_018.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_019.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_020.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_021.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_022.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_023.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_024.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_025.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_026.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_027.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_028.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_029.scr,circular_wait,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_000.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_001.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_002.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_003.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_004.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_005.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_006.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_007.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_008.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_009.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_010.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_011.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_012.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_013.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_014.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_015.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_016.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_017.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_018.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_019.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_020.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_021.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_022.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_023.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_024.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_025.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_026.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_027.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_028.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_029.scr,swap_order,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_000.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_001.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_002.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_003.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_004.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_005.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_006.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_007.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_008.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_009.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_010.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_011.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_012.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_013.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_014.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_015.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_016.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_017.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_018.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_019.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_020.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_021.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_022.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_023.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_024.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_025.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_026.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_027.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_028.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_029.scr,drop_message,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_000.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_001.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_002.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_003.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_004.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_005.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_006.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_007.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_008.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_009.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_010.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_011.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_012.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_013.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_014.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_015.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_016.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_017.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_018.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_019.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_020.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_021.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_022.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_023.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_024.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_025.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_026.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_027.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_028.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
+corpus_029.scr,rewire_peer,SURVIVED,(mutant still validates — equivalent or gap)
