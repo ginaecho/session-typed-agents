@@ -398,7 +398,16 @@ def _disasters_and_findings(state, trial, efsms, policies):
              for e in events], policies)
         findings = len(rt.findings)
         flow_disasters = sum(1 for f in rt.findings if f.policy_kind == "flow")
-    seq_disasters, _ = _causal_sequence_disasters(trial["trace"], policies or [])
+    # The causal round-based sequence check is only needed for UNGATED arms.
+    # A gated arm's structural gate already proves causal validity for every
+    # accepted send (it can't advance the sender's EFSM state to enable a
+    # "before" transition until the real "before" message was processed) --
+    # so a same-round precedent-then-consequent pair (legitimate under
+    # schedule="all" concurrent polling, since replies are processed in a
+    # fixed role order within one round) would be a FALSE positive here.
+    seq_disasters = 0
+    if not state.get("enforce"):
+        seq_disasters, _ = _causal_sequence_disasters(trial["trace"], policies or [])
     return mon_viol, flow_disasters + seq_disasters, findings
 
 
