@@ -1,0 +1,50 @@
+{
+  "k": 10,
+  "source": "SYNTH placeholder targets (n=30) \u2014 replace with real n=30 runs",
+  "rows": [
+    {
+      "arm": "A intent [SYNTH]",
+      "successes": 0,
+      "n": 30,
+      "per_run_success_pct": 0.0,
+      "wilson95_lo_pct": 0.0,
+      "wilson95_hi_pct": 11.4,
+      "passk_point": 0.0,
+      "passk_at_ci_lo": 0.0,
+      "k": 10
+    },
+    {
+      "arm": "B global text [SYNTH]",
+      "successes": 29,
+      "n": 30,
+      "per_run_success_pct": 96.7,
+      "wilson95_lo_pct": 83.3,
+      "wilson95_hi_pct": 99.4,
+      "passk_point": 0.712,
+      "passk_at_ci_lo": 0.161,
+      "k": 10
+    },
+    {
+      "arm": "C local observer [SYNTH]",
+      "successes": 24,
+      "n": 30,
+      "per_run_success_pct": 80.0,
+      "wilson95_lo_pct": 62.7,
+      "wilson95_hi_pct": 90.5,
+      "passk_point": 0.107,
+      "passk_at_ci_lo": 0.009,
+      "k": 10
+    },
+    {
+      "arm": "C+ full STJP [SYNTH]",
+      "successes": 30,
+      "n": 30,
+      "per_run_success_pct": 100.0,
+      "wilson95_lo_pct": 88.6,
+      "wilson95_hi_pct": 100.0,
+      "passk_point": 1.0,
+      "passk_at_ci_lo": 0.3,
+      "k": 10
+    }
+  ]
+}

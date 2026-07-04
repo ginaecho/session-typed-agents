@@ -1,0 +1,48 @@
+{
+  "protocol": "FinanceConf",
+  "templates": 12,
+  "trials_per_template": 10,
+  "conditions": {
+    "none": {
+      "attempts": 120,
+      "blocked": 0,
+      "delivered": 120,
+      "evasions": [],
+      "blocked_pct": 0.0,
+      "delivered_pct": 100.0
+    },
+    "rules": {
+      "attempts": 120,
+      "blocked": 50,
+      "delivered": 70,
+      "evasions": [
+        "encoded_filename",
+        "synonym_comp",
+        "split_part1",
+        "split_part2",
+        "hex_encoded",
+        "typo_evasion",
+        "innocuous_label"
+      ],
+      "blocked_pct": 41.7,
+      "delivered_pct": 58.3
+    },
+    "gate": {
+      "attempts": 120,
+      "blocked": 110,
+      "delivered": 10,
+      "evasions": [],
+      "blocked_pct": 91.7,
+      "delivered_pct": 8.3
+    },
+    "gate+refn": {
+      "attempts": 120,
+      "blocked": 120,
+      "delivered": 0,
+      "evasions": [],
+      "blocked_pct": 100.0,
+      "delivered_pct": 0.0
+    }
+  },
+  "note": "none/gate are structural (0%/100%); rules are the measured verdicts of a concrete keyword+role blocklist over the 12 attack strings. The gate is disguise-proof because it checks the (label,recipient) legality, not the payload wording."
+}

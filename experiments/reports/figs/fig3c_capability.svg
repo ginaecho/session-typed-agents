@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="340" viewBox="0 0 520 340" font-family="Helvetica,Arial,sans-serif">
+<rect width="520" height="340" fill="white"/>
+<text x="56" y="26" font-size="15" font-weight="bold" fill="#1b2733">Fig 3c — E3: story holds across model strength</text>
+<text x="56" y="44" font-size="11" fill="#5a6b7b">A-arm disasters (rising) + enforcement gain (falling)  [SYNTH + 2 real anchors]</text>
+<line x1="56" y1="280" x2="56" y2="60" stroke="#1b2733"/>
+<line x1="56" y1="280" x2="496" y2="280" stroke="#1b2733"/>
+<text x="14" y="170" font-size="10" fill="#1b2733" transform="rotate(-90 14 170)" text-anchor="middle">count / points</text>
+<polyline points="56.0,273.7 202.7,267.4 349.3,210.9 496.0,198.3" fill="none" stroke="#c65b3c" stroke-width="2"/>
+<text x="492" y="194.3" font-size="10" fill="#c65b3c" text-anchor="end">A disasters</text>
+<polyline points="56.0,60.0 202.7,91.4 349.3,280.0 496.0,280.0" fill="none" stroke="#3f7cac" stroke-width="2"/>
+<text x="492" y="276.0" font-size="10" fill="#3f7cac" text-anchor="end">enforce gain</text>
+<text x="56.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">small-open</text>
+<text x="202.7" y="294" font-size="9" fill="#1b2733" text-anchor="middle">gpt-4o</text>
+<text x="349.3" y="294" font-size="9" fill="#1b2733" text-anchor="middle">gpt-5.4</text>
+<text x="496.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">frontier</text>
+<text x="510" y="332" font-size="9" fill="#9aa7b3" text-anchor="end">projected (synthetic); measurement pending</text>
+</svg>

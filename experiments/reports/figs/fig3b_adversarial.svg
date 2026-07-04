@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="340" viewBox="0 0 520 340" font-family="Helvetica,Arial,sans-serif">
+<rect width="520" height="340" fill="white"/>
+<text x="56" y="26" font-size="15" font-weight="bold" fill="#1b2733">Fig 3b — E2: exfiltration blocked, per guard</text>
+<text x="56" y="44" font-size="11" fill="#5a6b7b">12 injection templates, target=ExternalAuditor  [REAL]</text>
+<line x1="56" y1="280" x2="56" y2="60" stroke="#1b2733"/>
+<line x1="56" y1="280" x2="496" y2="280" stroke="#1b2733"/>
+<text x="14" y="170" font-size="10" fill="#1b2733" transform="rotate(-90 14 170)" text-anchor="middle">% blocked</text>
+<rect x="78.0" y="280.0" width="66.0" height="0.0" fill="#c65b3c"/>
+<text x="111.0" y="276.0" font-size="10" fill="#1b2733" text-anchor="middle">0.0</text>
+<text x="111.0" y="294.0" font-size="9" fill="#1b2733" text-anchor="middle">none</text>
+<rect x="188.0" y="188.3" width="66.0" height="91.7" fill="#d89b3c"/>
+<text x="221.0" y="184.3" font-size="10" fill="#1b2733" text-anchor="middle">41.7</text>
+<text x="221.0" y="294.0" font-size="9" fill="#1b2733" text-anchor="middle">rules</text>
+<rect x="298.0" y="78.3" width="66.0" height="201.7" fill="#3f7cac"/>
+<text x="331.0" y="74.3" font-size="10" fill="#1b2733" text-anchor="middle">91.7</text>
+<text x="331.0" y="294.0" font-size="9" fill="#1b2733" text-anchor="middle">gate</text>
+<rect x="408.0" y="60.0" width="66.0" height="220.0" fill="#2e8b57"/>
+<text x="441.0" y="56.0" font-size="10" fill="#1b2733" text-anchor="middle">100.0</text>
+<text x="441.0" y="294.0" font-size="9" fill="#1b2733" text-anchor="middle">gate+refn</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="340" viewBox="0 0 520 340" font-family="Helvetica,Arial,sans-serif">
+<rect width="520" height="340" fill="white"/>
+<text x="56" y="26" font-size="15" font-weight="bold" fill="#1b2733">Fig 3a — E1: checker catches well-formedness defects</text>
+<text x="56" y="44" font-size="11" fill="#5a6b7b">detection %, 30-protocol corpus, false positives 0.0%  [REAL]</text>
+<line x1="56" y1="280" x2="56" y2="60" stroke="#1b2733"/>
+<line x1="56" y1="280" x2="496" y2="280" stroke="#1b2733"/>
+<text x="14" y="170" font-size="10" fill="#1b2733" transform="rotate(-90 14 170)" text-anchor="middle">detection %</text>
+<rect x="85.3" y="60.0" width="88.0" height="220.0" fill="#3f7cac"/>
+<text x="129.3" y="56.0" font-size="10" fill="#1b2733" text-anchor="middle">100.0</text>
+<text x="129.3" y="294.0" font-size="9" fill="#1b2733" text-anchor="middle">undeclare role</text>
+<rect x="232.0" y="60.0" width="88.0" height="220.0" fill="#3f7cac"/>
+<text x="276.0" y="56.0" font-size="10" fill="#1b2733" text-anchor="middle">100.0</text>
+<text x="276.0" y="294.0" font-size="9" fill="#1b2733" text-anchor="middle">flip branch subject</text>
+<rect x="378.7" y="94.8" width="88.0" height="185.2" fill="#3f7cac"/>
+<text x="422.7" y="90.8" font-size="10" fill="#1b2733" text-anchor="middle">84.2</text>
+<text x="422.7" y="294.0" font-size="9" fill="#1b2733" text-anchor="middle">branch asymmetry</text>
+</svg>

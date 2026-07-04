@@ -1,0 +1,59 @@
+{
+  "plan": {
+    "arms": [
+      "A_intent",
+      "B_global_text",
+      "Cplus_full_stjp"
+    ],
+    "n_per_cell": 30,
+    "case": "finance",
+    "metrics": {
+      "A_disasters": "S4 count on the intent arm",
+      "enforcement_gain": "C+ GCR minus B GCR (percentage points)"
+    },
+    "status": "MEASUREMENT PENDING (needs multiple model families + Azure)",
+    "real_anchors": {
+      "gpt-4o": {
+        "A_disasters": 4,
+        "enforcement_gain": 60
+      },
+      "gpt-5.4": {
+        "A_disasters": 22,
+        "enforcement_gain": 0
+      }
+    }
+  },
+  "synth_series": {
+    "tiers": [
+      "small-open",
+      "gpt-4o",
+      "gpt-5.4",
+      "frontier"
+    ],
+    "A_disasters": [
+      2,
+      4,
+      22,
+      26
+    ],
+    "A_disasters_is_real": [
+      false,
+      true,
+      true,
+      false
+    ],
+    "enforcement_gain": [
+      70,
+      60,
+      0,
+      0
+    ],
+    "gain_is_real": [
+      false,
+      true,
+      true,
+      false
+    ],
+    "synthetic": true
+  }
+}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="340" viewBox="0 0 520 340" font-family="Helvetica,Arial,sans-serif">
+<rect width="520" height="340" fill="white"/>
+<text x="56" y="26" font-size="15" font-weight="bold" fill="#1b2733">Fig 3d — E6: coordination cost vs #roles</text>
+<text x="56" y="44" font-size="11" fill="#5a6b7b">structural proxy (k-chars); token-per-goal PENDING  [REAL proxy]</text>
+<line x1="56" y1="280" x2="56" y2="60" stroke="#1b2733"/>
+<line x1="56" y1="280" x2="496" y2="280" stroke="#1b2733"/>
+<text x="14" y="170" font-size="10" fill="#1b2733" transform="rotate(-90 14 170)" text-anchor="middle">cost proxy (k)</text>
+<polyline points="56.0,256.4 111.0,241.1 166.0,222.9 221.0,201.9 276.0,178.7 331.0,151.5 386.0,123.2 441.0,93.4 496.0,60.0" fill="none" stroke="#c65b3c" stroke-width="2"/>
+<text x="492" y="56.0" font-size="10" fill="#c65b3c" text-anchor="end">global text</text>
+<polyline points="56.0,277.4 111.0,276.1 166.0,274.9 221.0,273.6 276.0,272.3 331.0,271.0 386.0,269.7 441.0,268.4 496.0,267.1" fill="none" stroke="#3f7cac" stroke-width="2"/>
+<text x="492" y="263.1" font-size="10" fill="#3f7cac" text-anchor="end">STJP</text>
+<text x="56.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">2</text>
+<text x="111.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">3</text>
+<text x="166.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">4</text>
+<text x="221.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">5</text>
+<text x="276.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">6</text>
+<text x="331.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">7</text>
+<text x="386.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">8</text>
+<text x="441.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">9</text>
+<text x="496.0" y="294" font-size="9" fill="#1b2733" text-anchor="middle">10</text>
+</svg>
