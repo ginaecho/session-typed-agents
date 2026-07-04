@@ -1,0 +1,12 @@
+module corpus_050;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol Pipe(role R0, role R1, role R2) {
+    M0(String) from R0 to R1;
+    M1(Int) from R1 to R2;
+    Done(Int) from R2 to R0;
+}

@@ -1,0 +1,14 @@
+module corpus_030;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol Fan(role Src, role W0, role W1, role Sink) {
+    Task0(Int) from Src to W0;
+    Task1(Bool) from Src to W1;
+    Res0(Bool) from W0 to Sink;
+    Res1(String) from W1 to Sink;
+    Report(String) from Sink to Src;
+}

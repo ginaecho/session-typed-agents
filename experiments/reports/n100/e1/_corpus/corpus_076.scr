@@ -1,0 +1,17 @@
+module corpus_076;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol Star(role Hub, role S0, role S1, role S2, role S3) {
+    Ask0(String) from Hub to S0;
+    Ask1(Double) from Hub to S1;
+    Ask2(Bool) from Hub to S2;
+    Ask3(Bool) from Hub to S3;
+    Ans0(Int) from S0 to Hub;
+    Ans1(Double) from S1 to Hub;
+    Ans2(Double) from S2 to Hub;
+    Ans3(String) from S3 to Hub;
+}

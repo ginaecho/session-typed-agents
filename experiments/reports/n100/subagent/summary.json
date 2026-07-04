@@ -1,0 +1,21 @@
+{
+  "n": 100,
+  "case": "escrow_trade",
+  "generated_at": "2026-07-04 08:54:21",
+  "arms": {
+    "unchecked": {
+      "success_rate_pct": 0.0,
+      "deadlock_rate_pct": 100.0,
+      "total_agent_calls": 800
+    },
+    "stjp": {
+      "success_rate_pct": 100.0,
+      "deadlock_rate_pct": 0.0,
+      "total_gate_rejections": 0,
+      "total_monitor_violations": 0,
+      "total_agent_calls": 700,
+      "avg_agent_calls_per_trial": 7.0
+    }
+  },
+  "note": "The unchecked arm uses prose skills with a mutual-wait deadlock; it never succeeds. The STJP arm uses a contract-following strategy via the validated EFSM projection. This measures infrastructure correctness (gate + scheduler + monitor) at scale, not model intelligence."
+}

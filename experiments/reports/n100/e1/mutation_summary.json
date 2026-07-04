@@ -1,0 +1,61 @@
+{
+  "corpus_dir": "experiments/reports/n100/e1/_corpus",
+  "corpus_size": 100,
+  "false_positives": 0,
+  "false_positive_rate_pct": 0.0,
+  "per_class": {
+    "undeclare_role": {
+      "applied": 100,
+      "caught": 100,
+      "survived": 0,
+      "detection_rate_pct": 100.0
+    },
+    "branch_asymmetry": {
+      "applied": 63,
+      "caught": 52,
+      "survived": 11,
+      "detection_rate_pct": 82.5
+    },
+    "flip_branch_subject": {
+      "applied": 63,
+      "caught": 63,
+      "survived": 0,
+      "detection_rate_pct": 100.0
+    },
+    "circular_wait": {
+      "applied": 100,
+      "caught": 0,
+      "survived": 100,
+      "detection_rate_pct": 0.0
+    },
+    "swap_order": {
+      "applied": 100,
+      "caught": 0,
+      "survived": 100,
+      "detection_rate_pct": 0.0
+    },
+    "drop_message": {
+      "applied": 100,
+      "caught": 1,
+      "survived": 99,
+      "detection_rate_pct": 1.0
+    },
+    "rewire_peer": {
+      "applied": 100,
+      "caught": 2,
+      "survived": 98,
+      "detection_rate_pct": 2.0
+    }
+  },
+  "wellformedness_defects": {
+    "applied": 226,
+    "caught": 215,
+    "detection_rate_pct": 95.1
+  },
+  "reordering_ops": {
+    "applied": 400,
+    "caught": 3,
+    "detection_rate_pct": 0.8
+  },
+  "note": "wellformedness_defects carry the soundness claim (Scribble should reject); reordering_ops usually yield another VALID protocol on acyclic inputs, so low detection there is correct behaviour, not a checker miss."
+}

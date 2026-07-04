@@ -1,0 +1,2420 @@
+{
+  "pairs": 300,
+  "scorer_accuracy_pct": 100.0,
+  "by_kind": {
+    "identical": {
+      "n": 100,
+      "correct": 100
+    },
+    "reformat": {
+      "n": 100,
+      "correct": 100
+    },
+    "mutant": {
+      "n": 100,
+      "correct": 100
+    }
+  },
+  "rows": [
+    {
+      "file": "corpus_000.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_000.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_000.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_001.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_001.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_001.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_002.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_002.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_002.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_003.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_003.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_003.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_004.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_004.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_004.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_005.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_005.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_005.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_006.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_006.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_006.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_007.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_007.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_007.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_008.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_008.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_008.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_009.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_009.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_009.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_010.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_010.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_010.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_011.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_011.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_011.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_012.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_012.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_012.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_013.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_013.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_013.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_014.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_014.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_014.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_015.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_015.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_015.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_016.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_016.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_016.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_017.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_017.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_017.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_018.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_018.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_018.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_019.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_019.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_019.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_020.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_020.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_020.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_021.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_021.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_021.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_022.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_022.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_022.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_023.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_023.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_023.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_024.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_024.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_024.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_025.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_025.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_025.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_026.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_026.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_026.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_027.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_027.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_027.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_028.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_028.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_028.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_029.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_029.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_029.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_030.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_030.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_030.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_031.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_031.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_031.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_032.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_032.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_032.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_033.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_033.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_033.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_034.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_034.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_034.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_035.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_035.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_035.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_036.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_036.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_036.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_037.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_037.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_037.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_038.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_038.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_038.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_039.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_039.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_039.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_040.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_040.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_040.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_041.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_041.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_041.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_042.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_042.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_042.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_043.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_043.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_043.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_044.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_044.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_044.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_045.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_045.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_045.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_046.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_046.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_046.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_047.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_047.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_047.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_048.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_048.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_048.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_049.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_049.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_049.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_050.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_050.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_050.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_051.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_051.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_051.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_052.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_052.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_052.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_053.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_053.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_053.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_054.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_054.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_054.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_055.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_055.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_055.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_056.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_056.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_056.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_057.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_057.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_057.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_058.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_058.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_058.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_059.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_059.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_059.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_060.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_060.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_060.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_061.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_061.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_061.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_062.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_062.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_062.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_063.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_063.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_063.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_064.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_064.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_064.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_065.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_065.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_065.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_066.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_066.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_066.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_067.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_067.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_067.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_068.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_068.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_068.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_069.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_069.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_069.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_070.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_070.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_070.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_071.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_071.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_071.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_072.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_072.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_072.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_073.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_073.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_073.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_074.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_074.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_074.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_075.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_075.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_075.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_076.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_076.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_076.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_077.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_077.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_077.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_078.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_078.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_078.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_079.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_079.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_079.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_080.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_080.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_080.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_081.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_081.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_081.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_082.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_082.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_082.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_083.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_083.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_083.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_084.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_084.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_084.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_085.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_085.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_085.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_086.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_086.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_086.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_087.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_087.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_087.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_088.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_088.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_088.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_089.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_089.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_089.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_090.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_090.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_090.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_091.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_091.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_091.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_092.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_092.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_092.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_093.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_093.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_093.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_094.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_094.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_094.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_095.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_095.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_095.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_096.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_096.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_096.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_097.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_097.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_097.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_098.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_098.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_098.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    },
+    {
+      "file": "corpus_099.scr",
+      "kind": "identical",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_099.scr",
+      "kind": "reformat",
+      "draft_valid": true,
+      "efsm_equiv": true,
+      "expected_equiv": true,
+      "correct": true
+    },
+    {
+      "file": "corpus_099.scr",
+      "kind": "mutant",
+      "draft_valid": false,
+      "efsm_equiv": false,
+      "expected_equiv": false,
+      "correct": true
+    }
+  ]
+}

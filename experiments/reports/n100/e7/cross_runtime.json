@@ -1,0 +1,25 @@
+{
+  "boundary_portability_check": {
+    "role_checks": 59,
+    "agreements": 59,
+    "agreement_pct": 100.0
+  },
+  "note": "real evidence available now: in-process monitor and the standalone generated monitor (a separate runtime) agree on every role/trace. The three-harness live comparison (MAF / LangGraph / skills+hooks; conformance + GCR) is MEASUREMENT PENDING \u2014 needs those adapters + Azure.",
+  "pending_targets_synth": {
+    "conformance": [
+      100,
+      100,
+      98
+    ],
+    "gcr": [
+      100,
+      100,
+      100
+    ],
+    "runtimes": [
+      "MAF",
+      "LangGraph",
+      "skills+hooks"
+    ]
+  }
+}

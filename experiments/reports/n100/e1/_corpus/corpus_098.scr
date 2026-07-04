@@ -1,0 +1,13 @@
+module corpus_098;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol Pipe(role R0, role R1, role R2, role R3) {
+    M0(Int) from R0 to R1;
+    M1(Bool) from R1 to R2;
+    M2(Bool) from R2 to R3;
+    Done(Int) from R3 to R0;
+}

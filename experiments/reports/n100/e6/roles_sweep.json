@@ -1,0 +1,77 @@
+{
+  "rows": [
+    {
+      "n_roles": 2,
+      "n_messages": 2,
+      "scheduled_send_polls": 2,
+      "global_text_cost_proxy": 1376,
+      "stjp_cost_proxy": 150,
+      "ratio_global_over_stjp": 9.2
+    },
+    {
+      "n_roles": 3,
+      "n_messages": 3,
+      "scheduled_send_polls": 3,
+      "global_text_cost_proxy": 2268,
+      "stjp_cost_proxy": 225,
+      "ratio_global_over_stjp": 10.1
+    },
+    {
+      "n_roles": 4,
+      "n_messages": 4,
+      "scheduled_send_polls": 4,
+      "global_text_cost_proxy": 3328,
+      "stjp_cost_proxy": 300,
+      "ratio_global_over_stjp": 11.1
+    },
+    {
+      "n_roles": 5,
+      "n_messages": 5,
+      "scheduled_send_polls": 5,
+      "global_text_cost_proxy": 4550,
+      "stjp_cost_proxy": 375,
+      "ratio_global_over_stjp": 12.1
+    },
+    {
+      "n_roles": 6,
+      "n_messages": 6,
+      "scheduled_send_polls": 6,
+      "global_text_cost_proxy": 5904,
+      "stjp_cost_proxy": 450,
+      "ratio_global_over_stjp": 13.1
+    },
+    {
+      "n_roles": 7,
+      "n_messages": 7,
+      "scheduled_send_polls": 7,
+      "global_text_cost_proxy": 7490,
+      "stjp_cost_proxy": 525,
+      "ratio_global_over_stjp": 14.3
+    },
+    {
+      "n_roles": 8,
+      "n_messages": 8,
+      "scheduled_send_polls": 8,
+      "global_text_cost_proxy": 9136,
+      "stjp_cost_proxy": 600,
+      "ratio_global_over_stjp": 15.2
+    },
+    {
+      "n_roles": 9,
+      "n_messages": 9,
+      "scheduled_send_polls": 9,
+      "global_text_cost_proxy": 10872,
+      "stjp_cost_proxy": 675,
+      "ratio_global_over_stjp": 16.1
+    },
+    {
+      "n_roles": 10,
+      "n_messages": 10,
+      "scheduled_send_polls": 10,
+      "global_text_cost_proxy": 12820,
+      "stjp_cost_proxy": 750,
+      "ratio_global_over_stjp": 17.1
+    }
+  ],
+  "note": "structural proxy (real); token-per-goal PENDING"
+}

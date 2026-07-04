@@ -1,0 +1,20 @@
+module corpus_093;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol Nego(role Boss, role X, role Y, role Z) {
+    choice at Boss {
+        Accept(Double) from Boss to X;
+        AccNote(String) from Boss to Y;
+    } or {
+        Reject(Int) from Boss to X;
+        RejNote(Int) from Boss to Y;
+    }
+    Result(String) from X to Boss;
+    Ack(String) from Y to Boss;
+    Log(String) from Boss to Z;
+    Logged(String) from Z to Boss;
+}

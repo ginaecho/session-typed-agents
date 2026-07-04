@@ -1,0 +1,27 @@
+{
+  "k": 10,
+  "arms": [
+    {
+      "arm": "A unchecked (prose skills)",
+      "successes": 0,
+      "n": 100,
+      "per_run_success_pct": 0.0,
+      "wilson95_lo_pct": 0.0,
+      "wilson95_hi_pct": 3.7,
+      "passk_point": 0.0,
+      "passk_at_ci_lo": 0.0,
+      "k": 10
+    },
+    {
+      "arm": "C+ STJP (gate+sched)",
+      "successes": 100,
+      "n": 100,
+      "per_run_success_pct": 100.0,
+      "wilson95_lo_pct": 96.3,
+      "wilson95_hi_pct": 100.0,
+      "passk_point": 1.0,
+      "passk_at_ci_lo": 0.686,
+      "k": 10
+    }
+  ]
+}
