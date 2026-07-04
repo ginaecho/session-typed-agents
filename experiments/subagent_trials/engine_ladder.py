@@ -98,7 +98,9 @@ def _contract_min(efsm) -> str:
 
 def _base_prompt(arm, role, case, efsms) -> str:
     style = ARMS[arm]["prompt"]
-    head = f"{ROLE_DESCRIPTIONS.get(role, 'You are ' + role + '.')}\n\n{INTENT}"
+    rd = case.get("role_descriptions", ROLE_DESCRIPTIONS)
+    intent = case.get("intent", INTENT)
+    head = f"{rd.get(role, 'You are ' + role + '.')}\n\n{intent}"
     if style == "intent":
         return head
     if style == "global":
