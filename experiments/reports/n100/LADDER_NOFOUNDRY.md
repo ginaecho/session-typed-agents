@@ -207,3 +207,7 @@ history).
 
 See also the plain-English writeup of these tables in the main run report:
 [`docs/5_RUN_REPORTS_EXPLAINED.md` §10](../../../docs/5_RUN_REPORTS_EXPLAINED.md#10-the-full-arm-ladder-at-n100-reproduced-without-foundry).
+
+What this suite cost to run (haiku roles + opus orchestration): see
+[`COST_ESTIMATE.md`](COST_ESTIMATE.md) — the whole n=100 ladder was **~$60 in
+haiku tokens**, the sonnet replication ~$10, the full validated suite under $100.
