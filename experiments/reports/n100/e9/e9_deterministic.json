@@ -1,0 +1,457 @@
+{
+  "benchmark": "E9 deterministic \u2014 deadlock replay + safety non-regression",
+  "generated": "2026-07-05",
+  "deadlock_replay": {
+    "n_deadlocks": 19,
+    "deadlocks_with_anticipable_rejection": 16,
+    "deadlocks_gate_correctly_held": 3,
+    "trials": [
+      {
+        "trial": "min_gate/min_gate__trial_007",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_008",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_009",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_010",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_011",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_012",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_013",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_014",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_015",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_016",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_017",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_018",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_019",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_020",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_021",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_022",
+        "status": "deadlock",
+        "delivered": 0,
+        "n_rejections": 2,
+        "rescuable_rejections": 2,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "27",
+            "anticipable": true
+          },
+          {
+            "role": "Seller",
+            "to": "Carrier",
+            "label": "ShipGoods",
+            "state": "39",
+            "anticipable": true
+          }
+        ],
+        "has_anticipable_rejection": true
+      },
+      {
+        "trial": "min_gate/min_gate__trial_025",
+        "status": "deadlock",
+        "delivered": 1,
+        "n_rejections": 0,
+        "rescuable_rejections": 0,
+        "rejections": [],
+        "has_anticipable_rejection": false
+      },
+      {
+        "trial": "stjp/stjp__trial_027",
+        "status": "deadlock",
+        "delivered": 6,
+        "n_rejections": 2,
+        "rescuable_rejections": 0,
+        "rejections": [
+          {
+            "role": "Escrow",
+            "to": "Buyer",
+            "label": "SettlementComplete",
+            "state": "32",
+            "anticipable": false
+          },
+          {
+            "role": "Escrow",
+            "to": "Buyer",
+            "label": "SettlementComplete",
+            "state": "32",
+            "anticipable": false
+          }
+        ],
+        "has_anticipable_rejection": false
+      },
+      {
+        "trial": "stjp/stjp__trial_099",
+        "status": "deadlock",
+        "delivered": 3,
+        "n_rejections": 2,
+        "rescuable_rejections": 0,
+        "rejections": [
+          {
+            "role": "Buyer",
+            "to": "Escrow",
+            "label": "Deposit",
+            "state": "8",
+            "anticipable": false
+          },
+          {
+            "role": "Escrow",
+            "to": "Seller",
+            "label": "PaymentSecured",
+            "state": "30",
+            "anticipable": false
+          }
+        ],
+        "has_anticipable_rejection": false
+      }
+    ]
+  },
+  "safety": {
+    "illegal_sends_tested": 50,
+    "admitted_by_tolerant_gate": 0,
+    "non_regression_holds": true
+  }
+}
