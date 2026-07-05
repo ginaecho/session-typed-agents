@@ -2,7 +2,9 @@
 
 Reading the benchmark results in plain English: what the numbers mean, why they matter, and what they prove.
 
-**Updated: 2026-07-04** (added Part 2 — the n=100 reliability run)
+**Updated: 2026-07-05** (added Part 2 — the n=100 reliability run; added the
+dollar-cost estimate of the n=100 reproduction to [§2](#2-reading-the-results-table)
+and [§10](#what-this-reproduction-actually-cost-in-dollars))
 
 This document has two parts:
 
@@ -17,7 +19,9 @@ This document has two parts:
   [**§10**](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry), the full
   six-arm ladder from [§2](#2-reading-the-results-table) reproduced at n=100
   without Foundry (cheap subagents) — with an explicit note on why its cost
-  column reads in *calls*, not *tokens*.
+  column reads in *calls*, not *tokens*, and a
+  [**dollar-cost estimate**](#what-this-reproduction-actually-cost-in-dollars) of
+  the whole reproduction (**under $100**).
 
 ---
 
@@ -104,6 +108,17 @@ In plain English: **All agents with protocol succeeded, but STJP's version used 
 - The true cost of delivery
 
 **Read it:** Global text (B) needs 120k tokens per delivered report. STJP (full stack) needs only 13.3k—that's 9× cheaper.
+
+> **What did it cost in real money to *produce* this table?** This finance run
+> used a live paid model (GPT-5.4) at n=10. The same six-arm ladder was later
+> reproduced at n=100 with cheap Claude subagents
+> ([§10](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry)) — and
+> because we know the per-token API price and the per-trial token counts, we can
+> put an actual dollar figure on it: **the whole n=100 reproduction cost roughly
+> $60 in haiku tokens, ~$10 more for the stronger-model replication — under $100
+> for the entire validated suite.** The full breakdown, method, and honest
+> caveats are in
+> [`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents).
 
 **Seconds/trial**
 - Wall-clock time for one complete run
@@ -744,6 +759,32 @@ Full tables, per-arm findings, and the integrity log for these runs:
 and
 [`ladder_escrow_n100/README.md`](../experiments/reports/n100/ladder_escrow_n100/README.md).
 
+### What this reproduction actually cost (in dollars)
+
+The cost-to-goal column above is in **calls**; here is what those calls cost in
+**real money**. Because we know the published Claude per-token price and the
+per-trial token counts the runner reported, we can price the whole thing:
+
+| Run | trials | model (roles) | **≈ cost** |
+|---|---|---|---|
+| Full n=100 ladder (2 cases × 6 arms × 100) | ~1,200 | haiku 4.5 | **~$60** |
+| Stronger-tier replication (P0b + E3) | ~80 | sonnet 5 | **~$10** |
+| **Whole validated suite** | | | **< $100** |
+
+The design choice that made this cheap was **haiku playing the agent roles while
+opus only orchestrated**: the same 1,200 trials with sonnet roles would have
+cost ~$160, with opus roles ~$300+. This figure is an **upper bound** — the
+reported token counts include the driver's CLI/orchestration overhead, so a
+lean, metered run (role tokens only) would land nearer **$5–10**. Full method,
+per-token pricing table, blend assumptions, and the honest caveat are in
+[`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents);
+the stronger-tier runs it prices are documented in
+[`P0B_MIDTIER_SONNET.md`](../experiments/reports/n100/P0B_MIDTIER_SONNET.md) and
+[`E3_CAPABILITY_SWEEP.md`](../experiments/reports/n100/E3_CAPABILITY_SWEEP.md),
+and the metering-ready harness (which turns the $5–10 lower bound into a measured
+number the moment an LLM key exists) is
+[`harness_adapters/README.md`](../experiments/harness_adapters/README.md).
+
 ---
 
 ## 11. What Part 2 proves, in one paragraph
@@ -777,6 +818,9 @@ Every number in Part 2 is reproducible from files in the repository:
 | Full pipeline stress | `experiments/reports/n100/stress/integration_stress.json` | `python experiments/scripts/integration_stress.py 100` |
 | Interaction trials | `experiments/reports/n100/subagent/summary.json` | `python experiments/subagent_trials/run_n100.py --trials 100` |
 | Arm-ladder n=100 ([§10](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry), no Foundry) | [`ladder_revenue_audit_n100/`](../experiments/reports/n100/ladder_revenue_audit_n100/README.md), [`ladder_escrow_n100/`](../experiments/reports/n100/ladder_escrow_n100/README.md) | `python experiments/subagent_trials/aggregate_ladder.py --root <root> --case <case> --out <out>` |
+| Cost of the ladder ([§10 dollar cost](#what-this-reproduction-actually-cost-in-dollars)) | [`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents) | per-trial `subagent_tokens` × [`claude-api`](../experiments/reports/n100/COST_ESTIMATE.md#pricing-used-per-1m-tokens-cached-2026-06-24-from-the-claude-api-skill) list price |
+| Stronger-tier replication (P0b, E3) | [`P0B_MIDTIER_SONNET.md`](../experiments/reports/n100/P0B_MIDTIER_SONNET.md), [`E3_CAPABILITY_SWEEP.md`](../experiments/reports/n100/E3_CAPABILITY_SWEEP.md) | opus-orchestrated, sonnet roles (see reports) |
+| Metering-ready third harness (E7 LangGraph) | [`harness_adapters/README.md`](../experiments/harness_adapters/README.md) | `python experiments/harness_adapters/langgraph_ladder.py --case revenue_audit --arm min_gate` |
 | **Full technical write-up** | `experiments/reports/n100/REPORT_N100.md` | — |
 
 The design rationale for each experiment (the deeper "why") is in

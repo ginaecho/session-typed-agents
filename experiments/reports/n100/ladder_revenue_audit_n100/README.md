@@ -99,3 +99,13 @@ trace, or a plausible non-fraudulent stall) immediately before aggregation.
 `.trial_state/ladder_run/revenue_audit/` (600 trial dirs, gitignored — not
 committed, it's scratch state, not a deliverable). This report + the
 aggregated JSON/table are the durable artifact.
+
+## What this run cost
+
+These 600 trials were played by cheap **haiku** subagents (opus only
+orchestrated). Priced from the reported per-trial token counts, this case cost
+**~$30 in haiku tokens** (half of the ~$60 whole-ladder figure). Method and
+caveats: [`../COST_ESTIMATE.md`](../COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents).
+The stronger-tier (sonnet) replication of arms B and C+min on this case is in
+[`../P0B_MIDTIER_SONNET.md`](../P0B_MIDTIER_SONNET.md) and
+[`../E3_CAPABILITY_SWEEP.md`](../E3_CAPABILITY_SWEEP.md).

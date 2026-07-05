@@ -139,3 +139,12 @@ fraud across all 600 trials.
 `.trial_state/ladder_run/escrow_trade/` (600 trial dirs, gitignored — scratch
 state, not a deliverable). This report + the aggregated JSON/table are the
 durable artifact.
+
+## What this run cost
+
+These 600 trials were played by cheap **haiku** subagents (opus only
+orchestrated). Priced from the reported per-trial token counts, this case cost
+**~$30 in haiku tokens** (half of the ~$60 whole-ladder figure); the 18 C+spec
+trials re-driven to completion during the integrity fix added a few cents.
+Method and caveats:
+[`../COST_ESTIMATE.md`](../COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents).

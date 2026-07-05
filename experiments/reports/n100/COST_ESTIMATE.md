@@ -79,8 +79,13 @@ would be **~10–20× cheaper per trial**; see the lower bound below.
   input/output token usage the moment one is provided — at which point the "lean
   lower bound" above becomes a measured figure.
 
-See also: [`LADDER_NOFOUNDRY.md`](LADDER_NOFOUNDRY.md) (the suite this prices),
-[`P0B_MIDTIER_SONNET.md`](P0B_MIDTIER_SONNET.md) and
-[`E3_CAPABILITY_SWEEP.md`](E3_CAPABILITY_SWEEP.md) (the sonnet runs),
-[`../../harness_adapters/README.md`](../../harness_adapters/README.md) (the
-metering-ready harness).
+See also:
+- [`LADDER_NOFOUNDRY.md`](LADDER_NOFOUNDRY.md) — the suite this prices.
+- [`P0B_MIDTIER_SONNET.md`](P0B_MIDTIER_SONNET.md) and
+  [`E3_CAPABILITY_SWEEP.md`](E3_CAPABILITY_SWEEP.md) — the sonnet runs.
+- [`../../harness_adapters/README.md`](../../harness_adapters/README.md) — the
+  metering-ready harness that turns the lean lower bound into a measured number.
+- Plain-English docs: `docs/5_RUN_REPORTS_EXPLAINED.md`
+  [§2 (Reading the results table)](../../../docs/5_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table)
+  and
+  [§10 (what this reproduction actually cost)](../../../docs/5_RUN_REPORTS_EXPLAINED.md#what-this-reproduction-actually-cost-in-dollars).
