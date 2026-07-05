@@ -1,6 +1,6 @@
 {
   "case": "revenue_audit",
-  "generated_at": "2026-07-05 09:35:40",
+  "generated_at": "2026-07-05 14:38:07",
   "cost_unit": "LLM agent-calls (no Foundry; tokens not metered)",
   "rows": [
     {
@@ -16,7 +16,8 @@
       "total_calls": 900,
       "avg_calls_per_trial": 9.0,
       "cost_to_goal_calls": 900.0,
-      "avg_seconds": 17.4
+      "avg_seconds": 17.4,
+      "cost_to_goal_usd": 1.125
     },
     {
       "arm": "global_text",
@@ -31,7 +32,8 @@
       "total_calls": 330,
       "avg_calls_per_trial": 3.3,
       "cost_to_goal_calls": 330.0,
-      "avg_seconds": 0.4
+      "avg_seconds": 0.4,
+      "cost_to_goal_usd": 0.4125
     },
     {
       "arm": "local_obs",
@@ -46,7 +48,8 @@
       "total_calls": 2328,
       "avg_calls_per_trial": 23.3,
       "cost_to_goal_calls": 7275.0,
-      "avg_seconds": 5.3
+      "avg_seconds": 5.3,
+      "cost_to_goal_usd": 9.0938
     },
     {
       "arm": "local_gate",
@@ -61,7 +64,8 @@
       "total_calls": 909,
       "avg_calls_per_trial": 9.1,
       "cost_to_goal_calls": 927.6,
-      "avg_seconds": 3.7
+      "avg_seconds": 3.7,
+      "cost_to_goal_usd": 1.1595
     },
     {
       "arm": "min_gate",
@@ -76,7 +80,8 @@
       "total_calls": 900,
       "avg_calls_per_trial": 9.0,
       "cost_to_goal_calls": 900.0,
-      "avg_seconds": 0.7
+      "avg_seconds": 0.7,
+      "cost_to_goal_usd": 1.125
     },
     {
       "arm": "stjp",
@@ -91,7 +96,13 @@
       "total_calls": 300,
       "avg_calls_per_trial": 3.0,
       "cost_to_goal_calls": 300.0,
-      "avg_seconds": 2.0
+      "avg_seconds": 2.0,
+      "cost_to_goal_usd": 0.375
     }
-  ]
+  ],
+  "dollar_estimate": {
+    "price_per_call_usd": 0.00125,
+    "basis": "one lean haiku call ~1k input + ~50 output tokens at Haiku 4.5 $1/$5 per 1M",
+    "note": "estimate overlaid on measured calls, not metered tokens; see COST_ESTIMATE.md"
+  }
 }

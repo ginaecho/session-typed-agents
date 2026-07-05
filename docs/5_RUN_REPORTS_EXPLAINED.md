@@ -699,11 +699,11 @@ tables that correspond, arm-for-arm, to the §2 finance table.
 
 | arm | GCR | CGC | Disasters | Cost-to-goal (calls) | Cost-to-goal ($, est.) |
 |---|---|---|---|---|---|
-| A: Intent only | 100% | 2% | 0 | 900 | $1.13 |
+| A: Intent only | 100% | 2% | 0 | 900 | $1.12 |
 | B: Global text | 100% | 5% | **95** | 330 | $0.41 ⚠️ |
 | C-min: Local contract | 32% | 2% | 0 | 7275 | $9.09 |
 | C+spec: Local + gate | 98% | 98% | 0 | 928 | $1.16 |
-| C+min: Local + gate | 100% | 100% | 0 | 900 | $1.13 |
+| C+min: Local + gate | 100% | 100% | 0 | 900 | $1.12 |
 | STJP: Local + gate + scheduler | 100% | 100% | 0 | **300** | **$0.38** |
 
 **`escrow_trade`, n=100** (cost axis)
@@ -712,7 +712,7 @@ tables that correspond, arm-for-arm, to the §2 finance table.
 |---|---|---|---|---|---|
 | A: Intent only | 83% | 70% | 26 | 3349 | $4.19 |
 | B: Global text | 82% | 73% | 35 | 3512 | $4.39 |
-| C-min: Local contract | 100% | 75% | 49 | 2708 | $3.39 |
+| C-min: Local contract | 100% | 75% | 49 | 2708 | $3.38 |
 | C+spec: Local + gate | 97% | 97% | 0 | 2883 | $3.60 |
 | C+min: Local + gate | 83% | 83% | 0 | 2978 | $3.72 |
 | STJP: Local + gate + scheduler | 98% | 98% | 0 | **714** | **$0.89** |
@@ -739,7 +739,7 @@ calls). So you can now read the cost in dollars directly:
   only because it races and files *before* approval — that's the **95-disaster**
   column, not a bargain. C-min's **$9.09** is the real cost blowout (you pay for
   its 32% liveness three times over).
-- **`escrow_trade`:** STJP settles for **$0.89** vs **$3.39–4.39** for every
+- **`escrow_trade`:** STJP settles for **$0.89** vs **$3.38–4.39** for every
   other arm — the same ~4× edge, now in money.
 
 This is a **lean-deployment** price (role prompt in, short JSON out). The
@@ -846,7 +846,7 @@ Every number in Part 2 is reproducible from files in the repository:
 | E7 portability (59/59) | `experiments/reports/n100/e7/cross_runtime.json` | `python experiments/scripts/cross_runtime.py` |
 | Full pipeline stress | `experiments/reports/n100/stress/integration_stress.json` | `python experiments/scripts/integration_stress.py 100` |
 | Interaction trials | `experiments/reports/n100/subagent/summary.json` | `python experiments/subagent_trials/run_n100.py --trials 100` |
-| Arm-ladder n=100 ([§10](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry), no Foundry) | [`ladder_revenue_audit_n100/`](../experiments/reports/n100/ladder_revenue_audit_n100/README.md), [`ladder_escrow_n100/`](../experiments/reports/n100/ladder_escrow_n100/README.md) | `python experiments/subagent_trials/aggregate_ladder.py --root <root> --case <case> --out <out>` |
+| Arm-ladder n=100 ([§10](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry), no Foundry) | [`ladder_revenue_audit_n100/`](../experiments/reports/n100/ladder_revenue_audit_n100/README.md), [`ladder_escrow_n100/`](../experiments/reports/n100/ladder_escrow_n100/README.md) | `python experiments/subagent_trials/aggregate_ladder.py --root <root> --case <case> --out <out>` (emits the `$` column by default; `--no-dollars` to omit, `--price-per-call` to reprice) |
 | Cost of the ladder ([§10 dollar cost](#what-this-reproduction-actually-cost-in-dollars)) | [`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents) | per-trial `subagent_tokens` × [`claude-api`](../experiments/reports/n100/COST_ESTIMATE.md#pricing-used-per-1m-tokens-cached-2026-06-24-from-the-claude-api-skill) list price |
 | Stronger-tier replication (P0b, E3) | [`P0B_MIDTIER_SONNET.md`](../experiments/reports/n100/P0B_MIDTIER_SONNET.md), [`E3_CAPABILITY_SWEEP.md`](../experiments/reports/n100/E3_CAPABILITY_SWEEP.md) | opus-orchestrated, sonnet roles (see reports) |
 | Metering-ready third harness (E7 LangGraph) | [`harness_adapters/README.md`](../experiments/harness_adapters/README.md) | `python experiments/harness_adapters/langgraph_ladder.py --case revenue_audit --arm min_gate` |

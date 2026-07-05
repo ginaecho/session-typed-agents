@@ -1,6 +1,6 @@
 {
   "case": "escrow_trade",
-  "generated_at": "2026-07-05 09:31:36",
+  "generated_at": "2026-07-05 14:38:07",
   "cost_unit": "LLM agent-calls (no Foundry; tokens not metered)",
   "rows": [
     {
@@ -16,7 +16,8 @@
       "total_calls": 2780,
       "avg_calls_per_trial": 27.8,
       "cost_to_goal_calls": 3349.4,
-      "avg_seconds": 229.0
+      "avg_seconds": 229.0,
+      "cost_to_goal_usd": 4.1867
     },
     {
       "arm": "global_text",
@@ -31,7 +32,8 @@
       "total_calls": 2880,
       "avg_calls_per_trial": 28.8,
       "cost_to_goal_calls": 3512.2,
-      "avg_seconds": 46.2
+      "avg_seconds": 46.2,
+      "cost_to_goal_usd": 4.3902
     },
     {
       "arm": "local_obs",
@@ -46,7 +48,8 @@
       "total_calls": 2708,
       "avg_calls_per_trial": 27.1,
       "cost_to_goal_calls": 2708.0,
-      "avg_seconds": 179.5
+      "avg_seconds": 179.5,
+      "cost_to_goal_usd": 3.385
     },
     {
       "arm": "local_gate",
@@ -61,7 +64,8 @@
       "total_calls": 2796,
       "avg_calls_per_trial": 28.0,
       "cost_to_goal_calls": 2882.5,
-      "avg_seconds": 18680.1
+      "avg_seconds": 18680.1,
+      "cost_to_goal_usd": 3.6031
     },
     {
       "arm": "min_gate",
@@ -76,7 +80,8 @@
       "total_calls": 2472,
       "avg_calls_per_trial": 24.7,
       "cost_to_goal_calls": 2978.3,
-      "avg_seconds": 770.8
+      "avg_seconds": 770.8,
+      "cost_to_goal_usd": 3.7229
     },
     {
       "arm": "stjp",
@@ -91,7 +96,13 @@
       "total_calls": 700,
       "avg_calls_per_trial": 7.0,
       "cost_to_goal_calls": 714.3,
-      "avg_seconds": 693.9
+      "avg_seconds": 693.9,
+      "cost_to_goal_usd": 0.8929
     }
-  ]
+  ],
+  "dollar_estimate": {
+    "price_per_call_usd": 0.00125,
+    "basis": "one lean haiku call ~1k input + ~50 output tokens at Haiku 4.5 $1/$5 per 1M",
+    "note": "estimate overlaid on measured calls, not metered tokens; see COST_ESTIMATE.md"
+  }
 }

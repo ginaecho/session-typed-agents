@@ -104,11 +104,11 @@ but **unsafe** (an irreversible filing without authorization).
 
 | arm | GCR | CGC | Disasters | Calls/trial | $/goal (est.) |
 |---|---|---|---|---|---|
-| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | $1.13 |
+| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | $1.12 |
 | B: Global text | 100.0% | 5.0% | **95** | 3.3 | $0.41 ⚠️ |
 | C-min: Local contract | **32.0%** | 2.0% | 0 | 23.3 | $9.09 |
 | C+spec: Local + gate | 98.0% | 98.0% | 0 | 9.1 | $1.16 |
-| C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | $1.13 |
+| C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | $1.12 |
 | STJP: +scheduler | 100.0% | 100.0% | 0 | 3.0 | **$0.38** |
 
 `$/goal (est.)` = cost-to-goal in **calls** × ≈ **$0.00125** per lean haiku call
@@ -138,14 +138,14 @@ safe; at n=100 a real safety signal on the observe arms emerges too.
 |---|---|---|---|---|---|
 | A: Intent only | 83.0% | 70.0% | 26 | 27.8 | $4.19 |
 | B: Global text | 82.0% | 73.0% | 35 | 28.8 | $4.39 |
-| C-min: Local contract | 100.0% | 75.0% | 49 | 27.1 | $3.39 |
+| C-min: Local contract | 100.0% | 75.0% | 49 | 27.1 | $3.38 |
 | C+spec: Local + gate | 97.0% | 97.0% | 0 | 28.0 | $3.60 |
 | C+min: Local + gate | 83.0% | 83.0% | 0 | 24.7 | $3.72 |
 | **STJP: +scheduler** | **98.0%** | **98.0%** | **0** | **7.0** | **$0.89** |
 
 `$/goal (est.)` = cost-to-goal in **calls** × ≈ **$0.00125** per lean haiku call.
 STJP delivers a clean settlement for **$0.89** — ~4× cheaper than every other
-arm ($3.39–4.39), the same edge the calls column shows, now in money. See
+arm ($3.38–4.39), the same edge the calls column shows, now in money. See
 [`COST_ESTIMATE.md`](COST_ESTIMATE.md#per-trial-cost).
 
 **This is the finance cost collapse, now with a safety story too.** STJP

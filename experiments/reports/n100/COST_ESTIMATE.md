@@ -60,11 +60,11 @@ money, price **one lean call**: a production agent call is ~1,000 input tokens
 
 | arm | revenue_audit calls → **$** | escrow_trade calls → **$** |
 |---|---|---|
-| A: Intent only | 900 → **$1.13** | 3349 → **$4.19** |
+| A: Intent only | 900 → **$1.12** | 3349 → **$4.19** |
 | B: Global text | 330 → **$0.41** ⚠️ | 3512 → **$4.39** |
-| C-min: Local contract | 7275 → **$9.09** | 2708 → **$3.39** |
+| C-min: Local contract | 7275 → **$9.09** | 2708 → **$3.38** |
 | C+spec: Local + gate | 928 → **$1.16** | 2883 → **$3.60** |
-| C+min: Local + gate | 900 → **$1.13** | 2978 → **$3.72** |
+| C+min: Local + gate | 900 → **$1.12** | 2978 → **$3.72** |
 | **STJP: +scheduler** | **300 → $0.38** | **714 → $0.89** |
 
 **STJP is the cheapest *safe* arm in both cases** ($0.38 / $0.89). ⚠️ In

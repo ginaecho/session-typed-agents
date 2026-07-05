@@ -15,11 +15,11 @@ Part of the combined ladder writeup:
 
 | arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) | **Cost-to-goal ($, est.)** |
 |---|---|---|---|---|---|---|
-| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | 900.0 | **$1.13** |
+| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | 900.0 | **$1.12** |
 | B: Global text | 100.0% | 5.0% | **95** | 3.3 | 330.0 | **$0.41** ⚠️ |
 | C-min: Local contract | **32.0%** | 2.0% | 0 | 23.3 | 7275.0 | **$9.09** |
 | C+spec: Local + gate | 98.0% | 98.0% | 0 | 9.1 | 927.6 | **$1.16** |
-| C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | 900.0 | **$1.13** |
+| C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | 900.0 | **$1.12** |
 | STJP: +scheduler | 100.0% | 100.0% | 0 | 3.0 | 300.0 | **$0.38** |
 
 n = 100 trials/arm, 600 total, all played by Claude haiku subagents, no
