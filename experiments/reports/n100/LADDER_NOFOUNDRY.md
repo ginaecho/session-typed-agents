@@ -76,12 +76,17 @@ roles that cannot legally act yet.
   an agent keeps re-attempting a message the monitor rejects. The honest column
   that reconciles this is **CGC** (goal reached *and* zero violations), where
   C-min falls well below the enforcing arms.
-- **Why C+min matches — or slightly beats — C+spec.** These two differ on
-  **only** Knob 1's sub-choice: C+spec shows the verbose markdown contract,
-  C+min the lean one-line-per-step form. Same monitor, same enforce mode, same
-  poll-all scheduler. A lean contract turns out to be *easier* for a cheap model
-  to follow (and cheaper in tokens), so the minimal form loses nothing and
-  sometimes helps.
+- **C+min vs C+spec is task-dependent.** These two differ on **only** Knob 1's
+  sub-choice: C+spec shows the verbose markdown contract, C+min the lean
+  one-line-per-step form. Same monitor, same enforce mode, same poll-all
+  scheduler. In `revenue_audit` the lean form is *easier* for a cheap model to
+  follow (C+min 100% vs C+spec 98%) and cheaper in tokens — the minimal form
+  loses nothing. In `escrow_trade` it is the **reverse**: the verbose contract
+  is more robust (C+spec 97% vs C+min 83%), because under the lean contract the
+  weak model failed to *open* the trade in 17 trials (the Buyer waited instead
+  of sending the first `Deposit`). So "minimal recovers most of the value" holds
+  for simple pipelines but not universally — verbosity buys initiation
+  reliability on the harder task.
 - **What STJP actually is.** STJP is **C+min plus Knob 3** — the lean local
   contract, the enforcing monitor, and *additionally* the enabled-sender
   scheduler. It is built on C+min, **not** on C+spec. Concretely: STJP = *lean
@@ -99,9 +104,9 @@ but **unsafe** (an irreversible filing without authorization).
 
 | arm | GCR | CGC | Disasters | Calls/trial |
 |---|---|---|---|---|
-| A: Intent only | 99.0% | 1.0% | 0 | 8.9 |
+| A: Intent only | 100.0% | 2.0% | 0 | 9.0 |
 | B: Global text | 100.0% | 5.0% | **95** | 3.3 |
-| C-min: Local contract | **31.0%** | 1.0% | 0 | 23.2 |
+| C-min: Local contract | **32.0%** | 2.0% | 0 | 23.3 |
 | C+spec: Local + gate | 98.0% | 98.0% | 0 | 9.1 |
 | C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 |
 | STJP: +scheduler | 100.0% | 100.0% | 0 | 3.0 |
@@ -112,7 +117,7 @@ polled concurrently every round means the Filer often files in the very same
 round it's first polled, before Approval could possibly have arrived (verified
 by inspecting traces: `Filer→Analyst:Filed` at round 1, no `Approval` before
 it). And the local-contract-without-gate arm has genuine **liveness failures**:
-only 31% completion — a manually-inspected failing trace shows the Analyst
+only 32% completion — a manually-inspected failing trace shows the Analyst
 resending `Revenue` ten times in a row with no reply ever arriving, a real
 stall, not corrupted data. The enforcing-monitor arms (C+spec, C+min, STJP)
 remain safe by construction. Full detail:
@@ -128,17 +133,23 @@ safe; at n=100 a real safety signal on the observe arms emerges too.
 | A: Intent only | 83.0% | 70.0% | 26 | 27.8 |
 | B: Global text | 82.0% | 73.0% | 35 | 28.8 |
 | C-min: Local contract | 100.0% | 75.0% | 49 | 27.1 |
-| C+spec: Local + gate | 79.0% | 79.0% | 0 | 27.2 |
-| C+min: Local + gate | 82.0% | 82.0% | 0 | 24.5 |
-| **STJP: +scheduler** | **97.0%** | **97.0%** | **0** | **7.0** |
+| C+spec: Local + gate | 97.0% | 97.0% | 0 | 28.0 |
+| C+min: Local + gate | 83.0% | 83.0% | 0 | 24.7 |
+| **STJP: +scheduler** | **98.0%** | **98.0%** | **0** | **7.0** |
 
 **This is the finance cost collapse, now with a safety story too.** STJP
-remains **~4× cheaper** than the other arms (7.0 vs 24.5–28.8 calls/trial) —
+remains **~4× cheaper** than the other arms (7.0 vs 24.7–28.8 calls/trial) —
 the scheduler advantage holds at scale. The enforcing-monitor arms stay at **0
 disasters** by construction; the observe arms show real disasters (26–49,
 manually verified: e.g. duplicate `PaymentSecured`/`ConfirmReceipt` sends that
 the cross-message Critic correctly flags) that weren't visible in the n=10 run.
-Full detail: [`ladder_escrow_n100/README.md`](ladder_escrow_n100/README.md).
+On liveness, C+spec and STJP now tie (97–98% GCR); STJP's edge is purely cost,
+and C+min sits lower (83%) on a real lean-contract fragility — in 17 trials the
+Buyer failed to open the trade. Full detail:
+[`ladder_escrow_n100/README.md`](ladder_escrow_n100/README.md).
+*(escrow C+spec/C+min/STJP and revenue A/C-min were refreshed 2026-07-05 after
+the P-1 audit drove 22 non-terminal trials to completion — see
+[`P1_AUDIT_FINDINGS.md`](P1_AUDIT_FINDINGS.md).)*
 
 ## What the two cases show together
 

@@ -17,12 +17,26 @@ Part of the combined ladder writeup:
 | A: Intent only | 83.0% | 70.0% | 26 | 27.8 | 3349.4 |
 | B: Global text | 82.0% | 73.0% | 35 | 28.8 | 3512.2 |
 | C-min: Local contract | 100.0% | 75.0% | 49 | 27.1 | 2708.0 |
-| C+spec: Local + gate | 79.0% | 79.0% | 0 | 27.2 | 3448.1 |
-| C+min: Local + gate | 82.0% | 82.0% | 0 | 24.5 | 2990.2 |
-| **STJP: +scheduler** | **97.0%** | **97.0%** | **0** | **7.0** | **720.6** |
+| C+spec: Local + gate | 97.0% | 97.0% | 0 | 28.0 | 2882.5 |
+| C+min: Local + gate | 83.0% | 83.0% | 0 | 24.7 | 2978.3 |
+| **STJP: +scheduler** | **98.0%** | **98.0%** | **0** | **7.0** | **714.3** |
 
 n = 100 trials/arm, 600 total, all played by Claude haiku subagents, no
-Foundry, no Azure.
+Foundry, no Azure. *(C+spec, C+min and STJP updated 2026-07-05 after the P-1
+audit completed 22 trials that had been left non-terminal — see the integrity
+note below and [`../P1_AUDIT_FINDINGS.md`](../P1_AUDIT_FINDINGS.md).)*
+
+**Reading the gate arms.** With every trial now terminal, **C+spec and STJP are
+equally safe and equally live (97–98% GCR, 0 disasters); STJP's advantage is
+purely cost** (7.0 vs 28.0 calls/trial, ~4×). C+min sits lower on liveness
+(83%) because of a real, arm-specific failure: in 17 trials the weak model,
+under the *lean* contract, had the Buyer answer "wait" on round 1 instead of
+sending the opening `Deposit`, so the trade never started and the gate
+correctly refused the out-of-order attempts by the others (a genuine deadlock,
+not corrupted data — verified in `min_gate__trial_007`'s replies). So in
+*escrow* the verbose contract (C+spec) is actually more robust than the lean
+one (C+min) — the opposite of `revenue_audit`, where they tie. Spec-vs-min is
+task-dependent.
 
 ## What changed since n=10
 
@@ -44,9 +58,9 @@ C-min — it records a violation but lets the message through; in *enforce* mode
 delivery. The engine code names that enforcing path "the gate"; it is the
 monitor in enforcing mode, not a second component. See
 [`docs/reference/GLOSSARY.md`](../../../../docs/reference/GLOSSARY.md).)
-**STJP is both the safest arm and the cheapest** (7.0 calls/trial vs
-24.5–28.8 for the others) — the scheduler's 4× cost advantage from the n=10
-run holds at scale.
+**STJP is the safest arm, ties C+spec on liveness, and is the cheapest by ~4×**
+(7.0 calls/trial vs 24.7–28.8 for the others) — the scheduler's cost advantage
+from the n=10 run holds at scale.
 
 ## A detection bug found and fixed mid-analysis
 
@@ -98,6 +112,21 @@ waves, almost all on the more mechanically-repetitive arms
 - `local_gate__trial_002`–`020` specifically resisted correction across
   7+ redispatch attempts before a from-scratch, explicitly-verified reset
   finally produced 19 genuine trials in one pass.
+- **(2026-07-05, P-1 audit)** A later data-quality sweep found that
+  `local_gate__trial_064`–`081` (18 trials) had been left **non-terminal**
+  (`active`): abandoned mid-play at round 6/12 with 6 of 7 messages delivered,
+  0 gate rejections, 0 disasters — one `SettlementComplete` short of the goal,
+  yet counted as GCR failures. That single artifact was holding C+spec's GCR at
+  **79%** when its true value is **97%**. They were completed correctly: the
+  only gate-legal move at that state is `Escrow → Seller: SettlementComplete`;
+  two independent haiku Escrow players confirmed that move (with payload
+  variation, i.e. genuine model output, not a script), it was applied, and the
+  gate validated each. Three more genuinely-incomplete trials (`min_gate_003`,
+  `stjp_058`, and the never-dispatched `intent_045`/`local_obs_087` in
+  revenue_audit) were also driven to completion by haiku. The 17 `min_gate`
+  and 2/3 `stjp` **deadlocks were left as-is** — they are genuine liveness
+  failures (verified real replies), not incomplete plays. Full detail:
+  [`../P1_AUDIT_FINDINGS.md`](../P1_AUDIT_FINDINGS.md).
 
 Every one of these was caught **before** entering the final table — the
 discipline throughout was: verify by inspecting `state.json` contents

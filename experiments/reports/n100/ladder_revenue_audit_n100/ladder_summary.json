@@ -1,22 +1,22 @@
 {
   "case": "revenue_audit",
-  "generated_at": "2026-07-04 14:16:55",
+  "generated_at": "2026-07-05 09:35:40",
   "cost_unit": "LLM agent-calls (no Foundry; tokens not metered)",
   "rows": [
     {
       "arm": "intent",
       "label": "A: Intent only",
       "n": 100,
-      "reached": 99,
-      "clean": 1,
+      "reached": 100,
+      "clean": 2,
       "missing": 0,
-      "GCR_pct": 99.0,
-      "CGC_pct": 1.0,
+      "GCR_pct": 100.0,
+      "CGC_pct": 2.0,
       "disasters": 0,
-      "total_calls": 891,
-      "avg_calls_per_trial": 8.9,
+      "total_calls": 900,
+      "avg_calls_per_trial": 9.0,
       "cost_to_goal_calls": 900.0,
-      "avg_seconds": 16.4
+      "avg_seconds": 17.4
     },
     {
       "arm": "global_text",
@@ -37,16 +37,16 @@
       "arm": "local_obs",
       "label": "C-min: Local contract",
       "n": 100,
-      "reached": 31,
-      "clean": 1,
+      "reached": 32,
+      "clean": 2,
       "missing": 0,
-      "GCR_pct": 31.0,
-      "CGC_pct": 1.0,
+      "GCR_pct": 32.0,
+      "CGC_pct": 2.0,
       "disasters": 0,
-      "total_calls": 2319,
-      "avg_calls_per_trial": 23.2,
-      "cost_to_goal_calls": 7480.6,
-      "avg_seconds": 1.4
+      "total_calls": 2328,
+      "avg_calls_per_trial": 23.3,
+      "cost_to_goal_calls": 7275.0,
+      "avg_seconds": 5.3
     },
     {
       "arm": "local_gate",

@@ -4,9 +4,9 @@ Cost unit = **LLM agent-calls** (tokens are not metered without Foundry; calls a
 
 | arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) | n (missing) |
 |---|---|---|---|---|---|---|
-| A: Intent only | 99.0% | 1.0% | 0 | 8.9 | 900.0 | 100 |
+| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | 900.0 | 100 |
 | B: Global text | 100.0% | 5.0% | 95 | 3.3 | 330.0 | 100 |
-| C-min: Local contract | 31.0% | 1.0% | 0 | 23.2 | 7480.6 | 100 |
+| C-min: Local contract | 32.0% | 2.0% | 0 | 23.3 | 7275.0 | 100 |
 | C+spec: Local + gate | 98.0% | 98.0% | 0 | 9.1 | 927.6 | 100 |
 | C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | 900.0 | 100 |
 | STJP: +scheduler | 100.0% | 100.0% | 0 | 3.0 | 300.0 | 100 |

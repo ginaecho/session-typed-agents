@@ -679,9 +679,9 @@ tables that correspond, arm-for-arm, to the §2 finance table.
 
 | arm | GCR | CGC | Disasters | Cost-to-goal |
 |---|---|---|---|---|
-| A: Intent only | 99% | 1% | 0 | 900 |
+| A: Intent only | 100% | 2% | 0 | 900 |
 | B: Global text | 100% | 5% | **95** | 330 |
-| C-min: Local contract | 31% | 1% | 0 | 7481 |
+| C-min: Local contract | 32% | 2% | 0 | 7275 |
 | C+spec: Local + gate | 98% | 98% | 0 | 928 |
 | C+min: Local + gate | 100% | 100% | 0 | 900 |
 | STJP: Local + gate + scheduler | 100% | 100% | 0 | **300** |
@@ -693,9 +693,15 @@ tables that correspond, arm-for-arm, to the §2 finance table.
 | A: Intent only | 83% | 70% | 26 | 3349 |
 | B: Global text | 82% | 73% | 35 | 3512 |
 | C-min: Local contract | 100% | 75% | 49 | 2708 |
-| C+spec: Local + gate | 79% | 79% | 0 | 3448 |
-| C+min: Local + gate | 82% | 82% | 0 | 2990 |
-| STJP: Local + gate + scheduler | 97% | 97% | 0 | **721** |
+| C+spec: Local + gate | 97% | 97% | 0 | 2883 |
+| C+min: Local + gate | 83% | 83% | 0 | 2978 |
+| STJP: Local + gate + scheduler | 98% | 98% | 0 | **714** |
+
+*(Tables refreshed 2026-07-05: a P-1 data audit found 22 trials — 18 of them an
+abandoned escrow C+spec block — left non-terminal and counted as failures; they
+were driven to completion by haiku players, moving escrow C+spec 79→97%,
+C+min 82→83%, STJP 97→98%, and revenue A 99→100%, C-min 31→32%. Detail:
+`../experiments/reports/n100/P1_AUDIT_FINDINGS.md`.)*
 
 The **shape** matches §2: STJP is the only arm that is simultaneously safe
 (0 disasters, top CGC) and cheapest (lowest cost-to-goal). The observe arms

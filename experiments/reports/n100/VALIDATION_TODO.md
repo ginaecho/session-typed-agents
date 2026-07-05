@@ -2,10 +2,15 @@
 
 *Written 2026-07-05, after integrating the n=100 suite into paper v4. Ordered by priority. Each item: why, how, effort, and what changes in the paper when done. The "error audit" section lists the places where I suspect the current numbers could be wrong — check those BEFORE running anything new, because they're cheap and they feed the paper's integrity story either way.*
 
-> **Status (2026-07-05):** P-1 error audit executed — see
-> [`P1_AUDIT_FINDINGS.md`](P1_AUDIT_FINDINGS.md). Items 1, 2, 3, 5, 6 resolved;
-> item 4 (mutant classification) in progress; **one material new finding**
-> (18 incomplete escrow C+spec trials) surfaced and needs a fix decision.
+> **Status (2026-07-05):** P-1 error audit executed and its material finding
+> fixed — see [`P1_AUDIT_FINDINGS.md`](P1_AUDIT_FINDINGS.md). Items 1, 2, 3, 5, 6
+> resolved (all four suspected spots correct-as-reported). Item 4 (mutant
+> classification) reproduced; per-mutant adjudication still open. The one new
+> material finding — 22 non-terminal trials (18 an abandoned escrow C+spec
+> block) — was **fixed** by driving them to completion with haiku players:
+> escrow C+spec 79→97%, C+min 82→83%, STJP 97→98%; revenue A 99→100%, C-min
+> 31→32%. Dataset is now 100% terminal. Remaining: P0/P0b/E3 need live mid-tier
+> API access (blocked in this environment); item 4 adjudication.
 
 ---
 

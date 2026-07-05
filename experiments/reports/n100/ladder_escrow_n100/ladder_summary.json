@@ -1,6 +1,6 @@
 {
   "case": "escrow_trade",
-  "generated_at": "2026-07-04 15:29:26",
+  "generated_at": "2026-07-05 09:31:36",
   "cost_unit": "LLM agent-calls (no Foundry; tokens not metered)",
   "rows": [
     {
@@ -52,46 +52,46 @@
       "arm": "local_gate",
       "label": "C+spec: Local + gate",
       "n": 100,
-      "reached": 79,
-      "clean": 79,
-      "missing": 0,
-      "GCR_pct": 79.0,
-      "CGC_pct": 79.0,
-      "disasters": 0,
-      "total_calls": 2724,
-      "avg_calls_per_trial": 27.2,
-      "cost_to_goal_calls": 3448.1,
-      "avg_seconds": 123.4
-    },
-    {
-      "arm": "min_gate",
-      "label": "C+min: Local + gate",
-      "n": 100,
-      "reached": 82,
-      "clean": 82,
-      "missing": 0,
-      "GCR_pct": 82.0,
-      "CGC_pct": 82.0,
-      "disasters": 0,
-      "total_calls": 2452,
-      "avg_calls_per_trial": 24.5,
-      "cost_to_goal_calls": 2990.2,
-      "avg_seconds": 93.1
-    },
-    {
-      "arm": "stjp",
-      "label": "STJP: +scheduler",
-      "n": 100,
       "reached": 97,
       "clean": 97,
       "missing": 0,
       "GCR_pct": 97.0,
       "CGC_pct": 97.0,
       "disasters": 0,
-      "total_calls": 699,
+      "total_calls": 2796,
+      "avg_calls_per_trial": 28.0,
+      "cost_to_goal_calls": 2882.5,
+      "avg_seconds": 18680.1
+    },
+    {
+      "arm": "min_gate",
+      "label": "C+min: Local + gate",
+      "n": 100,
+      "reached": 83,
+      "clean": 83,
+      "missing": 0,
+      "GCR_pct": 83.0,
+      "CGC_pct": 83.0,
+      "disasters": 0,
+      "total_calls": 2472,
+      "avg_calls_per_trial": 24.7,
+      "cost_to_goal_calls": 2978.3,
+      "avg_seconds": 770.8
+    },
+    {
+      "arm": "stjp",
+      "label": "STJP: +scheduler",
+      "n": 100,
+      "reached": 98,
+      "clean": 98,
+      "missing": 0,
+      "GCR_pct": 98.0,
+      "CGC_pct": 98.0,
+      "disasters": 0,
+      "total_calls": 700,
       "avg_calls_per_trial": 7.0,
-      "cost_to_goal_calls": 720.6,
-      "avg_seconds": 13.9
+      "cost_to_goal_calls": 714.3,
+      "avg_seconds": 693.9
     }
   ]
 }

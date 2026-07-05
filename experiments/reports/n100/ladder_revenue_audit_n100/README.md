@@ -15,15 +15,18 @@ Part of the combined ladder writeup:
 
 | arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) |
 |---|---|---|---|---|---|
-| A: Intent only | 99.0% | 1.0% | 0 | 8.9 | 900.0 |
+| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | 900.0 |
 | B: Global text | 100.0% | 5.0% | **95** | 3.3 | 330.0 |
-| C-min: Local contract | **31.0%** | 1.0% | 0 | 23.2 | 7480.6 |
+| C-min: Local contract | **32.0%** | 2.0% | 0 | 23.3 | 7275.0 |
 | C+spec: Local + gate | 98.0% | 98.0% | 0 | 9.1 | 927.6 |
 | C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | 900.0 |
 | STJP: +scheduler | 100.0% | 100.0% | 0 | 3.0 | 300.0 |
 
 n = 100 trials/arm, 600 total, all played by Claude haiku subagents, no
-Foundry, no Azure.
+Foundry, no Azure. *(A and C-min updated 2026-07-05: the P-1 audit played two
+trials — `intent_045`, `local_obs_087` — that had never been dispatched;
+both reached goal, nudging A 99→100% and C-min 31→32%. See
+[`../P1_AUDIT_FINDINGS.md`](../P1_AUDIT_FINDINGS.md).)*
 
 ## Two real findings (both new at n=100 — neither was visible at n=10)
 
@@ -37,7 +40,7 @@ were manually inspected: `Filer→Analyst:Filed` at round 1, `Approval` also at
 round 1 or later, never earlier).
 
 **2. The local-contract-without-gate arm (C-min) has genuine liveness
-failures: only 31% GCR.** Manually inspecting a failing trace
+failures: only 32% GCR.** Manually inspecting a failing trace
 (`local_obs__trial_002`) shows the Analyst sending `Revenue` **ten times in a
 row** with no reply ever arriving — a real stall, not corrupted data. This is
 the finance run's "C-min stalls without enforcement" story, reproduced at

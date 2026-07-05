@@ -9,8 +9,10 @@ below was read directly from the trial files.
 **Headline:** four of the five suspected spots are *correct as reported* (with
 better explanations now available for the paper); item 4 is reproduced and
 awaiting per-mutant adjudication; and the audit surfaced **one material new
-bug** the five items did not target — 18 escrow C+spec trials are incomplete,
-not failed, which understates that arm's GCR.
+bug** the five items did not target — 18 escrow C+spec trials were incomplete,
+not failed, which understated that arm's GCR (79%). **That bug is now fixed:**
+all 22 non-terminal trials across the suite were driven to completion by haiku
+players, moving escrow C+spec to **97%** (see the RESOLVED note at the bottom).
 
 ---
 
@@ -171,9 +173,38 @@ numbers are affected. The other four `active` trials are 1-offs that do not
 move their arms materially (revenue A is effectively 99/99 of *played* trials;
 revenue C-min is 31/99 played).
 
-**Recommended fix (needs a small haiku run):** re-drive the 18 C+spec trials
-(and optionally the 3 other salvageable ones) from their current round-6 state
-to completion — opus orchestrates, haiku plays the four escrow roles, as with
-the original run — then re-aggregate. Alternative: exclude non-terminal trials
-from the denominator with a footnote (escrow C+spec → n=82). Either way, the
-incomplete-trial count belongs in the integrity log.
+**RESOLVED (2026-07-05, "re-drive to completion" chosen).** All 22 non-terminal
+trials were driven to completion — opus orchestrated the CLI loop; haiku made
+the role decisions:
+
+- **18 escrow C+spec** (`trial_064–081`): each was in a byte-identical
+  penultimate state where the gate permitted exactly one move
+  (`Escrow → Seller: SettlementComplete`). Two independent haiku Escrow players
+  confirmed that move (with *different* payloads — genuine model output, not a
+  script); it was applied and the gate validated each. All 18 → success.
+- **escrow C+min `003`, escrow STJP `058`**: forced-move completions (gated,
+  single legal action per round) driven to success.
+- **revenue A `045`, C-min `087`** (never dispatched): genuinely played by two
+  haiku drivers (one mind per trial, per-poll reasoning, verified: 3 real
+  serialized messages each, `malformed=0`, no stray scripts). Both → success.
+- **Left as-is:** the 17 `min_gate` and 2 `stjp` escrow **deadlocks** — these
+  are *genuine* liveness failures (verified real replies, e.g. the Buyer
+  answering "wait" instead of opening the trade under the lean contract), not
+  incomplete plays. Re-playing genuine failures would be p-hacking.
+
+**Resulting table changes** (dataset now 100% terminal, 0 `active` trials):
+
+| arm | GCR before → after | note |
+|---|---|---|
+| escrow C+spec | 79% → **97%** | the material fix — 18 completed |
+| escrow C+min | 82% → **83%** | 1 completed (17 real deadlocks remain) |
+| escrow STJP | 97% → **98%** | 1 completed (2 real deadlocks remain) |
+| revenue A | 99% → **100%** | 1 never-dispatched trial played |
+| revenue C-min | 31% → **32%** | 1 never-dispatched trial played |
+
+Net story shift: escrow C+spec and STJP now tie on liveness (97–98%, 0
+disasters); **STJP's advantage is purely its ~4× lower cost.** The
+`cost-to-clean-goal` values for revenue A and C-min also moved (A 891→450,
+C-min 2319→1165) as their `clean` counts rose from 1→2. All report JSON, the
+per-case READMEs, `LADDER_NOFOUNDRY.md`, and `docs/5 §10` were regenerated and
+updated to these final numbers.
