@@ -1,0 +1,37 @@
+module corpus_075;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol Gen(role R0, role R1, role R2, role R3) {
+    M1(String) from R0 to R1;
+    M2(Int) from R1 to R2;
+    M3(String) from R1 to R3;
+    choice at R3 {
+        M4(Int) from R3 to R1;
+        M5(Bool) from R3 to R2;
+    } or {
+        M6(Double) from R3 to R1;
+        M7(Double) from R3 to R2;
+        M8(Bool) from R1 to R3;
+    } or {
+        M9(Int) from R3 to R1;
+        M10(String) from R3 to R2;
+    }
+    M11(Double) from R1 to R2;
+    M12(Double) from R2 to R3;
+    M13(Double) from R2 to R3;
+    choice at R1 {
+        M14(Double) from R1 to R2;
+    } or {
+        M15(Bool) from R1 to R2;
+    } or {
+        M16(Int) from R1 to R2;
+    }
+    M18(String) from R2 to R1;
+    M19(Double) from R2 to R1;
+    M20(Bool) from R1 to R0;
+    M21(String) from R1 to R0;
+}

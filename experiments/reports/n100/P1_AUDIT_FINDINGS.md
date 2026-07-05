@@ -101,10 +101,17 @@ seeded RNG; verdicts already known = all SURVIVED / Scribble-accepted):
 | 080 | `M5(String) from R1 to R5` |
 | 088 | `M7(Int) from R3 to R4` |
 
-Per-mutant classification (genuine checker gap vs. accidentally-still-valid)
-requires reading each protocol's choice structure and checking
-knowledge-of-choice / projectability — **delegated as a follow-up pass**; does
-not change any ladder number, only the E1 82.5% footnote.
+**RESOLVED (2026-07-05)** — full adjudication in
+[`../e1/branch_asymmetry_adjudication.md`](../e1/branch_asymmetry_adjudication.md).
+Each of the 11 was reconstructed, re-validated (all confirmed ACCEPT), and
+projected per-role. Verdict: **4 genuine checker gaps** (corpus_016/059/080/088)
++ **7 accidentally-valid**. The 4 gaps share one reproducible defect pattern:
+the deletion **empties a branch**, Scribble drops it in projection, and the
+idle role gets a local type that unconditionally waits for a message the chooser
+may never send → **deadlock** if the empty branch is taken (knowledge-of-choice
+failure the checker misses). Re-scoping the metric to genuinely-ill-formed
+mutants only: **detection rises 82.5% → 92.9%** (52 caught / 56 real defects),
+*and* we gain a concrete named limitation — both paper-positive.
 
 ## Item 5 — escrow STJP 97% → 2 deadlocks + 1 incomplete, all safe
 
@@ -145,6 +152,24 @@ This one table is the visual proof of the concurrency mechanism: B files in
 round 1 (before approval can arrive) 95% of the time; A files in round 3 (after
 approval) 99% of the time. Data lives in the trace files; render as a 2-bar
 inset for the paper.
+
+---
+
+## A/B violation-type histograms (P1 — named behaviors behind the counts)
+
+Converts the raw "violations"/"disasters" counts into the concrete behaviors a
+reviewer can name (appendix table):
+
+| case | arm | named behaviors (counts) |
+|---|---|---|
+| revenue_audit | A: Intent | duplicate_send ×294 — **0 premature files** (all benign waste) |
+| revenue_audit | B: Global text | **premature_file ×95** (Filed with no strictly-earlier Approval) |
+| escrow_trade | A: Intent | duplicate_send ×65, settle_before_confirm ×11 |
+| escrow_trade | B: Global text | duplicate_send ×276, settle_before_confirm ×9 |
+
+The revenue B row *is* the 95-disaster headline, re-expressed as a named unsafe
+behavior; A's violations are entirely benign duplicate sends (0 disasters),
+which is exactly why A's CGC is low but its disaster count is 0.
 
 ---
 
