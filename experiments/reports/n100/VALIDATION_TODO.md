@@ -18,12 +18,20 @@
 >   (haiku→sonnet) across A/B/C+min: unenforced safety *and* cleanliness are
 >   capability-dependent; the gate arm is capability-independent. See
 >   [`E3_CAPABILITY_SWEEP.md`](E3_CAPABILITY_SWEEP.md).
-> - **Genuinely blocked (external access), documented not faked:** E3's
->   **non-OpenAI vendor** tier + opus 3rd tier (optional); **P2** —
->   token-metered E6 (needs a metered endpoint), three-harness E7 (LangGraph/
->   skill-runtime adapters — a build task, deferrable), LLM-half of E5 (needs
->   the 100-intent expert golds), n=30 live finance ladder (needs Foundry +
->   finance case wired into the no-Foundry engine).
+> - **E7 three-harness: now done.** A LangGraph adapter
+>   (`experiments/harness_adapters/langgraph_ladder.py`) runs every case/arm as
+>   a StateGraph; the native STJP monitor agrees **14/14** (clean → 0
+>   violations, injected fault → caught). langgraph + langchain-anthropic
+>   installed; token metering is wired (real numbers when `ANTHROPIC_API_KEY`
+>   is set).
+> - **Genuinely blocked (external access), documented not faked:** anything
+>   needing a **live/metered LLM** — E3's non-OpenAI-vendor tier, **token-metered
+>   E6** and the **live token numbers** (the LangGraph metering is code-complete;
+>   only an LLM key is missing — this env's base URL needs an `x-api-key` we
+>   don't have, and there's no local model), the **LLM half of E5** (needs the
+>   100-intent expert golds), and the **live finance ladder** (Foundry). The
+>   n=30-vs-n=100 choice there was a *cost hedge* for a paid metered run, not a
+>   hard cap — n=100 is fine given a metered endpoint + budget.
 
 ---
 
