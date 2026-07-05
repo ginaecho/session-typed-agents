@@ -275,6 +275,12 @@ def parse_refn_text(text: str) -> dict:
             current.predicates.append(line.split(':', 1)[1].strip())
 
     _flush()
+
+    # Prototype 1: attach a session ledger (state/on/invariant clauses) under a
+    # string key that can never collide with the tuple keys used above.
+    ledger = parse_session_ledger(text)
+    if not ledger.is_empty():
+        refinements['__ledger__'] = ledger
     return refinements
 
 
@@ -284,3 +290,237 @@ def load_refinements_for_protocol(protocol_path: Path) -> dict[tuple[str, str, s
     if refn_path.exists():
         return parse_refn_file(refn_path)
     return {}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Prototype 1 — Stateful session invariants ("the session ledger")
+#
+# Theory: Chen & Honda, CONCUR'12 — stateful asynchronous properties are
+# assertions over *virtual state* that evolves across the whole conversation.
+# STJP's structural advantage: the gate sits at delivery and sees the ordered
+# message stream, so v1 checks these invariants centrally at the gate (the
+# per-endpoint distribution question that CONCUR'12's machinery solves is
+# deferred to v2).
+#
+# What it catches that per-message guards cannot: a violation spread across many
+# individually-legal messages. Canonical case: budget $10k, per-debit limit $5k,
+# three debits of $4k — every message passes every per-message guard, the
+# cumulative total is a violation no per-decision predicate can see.
+#
+# Sidecar grammar (scribble-java untouched), three top-level clause kinds:
+#     state total_debited : money = 0                  # virtual state decl
+#     state budget        : money = 10000              # a never-updated decl acts as a constant
+#     on Debit(amount)    : total_debited += amount    # update bound to a label
+#     invariant total_debited <= budget                # checked after every update
+# Optional loop-reset:
+#     state window_spend : money = 0 reset on WindowOpen   # reset to init when WindowOpen is seen
+# ─────────────────────────────────────────────────────────────────────────────
+
+_STATE_RE = re.compile(
+    r'^state\s+(\w+)\s*:\s*(\w+)\s*=\s*(-?\d+(?:\.\d+)?)'
+    r'(?:\s+reset\s+on\s+(\w+))?\s*$')
+_ON_RE = re.compile(r'^on\s+(\w+)\s*\(\s*(\w+)\s*\)\s*:\s*(\w+)\s*(\+=|-=|\*=|/=|=)\s*(.+)$')
+_INVARIANT_RE = re.compile(r'^invariant\s+(.+)$')
+
+# S-class default for a stateful-invariant breach (configurable per-invariant to
+# S4 for irreversible-resource invariants via a trailing "  @S4" annotation).
+_INV_SEV_RE = re.compile(r'^(.*?)\s*@S([0-4])\s*$')
+
+
+@dataclass
+class LedgerViolation:
+    """A stateful-invariant breach, located at the exact crossing message."""
+    invariant: str
+    label: str
+    step: int
+    severity: str            # "S2".."S4"
+    values: dict             # snapshot of virtual state at the breach
+    blocked: bool = False    # True when the gate rejected the message pre-delivery
+
+
+@dataclass
+class SessionLedger:
+    """Central virtual-state ledger checked over the ordered message stream.
+
+    decls:      name -> (type, init_value, reset_on_label|None)
+    updates:    label -> (field_name, [(state_name, op, expr_str), ...])
+    invariants: [(expr_str, severity), ...]
+    """
+    decls: dict = field(default_factory=dict)
+    updates: dict = field(default_factory=dict)
+    invariants: list = field(default_factory=list)
+    # runtime state (populated by reset())
+    values: dict | None = None
+    unevaluable: list = field(default_factory=list)
+
+    def is_empty(self) -> bool:
+        return not (self.decls or self.updates or self.invariants)
+
+    def reset(self):
+        self.values = {n: init for n, (ty, init, r) in self.decls.items()}
+        self.unevaluable = []
+
+    def _eval(self, expr: str, extra: dict):
+        tree = ast.parse(expr, mode='eval')
+        if not _validate_ast(tree):
+            raise RefinementViolation(f"unsafe ledger expression: {expr}")
+        env = {**SAFE_BUILTINS, **SAFE_HELPERS, **self.values, **extra,
+               '__builtins__': {}}
+        return eval(compile(tree, '<refn-ledger>', 'eval'), env)
+
+    def step(self, norm_label: str, payload: str, step_no: int = 0,
+             gate: bool = False) -> list[LedgerViolation]:
+        """Apply the label's updates, then check invariants touching changed
+        state. Returns any breaches located at THIS message.
+
+        Determinism: updates are applied only on accepted messages, so replays
+        are bit-reproducible. In gate mode a breaching message is rolled back
+        (rejected pre-delivery) and reported blocked; the ledger keeps the
+        pre-message values so later messages are judged against reality.
+        An unevaluable update (missing/nonnumeric payload field) is skipped and
+        logged — never a false block.
+        """
+        if self.values is None:
+            self.reset()
+
+        # reset-on: any state whose reset trigger is this label resets to init
+        # BEFORE this message's own updates are applied (loop-entry semantics).
+        for n, (ty, init, r) in self.decls.items():
+            if r == norm_label:
+                self.values[n] = init
+
+        spec = self.updates.get(norm_label)
+        if not spec:
+            return []
+        field_name, ups = spec
+
+        num = _coerce_num(payload)
+        if num is None:
+            self.unevaluable.append({"label": norm_label, "step": step_no,
+                                     "reason": "guard_unevaluable: nonnumeric payload"})
+            return []  # never a false block
+
+        snapshot = dict(self.values)
+        extra = {field_name: num}
+        try:
+            for (name, op, expr) in ups:
+                val = self._eval(expr, extra)
+                if op == '=':
+                    self.values[name] = val
+                elif op == '+=':
+                    self.values[name] = self.values[name] + val
+                elif op == '-=':
+                    self.values[name] = self.values[name] - val
+                elif op == '*=':
+                    self.values[name] = self.values[name] * val
+                elif op == '/=':
+                    self.values[name] = self.values[name] / val
+        except Exception:
+            self.values = snapshot
+            self.unevaluable.append({"label": norm_label, "step": step_no,
+                                     "reason": "guard_unevaluable: update error"})
+            return []
+
+        touched = {u[0] for u in ups}
+        breaches: list[LedgerViolation] = []
+        for (expr, sev) in self.invariants:
+            names = {n.id for n in ast.walk(ast.parse(expr, mode='eval'))
+                     if isinstance(n, ast.Name)}
+            if not (names & touched):
+                continue  # invariant does not mention any state this message changed
+            try:
+                ok = bool(self._eval(expr, {}))
+            except Exception:
+                continue
+            if not ok:
+                breaches.append(LedgerViolation(
+                    invariant=expr, label=norm_label, step=step_no,
+                    severity=sev, values=dict(self.values), blocked=gate))
+
+        if breaches and gate:
+            # reject pre-delivery: roll the virtual state back so the breaching
+            # resource is never committed.
+            self.values = snapshot
+        return breaches
+
+
+def _coerce_num(s: str):
+    try:
+        return float(s)
+    except (ValueError, TypeError):
+        return None
+
+
+def parse_session_ledger(text: str) -> SessionLedger:
+    """Parse the state/on/invariant clauses of a .refn file into a SessionLedger."""
+    ledger = SessionLedger()
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith('#'):
+            continue
+        m = _STATE_RE.match(line)
+        if m:
+            name, ty, init, reset_on = m.groups()
+            init_v = float(init) if ('.' in init or ty in ('money', 'float')) else int(init)
+            ledger.decls[name] = (ty, init_v, reset_on)
+            continue
+        m = _ON_RE.match(line)
+        if m:
+            label, field_name, state_name, op, expr = m.groups()
+            fn, ups = ledger.updates.get(label, (field_name, []))
+            ups.append((state_name, op, expr.strip()))
+            ledger.updates[label] = (field_name, ups)
+            continue
+        m = _INVARIANT_RE.match(line)
+        if m:
+            body = m.group(1).strip()
+            sev_m = _INV_SEV_RE.match(body)
+            if sev_m:
+                body, sev_digit = sev_m.group(1).strip(), sev_m.group(2)
+                sev = f"S{sev_digit}"
+            else:
+                sev = "S2"   # default; S4 for irreversible-resource invariants via @S4
+            ledger.invariants.append((body, sev))
+            continue
+    return ledger
+
+
+def validate_session_ledger(ledger: SessionLedger, protocol_labels: set) -> tuple[bool, list]:
+    """Static dischargeability / well-formedness check (v1: dynamic invariants,
+    this only checks the sidecar is coherent — no SMT proof).
+
+    Rules:
+      1. every `on` label exists in the protocol G;
+      2. update expressions reference only declared state + that label's field;
+      3. invariants reference only declared state (protocol constants are
+         modelled as never-updated `state` decls).
+    Returns (ok, [error, ...]).
+    """
+    errors: list = []
+    declared = set(ledger.decls)
+    for label, (field_name, ups) in ledger.updates.items():
+        if protocol_labels and label not in protocol_labels:
+            errors.append(f"on {label}: label not in protocol")
+        for (name, op, expr) in ups:
+            if name not in declared:
+                errors.append(f"on {label}: updates undeclared state '{name}'")
+            try:
+                names = {n.id for n in ast.walk(ast.parse(expr, mode='eval'))
+                         if isinstance(n, ast.Name)}
+            except SyntaxError:
+                errors.append(f"on {label}: unparseable expression '{expr}'")
+                continue
+            allowed = declared | {field_name} | set(SAFE_BUILTINS) | set(SAFE_HELPERS)
+            for nm in names - allowed:
+                errors.append(f"on {label}: expression references unknown '{nm}'")
+    for (expr, sev) in ledger.invariants:
+        try:
+            names = {n.id for n in ast.walk(ast.parse(expr, mode='eval'))
+                     if isinstance(n, ast.Name)}
+        except SyntaxError:
+            errors.append(f"invariant: unparseable '{expr}'")
+            continue
+        allowed = declared | set(SAFE_BUILTINS) | set(SAFE_HELPERS)
+        for nm in names - allowed:
+            errors.append(f"invariant '{expr}': references undeclared '{nm}'")
+    return (len(errors) == 0, errors)
