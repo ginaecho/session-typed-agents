@@ -57,8 +57,60 @@ from stjp_core.compiler.efsm_parser import get_all_efsms          # noqa: E402
 from stjp_core.monitor.monitor import SessionMonitor, TraceEvent  # noqa: E402
 from stjp_core.critic.policies import parse_policy_text           # noqa: E402
 from stjp_core.critic.critic import run_runtime_critic            # noqa: E402
+from stjp_core.compiler.refinement_checker import (               # noqa: E402
+    parse_refn_text, parse_session_ledger)
 
 from cases import CASES, INTENT, ROLE_DESCRIPTIONS                # noqa: E402
+
+
+# ── Prototype 1: stateful-ledger helpers (budget_run / E8) ───────────────────
+
+def _ledger_would_breach(state, trial, label, payload) -> bool:
+    """Gate-mode check: replay the case's SessionLedger over already-delivered
+    ledgered messages, then this candidate; True iff it breaches an invariant."""
+    refn_text = state.get("refn_text", "")
+    if not refn_text:
+        return False
+    ledger = parse_session_ledger(refn_text)
+    if ledger.is_empty() or label not in ledger.updates:
+        return False
+    ledger.reset()
+    for e in trial["trace"]:
+        if e["delivered"] and e["label"] in ledger.updates:
+            ledger.step(e["label"], e["payload"], gate=False)
+    breaches = ledger.step(label, str(payload), gate=True)
+    return bool(breaches)
+
+
+def _payload_guard_fails(state, sender, receiver, label, payload) -> bool:
+    """True iff a per-message payload refinement exists for this send and fails."""
+    refns = parse_refn_text(state.get("refn_text", ""))
+    norm = label[:label.find("(")] if label.find("(") > 0 else label
+    for key in [(sender, receiver, label), (sender, receiver, norm)]:
+        r = refns.get(key)
+        if r is not None and str(payload) != "":
+            ok, _ = r.check(str(payload))
+            if not ok:
+                return True
+    return False
+
+
+def _ledger_breaches_in_trace(refn_text, trace) -> int:
+    """Report-time: number of delivered messages that breached a stateful
+    invariant (post-budget deliveries). 0 under a working gate."""
+    if not refn_text:
+        return 0
+    ledger = parse_session_ledger(refn_text)
+    if ledger.is_empty():
+        return 0
+    ledger.reset()
+    n = 0
+    for e in trace:
+        if not e["delivered"]:
+            continue
+        for _lv in ledger.step(e["label"], e["payload"], step_no=e.get("round", 0), gate=False):
+            n += 1
+    return n
 
 
 # ── arm ladder configuration ────────────────────────────────────────────────
@@ -135,10 +187,14 @@ def cmd_init(args) -> int:
         for role, e in efsms.items()}
     base_prompts = {r: _base_prompt(args.arm, r, case, efsms)
                     for r in case["roles"]}
+    refn_text = case.get("refn", "")
+    payload_refns = parse_refn_text(refn_text) if refn_text else {}
     state = {
         "case": args.case, "arm": args.arm,
         "enforce": ARMS[args.arm]["enforce"],
         "schedule": ARMS[args.arm]["schedule"],
+        "ledger_mode": getattr(args, "ledger", "off"),   # off | observe | gate (Prototype 1)
+        "refn_text": refn_text,
         "base_prompts": base_prompts,
         "roles": case["roles"],
         "max_rounds": DEFAULT_MAX_ROUNDS[args.arm],
@@ -328,6 +384,24 @@ def cmd_submit(args) -> int:
                         {"round": state["round"], "role": role, "to": to,
                          "label": label, "expected": _expected_at(state, role, cur)})
                     continue
+                # per-message payload guard (the shipped per-request limit) —
+                # part of every E8 arm; applies in enforce arms.
+                if state.get("refn_text") and _payload_guard_fails(
+                        state, role, to, label, payload):
+                    trial["rejections"].append(
+                        {"round": state["round"], "role": role, "to": to,
+                         "label": label, "guard": True,
+                         "expected": ["per-message payload guard failed"]})
+                    continue
+                # stateful ledger gate (Prototype 1): reject a debit that would
+                # breach the cumulative invariant, pre-delivery.
+                if state.get("ledger_mode") == "gate" and _ledger_would_breach(
+                        state, trial, label, payload):
+                    trial["rejections"].append(
+                        {"round": state["round"], "role": role, "to": to,
+                         "label": label, "ledger": True,
+                         "expected": ["stateful invariant would be breached — downsize or stop"]})
+                    continue
             # deliver (gate arms: only accepted sends reach here; observe arms:
             # everything is delivered). Advance the shadow EFSM cursor when the
             # message is on-protocol — a no-op otherwise, so observe arms track
@@ -408,7 +482,12 @@ def _disasters_and_findings(state, trial, efsms, policies):
     seq_disasters = 0
     if not state.get("enforce"):
         seq_disasters, _ = _causal_sequence_disasters(trial["trace"], policies or [])
-    return mon_viol, flow_disasters + seq_disasters, findings
+    # Prototype 1: a delivered message that breached a stateful invariant is a
+    # ground-truth disaster (e.g. a post-budget debit was paid), counted the same
+    # way regardless of whether the arm's ledger was armed to SEE it. This is
+    # what makes arm (a)'s undetected harm visible.
+    ledger_disasters = _ledger_breaches_in_trace(state.get("refn_text", ""), trial["trace"])
+    return mon_viol, flow_disasters + seq_disasters + ledger_disasters, findings
 
 
 def cmd_report(args) -> int:
@@ -470,6 +549,8 @@ def main() -> int:
     p.add_argument("--arm", required=True, choices=sorted(ARMS))
     p.add_argument("--trials", type=int, default=1)
     p.add_argument("--dir", required=True)
+    p.add_argument("--ledger", choices=["off", "observe", "gate"], default="off",
+                   help="Prototype 1 stateful-invariant mode (E8)")
     p = sub.add_parser("next"); p.add_argument("--dir", required=True)
     p = sub.add_parser("submit")
     p.add_argument("--dir", required=True)
