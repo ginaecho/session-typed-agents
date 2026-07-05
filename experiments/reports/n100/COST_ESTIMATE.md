@@ -45,6 +45,40 @@ would be **~10–20× cheaper per trial**; see the lower bound below.
 | Haiku | ~30k | $1.60/1M | **~$0.05** (range $0.035–0.06) |
 | Sonnet (intro) | ~40k | $3.20/1M | **~$0.13** (standard ~$0.19) |
 
+## Per-arm cost-to-goal, in dollars (the `$` column in the ladder tables)
+
+The ladder tables report **cost-to-goal in calls** (`total calls ÷
+GCR-fraction`) because the no-Foundry runs weren't token-metered. To put that in
+money, price **one lean call**: a production agent call is ~1,000 input tokens
+(role prompt + short view) + ~50 output tokens. At Haiku 4.5's $1.00 / $5.00 per
+1M:
+
+> **lean call ≈ 1,000·$1.00/1M + 50·$5.00/1M = $0.00100 + $0.00025 ≈ $0.00125**
+> (≈ **$1.25 per 1,000 calls**)
+
+`Cost-to-goal ($) = Cost-to-goal (calls) × $0.00125`:
+
+| arm | revenue_audit calls → **$** | escrow_trade calls → **$** |
+|---|---|---|
+| A: Intent only | 900 → **$1.13** | 3349 → **$4.19** |
+| B: Global text | 330 → **$0.41** ⚠️ | 3512 → **$4.39** |
+| C-min: Local contract | 7275 → **$9.09** | 2708 → **$3.39** |
+| C+spec: Local + gate | 928 → **$1.16** | 2883 → **$3.60** |
+| C+min: Local + gate | 900 → **$1.13** | 2978 → **$3.72** |
+| **STJP: +scheduler** | **300 → $0.38** | **714 → $0.89** |
+
+**STJP is the cheapest *safe* arm in both cases** ($0.38 / $0.89). ⚠️ In
+`revenue_audit`, B's $0.41 undercuts STJP only because it *races* — it reaches
+the goal in one round by filing before approval, which is the **95-disaster**
+result, not a genuine saving. C-min's $9.09 is the real blowout: its 32%
+liveness means ~3× the calls per delivered audit.
+
+This is a **lean-deployment** price. It is *lower* than the as-run figures below
+because those were played by CLI-driver subagents whose per-call token use is
+dominated by orchestration overhead — the $ column is what a metered production
+deployment would pay, the per-trial figures below are what these particular
+experiment drivers cost.
+
 ## Whole-suite cost (if billed as API subagents)
 
 | Run | trials | $/trial | **subtotal** |

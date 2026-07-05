@@ -13,17 +13,31 @@ Part of the combined ladder writeup:
 
 ## The table
 
-| arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) |
-|---|---|---|---|---|---|
-| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | 900.0 |
-| B: Global text | 100.0% | 5.0% | **95** | 3.3 | 330.0 |
-| C-min: Local contract | **32.0%** | 2.0% | 0 | 23.3 | 7275.0 |
-| C+spec: Local + gate | 98.0% | 98.0% | 0 | 9.1 | 927.6 |
-| C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | 900.0 |
-| STJP: +scheduler | 100.0% | 100.0% | 0 | 3.0 | 300.0 |
+| arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) | **Cost-to-goal ($, est.)** |
+|---|---|---|---|---|---|---|
+| A: Intent only | 100.0% | 2.0% | 0 | 9.0 | 900.0 | **$1.13** |
+| B: Global text | 100.0% | 5.0% | **95** | 3.3 | 330.0 | **$0.41** ⚠️ |
+| C-min: Local contract | **32.0%** | 2.0% | 0 | 23.3 | 7275.0 | **$9.09** |
+| C+spec: Local + gate | 98.0% | 98.0% | 0 | 9.1 | 927.6 | **$1.16** |
+| C+min: Local + gate | 100.0% | 100.0% | 0 | 9.0 | 900.0 | **$1.13** |
+| STJP: +scheduler | 100.0% | 100.0% | 0 | 3.0 | 300.0 | **$0.38** |
 
 n = 100 trials/arm, 600 total, all played by Claude haiku subagents, no
-Foundry, no Azure. *(A and C-min updated 2026-07-05: the P-1 audit played two
+Foundry, no Azure.
+
+**Where the dollars come from.** These runs weren't token-metered (no Foundry),
+so the native unit is **calls**; the **$ column converts it** at ≈ **$0.00125
+per lean haiku call** (~1,000 input + ~50 output tokens at Haiku 4.5's
+$1.00/$5.00 per 1M, ≈ $1.25 per 1,000 calls). **STJP delivers a clean audit for
+~$0.38 — the cheapest *safe* arm.** ⚠️ **B looks cheaper ($0.41) but is a trap**:
+it reaches the goal in one round precisely *because* it races and files before
+approval — that's the **95-disaster** column, not a bargain. C-min is the true
+cost blowout ($9.09) because its 32% liveness means you pay ~3× the calls per
+delivered result. Cheap-and-safe is STJP alone. This is a **lean-deployment**
+estimate; the CLI-driver subagents that actually played the trials cost more per
+call (orchestration overhead) — see
+[the run-cost note below](#what-this-run-cost) and
+[`../COST_ESTIMATE.md`](../COST_ESTIMATE.md#per-trial-cost). *(A and C-min updated 2026-07-05: the P-1 audit played two
 trials — `intent_045`, `local_obs_087` — that had never been dispatched;
 both reached goal, nudging A 99→100% and C-min 31→32%. See
 [`../P1_AUDIT_FINDINGS.md`](../P1_AUDIT_FINDINGS.md).)*
@@ -102,10 +116,22 @@ aggregated JSON/table are the durable artifact.
 
 ## What this run cost
 
-These 600 trials were played by cheap **haiku** subagents (opus only
-orchestrated). Priced from the reported per-trial token counts, this case cost
-**~$30 in haiku tokens** (half of the ~$60 whole-ladder figure). Method and
-caveats: [`../COST_ESTIMATE.md`](../COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents).
+Two figures, don't conflate them:
+
+- **Lean-deployment cost (the $ column above).** What each arm *would* cost as a
+  production agent — role prompt in, short JSON out, ~$0.00125 per haiku call.
+  STJP: **~$0.38 per delivered audit**, the cheapest *safe* arm. Cite this for
+  "STJP is cheaper"; it tracks the calls column directly.
+- **As-run harness cost (what we actually spent).** These 600 trials were played
+  by CLI **haiku** subagents (opus only orchestrated), whose per-call token use
+  is dominated by driver/orchestration overhead. At that inflated rate the case
+  cost **~$30** end-to-end (about half of the ~$60 whole-ladder total). Because
+  the overhead is roughly flat per trial, this figure does *not* resolve per-arm
+  differences — which is why the per-arm cost story is in calls / the lean $
+  column, not here.
+
+Full method, per-token pricing, and the upper-bound caveat:
+[`../COST_ESTIMATE.md`](../COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents).
 The stronger-tier (sonnet) replication of arms B and C+min on this case is in
 [`../P0B_MIDTIER_SONNET.md`](../P0B_MIDTIER_SONNET.md) and
 [`../E3_CAPABILITY_SWEEP.md`](../E3_CAPABILITY_SWEEP.md).

@@ -692,25 +692,25 @@ tables that correspond, arm-for-arm, to the §2 finance table.
 
 **`revenue_audit`, n=100** (safety axis)
 
-| arm | GCR | CGC | Disasters | Cost-to-goal |
-|---|---|---|---|---|
-| A: Intent only | 100% | 2% | 0 | 900 |
-| B: Global text | 100% | 5% | **95** | 330 |
-| C-min: Local contract | 32% | 2% | 0 | 7275 |
-| C+spec: Local + gate | 98% | 98% | 0 | 928 |
-| C+min: Local + gate | 100% | 100% | 0 | 900 |
-| STJP: Local + gate + scheduler | 100% | 100% | 0 | **300** |
+| arm | GCR | CGC | Disasters | Cost-to-goal (calls) | Cost-to-goal ($, est.) |
+|---|---|---|---|---|---|
+| A: Intent only | 100% | 2% | 0 | 900 | $1.13 |
+| B: Global text | 100% | 5% | **95** | 330 | $0.41 ⚠️ |
+| C-min: Local contract | 32% | 2% | 0 | 7275 | $9.09 |
+| C+spec: Local + gate | 98% | 98% | 0 | 928 | $1.16 |
+| C+min: Local + gate | 100% | 100% | 0 | 900 | $1.13 |
+| STJP: Local + gate + scheduler | 100% | 100% | 0 | **300** | **$0.38** |
 
 **`escrow_trade`, n=100** (cost axis)
 
-| arm | GCR | CGC | Disasters | Cost-to-goal |
-|---|---|---|---|---|
-| A: Intent only | 83% | 70% | 26 | 3349 |
-| B: Global text | 82% | 73% | 35 | 3512 |
-| C-min: Local contract | 100% | 75% | 49 | 2708 |
-| C+spec: Local + gate | 97% | 97% | 0 | 2883 |
-| C+min: Local + gate | 83% | 83% | 0 | 2978 |
-| STJP: Local + gate + scheduler | 98% | 98% | 0 | **714** |
+| arm | GCR | CGC | Disasters | Cost-to-goal (calls) | Cost-to-goal ($, est.) |
+|---|---|---|---|---|---|
+| A: Intent only | 83% | 70% | 26 | 3349 | $4.19 |
+| B: Global text | 82% | 73% | 35 | 3512 | $4.39 |
+| C-min: Local contract | 100% | 75% | 49 | 2708 | $3.39 |
+| C+spec: Local + gate | 97% | 97% | 0 | 2883 | $3.60 |
+| C+min: Local + gate | 83% | 83% | 0 | 2978 | $3.72 |
+| STJP: Local + gate + scheduler | 98% | 98% | 0 | **714** | **$0.89** |
 
 *(Tables refreshed 2026-07-05: a P-1 data audit found 22 trials — 18 of them an
 abandoned escrow C+spec block — left non-terminal and counted as failures; they
@@ -723,22 +723,46 @@ The **shape** matches §2: STJP is the only arm that is simultaneously safe
 (A/B/C-min) carry real, non-zero disaster/failure rates that only surfaced at
 n=100.
 
+**Reading the two cost columns.** The native measurement is **calls** (these
+runs weren't token-metered — see below). The **`Cost-to-goal ($, est.)`** column
+converts it to money at **≈ $0.00125 per lean haiku call** (~1,000 input + ~50
+output tokens priced at Haiku 4.5's $1.00/$5.00 per 1M — about $1.25 per 1,000
+calls). So you can now read the cost in dollars directly:
+
+- **`revenue_audit`:** STJP delivers a clean audit for **$0.38** — the cheapest
+  *safe* arm. B looks cheaper at **$0.41 ⚠️** but that's a **trap**: it's cheap
+  only because it races and files *before* approval — that's the **95-disaster**
+  column, not a bargain. C-min's **$9.09** is the real cost blowout (you pay for
+  its 32% liveness three times over).
+- **`escrow_trade`:** STJP settles for **$0.89** vs **$3.39–4.39** for every
+  other arm — the same ~4× edge, now in money.
+
+This is a **lean-deployment** price (role prompt in, short JSON out). The
+CLI-driver subagents that actually *played* these trials cost more per call
+because of orchestration overhead, so the whole run cost more in absolute terms
+(≈ $60 across the ladder) — see
+[What this reproduction actually cost](#what-this-reproduction-actually-cost-in-dollars)
+and [`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#per-trial-cost).
+
 ### Why this is *not* laid out in the exact same format as §2
 
 Two columns from the [§2](#2-reading-the-results-table) finance table **cannot
 be reproduced here**, and this is an honest limitation, not an oversight:
 
-1. **Cost-to-goal is in *calls*, not *tokens* — and the numbers are raw counts,
-   not thousands.** These n=100 runs are the **no-Foundry** reproduction, and
-   without Foundry, tokens are never metered. So the unit is **LLM agent-calls**
-   (one whole model invocation), counted as `total calls ÷ GCR-fraction`. STJP's
-   `300` above means **300 calls**, *not* 300k and *not* 13.3k tokens — it is a
-   **different unit** from §2's `13.3k tokens` and is **not comparable in
-   magnitude** (one call is worth hundreds-to-thousands of tokens). What *is*
-   comparable is the **ratio**: STJP is ~3× cheaper than the field in
-   `revenue_audit` and ~4× in `escrow_trade`, the same "STJP is cheapest by a
-   wide margin" story §2 tells in tokens (13.3k vs 120k). The token figures live
-   only in Part 1's live-model Foundry run — which was itself only n=10.
+1. **The *native* cost-to-goal is in *calls*, not *tokens* — and the counts are
+   raw, not thousands.** These n=100 runs are the **no-Foundry** reproduction,
+   and without Foundry, tokens are never metered. So the primary unit is **LLM
+   agent-calls** (one whole model invocation), counted as `total calls ÷
+   GCR-fraction`. STJP's `300` means **300 calls**, *not* 300k and *not* 13.3k
+   tokens — a **different unit** from §2's `13.3k tokens`, **not comparable in
+   magnitude** (one call is worth hundreds-to-thousands of tokens). The
+   `Cost-to-goal ($, est.)` column *does* bridge to money — calls × a lean
+   per-call price — but it is an **estimate layered on top of the measured
+   calls**, not a metered token figure; the only *metered* tokens live in Part
+   1's live-model Foundry run (itself n=10). What is directly comparable to §2 is
+   the **ratio**: STJP ~3× cheaper in `revenue_audit`, ~4× in `escrow_trade` —
+   the same "STJP is cheapest by a wide margin" story §2 tells in tokens
+   (13.3k vs 120k).
 2. **There is no `Seconds/trial` column.** `batch_report.py` leaves
    `avg_seconds_per_trial = None` on purpose. Wall-clock is meaningless for
    these runs: a trial "starts" when it is first polled and "ends" when it
