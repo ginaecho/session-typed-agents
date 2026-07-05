@@ -99,7 +99,17 @@ terminal must all be rejected).
 - Live flaky-role trials (one role crashes p=0.3): +CF completes-or-degrades
   **30/30 with 0 limbo**; baseline limbos ≈ crash rate.
 
-**Grade:** _pending_.
+**Grade (2026-07-05): CONFIRMED — deterministic AND live.**
+- Verdict corpus 12/12; checker mutation **5/5 bad `.fail` rejected** (incl. the
+  adversarial settlement-shortcut) — the new checker gets the same preciseness
+  audit as the old one. (Both haiku-verified.)
+- Crash-point grid (14 cells): current STJP **100% limbo**; +CF **9
+  typed-degraded + 5 typed-abort, 0 limbo, 0 disasters**. As predicted.
+- Deadlock replay (real data): **19/19 limbo → 19/19 typed terminal** under CF.
+- Live flaky-role (haiku, n=15, one crash/trial): baseline **15/15 limbo**; +CF
+  **15/15 typed terminal (Refunded), 0 disasters.** The prediction "+CF
+  completes-or-degrades with 0 limbo, 0 disasters" holds with a weak model. See
+  `experiments/reports/n100/e10/E10_CRASH_HANDLING.md`.
 
 ---
 

@@ -60,9 +60,30 @@ property that would have made the 22-trial audit a compile error now exists.
 Reproduce: `python experiments/subagent_trials/e10_crash_bench.py`;
 verdict corpus `python experiments/tests/verdict_corpus/crash/crash_corpus.py`.
 
-## E10 result — live flaky-role (haiku roles)
+## E10 result — live flaky-role (haiku roles, n=15, one crash/trial)
 
-<!-- LIVE_RESULTS -->
+A haiku subagent drove 15 escrow trials; in each, one designated role (Buyer /
+Seller / Carrier, 5 each) **crashed** — went silent from an assigned round —
+simulating a process crash. Every trial verified from `state.json`
+(`malformed=0`). The crash-handler resolver was then applied to each stalled
+trace, and the recovered trace (partial history + handler messages) was checked
+against the Critic:
+
+| arm | outcome | disasters |
+|---|---|---|
+| **(a) current STJP** (no crash-handling) | **15/15 LIMBO** — every crash stalls the session | — |
+| **(b) STJP + crash-handling** | **15/15 typed terminal** (all `Refunded` / typed-degraded) | **0** |
+
+The shipped system leaves **every** crashed session in limbo — exactly the
+22-trial audit failure, reproduced live with a weak model. With crash-handling,
+every crash reaches a **typed** terminal (a `Refunded` degradation) and **0
+disasters**: applying the validated handler to each partial trace never trips the
+settle-after-confirm policy, because the `no-authorization-bypass` check
+guarantees it can't. This is the pre-registered prediction met live: **+CF
+completes-or-degrades 15/15 with 0 limbo and 0 disasters.**
+
+Data: `experiments/reports/n100/e10/e10_live_summary.json`;
+`.trial_state/e10_live/*` (gitignored scratch).
 
 ## Paper insertion
 
