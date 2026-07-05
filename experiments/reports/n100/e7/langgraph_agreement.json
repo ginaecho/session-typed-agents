@@ -1,0 +1,120 @@
+{
+  "harness": "LangGraph",
+  "adapter": "experiments/harness_adapters/langgraph_ladder.py",
+  "note": "LangGraph executes each case/arm protocol as a StateGraph; the native STJP monitor judges the resulting trace. Agreement = clean structural runs -> 0 violations, and injected off-protocol -> caught.",
+  "agreement": "14/14",
+  "rows": [
+    {
+      "case": "revenue_audit",
+      "arm": "intent",
+      "kind": "clean",
+      "messages": 3,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "revenue_audit",
+      "arm": "global_text",
+      "kind": "clean",
+      "messages": 3,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "revenue_audit",
+      "arm": "local_obs",
+      "kind": "clean",
+      "messages": 3,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "revenue_audit",
+      "arm": "local_gate",
+      "kind": "clean",
+      "messages": 3,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "revenue_audit",
+      "arm": "min_gate",
+      "kind": "clean",
+      "messages": 3,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "revenue_audit",
+      "arm": "stjp",
+      "kind": "clean",
+      "messages": 3,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "revenue_audit",
+      "arm": "intent",
+      "kind": "fault-injected",
+      "messages": 4,
+      "monitor_violations": 2,
+      "harness_agrees": true
+    },
+    {
+      "case": "escrow_trade",
+      "arm": "intent",
+      "kind": "clean",
+      "messages": 7,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "escrow_trade",
+      "arm": "global_text",
+      "kind": "clean",
+      "messages": 7,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "escrow_trade",
+      "arm": "local_obs",
+      "kind": "clean",
+      "messages": 7,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "escrow_trade",
+      "arm": "local_gate",
+      "kind": "clean",
+      "messages": 7,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "escrow_trade",
+      "arm": "min_gate",
+      "kind": "clean",
+      "messages": 7,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "escrow_trade",
+      "arm": "stjp",
+      "kind": "clean",
+      "messages": 7,
+      "monitor_violations": 0,
+      "harness_agrees": true
+    },
+    {
+      "case": "escrow_trade",
+      "arm": "intent",
+      "kind": "fault-injected",
+      "messages": 8,
+      "monitor_violations": 2,
+      "harness_agrees": true
+    }
+  ]
+}
