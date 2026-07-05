@@ -126,16 +126,22 @@ non-terminal (see below)."
 
 Recomputed `total_calls / clean_count` directly from `ladder_summary.json`:
 
-| revenue_audit | calls | clean | cost-to-clean-goal |
-|---|---|---|---|
-| A: Intent only | 891 | 1 | 891.0 |
-| B: Global text | 330 | 5 | **66.0** ✓ |
-| C-min: Local contract | 2319 | 1 | **2319.0** ✓ |
-| C+spec: Local + gate | 909 | 98 | 9.3 |
-| C+min: Local + gate | 900 | 100 | 9.0 |
-| STJP: +scheduler | 300 | 100 | 3.0 |
+| revenue_audit | calls | clean | cost-to-clean-goal | $ / clean goal (est.) |
+|---|---|---|---|---|
+| A: Intent only | 891 | 1 | 891.0 | $1.11 |
+| B: Global text | 330 | 5 | **66.0** ✓ | $0.08 |
+| C-min: Local contract | 2319 | 1 | **2319.0** ✓ | $2.90 |
+| C+spec: Local + gate | 909 | 98 | 9.3 | $0.012 |
+| C+min: Local + gate | 900 | 100 | 9.0 | $0.011 |
+| STJP: +scheduler | 300 | 100 | 3.0 | **$0.004** |
 
-Both spot values from the plan (B = 66, C-min = 2319) confirmed.
+Both spot values from the plan (B = 66, C-min = 2319) confirmed. The `$ / clean
+goal` column prices cost-to-clean-goal at ≈ **$0.00125** per lean haiku call
+(see [`COST_ESTIMATE.md`](COST_ESTIMATE.md#per-arm-cost-to-goal-in-dollars-the--column-in-the-ladder-tables)):
+a *safe, clean* audit costs **$0.004 under STJP vs $1.11 (A) / $2.90 (C-min)**.
+B's $0.08 looks low only because the denominator is the 5 clean trials out of
+100 — the other 95 are disasters, so per *delivered-and-safe* result it is not a
+bargain.
 
 ---
 

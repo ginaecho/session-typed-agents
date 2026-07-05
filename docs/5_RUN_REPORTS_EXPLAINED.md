@@ -657,10 +657,15 @@ the core value on a fresh case, repeated enough times to rule out luck.
 
 **What impact it has.**
 
-| Setting | Finished the task | Deadlocked | AI calls used |
-|---|---|---|---|
-| No rulebook | **0 / 100** | 100 / 100 | 800 |
-| **STJP** | **100 / 100** | 0 / 100 | **700** |
+| Setting | Finished the task | Deadlocked | AI calls used | Est. cost (haiku) |
+|---|---|---|---|---|
+| No rulebook | **0 / 100** | 100 / 100 | 800 | ~$1.00 (0 delivered) |
+| **STJP** | **100 / 100** | 0 / 100 | **700** | **~$0.88 (100 delivered)** |
+
+*(Cost = calls × ≈ $0.00125 per lean haiku call — ~1k in + ~50 out at Haiku
+4.5's $1/$5 per 1M. STJP delivers 100 settlements for less than the unchecked
+arm spends deadlocking zero. Method:
+[`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#per-arm-cost-to-goal-in-dollars-the--column-in-the-ladder-tables).)*
 
 Two things stand out. First, the no-rulebook setting fails **every single
 time** — this is a *structural* deadlock, not bad luck. Second, and more

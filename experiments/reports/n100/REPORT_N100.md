@@ -139,6 +139,14 @@ The STJP infrastructure (EFSM scheduler + structural gate + per-role monitor +
 cross-message Critic) works correctly at scale with zero false positives or
 missed violations.
 
+**Cost in dollars (estimate).** These trials were counted in calls (no token
+metering). Priced at ≈ **$0.00125 per lean haiku call** (~1k in + ~50 out at
+Haiku 4.5's $1/$5 per 1M): the STJP arm delivered all 100 settlements for
+**≈ $0.88** total (700 calls), versus **≈ $1.00** (800 calls) that the unchecked
+arm burned to deadlock 100/100 without finishing one — STJP is cheaper *and* the
+only one that succeeds. Full six-arm dollar breakdown and method:
+[`COST_ESTIMATE.md`](COST_ESTIMATE.md#per-arm-cost-to-goal-in-dollars-the--column-in-the-ladder-tables).
+
 ## Where the data lives
 
 ```
