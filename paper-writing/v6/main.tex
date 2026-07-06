@@ -1,0 +1,424 @@
+\documentclass{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage[numbers]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parskip}{2pt}
+
+% ICLR-style running header
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[C]{\small Under review as a conference paper at ICLR 2027}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% notation macros
+\newcommand{\gtG}{\mathsf{G}}
+\newcommand{\lt}{\mathsf{T}}
+\newcommand{\ed}{\mathtt{end}}
+\newcommand{\proj}[2]{#1\!\upharpoonright\!#2}
+\newcommand{\sends}{\rightarrow}
+\newcommand{\merge}{\sqcap}
+\newcommand{\lbl}{\ell}
+\newcommand{\stjp}{\textsc{STJP}}
+
+\title{\bf Type-Checking the Conversation: Static Verification of\\ Agent Skills with Multiparty Session Types}
+\author{Anonymous authors\\ \small Paper under double-blind review}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Skill files, agent markdowns, and specification documents have become the de facto programming language of multi-agent systems: they declare who talks to whom, in what order, carrying what payloads, under which authorization obligations. Unlike every other programming language, this one ships without a compiler. Whether a set of skills can deadlock, leak a confidential payload to an unauthorized role, or ever reach its goal is today discoverable only at runtime---by running the system, or by hiring further LLM agents to judge its traces---and neither can establish the \emph{absence} of failure: a thousand clean runs warrant nothing about run 1{,}001. We present \stjp{}, a static compiler for agent interactions grounded in multiparty session types (MPST). A user intent is drafted by an LLM into a Scribble global protocol; the protocol is validated \emph{before any agent runs}, establishing deadlock-freedom, communication safety, session fidelity, bounded recursion, and goal reachability by construction; the validated global type is then projected into per-role local contracts (lean skills) and mechanically compiled into deterministic finite-state monitors, value-dependent choice guards, and an EFSM scheduler---code, not agents. Across six pre-registered experiments on finance and banking pipelines (gpt-4o and gpt-5.4, up to seven ablation arms), the full stack reaches 100\% strict goal completion with zero irreversible-action disasters, while intent-only agents commit up to 22 unauthorized irreversible acts in 30 attempts---\emph{more} with the stronger model. Enforcement plus protocol-driven scheduling delivers the same guarantees at $9\times$ lower cost-to-goal and $-73\%$ LLM calls than protocol-as-prompt-text on the same runtime; a seeded circular-wait protocol is rejected statically at zero token cost, a failure class no runtime method can rule out. A pre-registered validation suite then scales the evidence: mutation testing shows the checker detects 95.1\% of seeded well-formedness defects with \emph{zero} false positives over a 100-protocol corpus; against 1{,}200 prompt-injected exfiltration attempts, keyword rules block 41.7\% while the structural gate plus value refinements block 100\%; and a six-arm ladder at $n{=}100$ on two further tasks (1{,}200 trials) shows every \emph{observing} arm incurring real violations---unenforced protocol text reaches the goal in 100\% of runs yet commits an unauthorized irreversible act in 95 of them under concurrent scheduling---while every \emph{enforcing} arm shows zero by construction, with the full stack simultaneously the safest and the cheapest arm. A measured three-tier capability sweep then locates the boundary of prompting: unenforced safety is capability-dependent (95 premature filings per 100 at the weak tier, 0 at the mid and strong tiers, on identical protocol text) whereas enforcement is capability-\emph{invariant}---0 disasters at every tier---which is the difference between a behavior one hopes for and a property one has. We report our falsified predictions prominently, formalize \emph{conformance} and \emph{goal achievement} over a typed event log that needs neither golden trajectories nor LLM judges, and release the suite as a benchmark for statically verified agent specifications.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+Practitioners now steer LLM agents with markdown artifacts: Anthropic's Agent Skills open standard (\texttt{SKILL.md}), \texttt{AGENTS.md} conventions, OpenAI's Model Spec, MCP tool manifests, and enterprise ``agent spec'' documents \citep{anthropic-skills}. Functionally, these artifacts are programs. They fix an interaction discipline---which role sends which message to which role, in what order, carrying what payload, with which authorization preceding which irreversible act. When several agents must cooperate (a planner, an analyst, an auditor, a filer), the artifact is not a prompt; it is a \emph{protocol}.
+
+Yet the toolchain that grew around ordinary programming languages is absent. There is no parser that rejects an incoherent skill, no type checker that proves two skills cannot mutually block, no compiler that guarantees the declared goal is reachable. Format linting exists---Skilldex reports that 34\% of community skill packages violate even the published format specification \citep{skilldex}---but format validity says nothing about interaction soundness. A \texttt{SKILL.md} can parse perfectly while describing a choreography in which the planner waits for a result the worker will never send, because the worker is waiting for an answer the planner cannot give. Nothing crashes; the system sits there, emitting tokens.
+
+The field's current answers are all \emph{dynamic}. Runtime guardrails such as AgentSpec \citep{agentspec} and Agent-C \citep{agentc} intercept unsafe tool calls with rule DSLs or SMT-checked temporal constraints; benchmarks such as ST-WebAgentBench \citep{stweb} and BeSafe-Bench \citep{besafe} measure, after the fact, how often agents violated policy; LLM-as-judge pipelines score traces with a second model whose own reliability is contested (reported true-negative rates below 25\% and expert agreement of 64--68\% \citep{judgebias}). All of these \emph{observe executions}. None can certify a \emph{specification}. Testing, as Dijkstra observed, shows the presence of bugs, never their absence.
+
+This paper poses the question in its static form: \textbf{can we type-check the conversation itself, before any agent runs?} Our answer is \stjp{} (Session-Typed skills/Judge Protocol), a compiler pipeline built on two decades of multiparty session type theory \citep{hyc08,scalas19} and its industrial protocol language, Scribble \citep{scribble}. The user states an intent; an LLM drafts a Scribble global protocol; the Scribble checker validates well-formedness statically---rejecting deadlock precursors, incoherent choice, unguarded recursion, unreachable goals---and only a validated protocol is projected, role by role, into local contracts that become each agent's lean skill. From the same projection we mechanically generate a deterministic finite-state monitor per role, value-dependent \emph{choice guards} in the asserted-MPST style \citep{bocchi10}, and an EFSM scheduler. Enforcement and evaluation are plain code: bit-reproducible, token-free, judge-free.
+
+\paragraph{Contributions.}
+\begin{enumerate}\itemsep2pt
+\item \textbf{A reframing.} Skills, specs, and agent markdowns constitute an untyped protocol language; we give, to our knowledge, the first end-to-end pipeline that statically type-checks them via MPST before execution, and we make the correspondence precise (\S\ref{sec:mpst}--\S\ref{sec:system}).
+\item \textbf{Guarantee transfer.} We restate the MPST metatheory---communication safety, session fidelity, deadlock-freedom, monitorability, refinement, gradual typing of the LLM endpoint---as agent-system properties with direct safety and cost consequences (\S\ref{sec:mpst}, Table~\ref{tab:guarantees}).
+\item \textbf{Judge-free evaluation.} Because every run is, by construction, a path through a validated global type, \emph{conformance} and \emph{goal achievement} receive mechanical definitions over a typed event log---no golden trajectory, no LLM judge---together with a consequence-graded violation taxonomy (S0--S4) that we validate empirically: $P(\text{goal failure}\mid\text{S2+ violation})=100\%$ in every arm of every run (\S\ref{sec:method}).
+\item \textbf{Evidence, honestly graded.} Six experiments across two tasks, two models, and up to seven ablation arms (\S\ref{sec:results}, Fig.~\ref{fig:results}): 0\%$\to$80--100\% strict goal completion along the protocol-information ladder; zero disasters in every typed arm versus 22 unauthorized irreversible acts by intent-only agents under the \emph{stronger} model; a statically rejected deadlock; $9\times$ cost-to-goal reduction from EFSM scheduling. We also report the run in which unenforced protocol text \emph{ties} the enforcement gate, and what that bounds.
+\item \textbf{A benchmark agenda.} A concrete proposal---protocol-mutation testing, adversarial injection, model-strength sweeps, $\mathrm{pass}^k$ reliability, translation-fidelity measurement---for evaluating static agent verification as a field (\S\ref{sec:bench}).
+\end{enumerate}
+
+\section{Related Work}\label{sec:related}
+\textbf{Agent governance layers.} Recent syntheses organize agent governance as a three-layer stack \citep{governspec,lga}: Layer~0 checks that a specification parses; Layer~1 asks whether the specification is semantically sound (``if the agent believes the spec, will it be correct?''); Layer~2 measures whether runtime behavior matches claims. Layer~0 is commoditized \citep{skilldex}. Layer~2 is an active benchmark frontier: the best of 13 agents evaluated by BeSafe-Bench completes fewer than 40\% of tasks while fully respecting safety constraints \citep{besafe}; ST-WebAgentBench's Completion-under-Policy shows policy-respecting completion at under two-thirds of nominal completion \citep{stweb}. Layer~1 is, in those surveys' words, ``not available.'' \stjp{} occupies it.
+
+\textbf{Runtime enforcement.} AgentSpec \citep{agentspec} enforces trigger/predicate/action rules around tool calls and prevents $>$90\% of unsafe executions in its evaluation; Agent-C \citep{agentc} compiles temporal constraints to SMT checks interleaved with generation; LGA \citep{lga} composes sandboxing, intent verification, zero-trust authorization, and audit logging. All act per execution. Rule DSLs cannot express, let alone verify, \emph{global} interaction properties---deadlock-freedom, goal reachability, choice coherence---because these are properties of the protocol structure, not of any single call. \stjp{} rejects the faulty specification before the first LLM call, the only point at which a guarantee can be universal rather than per-run; its runtime gate then enforces exactly the properties the static phase proved enforceable \citep{bocchi13}. We are explicit about where the novelty lies: the session-type theory we build on is three decades deep and is assembled here, not invented---our contributions are the compiler framing (skills \emph{are} an untyped protocol language; \stjp{} is its missing compiler), the gradual-typing integration of an untyped LLM participant, the observation that the \emph{scheduler} is itself a projection artifact, and the judge-free empirical program the rest of this paper executes.
+
+\begin{table}[t]
+\centering\small
+\caption{Positioning. \stjp{} is, to our knowledge, the only system whose guarantees are established \emph{before} execution and whose evaluation requires neither a reference trajectory nor an LLM judge. ``partial'' = expressible per hand-written rule, without a global theorem.}
+\label{tab:position}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+& \textbf{When it acts} & \textbf{Deadlock-} & \textbf{Goal reach-} & \textbf{Unauth.\ recip.} & \textbf{Value/branch} & \textbf{Judge-free} \\
+& & \textbf{freedom} & \textbf{ability} & \textbf{blocked} & \textbf{guards} & \textbf{metrics} \\
+\midrule
+LLM-as-judge & post hoc & no & no & no & no & no \\
+Rule guards \citep{agentspec} & runtime & no & no & partial & partial & no \\
+Temporal/SMT \citep{agentc} & runtime & no & no & partial & partial & no \\
+Graph frameworks (LangGraph) & wiring & no & no & no & no & no \\
+\textbf{\stjp{} (this work)} & \textbf{compile $+$ runtime} & \textbf{static} & \textbf{static} & \textbf{typed} & \textbf{yes} & \textbf{yes} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Session types and choreographies.} MPST \citep{hyc08,scalas19} and its toolchain Scribble \citep{scribble} give protocols a type theory (\S\ref{sec:mpst}); choreographic programming \citep{montesi23,carbone13} generates endpoint code from a global script by projection. An \texttt{AGENTS.md} is an informal choreography; \stjp{} makes it formal and lets projection do the work. Prior NL$\to$formal-spec pipelines (NL2Spec \citep{nl2spec}, PROSPER \citep{prosper}) target LTL and network RFCs; we target a protocol algebra whose checker exists and whose theorems transfer.
+
+\textbf{Trace evaluation.} Tool-and-step metrics (LangSmith, DeepEval, Phoenix, MLflow), process-utility metrics (TRACE \citep{trace}), policy-conditioned metrics (CuP \citep{stweb}), and reliability metrics ($\mathrm{pass}^k$) all presuppose a hand-authored reference trajectory or an LLM judge, because an unconstrained agent leaves no structure to score a run against. Under \stjp{} the validated global type \emph{is} the reference (\S\ref{sec:method}).
+
+\section{Multiparty Session Types: Syntax, Semantics, Guarantees}\label{sec:mpst}
+We summarize the fragment of MPST that \stjp{} compiles to, in the modern formulation \citep{hyc08,scalas19}; this section fixes notation and states (without proof) the theorems whose transfer to agents Table~\ref{tab:guarantees} prices.
+
+\subsection{Global and local types}
+Fix a set of \emph{roles} $p,q,r\in\mathcal{R}$ (agents, tools, the orchestrator), \emph{labels} $\lbl\in\mathcal{L}$ (message kinds), and \emph{payload sorts} $U$ (base sorts and refinements, below). \emph{Global types} describe the whole conversation from a bird's-eye view; \emph{local types} describe one role's view of it:
+\begin{align*}
+\gtG \;::=\;& p \sends q : \{\lbl_i(U_i).\,\gtG_i\}_{i\in I} \;\mid\; \mu t.\,\gtG \;\mid\; t \;\mid\; \ed
+&& \text{(global types)}\\
+\lt \;::=\;& q\,{\oplus}\,\{\lbl_i(U_i).\,\lt_i\}_{i\in I} \;\mid\; p\,\&\,\{\lbl_i(U_i).\,\lt_i\}_{i\in I} \;\mid\; \mu t.\,\lt \;\mid\; t \;\mid\; \ed
+&& \text{(local types)}
+\end{align*}
+$p \sends q:\{\lbl_i(U_i).\gtG_i\}_{i}$ reads: $p$ chooses one label $\lbl_i$, sends it with a payload of sort $U_i$ to $q$, and the conversation continues as $\gtG_i$. Dually, $q\oplus\{\ldots\}$ is an \emph{internal choice} (this role selects and sends to $q$) and $p\,\&\,\{\ldots\}$ an \emph{external choice} (this role branches on what it receives from $p$). $\mu t.\gtG$ is guarded recursion (loops); $\ed$ terminates the session. In the agent reading: labels are message kinds (\texttt{ExpenseData}, \texttt{Approval}), sorts are payload schemas, branching is a decision (audit vs.\ standard path), recursion is a bounded retry/deliberation loop.
+
+\subsection{Projection}
+The \emph{projection} $\proj{\gtG}{r}$ extracts role $r$'s local type from $\gtG$:
+\[
+\proj{\big(p \sends q : \{\lbl_i(U_i).\gtG_i\}_{i\in I}\big)}{r} \;=\;
+\begin{cases}
+q\,{\oplus}\,\{\lbl_i(U_i).\,\proj{\gtG_i}{r}\}_{i\in I} & \text{if } r=p\\[2pt]
+p\,\&\,\{\lbl_i(U_i).\,\proj{\gtG_i}{r}\}_{i\in I} & \text{if } r=q\\[2pt]
+\sqcap_{i\in I}\, \proj{\gtG_i}{r} & \text{otherwise,}
+\end{cases}
+\]
+with $\proj{(\mu t.\gtG)}{r}=\mu t.(\proj{\gtG}{r})$ when $r$ occurs in $\gtG$ (else $\ed$), $\proj{t}{r}=t$, $\proj{\ed}{r}=\ed$. The \emph{merge} $\merge$ requires that a role not involved in a choice either behaves identically on all branches or is informed of the outcome before its behavior may differ; if the merge is undefined, $\gtG$ is \emph{rejected as unprojectable}---already a useful lint: it flags protocols in which an agent's duties silently depend on a decision it was never told about. A global type is \emph{well-formed} if it is projectable onto every role and all recursion is guarded. Each local type induces a finite \emph{endpoint state machine} (EFSM) $M_r=(S,s_0,\Sigma,\delta,F)$ whose alphabet is $r$'s sends and receives; conversely, under well-formedness, the (associative) composition of the projected EFSMs recovers the behaviors of $\gtG$ \citep{denielou12}.
+
+\subsection{Operational semantics and typing}
+A \emph{configuration} $C=(P_1,\ldots,P_n;\,\vec h)$ pairs role processes with FIFO queues $h_{pq}$ (asynchrony). The labelled transition system has actions $pq!\lbl(v)$ (role $p$ enqueues $\lbl(v)$ for $q$) and $pq?\lbl(v)$ (role $q$ dequeues), and $\mathrm{traces}(C)$ collects its finite action sequences. The typing judgment $\Gamma \vdash C \,\triangleright\, \Delta$ assigns each role's process its local type ($\Delta = \{p_i : \lt_i\}$); in the ``Less is More'' formulation \citep{scalas19}, desired behavioral properties are checked directly as safety/liveness predicates on the typing environment $\Delta$, repairing soundness gaps of the classical presentation and enlarging the set of typable protocols. Well-typedness is preserved under reduction (subject reduction), which drives:
+
+\begin{itemize}\itemsep1pt
+\item[\textbf{T1}] \textbf{(Communication safety.)} In a well-typed configuration, no role ever receives a message whose label or payload sort it cannot handle at its current state: every send is matched by a compatible receive \citep{hyc08}.
+\item[\textbf{T2}] \textbf{(Session fidelity / protocol conformance.)} Every trace of a well-typed configuration is a trace of $\gtG$: execution \emph{refines} the global type \citep{hyc08,scalas19}.
+\item[\textbf{T3}] \textbf{(Deadlock-freedom / progress.)} A well-typed single-session configuration never reaches a stuck non-final state: some role can always move until $\ed$ \citep{hyc08,scalas19}.
+\item[\textbf{T4}] \textbf{(Monitorability.)} If every endpoint is wrapped by a monitor that enforces its projected local type $\proj{\gtG}{r}$---accepting, suppressing, or rejecting boundary messages---then the observable behavior of the whole (untrusted) network satisfies $\gtG$; local checks compose to a global guarantee with no central observer \citep{bocchi13}.
+\end{itemize}
+T4 is the license for \stjp{}'s architecture: LLM endpoints are untrusted, monitors are generated from projections, and \emph{global} compliance falls out of \emph{local}, $O(1)$-per-event checking.
+
+\subsection{Extensions \stjp{} uses}
+\textbf{Refinements and choice guards.} Asserted/refined MPST \citep{bocchi10,refine24} decorates payloads with predicates, $\lbl(x{:}U)\{A\}$, where $A$ may mention previously bound values; \citet{chen12} extend this line to \emph{stateful} asynchronous properties---assertions over virtual state that evolves across the whole conversation, checkable at endpoints under asynchrony---the natural generalization target for our per-decision guards (\S\ref{sec:system}); and decorates \emph{choices} with guards selecting which branch the data permits:
+$p \sends q : \{\,\lbl_i(x_i{:}U_i)\{A_i\}.\,\gtG_i\,\}_{i}$ with $A_i$ over the session history. Statically dischargeable guards go to an SMT check; guards over LLM-produced values compile into the monitor. This is precisely the construct that closes the ``protocol-legal but value-wrong'' hole we observed empirically (\S\ref{sec:results}): choosing the \texttt{Standard} branch on \$50k+ revenue is legal for classical MPST and a violation for guarded MPST.
+
+\textbf{Behavioral flexibility via precise subtyping.} An agent need not follow its projected local type \emph{exactly}: session subtyping characterizes every safe deviation, and its \emph{precise} (sound \& complete) characterization \citep{chen17,chen24} draws the line tightly---every subtype-conformant behavior is safe, and any behavior outside the relation fails in some context. This is the formal license behind our lean contracts (\S\ref{sec:results7}): a compressed contract refined by the verbose one loses nothing, and preciseness says exactly how much slack a monitor may lawfully grant before it must reject. \textbf{Gradual typing of the LLM endpoint.} Gradual session types \citep{igarashi17} mix statically typed participants with a dynamically typed ($\mathtt{dyn}$) one, inserting casts at the boundary that preserve safety and progress. The LLM is \stjp{}'s $\mathtt{dyn}$ participant; the generated monitor \emph{is} the cast. The theory predicts what we measure: the untyped participant may \emph{attempt} anything; nothing ill-typed crosses the boundary.
+
+\textbf{Beyond the fragment.} Parameterised MPST \citep{param10} types fan-out over $n$ workers; dynamic multirole session types \citep{denielou11} admit roles joining/leaving---both on our roadmap, neither exercised by the experiments below, which fix the role set.
+
+\section{The \stjp{} Compiler}\label{sec:system}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig1_system.png}
+\caption{\textbf{The \stjp{} pipeline.} Compile time (top): an LLM drafts the user's intent as a Scribble global type with a refinement/choice-guard sidecar; the static validator rejects unsafe drafts with counterexamples (drafting the banking protocol live, four consecutive LLM drafts were rejected before the fifth passed); only a validated $\gtG$ is projected. Projection emits three artifacts per role: a lean local contract (the agent's skill), a generated EFSM monitor, and the schedule. Run time (bottom): the gate rejects off-contract sends \emph{pre-delivery} and re-prompts; the scheduler prompts only roles enabled at the current protocol state; every message lands in a typed event log over which all metrics are deterministic database queries. One sampled human outcome anchor stays outside the metric family.}
+\label{fig:system}
+\end{figure}
+
+\subsection{Pipeline}\label{sec:pipeline}
+\textbf{S1 --- Intent $\to$ draft protocol.} The user states a task (``six agents process a revenue report; if revenue exceeds \$50{,}000 an audit is mandatory before filing''). An LLM drafts a Scribble global protocol---roles, labels, payload sorts, branches, guarded recursion---plus a sidecar of refinement and choice guards (\texttt{.refn}; stock \texttt{scribble-java} is untouched) and \emph{goal markers}: designated protocol points whose ordered satisfaction encodes task completion, one marked \textsc{final}. The draft is endorsed by the user; intent negotiation is human-in-the-loop by design.
+
+\textbf{S2 --- Static validation.} The Scribble checker validates well-formedness: projectability (choice coherence via the merge $\merge$), matched sends/receives, guarded recursion, and reachability of every goal marker (the achievability check emits a witness path, later reused as the efficiency baseline). Validation is not decorative: live-drafting the banking case, four consecutive LLM drafts were rejected before the fifth passed, and the rejected finance draft contained a wait-for cycle $[\textit{Writer}\to\textit{RevenueAnalyst}\to\textit{TaxVerifier}]$ that \emph{would} deadlock at runtime---caught before any agent ran. Agents run on that unsafe draft completed only 20\% of trials.
+
+\textbf{S3 --- Projection $\to$ local contracts.} $\proj{\gtG}{r}$ is rendered as a lean per-agent skill: a \textsc{send}/\textsc{recv} table over the role's EFSM states with its refinement and choice guards attached at the states where the decision is made. The compressed contract is often \emph{smaller than the prose it replaces} (banking: 1{,}063--1{,}986 characters vs.\ 1{,}870 for the intent-only prompt): the table substitutes for coordination guesswork.
+
+\textbf{S4 --- Monitor generation.} Each local type compiles mechanically to its EFSM; the runtime monitor for role $r$ is an interpreter of $M_r$ with a state pointer and a value store for guard evaluation---a small generated Python program, deterministic, $O(1)$ per event, no LLM call. Verdicts: \emph{allow} / \emph{repair} / \emph{block}, plus \texttt{choice\_guard\_violation}. In \emph{gate} mode, off-contract sends are rejected \emph{pre-delivery} and the role is re-prompted with its enabled actions; by T4 these purely local gates jointly enforce $\gtG$.
+
+\textbf{S5 --- EFSM scheduling.} The same automaton knows whose turn it is. Instead of polling every agent every round (each idle poll a full LLM call answering \textsc{wait}), the scheduler prompts only roles enabled at the current protocol state, and tells sender-only roles so at the point of decision. This targets the dominant cost (the turn loop: $\sim$4.5 calls per delivered message unscheduled) and the dominant non-safety failure (liveness stalls, \S\ref{sec:results}).
+
+\subsection{The typed event log and judge-free metrics}\label{sec:log}
+The monitor emits, per message, a typed event: role, protocol position, branch choice, gate verdict, guard outcomes, goal-marker state. Over this log, evaluation is counting, not judging: conformance rate (allowed/repaired/blocked, per message---Completion-under-Policy computed mechanically); path distribution (each run reduces to a named path through $\gtG$; a retry-loop entry rate jumping 9\%$\to$40\% after a change is a regression no golden trajectory could encode); goal progress (read off $\checkmark\varphi$ markers---the deterministic replacement for LLM-judged ``milestone completion,'' and the only metric class that sees an agent looping in place); detour cost (events $\div$ the compile-time witness's shortest accepting path); repair burden (gate interventions over time). All are bit-reproducible: re-running the evaluators on a run directory yields identical numbers although the measured agents are stochastic.
+
+\begin{table}[t]
+\centering\small
+\caption{Static guarantees inherited from MPST (\S\ref{sec:mpst}) and their operational meaning.}
+\label{tab:guarantees}
+\begin{tabular}{@{}p{3.4cm}p{5.6cm}p{5.2cm}@{}}
+\toprule
+\textbf{Guarantee} & \textbf{Agent-system meaning} & \textbf{Consequence} \\
+\midrule
+Deadlock-freedom (T3) & Circular waits rejected at compile time & Kills the silent-stall, token-burning failure mode for \emph{all} runs \\
+Communication safety (T1) & An agent can only emit messages the protocol permits at its state; recipient sets are part of the type & Off-protocol detours and unauthorized disclosure rejected by construction \\
+Session fidelity (T2) & Every trace refines the endorsed $\gtG$ & The log is audit evidence against a proven reference \\
+Monitorability (T4) & Local $O(1)$ gates compose to global compliance & Decentralized enforcement; no watching agents \\
+Bounded recursion & Loops carry guarded bounds & No infinite-loop billing; the bound is auditable pre-deploy \\
+Bounded messages & Worst-case per-role message count from projection & Token cost becomes a ceiling, not a hope \\
+Minimal capabilities & Required tools $=$ labels of $\proj{\gtG}{r}$ & Least-privilege \texttt{allowed-tools} derived, not guessed \\
+Refinements + choice guards & Payload and branch predicates checked at the boundary & ``Protocol-legal but value-wrong'' branches (skip audit on \$50k+) become violations \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Evaluation Methodology}\label{sec:method}
+\subsection{Defining conformance and goal achievement}
+\textbf{Conformance, three levels.} Let $T$ be a run's trace. \emph{(C-struct)} Structural: every message of $T$ is accepted by the corresponding monitor EFSM---equivalently $T$ is a path through the validated $\gtG$ (deterministic, per-message). \emph{(C-refine)} Refinement: all payload and choice-guard predicates hold. \emph{(C-sem)} Semantic: payload content is faithful to the task; only this residue may require an LLM judge, run batched, sampled, calibrated on human labels, and stored apart from the deterministic verdicts. Design principle: shrink the judged surface to what is genuinely semantic.
+
+\textbf{Goal achievement.} A run achieves its goals \emph{strictly} iff every goal marker is satisfied, in protocol order and in the \emph{same attempt}, including the \textsc{final} marker, under three critical-property checks: \textbf{C1 data provenance} (reported values trace to real inputs), \textbf{C2 context completeness} (required reads precede the decision, by timestamp), \textbf{C3 authorization before irreversible acts} (\texttt{approve} precedes \texttt{file}, by message order). Relaxed rungs (role-pair, semantic) are reported alongside. We additionally report \textbf{clean-goal completion (CGC)}: the fraction of trials that reach the goal with \emph{zero} violations of any severity. GCR asks ``did it get there''; CGC asks ``did it get there without breaking anything on the way''---the gap between them is precisely the lucky-run phenomenon that pass-rate metrics hide. One sampled human-labeled outcome measure stays \emph{outside} the family as an anchor: a perfectly conformant system can execute a badly conceived choreography, and divergence between excellent protocol metrics and unhappy users indicts $\gtG$, routing to re-drafting with the human, not to patching agents.
+
+\subsection{Consequence-graded violations (S0--S4)}
+Raw ``violation $=$ deviation from our protocol'' is circular---baselines that never saw the protocol fail by construction. We therefore (i) align observed message labels semantically before judging, then (ii) grade each surviving deviation by \emph{consequence} against the partial order that has reasons (data and authority dependencies), annotated with irreversibility: \textbf{S0} benign reorder/dialect (not counted); \textbf{S1} waste (duplicates, polling; cost only); \textbf{S2} skipped obligation / broken order; \textbf{S3} never terminated; \textbf{S4} \emph{irreversible act before its authorization} (disaster class). The taxonomy is itself validated: across every arm of every run, $P(\text{goal failure}\mid\text{attempt had S2+})=100\%$, while benign deviations did not predict failure---the grader measures harm, not difference.
+
+\subsection{Arms and fairness}
+All arms share the intent, role descriptions, model, step and retry budgets; the canonical validated type judges every arm (agents in A never see it). \textbf{A}: intent only. \textbf{B}: A $+$ the full validated global type pasted as text. \textbf{C}: A $+$ only the role's projected local contract (observer monitor). \textbf{C-min}: C with a one-line-per-transition contract. \textbf{C+}: C plus the \emph{enforcement gate} (and, where stated, the scheduler --- the full \stjp{} stack). Experiments were pre-registered: predictions written before running, graded after (\S\ref{sec:honest}).
+
+\section{Experiments and Results}\label{sec:results}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig2_results.png}
+\caption{\textbf{Headline results.} (a) Strict goal completion along the protocol-information ladder for both models. (b) Disasters: intent-only agents under the \emph{stronger} model committed 22 unauthorized irreversible acts in 30 attempts; every typed arm, zero. (c) Cost of one delivered goal (gpt-5.4 grand run): unenforced protocol text (B) is cheapest when the model happens to comply---guarantees cost $\approx3\times$ over B on this run. (d) The EFSM scheduler recovers the cost: on a shared decentralized runtime, full \stjp{} delivers the same 100\%/zero-disaster outcome at 13.3k tokens per goal vs.\ 120k for protocol-as-text ($9\times$) with $-73\%$ LLM calls; tokens-per-call stays flat, so the entire saving is fewer calls.}
+\label{fig:results}
+\end{figure}
+
+\subsection{The protocol-information ladder (finance, gpt-4o, $n{=}10$)}
+\begin{table}[t]
+\centering\small
+\caption{Protocol-information ladder, finance case, gpt-4o, $n{=}10$ per arm.}
+\label{tab:ladder}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Metric} & \textbf{A intent} & \textbf{B global text} & \textbf{C local} & \textbf{C-min} \\
+\midrule
+GCR (strict) & 0\% & 40\% & \textbf{80\%} & 60\% \\
+Monitor acceptance & 0\% & 60\% & \textbf{100\%} & 84\% \\
+Tokens/trial & 15.4k & 35.4k & 33.7k & 28.2k \\
+Cost of success (tokens $\div$ GCR) & $\infty$ & 88.5k & \textbf{42.1k} & 47.0k \\
+Redundancy ratio (events $\div$ min.\ path) & 1.9$\times$ & 2.2$\times$ & \textbf{1.5}$\times$ & 2.0$\times$ \\
+\midrule
+Severity S2 / S3 / \textbf{S4} & 14 / 24 / \textbf{4} & 3 / 18 / 0 & 4 / 5 / \textbf{2} & 7 / 4 / \textbf{3} \\
+\bottomrule
+\end{tabular}
+\end{table}
+Each step of the ladder is earned by a different mechanism (Table~\ref{tab:ladder}). \emph{Validation} earns the first: agents given an \emph{unsafe} draft completed 20\%; the validated text arm, 40\%. \emph{Projection + monitoring} earns the second: 40\%$\to$80\%. A's fair indictment, after severity alignment, is not ``184 raw violations'' (134 were dialect) but \emph{filed the report before approval/audit four times in thirty attempts}. And C is not spotless: its two S4s were \emph{protocol-legal but value-wrong branch choices} (taking the \texttt{Standard} branch on $>$\$50k revenue)---exactly the hole classical MPST cannot express and choice guards close (\S\ref{sec:mpst}); with guards compiled into contracts and monitors, this class becomes detectable (observer) and then non-completable (gate), verified by offline replay in both directions with no false positives on unevaluable guards.
+
+\subsection{Enforcement: observer vs.\ gate (finance, gpt-5.4, $n{=}5$, branch-balanced)}
+\begin{table}[t]
+\centering\small
+\caption{Identical contracts; the only delta is the gate ($+$ liveness nudge). gpt-5.4, $n{=}5$.}
+\label{tab:gate}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Metric} & \textbf{C observer} & \textbf{C+ gate} \\
+\midrule
+GCR (strict, same attempt) & 80\% & \textbf{100\%} \\
+Attempts per trial & 1.40 & \textbf{1.00} \\
+Delivered violations & 6 / 63 events & \textbf{0 / 53} \\
+Stalled attempts (S3) & 3 & \textbf{0} \\
+Tokens per trial & 114.9k & \textbf{80.9k} ($-30\%$) \\
+Seconds per trial & 170.3 & \textbf{122.1} ($-28\%$) \\
+LLM calls per trial & 54.2 & \textbf{37.6} ($-31\%$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+The mechanism is visible in the traces (Table~\ref{tab:gate}): in both arms \textit{TaxVerifier} repeatedly attempted to send \texttt{Approval} early. Observed, the premature send was \emph{delivered} four times and once cascaded the session off-protocol, failing the trial; gated, the identical mistake was attempted twice, rejected pre-delivery both times, the role re-prompted---and every trial completed on the first attempt. Enforcement \emph{paid for itself}: rejecting a wrong send is cheaper than delivering it and retrying ($-30\%$ tokens, $-28\%$ time at equal cost-per-success).
+
+\subsection{Grand five-arm comparison (finance, gpt-5.4, $n{=}10$)}\label{sec:grand}
+\begin{table}[t]
+\centering\small
+\caption{All five arms, one model, one run. ``Harmful attempts'' $=$ attempts containing S2+/S4.}
+\label{tab:grand}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Metric} & \textbf{A intent} & \textbf{B global} & \textbf{C local} & \textbf{C-min} & \textbf{C+ gate} \\
+\midrule
+GCR (strict) & 0\% & \textbf{100\%} & 60\% & 50\% & \textbf{100\%} \\
+Attempts per trial & 3.00 & 1.00 & 1.90 & 2.00 & \textbf{1.00} \\
+Delivered violations & 180/180 & 26/100 & 16/151 & 15/153 & \textbf{0/105} \\
+S2 / S3 / \textbf{S4} & 29 / 1 / \textbf{22} & 0 / 0 / 0 & 0 / 13 / 0 & 0 / 15 / 0 & \textbf{0 / 0 / 0} \\
+Harmful attempts & \textbf{97\%} & 0\% & 0\% & 0\% & \textbf{0\%} \\
+Tokens per trial & 21.7k & 24.4k & 154.1k & 84.0k & 79.5k \\
+Tokens per success & $\infty$ & \textbf{24.4k} & 96.8k & 44.7k & 79.5k \\
+Seconds per trial & 109 & \textbf{51} & 230 & 245 & 121 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Five findings, in order of importance (Table~\ref{tab:grand}). \textbf{(1) B and C+ tie on outcome---and B is cheaper.} Both reach 100\% with zero harm; B does it at 24.4k tokens per success vs.\ 79.5k. They differ in \emph{kind}: B relies on the model \emph{choosing} to follow pasted text (no mechanism); C+ blocks wrong messages mechanically (it intercepted five premature \texttt{Approval} sends this run). On this model and case, enforcement was sufficient but not \emph{necessary} for the outcome; this benchmark does not show C+ beating B---it shows the \emph{validated protocol}, present in both, doing the safety work. \textbf{(2) A stronger model makes intent-only agents more dangerous, not safer.} gpt-5.4's A-arm acted confidently and fast: 22 unauthorized irreversible acts in 30 attempts, 97\% harmful, 0\% completion (vs.\ 4 disasters under gpt-4o). Capability amplifies the coordination gap. \textbf{(3) B's 100\% is real but unguaranteed.} The same arm scored 40\% (gpt-4o), 0\% (gpt-4o live) and 50\%-with-stalls (banking); its good behavior is a property of the model and the protocol's shape, not of the system, and it carries no mechanism preventing the A-arm failure mode. \textbf{(4) Observer projection underperformed---from liveness, not contracts.} All 13/15 failures in C/C-min were S3 stalls; C+ uses \emph{identical contracts} plus the gate and scheduling nudge: 60\%$\to$100\%. The projection must \emph{drive} the runtime, not just judge it. \textbf{(5) Guarantees cost $\approx3\times$ tokens-per-success over B} on this run---the honest price of ``cannot misbehave'' vs.\ ``happened not to misbehave''---which motivates the next experiment.
+
+\subsection{Scheduler ablation: winning the cost back ($9\times$)}
+On a shared decentralized runtime (finance, gpt-5.4, $n{=}10$; run 2026-07-02), protocol-as-text costs 120k tokens per delivered goal at 41.8 calls/trial, because every role re-reads the whole protocol and idle roles are polled every round. Lean contract $+$ gate: 38k at 34.0 calls. Full \stjp{} (adding the EFSM scheduler): \textbf{13.3k tokens per goal, 11.4 calls, 32s/trial}---$9\times$ cheaper than B and $-73\%$ calls, at identical 100\% GCR and zero disasters across all three (Fig.~\ref{fig:results}d). Tokens-per-call stayed flat (1.12k vs.\ 1.07k), so the entire saving is \emph{fewer calls}: the mechanism, not verbosity effects. The gate rejected 10--12 off-contract send attempts per trial even in succeeding runs---enforcement measured as work done, not decoration.
+
+\subsection{Banking: S4 in dollars; and the statically caught deadlock}
+On the live-drafted 5-role banking pipeline (gpt-4o, $n{=}2$), intent-only agents \emph{moved money before authorization} twice in six attempts, with nothing in their own stack flagging it; typed arms reached 100\% GCR with zero S4 (and their eight raw monitor flags collapsed under grading to a single harmless S2). Separately, a two-role trading protocol seeded with the classic circular wait (Desk waits for Executor's ready; Executor waits for Desk's request) stalls every bare run forever; Scribble rejects the global type \emph{before any agent runs}, at zero token cost, and the repaired protocol executes at 100\%. No runtime guardrail, judge, or benchmark can offer this: they all require the failure to occur at least once. Testing observes runs; typing quantifies over all of them.
+
+\subsection{Pre-registered predictions, graded --- including the ones we got wrong}\label{sec:honest}
+\textbf{P1 (falsified twice, differently).} We predicted unenforced global text (B) would slip below 100\%: under gpt-4o it did (40\%); under gpt-5.4 it did not (100\%, \S\ref{sec:grand}). What survives both outcomes: the gate rejected real off-contract attempts in \emph{every} gated run---the model tries to stray; the boundary catches it---and enforcement value is a decreasing function of model strength while the danger of \emph{no protocol at all} is an \emph{increasing} one (22 vs.\ 4 disasters). \textbf{P2 (confirmed beyond margin).} Scheduling saves $\geq$60\% tokens vs.\ lean$+$gate: measured $-65\%$ tokens, $-66\%$ calls. \textbf{P3 (half-confirmed).} Projection alone does not beat global text; projection \emph{with enforcement and scheduling} dominates it on the same runtime. \textbf{P4 (deferred).} Orchestrator-cost comparison was inconclusive (infrastructure issues on the group-chat arm). \textbf{P5 (confirmed).} Scheduling cuts calls without inflating tokens per call. We report these grades because a verification paper that hides its own falsified predictions has misunderstood its subject.
+
+\subsection{Two systems lessons}\label{sec:lessons}
+\textbf{Liveness cannot be enforced by observation.} The dominant failure of one gate run was inaction: a role whose whole contract is one \textsc{send} answered \textsc{wait} repeatedly; a monitor judges events, and a \textsc{wait} emits none. A contract can make every action that happens correct; it cannot, by observation alone, make an action happen. The fix is structural---the projection already contains the schedule (S5). \textbf{Tone is part of the contract surface.} An imperative liveness nudge (``WAIT is OFF-CONTRACT here; act now,'' with a mojibaked em-dash) made gpt-5.4 \emph{refuse outright} in both nudged roles, stalling the arm at zero events; the same content rephrased descriptively (``Protocol status: \ldots the available action at this state is \textsc{send} \texttt{ExpenseData}\ldots'') was followed 5/5 first-attempt. Runtime governance text must be neutral, ASCII-safe, and informative; stronger models police the difference.
+
+\section{The Validation Suite at $n{=}100$}\label{sec:bench}
+The pilot evidence of \S\ref{sec:results} was concept-scale ($n{\leq}10$, one model family, friendly agents, an untested checker). We therefore designed a component-isolating suite---one experiment per component, each pre-registered before running---and executed it at $n{=}100$; the E3 capability sweep is now measured across three Claude tiers on both tasks. Everything below is \textbf{measured} (repository, with a per-number data map), fully terminal (0 abandoned trials after the forensic audit), and its total compute cost was under \$100.
+
+\textbf{E0 --- Testing the testers first.} A 40-trace verdict corpus with hand-derived expected verdicts (clean traces, every severity class, concurrent interleavings on independent channels, unevaluable-guard silence, the \texttt{Approval(False)} edge case). Monitor and grader score 40/40---and, instructively, three of the \emph{hand derivations} were wrong and corrected against the semantics; the instruments were right. All downstream experiments inherit this validated referee. An integration stress harness additionally exercises all five pipeline stages 100 times ($2105/2110 = 99.76\%$ checks passing; the five failures are a FIFO-swap mutation that yields another well-formed protocol on acyclic inputs, which Scribble \emph{correctly} accepts).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig3_projected.png}
+\caption{\textbf{Validation suite.} (a)~E1, measured: detection of seeded defects over a 100-protocol corpus. Well-formedness defects (undeclared role, choice-knowledge violations) are what the checker must catch: 95.1\% group detection, \emph{zero} false positives on the valid corpus. Reorderings of acyclic protocols mostly yield \emph{another valid protocol}; flagging only 0.8\% of them is correct acceptance, not a miss---the greyed bar is a feature. (b)~E2, measured: 1{,}200 injected exfiltration attempts per condition. Keyword rules are evaded by seven template classes (encodings, synonyms, splitting); the structural gate is disguise-proof for every illegal route but is blind to a payload smuggled inside a legitimately-labelled message to a legal recipient (one template, 8.3\%); adding value-refinement guards closes exactly that hole: 100\%. The layering is the finding. (c)~E3, measured: clean-goal completion across three Claude tiers on \texttt{revenue\_audit} (haiku $n{=}100$, sonnet $n{=}30$, opus $n{=}10$). Observe-arm safety and cleanliness are capability-dependent (95 premature filings at the weak tier; zero above); the gated arm is flat at 100\% with zero disasters at every tier. (d)~E6, measured structural cost proxy (contract size $\times$ scheduled polls): the global-text-to-\stjp{} ratio grows from $9.2\times$ at two roles to $17.1\times$ at ten.}
+\label{fig:projected}
+\end{figure}
+
+\textbf{E1 --- Mutation testing the checker (Fig.~\ref{fig:projected}a).} Seven mutation operators over a 100-protocol corpus (2--10 roles, four topologies). The pre-registered prediction separated two families, and the data respected the split: \emph{well-formedness} defects are detected at 95.1\% (226 mutants; undeclared role and flipped-choice-subject at 100\%, branch asymmetry---a role acting on branch knowledge it cannot have---at 82.5\% raw) with 0/100 false positives; adjudicating the eleven branch-asymmetry survivors found seven to be \emph{accidentally valid} mutants (correct acceptances) and four to share one reproducible genuine gap---the deletion empties a branch, projection silently drops it, and an idle role is left unconditionally awaiting a message the chooser may never send, a knowledge-of-choice deadlock the checker misses---re-scoping detection to real defects at 92.9\% and converting a bare percentage into a named limitation; \emph{reordering} operators (400 mutants) are flagged at only 0.8\%---correctly, because reordering an acyclic protocol usually produces a different but valid protocol. Detecting \emph{intent} drift under valid reorderings is the E5 scorer's job, not the type checker's; conflating the two is how benchmarks overstate their tools. The evaluation standard here is deliberately the two-sided \emph{preciseness} discipline of \citet{chen17,chen24}---soundness (nothing bad accepted) and completeness (nothing good rejected) measured together---transplanted from characterizing a subtyping relation to auditing a checker implementation.
+
+\textbf{E2 --- Adversarial exfiltration (Fig.~\ref{fig:projected}b).} Twelve prompt-injection templates $\times$ 100 trials against a finance protocol with a confidential payload and an ExternalAuditor role that legally receives only the public summary. No guard: 0\% blocked. An honestly tuned keyword-and-role rule list: 41.7\%, evaded by encoding, synonyms, typos, split payloads, and innocuous relabeling. The structural gate: 91.7\%---it blocks every attempt to use an illegal (label, recipient) edge regardless of disguise, because legality is checked against the type, not the wording; the surviving 8.3\% is exactly one template that smuggles the payload \emph{inside} a legitimately-labelled message on a legal route, which structure cannot see. Gate plus value-refinement guards: 100\%. Each mechanism catches precisely the class the theory says it catches.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig4_ladder.png}
+\caption{\textbf{The six-arm ladder at $n{=}100$ (measured; 1{,}200 trials total, cheap subagent roles, cost in LLM calls).} Light bars: goal completion (GCR); solid: clean-goal completion (CGC, goal reached with zero violations); red counts: trials containing an unauthorized irreversible act; bottom row: mean calls per trial. (a)~\texttt{revenue\_audit} (file only after approval): unenforced global text reaches the goal in 100/100 trials---and files before approval in 95 of them; the observe-mode local-contract arm collapses to 32\% on pure liveness (an agent re-sending into silence); every enforcing arm shows zero disasters \emph{by construction}. (b)~\texttt{escrow\_trade}: violations invisible at $n{=}10$ surface in every observe arm (26--49); after 18 abandoned-but-healthy C+spec trials were driven to termination the gated arms tie \stjp{} on liveness, and the scheduler delivers the cost win: 7.0 calls/trial vs.\ 24.7--28.8. Post-audit final numbers; 0 non-terminal trials.}
+\label{fig:ladder}
+\end{figure}
+
+\textbf{The six-arm ladder at $n{=}100$ (Fig.~\ref{fig:ladder}).}\label{sec:results7} Two new tasks---\texttt{revenue\_audit} (3 roles; the safety axis) and \texttt{escrow\_trade} (4 roles; the cost axis)---replicate the finance ladder without Foundry, with cheap subagent role-players and $n{=}100$ per arm (1{,}200 trials). The six arms turn three independent knobs: \emph{what the agent sees} (intent / global text / local projection), \emph{whether the monitor enforces} (observe vs.\ gate---the same program in two modes), and \emph{who gets polled} (all roles every round vs.\ only the enabled sender). Three results settle questions the pilot left open. \textbf{(i) The B tie collapses.} In \S\ref{sec:honest}, unenforced global text tied the gated arm on outcome, and we declined to claim enforcement was necessary. At $n{=}100$ under concurrent polling, arm B reaches the goal in 100\% of \texttt{revenue\_audit} trials while committing the forbidden act---filing before approval---in \emph{95 of 100}. Trace forensics make the mechanism exact: in 60 of those trials the Auditor \emph{approved without ever receiving the revenue figure} and the Filer filed in the same first round; in 35 more all three messages fired in round one; only 5 trials serialized. The filed-at-round histogram is binary: B files at round~1 in 95/100 trials; intent-only files at round~3, after approval, in 99/99 filed trials---handed the whole protocol under concurrent polling, the weak model races it; denied the protocol, it fumbles slowly into a safe order by accident. GCR conceals this entirely; CGC (goal \emph{and} zero violations) reads 5\%. Prose compliance does not survive concurrency. \textbf{(ii) Liveness, again, structurally.} The observe-mode local-contract arm completes only 32\% of \texttt{revenue\_audit} trials---all 68 stalls show the same pattern, an agent re-sending \texttt{Revenue} into an unenforced wait---reproducing at scale the lesson that contracts constrain what happens but cannot make anything happen; the projection must drive the runtime. \textbf{(iii) Safest and cheapest, simultaneously.} Every enforcing arm shows zero disasters at $n{=}100$ in both tasks---not zero-so-far but zero \emph{by construction}, since the monitor in enforcing mode rejects the disallowed send before delivery---and full \stjp{} is also the cheapest arm (3.0 and 7.0 calls/trial vs.\ 3.3--28.8), because the scheduler never spends a call on a role whose turn it structurally is not. On \texttt{escrow\_trade}, once eighteen abandoned-but-healthy C+spec trials were driven to termination (see the audit below), the gated arms tie \stjp{} on liveness (97--98\%, all at 0 disasters); \stjp{}'s escrow advantage is then \emph{purely} the $4\times$ cost edge---an honest decomposition we prefer to an inflated gap. \textbf{(iv) Reconciliation: no unenforced arm is safe across conditions.} Holding the finance run and the ladder side by side, the failing arm \emph{moves}: intent-only was the villain under a strong confident model (22 disasters, finance), unenforced global text under concurrent polling (95 disasters, \texttt{revenue\_audit} --- trace-verified: \texttt{Filer$\to$Analyst:Filed} in round~1 with no \texttt{Approval} preceding it, because poll-all hands the Filer its first turn before approval can exist), and the observe-mode local contract on liveness (31\%) or violation volume (49, \texttt{escrow\_trade}). Which unenforced configuration fails is a function of model, task, and scheduling that nobody can predict in advance---and the measured capability sweep (Fig.~\ref{fig:projected}c) closes the model axis: on identical protocol text, B's premature filings go 95$\to$0$\to$0 across the haiku/sonnet/opus tiers, intent-only's cleanliness goes 2\%$\to$100\%, and the escrow sweep mirrors both (observe-arm disasters 26--35$\to$0). The enforcing arms are the only \emph{invariant} of the whole grid---zero disasters in every task, model tier, and scheduler tested, with zero gate rejections even needed at the stronger tiers. Notably, the strong model's \emph{safe} B costs 9.0 calls/trial against reckless haiku's 3.3: the unenforced arm pays for safety in serialization, while \stjp{} gets safety and 3.0 calls simultaneously because the scheduler neither races nor idles. Table~\ref{tab:ctcg} prices this: dividing mean calls by CGC, B's apparently cheap 3.3 calls/trial becomes 66 calls per \emph{clean} goal once poisoned successes stop counting, and full \stjp{} wins by $4$--$22\times$ on the metric an operator actually pays---while being the safest arm rather than trading safety for it. In dollars (weak-tier roles at list price): a clean, safe audit costs \$0.38 under \stjp{} versus \$1.12--\$9.09 for the alternatives, and the entire 1{,}200-trial suite cost under \$100.
+
+\begin{table}[t]
+\centering\small
+\caption{Cost to \emph{clean} goal (mean calls/trial $\div$ CGC), $n{=}100$ per arm. GCR-based cost rankings reverse once violated runs stop counting as successes.}
+\label{tab:ctcg}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Task} & \textbf{A intent} & \textbf{B global text} & \textbf{C-min obs.} & \textbf{C+spec} & \textbf{C+min} & \textbf{\stjp{}} \\
+\midrule
+\texttt{revenue\_audit} & 450 & 66 & 1165 & 9.3 & 9.0 & \textbf{3.0} \\
+\texttt{escrow\_trade} & 39.7 & 39.5 & 36.1 & 28.9 & 29.8 & \textbf{7.1} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{E3 --- Capability sweep (measured; Fig.~\ref{fig:projected}c).} Three Claude tiers (haiku $n{=}100$, sonnet $n{=}10$--$30$, opus $n{=}10$; one mind per trial, every trial verified against raw state) across both ladder tasks. Three findings. \emph{Unenforced safety is capability-dependent}: B's premature filings fall 95$\to$0$\to$0 on identical protocol text, and escrow's observe-arm disasters fall 26--35$\to$0. \emph{Unenforced cleanliness is capability-dependent}: intent-only rises from 2\% to 100\% CGC as duplicate-send waste vanishes---a stronger model self-organizes without being shown the protocol. \emph{Enforcement is capability-invariant}: the gated arm is 100\% CGC, zero disasters, zero gate rejections, at every tier. As capability rises the unenforced arms approach the gated arm; read naively, that says strong models need no enforcement---read correctly, the closing gap is an \emph{average} while the gate's zero is a \emph{guarantee}: production does not get to assume the strongest model, and even strong models carry a failure tail that enforcement makes exactly zero. The one remaining E3 gap is vendor diversity (a non-Claude frontier point), an access limitation we report rather than fake. The shape of this debate is not new: every type system in history has faced ``skilled programmers don't need it,'' and the answer adopted by every safety-critical industry is that averages improve with skill while tails do not vanish, and criticality is priced on the tail. The designed probe for the strong-model tail already exists in this suite: E2, where the violation is produced by the attack surface rather than by model weakness; running E2 with frontier-tier agents is the experiment that makes the tail visible at the top of the capability curve, and it is first on our post-submission list.
+
+\begin{table}[t]
+\begin{minipage}[t]{0.53\textwidth}
+\centering\small
+\caption{E4, measured: reliability at $n{=}100$ (infrastructure trials; Wilson 95\% intervals). Narrowing the CI is what $n{=}100$ buys: $\mathrm{pass}^{10}$ at the CI floor rises $17.6\times$.}
+\label{tab:passk}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Arm} & \textbf{succ/$n$} & \textbf{95\% CI} & \textbf{$\mathrm{pass}^{10}$@LB} \\
+\midrule
+unchecked, $n{=}10$ & 0/10 & [0.0, 27.8]\% & 0 \\
+\stjp{}, $n{=}10$ & 10/10 & [72.2, 100]\% & 0.039 \\
+unchecked, $n{=}100$ & 0/100 & [0.0, 3.7]\% & 0 \\
+\stjp{}, $n{=}100$ & 100/100 & [96.3, 100]\% & \textbf{0.686} \\
+\bottomrule
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.43\textwidth}
+\centering\small
+\caption{E5: translation-fidelity instrument, measured; LLM-dependent measures pending.}
+\label{tab:transfid}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Measure} & \textbf{Result} \\
+\midrule
+EFSM-equivalence scorer accuracy & 300/300 \\
+\quad identical / reformatted / mutant & 100\% each \\
+First draft passes validator & pending \\
+Repair rounds to validity & pending \\
+Guard sidecar co-emission & pending \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\end{table}
+
+\textbf{E4 --- Reliability (Table~\ref{tab:passk}).} The $n{=}100$ runs use a contract-following strategy in place of a live model: they certify the \emph{infrastructure} (gate rejects exactly the illegal sends, scheduler polls exactly the enabled role, monitor emits clean traces) at scale, while live-model behavior is carried by the finance runs (\S\ref{sec:results}) and the subagent ladders above. Under that scoping: the unchecked arm's interval narrows to $[0, 3.7]\%$---structurally incapable, not unlucky---and the \stjp{} arm's $\mathrm{pass}^{10}$ at the Wilson floor rises from 0.039 to 0.686. The $n{=}100$ deadlock replication is the same story in miniature: the unchecked configuration deadlocks in 100/100 trials, always in round two, burning 800 calls; \stjp{} completes 100/100 at the protocol-optimal 7.0 calls/trial---\emph{fewer total calls than the arm that never finishes}.
+
+\textbf{E5 --- Translation fidelity (Table~\ref{tab:transfid}).} The deterministic half is done: the EFSM-bisimulation scorer that will judge LLM-drafted protocols against expert gold classifies 300/300 pairs (identical / semantics-preserving reformat / seeded mutant) correctly. The LLM-dependent half---first-draft validity, repair rounds, guard co-emission---remains the declared open seam and is measurement-pending; the scorer's validation is what makes those forthcoming numbers trustworthy.
+
+\textbf{E6 / E7 --- Scaling and portability.} The roles sweep (Fig.~\ref{fig:projected}d) confirms the pre-registered shape on a structural proxy: global-text coordination cost grows super-linearly (every role re-reads a growing protocol under poll-all), \stjp{} near-linearly (each role sees only its slice; one enabled poll per step), with the ratio widening from $9.2\times$ to $17.1\times$ between 2 and 10 roles; token-metered curves are pending. For portability, the standalone generated monitor agrees with the in-process monitor on 59/59 testable canonical traces (41 choice-only protocols yield no meaningful canonical trace; the claim is scoped to testable ones), and a LangGraph adapter executing the ladder protocols as StateGraphs agrees with the native monitor on 14/14 clean-and-injected checks, consistent with T4's placement of enforcement at message boundaries; the skill-runtime third harness is pending.
+
+\textbf{Pre-registration, graded; and the audit that changed a number.} All eight v2 predictions were registered before running and graded after: E0, E1 (with the reordering-acceptance clause), E2 (with the predicted legal-route smuggle), E4, E5-scorer, E6-proxy, and E7-agreement \textsc{confirmed}; E3, registered pending, is now measured with its capability clause confirmed and vendor diversity still open. A post-hoc forensic audit of the full dataset then re-verified every suspicious pattern: B's low-diversity replies were adjudicated genuine on three independent behavioral signals (three distinct trace shapes, including a five-trial serialized branch no script would produce); intent-only's zero disasters trace to accidental serialization, its 591 violations all named duplicate-send waste; and the audit surfaced one material bug the checklist had not targeted---22 of 1{,}200 trials were abandoned mid-play rather than failed, 18 of them depressing one gated arm's reported liveness to 79\% against a true $\sim$97\%. All 22 were driven to termination and every table regenerated; the 19 \emph{genuine} gated-arm deadlocks were left standing, because replaying real failures until they pass is p-hacking. We also log the integrity incidents scale surfaced: subagent role-players caught writing auto-responder scripts instead of reasoning per poll (detected by a \texttt{malformed==calls} signature and self-confession, discarded and replayed), a round-numbering bug that could mask disasters (fixed with causal detection), and a false-positive disaster check on enforcing arms (fixed mid-analysis); the final audit verified all 1{,}200 ladder trials against raw state files with zero remaining fraud and zero non-terminal trials. We report these because a verification paper that does not verify its own experiments has misunderstood its subject.
+
+\section{Limitations}\label{sec:limits}
+\textbf{The translation seam.} Intent$\to$Scribble and contract$\to$skill rendering pass through an LLM; the validator rejects structurally invalid drafts, but a valid-yet-unintended protocol survives (validated $\neq$ intended). Shipped mitigations: human endorsement of $\gtG$; the outcome anchor. Planned: benchmark item 5 and a fine-tuned translator. \textbf{Scope of the theorems.} T3 is per-session; interleaved sessions need compositional/hybrid extensions; dynamic role join/leave needs \citep{denielou11}; our experiments fix the role set. \textbf{Expressiveness.} Open-ended brainstorming resists protocolization, and forcing it into a type would be dishonest; \stjp{} targets the coordination-critical, authorization-laden regime. Probabilistic session types are a candidate middle path. \textbf{Statistics and scope of the $n{=}100$ suite.} The live gpt-4o/gpt-5.4 finance runs remain $n\leq10$ per cell; the $n{=}100$ suite fixes the statistical power but substitutes cheap subagent role-players (ladders) or contract-following strategies (E4) for frontier models, and plays each trial's roles from one subagent's per-role views rather than truly independent agents. The E3 sweep now spans three Claude tiers on both tasks but lacks a non-Claude frontier point (an access limitation), so vendor generality of the capability curve remains open; the tone finding (\S\ref{sec:lessons}) especially needs cross-model replication. \textbf{Grader and guards.} The post-hoc severity grader is payload-blind at milestones (\texttt{Approval(False)} currently counts as the authorization milestone; the monitor-level guard closes this, the grader upgrade is pending); choice-guard authoring is manual (the drafter should co-emit the sidecar). \textbf{Crash and abandonment.} The audit's 22 non-terminal trials are, formally, \emph{crash failures}---a role stops mid-session---and today \stjp{} handles them operationally (detect, re-drive) rather than in the type. A typing discipline for statically verified crash-failure handling exists \citep{viering18}: failure-aware local types with typed recovery paths would let the validator prove every crash of every role leaves the session recoverable, turning our most embarrassing audit finding into a checkable property; this is the highest-leverage theory extension on our roadmap. \textbf{Monitor correctness} is validated (theory-matching, regression tests, manual audits), not mechanized.
+
+\section{Conclusion}\label{sec:conc}
+When skills became the programming language of multi-agent systems, the field skipped the compiler and went straight to observability. \stjp{} retrofits the missing stage: intents compile into a protocol algebra with a forty-year pedigree; faulty choreographies are rejected before a single token is spent; and the artifacts agents actually receive---lean local skills, generated monitors, guards, a protocol-driven scheduler---are projections of a proven object rather than prose approximations of a hopeful one. A 1{,}200-trial validation suite replicates the shape at $n{=}100$: observing arms accumulate real violations that goal-rate metrics hide, enforcing arms show zero by construction, and the checker itself survives mutation testing with zero false positives. The empirical shape is what compilation always buys: the same guarantees, then made cheap ($9\times$ on cost-to-goal once the projection is allowed to \emph{drive} the runtime), plus a class of properties---deadlock-freedom, goal reachability, authorization ordering, guarded branching, recipient confidentiality---that no amount of runtime watching can provide, because they quantify over runs that never happen. Prompts move probabilities; only checks move guarantees. The open seam---natural language in, formal protocol out---is real, measurable, and, we argue, the right next benchmark for the field.
+
+\begin{thebibliography}{28}\small
+\bibitem[Honda et al.(2008; 2016)]{hyc08} K.~Honda, N.~Yoshida, M.~Carbone. Multiparty asynchronous session types. \emph{POPL} 2008; \emph{J.~ACM} 63(1), 2016.
+\bibitem[Scalas \& Yoshida(2019)]{scalas19} A.~Scalas, N.~Yoshida. Less is more: multiparty session types revisited. \emph{POPL} 2019.
+\bibitem[Scribble]{scribble} K.~Honda, A.~Mukhamedov, G.~Brown, T.-C.~Chen, N.~Yoshida. Scribble: describing multiparty protocols. Scribble project; \texttt{scribble-java}, \texttt{nuScr}, \texttt{mpstk} toolchains.
+\bibitem[Bocchi et al.(2010)]{bocchi10} L.~Bocchi, K.~Honda, E.~Tuosto, N.~Yoshida. A theory of design-by-contract for distributed multiparty interactions. \emph{CONCUR} 2010.
+\bibitem[Chen \& Honda(2012)]{chen12} T.-C.~Chen, K.~Honda. Specifying stateful asynchronous properties for distributed programs. \emph{CONCUR} 2012, pp.~209--224.
+\bibitem[Chen et al.(2017)]{chen17} T.-C.~Chen, M.~Dezani-Ciancaglini, A.~Scalas, N.~Yoshida. On the preciseness of subtyping in session types. \emph{Logical Methods in Computer Science} 13(2), 2017.
+\bibitem[Chen et al.(2024)]{chen24} T.-C.~Chen, M.~Dezani-Ciancaglini, N.~Yoshida. On the preciseness of subtyping in session types: 10 years later. \emph{PPDP} 2024, 2:1--2:3.
+\bibitem[Viering et al.(2018)]{viering18} M.~Viering, T.-C.~Chen, P.~Eugster, R.~Hu, L.~Ziarek. A typing discipline for statically verified crash failure handling in distributed systems. \emph{ESOP} 2018, pp.~799--826.
+\bibitem[Refined MPST(2024)]{refine24} Refinements for multiparty message-passing protocols. \emph{ECOOP} 2024.
+\bibitem[Bocchi et al.(2013; 2017)]{bocchi13} L.~Bocchi, T.-C.~Chen, R.~Demangeon, K.~Honda, N.~Yoshida. Monitoring networks through multiparty session types. \emph{FORTE} 2013; \emph{TCS} 2017.
+\bibitem[Igarashi et al.(2017)]{igarashi17} A.~Igarashi, P.~Thiemann, Y.~Tsuda, V.~Vasconcelos, P.~Wadler. Gradual session types. \emph{ICFP} 2017; \emph{JFP} 2019.
+\bibitem[Deni\'elou \& Yoshida(2011)]{denielou11} P.-M.~Deni\'elou, N.~Yoshida. Dynamic multirole session types. \emph{POPL} 2011.
+\bibitem[Deni\'elou \& Yoshida(2012)]{denielou12} P.-M.~Deni\'elou, N.~Yoshida. Multiparty session types meet communicating automata. \emph{ESOP} 2012.
+\bibitem[Yoshida et al.(2010)]{param10} N.~Yoshida, P.-M.~Deni\'elou, A.~Bejleri, R.~Hu. Parameterised multiparty session types. \emph{FoSSaCS} 2010.
+\bibitem[Montesi(2023)]{montesi23} F.~Montesi. \emph{Introduction to Choreographies}. Cambridge University Press, 2023.
+\bibitem[Carbone \& Montesi(2013)]{carbone13} M.~Carbone, F.~Montesi. Deadlock-freedom-by-design: multiparty asynchronous global programming. \emph{POPL} 2013.
+\bibitem[Wang et al.(2026)]{agentspec} H.~Wang, C.~Poskitt, J.~Sun. AgentSpec: customizable runtime enforcement for safe and reliable LLM agents. \emph{ICSE} 2026; arXiv:2503.18666.
+\bibitem[Agent-C(2025)]{agentc} Agent-C: enforcing temporal constraints for LLM agents. arXiv:2512.23738, 2025.
+\bibitem[Levy et al.(2026)]{stweb} I.~Levy, B.~Wiesel, S.~Marreed, A.~Oved, A.~Yaeli, S.~Shlomov. ST-WebAgentBench: evaluating safety and trustworthiness in web agents. \emph{ICLR} 2026; arXiv:2410.06703.
+\bibitem[Wei et al.(2026)]{besafe} X.~Wei et al. BeSafe-Bench: unveiling behavioral safety risks of situated agents in functional environments. arXiv:2603.25747, 2026.
+\bibitem[Saha et al.(2026)]{skilldex} S.~Saha et al. Skilldex: a package manager for agent skills. arXiv:2604.16911, 2026.
+\bibitem[Liu et al.(2026)]{governspec} T.~Liu et al. A GovernSpec design framework for enterprise AI agents (contractual skills). arXiv:2605.22634, 2026.
+\bibitem[Ge et al.(2026)]{lga} Y.~Ge et al. Governance architecture for autonomous agent systems (LGA). arXiv:2603.07191, 2026.
+\bibitem[Cosler et al.(2023)]{nl2spec} M.~Cosler et al. NL2Spec: interactively translating unstructured natural language to temporal logics with LLMs. \emph{CAV} 2023.
+\bibitem[PROSPER(2023)]{prosper} Sharma et al. PROSPER: extracting protocol specifications using LLMs. \emph{HotNets} 2023.
+\bibitem[Chen et al.(2026)]{trace} Chen et al. TRACE: trajectory-aware comprehensive evaluation. \emph{WWW} 2026.
+\bibitem[Judge reliability(2025--26)]{judgebias} Surveys of LLM-as-judge reliability: positional/verbosity/self-preference biases; TNR $<$25\%; expert agreement 64--68\%. Masood 2026; Deepchecks 2025; Autorubric, arXiv:2603.00077.
+\bibitem[Anthropic(2025)]{anthropic-skills} Anthropic. Agent Skills open standard (Dec 2025); Model Context Protocol specification (2025-11-25).
+\bibitem[OWASP(2026)]{owasp} OWASP Foundation. Top 10 for agentic applications, 2026 edition.
+\end{thebibliography}
+
+\appendix
+\section{A validated protocol and its guard sidecar}\label{app:scr}
+Global type (Scribble) for the finance case, abbreviated:
+{\small\begin{verbatim}
+global protocol Finance(role Ingestor, role RevenueAnalyst, role ExpenseAnalyst,
+                        role TaxVerifier, role Auditor, role Writer) {
+  RawRevenueData(Payload)  from Ingestor to RevenueAnalyst;
+  ExpenseData(Payload)     from ExpenseAnalyst to RevenueAnalyst;
+  choice at RevenueAnalyst {
+    HighRevenueNotification(Analysis) from RevenueAnalyst to Auditor;
+    AuditReport(Findings)             from Auditor        to TaxVerifier;
+  } or {
+    StandardRevenueNotification(Analysis) from RevenueAnalyst to TaxVerifier;
+  }
+  Approval(Decision)       from TaxVerifier to Writer;   // goal marker
+  FinalReport(Document)    from Writer to Ingestor;      // goal marker, FINAL
+}
+\end{verbatim}}
+Choice-guard sidecar (\texttt{.refn}; asserted-MPST style; stock Scribble untouched):
+{\small\begin{verbatim}
+[choice at RevenueAnalyst]
+when:    float(RawRevenueData) > 50000
+require: HighRevenueNotification
+over:    StandardRevenueNotification
+
+[payload Approval]
+assert:  Decision == 'true'  =>  next in {FinalReport}   # denied-but-debited hole
+\end{verbatim}}
+The guard travels through four stages: \emph{define} (sidecar) $\to$ \emph{state} (compiled into the contract at the decision state) $\to$ \emph{check} (value-tracking monitor; verdict \texttt{choice\_guard\_violation}) $\to$ \emph{enforce} (gate). Offline replay verification fires on high-revenue$+$standard-branch and on the symmetric case, stays silent on correct branches and on unevaluable guards.
+
+\section{Reproducibility}\label{app:repro}
+All arms, cases, protocols, guards, run directories (events, prompts, per-message verdicts), the severity grader, and the metric engine are in the accompanying repository; every number in \S\ref{sec:results} names its run directory. Runner: \texttt{python experiments/scripts/case\_runner.py <case> <n> --arms <keys>}. Traces are the artifact of record: re-running the deterministic evaluators on a run directory reproduces every table bit-for-bit.
+
+\end{document}

@@ -47,3 +47,18 @@ Thumbs.db
 *.bak
 experiments/subagent_trials/runs/
 .trial_state/
+
+# LaTeX build artifacts (keep .pdf and .tex files)
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+paper-writing/*/paper-writing/
+paper-writing/*/.venv/
