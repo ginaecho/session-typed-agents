@@ -1,0 +1,39 @@
+source_protocol: C:\Users\tzuchunchen\OneDrive - Microsoft\Documents\Projects\testing_ideas\experiments\cases\skills_safety\airline_seat\protocols\AirlineSeat.scr
+intent: 'A customer wants to change their seat. The Triage agent must first assign
+  the
+
+  flight for this booking and hand off to the Seat-Booking agent; only then may
+
+  the Seat-Booking agent apply the seat change through the Flight System. A seat
+
+  change must never be applied before a flight has been assigned to the booking.
+
+  '
+goals:
+- id: G1
+  description: Triage assigns a flight to the booking before any seat change
+  metric: flight_assigned
+  predicate: len(x) > 0
+  anchor:
+    sender: Triage
+    receiver: SeatBooking
+    label: AssignFlight
+  threshold: present
+- id: G2
+  description: The seat change is applied only after a flight is assigned
+  metric: seat_updated
+  predicate: len(x) > 0
+  anchor:
+    sender: SeatBooking
+    receiver: FlightSystem
+    label: UpdateSeat
+  threshold: present
+- id: G3
+  description: The flight system confirms the seat change back to the customer
+  metric: seat_confirmed
+  predicate: 'True'
+  anchor:
+    sender: FlightSystem
+    receiver: SeatBooking
+    label: SeatConfirmed
+  threshold: terminal event present

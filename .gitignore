@@ -67,3 +67,11 @@ experiments/subagent_trials/runs/
 *.lot
 paper-writing/*/paper-writing/
 paper-writing/*/.venv/
+
+# azd hosted-agent scratch venv + azd env
+foundry_hosted_agents/.venv_af/
+foundry_hosted_agents/**/.azure/
+
+# nested run outputs under grouped cases
+experiments/cases/**/runs/
+experiments/cases/skills_safety/**/LATEST

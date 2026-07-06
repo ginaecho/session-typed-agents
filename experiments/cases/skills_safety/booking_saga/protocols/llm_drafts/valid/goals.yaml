@@ -1,0 +1,40 @@
+source_protocol: C:\Users\tzuchunchen\OneDrive - Microsoft\Documents\Projects\testing_ideas\experiments\cases\skills_safety\booking_saga\protocols\BookingSaga.scr
+intent: 'Book a hotel stay. The Traveler requests a booking; the Hotel holds the room
+
+  and the Payment service charges the traveler, coordinating so the room is held
+
+  before payment is captured and the booking is confirmed only once both the room
+
+  is held and payment has succeeded. The traveler must never be charged for a
+
+  room that was never held, and the booking must not hang.
+
+  '
+goals:
+- id: G1
+  description: The Hotel holds the room before payment is captured
+  metric: room_held
+  predicate: len(x) > 0
+  anchor:
+    sender: Hotel
+    receiver: Payment
+    label: RoomHeld
+  threshold: present
+- id: G2
+  description: Payment is captured after the room is held
+  metric: paid
+  predicate: float(x) > 0
+  anchor:
+    sender: Payment
+    receiver: Hotel
+    label: PaymentCaptured
+  threshold: '> 0'
+- id: G3
+  description: The booking is confirmed to the traveler
+  metric: confirmed
+  predicate: 'True'
+  anchor:
+    sender: Hotel
+    receiver: Traveler
+    label: BookingConfirmed
+  threshold: terminal event present

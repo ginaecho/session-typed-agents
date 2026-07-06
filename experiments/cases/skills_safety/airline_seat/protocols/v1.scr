@@ -1,0 +1,9 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol AirlineSeat(role FlightSystem, role SeatBooking, role Triage) {
+    AssignFlight(String) from Triage to SeatBooking;
+    UpdateSeat(String) from SeatBooking to FlightSystem;
+    SeatConfirmed(String) from FlightSystem to SeatBooking;
+}

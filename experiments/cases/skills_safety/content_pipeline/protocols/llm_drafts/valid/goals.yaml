@@ -1,0 +1,38 @@
+source_protocol: C:\Users\tzuchunchen\OneDrive - Microsoft\Documents\Projects\testing_ideas\experiments\cases\skills_safety\content_pipeline\protocols\ContentPipeline.scr
+intent: 'Produce and publish an article. The Researcher briefs the Writer, the Writer
+
+  drafts the article and submits it to the Editor, the Editor reviews and
+
+  approves it, and only then does the Publisher publish it. An article must
+
+  never be published before the Editor has approved it.
+
+  '
+goals:
+- id: G1
+  description: The Writer submits a draft to the Editor
+  metric: draft_submitted
+  predicate: len(x) > 0
+  anchor:
+    sender: Writer
+    receiver: Editor
+    label: SubmitDraft
+  threshold: present
+- id: G2
+  description: The Editor approves the draft before publication
+  metric: approved
+  predicate: len(x) > 0
+  anchor:
+    sender: Editor
+    receiver: Publisher
+    label: Approve
+  threshold: present
+- id: G3
+  description: The article is published only after approval
+  metric: published
+  predicate: 'True'
+  anchor:
+    sender: Publisher
+    receiver: Editor
+    label: Published
+  threshold: terminal event present
