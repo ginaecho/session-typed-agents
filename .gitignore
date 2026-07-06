@@ -35,7 +35,9 @@ stjp_core/generated_agents/experiment_results*.json
 stjp_core/generated_agents/foundry_native_run.json
 
 # Office documents stay local only (pitch/patent material)
+# Exception: paper-writing versions are tracked
 *.docx
+!paper-writing/**/*.docx
 *.pptx
 ~$*
 
