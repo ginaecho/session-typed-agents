@@ -1,5 +1,32 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
 name: agent-framework-agent-with-remote-mcp-tools-responses
+services:
+    agent-framework-agent-with-remote-mcp-tools-responses:
+        project: .
+        host: azure.ai.agent
+        language: docker
+        docker:
+            remoteBuild: true
+        uses:
+            - firstProject
+        container:
+            resources:
+                cpu: "0.5"
+                memory: 1Gi
+        environmentVariables:
+            - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+              value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+        kind: hosted
+        name: agent-framework-agent-with-remote-mcp-tools-responses
+        protocols:
+            - protocol: responses
+              version: 2.0.0
+        startupCommand: python main.py
+    firstProject:
+        project: ""
+        host: azure.ai.project
+        language: ""
+        endpoint: https://foundary-tzuc06.services.ai.azure.com/api/projects/firstProject
 infra:
     provider: microsoft.foundry
