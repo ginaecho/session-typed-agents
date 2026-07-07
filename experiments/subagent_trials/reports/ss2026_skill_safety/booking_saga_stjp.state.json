@@ -1,0 +1,599 @@
+{
+  "case": "skills_booking_saga",
+  "arm": "stjp",
+  "stjp_prompts": {
+    "Hotel": "# Revised **Hotel** skill (STJP-validated)\n\nFix vs original: HOLD the room first, then let Payment capture the charge, then\nconfirm \u2014 breaking the pay-vs-reserve circular wait.\n\n```localtype\nTraveler?RequestBooking(String);\nPayment!RoomHeld(String);\nPayment?PaymentCaptured(Double);\nTraveler!BookingConfirmed(String);\n```\n\nTASK CONTEXT: Book a hotel stay. The Traveler requests a booking; the Hotel holds the room and the Payment service charges the traveler, coordinating so the room is held before payment is captured and the booking is confirmed only once both the room is held and payment has succeeded. The traveler must never be charged for a room that was never held, and the booking must not hang.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Hotel \u2014 local contract\n\n**Protocol**: `BookingSaga`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `6`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `6`: wait to receive `RequestBooking(String)` from **Traveler** \u2192 state `8`\n- state `7`: TERMINAL \u2014 stop.\n- state `8`: send `RoomHeld(String)` to **Payment** \u2192 state `9`\n- state `9`: wait to receive `PaymentCaptured(Double)` from **Payment** \u2192 state `10`\n- state `10`: send `BookingConfirmed(String)` to **Traveler** \u2192 state `7`\n",
+    "Payment": "# Revised **Payment** skill (STJP-validated)\n\nFix vs original: capture the charge as soon as the room is held (no longer waits\non a confirmation that the Hotel was withholding until payment).\n\n```localtype\nHotel?RoomHeld(String);\nHotel!PaymentCaptured(Double);\n```\n\nTASK CONTEXT: Book a hotel stay. The Traveler requests a booking; the Hotel holds the room and the Payment service charges the traveler, coordinating so the room is held before payment is captured and the booking is confirmed only once both the room is held and payment has succeeded. The traveler must never be charged for a room that was never held, and the booking must not hang.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Payment \u2014 local contract\n\n**Protocol**: `BookingSaga`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `16`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `16`: wait to receive `RoomHeld(String)` from **Hotel** \u2192 state `18`\n- state `17`: TERMINAL \u2014 stop.\n- state `18`: send `PaymentCaptured(Double)` to **Hotel** \u2192 state `17`\n",
+    "Traveler": "# Revised **Traveler** skill (STJP-validated)\n\n```localtype\nHotel!RequestBooking(String);\nHotel?BookingConfirmed(String);\n```\n\nTASK CONTEXT: Book a hotel stay. The Traveler requests a booking; the Hotel holds the room and the Payment service charges the traveler, coordinating so the room is held before payment is captured and the booking is confirmed only once both the room is held and payment has succeeded. The traveler must never be charged for a room that was never held, and the booking must not hang.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Traveler \u2014 local contract\n\n**Protocol**: `BookingSaga`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `24`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `24`: send `RequestBooking(String)` to **Hotel** \u2192 state `26`\n- state `25`: TERMINAL \u2014 stop.\n- state `26`: wait to receive `BookingConfirmed(String)` from **Hotel** \u2192 state `25`\n"
+  },
+  "roles": [
+    "Hotel",
+    "Payment",
+    "Traveler"
+  ],
+  "max_rounds": 12,
+  "round": 4,
+  "efsms": {
+    "Hotel": {
+      "initial": "6",
+      "accepting": [
+        "7"
+      ],
+      "transitions": [
+        [
+          "6",
+          "receive",
+          "Traveler",
+          "RequestBooking",
+          "String",
+          "8"
+        ],
+        [
+          "8",
+          "send",
+          "Payment",
+          "RoomHeld",
+          "String",
+          "9"
+        ],
+        [
+          "9",
+          "receive",
+          "Payment",
+          "PaymentCaptured",
+          "Double",
+          "10"
+        ],
+        [
+          "10",
+          "send",
+          "Traveler",
+          "BookingConfirmed",
+          "String",
+          "7"
+        ]
+      ]
+    },
+    "Payment": {
+      "initial": "16",
+      "accepting": [
+        "17"
+      ],
+      "transitions": [
+        [
+          "16",
+          "receive",
+          "Hotel",
+          "RoomHeld",
+          "String",
+          "18"
+        ],
+        [
+          "18",
+          "send",
+          "Hotel",
+          "PaymentCaptured",
+          "Double",
+          "17"
+        ]
+      ]
+    },
+    "Traveler": {
+      "initial": "24",
+      "accepting": [
+        "25"
+      ],
+      "transitions": [
+        [
+          "24",
+          "send",
+          "Hotel",
+          "RequestBooking",
+          "String",
+          "26"
+        ],
+        [
+          "26",
+          "receive",
+          "Hotel",
+          "BookingConfirmed",
+          "String",
+          "25"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "room-request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "room-123",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "room-confirmed",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "7",
+        "Payment": "17",
+        "Traveler": "25"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6979,
+      "reply_chars": 341
+    }
+  ],
+  "agent_seconds": 881.8234045505524
+}

@@ -1,0 +1,739 @@
+{
+  "case": "skills_airline_seat",
+  "arm": "bare",
+  "stjp_prompts": {},
+  "roles": [
+    "FlightSystem",
+    "SeatBooking",
+    "Triage"
+  ],
+  "max_rounds": 8,
+  "round": 3,
+  "efsms": {
+    "FlightSystem": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "receive",
+          "SeatBooking",
+          "UpdateSeat",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "send",
+          "SeatBooking",
+          "SeatConfirmed",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "SeatBooking": {
+      "initial": "13",
+      "accepting": [
+        "14"
+      ],
+      "transitions": [
+        [
+          "13",
+          "receive",
+          "Triage",
+          "AssignFlight",
+          "String",
+          "15"
+        ],
+        [
+          "15",
+          "send",
+          "FlightSystem",
+          "UpdateSeat",
+          "String",
+          "16"
+        ],
+        [
+          "16",
+          "receive",
+          "FlightSystem",
+          "SeatConfirmed",
+          "String",
+          "14"
+        ]
+      ]
+    },
+    "Triage": {
+      "initial": "21",
+      "accepting": [
+        "22"
+      ],
+      "transitions": [
+        [
+          "21",
+          "send",
+          "SeatBooking",
+          "AssignFlight",
+          "String",
+          "22"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA-457",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "flight1",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "14C",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "12A",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "FLIGHT001",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 8329,
+      "reply_chars": 724
+    }
+  ],
+  "agent_seconds": 742.0983574390411
+}

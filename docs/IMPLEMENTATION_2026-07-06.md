@@ -129,6 +129,45 @@ pending explicit approval.**
 
 - `azd provision` / `azd deploy` of the grouped workflow (awaiting go-ahead), then
   replicate for the other use cases.
-- Complete the remaining cheap-model runs (`airline_seat`, `content_pipeline`,
+- ~~Complete the remaining cheap-model runs~~ — **DONE in the cloud continuation below** (`airline_seat`, `content_pipeline`,
   `code_execution`, `booking_saga`) and write the formal
   `docs/results/RESULT_8_SKILL_SAFETY.md`.
+
+---
+
+## Cloud continuation (same day, Claude Code cloud session)
+
+Everything below ran inside the Claude Code cloud sandbox (branch
+`claude/stjp-skill-validation-bench-5t5qxi`), with **both compilers live** —
+this closes the "still pending" cheap-model runs above.
+
+1. **Toolchains installed under a restricted network policy.** The sandbox
+   blocks Docker Hub blobs, opam.ocaml.org, and unscoped GitHub, so:
+   scribble-java **master built from source** (Maven Central is allowed) into
+   the expected `scribble-java/scribble-dist/target/lib/` layout, and the
+   **coinductive nuscr fork built on a GitHub Actions runner** of the user's
+   fork (`ginaecho/nuscr_coinduction`, workflow `build-nuscr.yml` on branch
+   `ci-build`, OCaml 5.3 — 5.2 has no dependency solution) with the Linux
+   binary committed to the fork's `ci-artifacts` branch and fetched over git.
+   New env var `STJP_NUSCR_BIN` makes `NuscrCompiler` run the native binary
+   instead of Docker. Full recipe + pitfalls (incl. the **broken 2017 Maven
+   Scribble releases** that parse every protocol to zero declarations and so
+   silently accept anything):
+   [reference/NUSCR_CLOUD_INSTALL.md](reference/NUSCR_CLOUD_INSTALL.md).
+   `stjp_core/tests/test_nuscr_backend.py` — ALL PASS incl. the runtime and
+   coinductive-projection tests, no Docker.
+2. **Design-time evidence reproduced live.** All four `skills_original` sets
+   are rejected by the bottom-up pipeline (compatibility/synthesis from the
+   committed `_before/local_types`); all four `skills_revised` sets compact →
+   synthesize → validate **through both backends** in-sandbox.
+3. **The cheap-model benchmark ran to completion** — 4 cases × 3 arms ×
+   n=10 (120 trials), every role a Haiku-class Claude subagent, driven
+   through the new `experiments/subagent_trials/skills_cases.py` +
+   `dispatch_helper.py` on the deterministic engine. Headline: original
+   skills **0% GCR (∞ cost-to-goal)**; contract-as-text **100% GCR but 50%
+   CGC** (20 duplicate-irreversible-act disasters, incl. 10 double charges);
+   full STJP **100%/100%, 0 disasters, −45% tokens, 3.5 vs 10+ agent
+   calls/trial**. Write-up:
+   [results/RESULT_8_SKILL_SAFETY.md](results/RESULT_8_SKILL_SAFETY.md);
+   committed raw data:
+   `experiments/subagent_trials/reports/ss2026_skill_safety/`.

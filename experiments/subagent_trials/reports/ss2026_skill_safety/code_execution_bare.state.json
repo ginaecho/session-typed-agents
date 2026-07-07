@@ -1,0 +1,659 @@
+{
+  "case": "skills_code_execution",
+  "arm": "bare",
+  "stjp_prompts": {},
+  "roles": [
+    "Coder",
+    "Executor",
+    "Reviewer"
+  ],
+  "max_rounds": 8,
+  "round": 3,
+  "efsms": {
+    "Coder": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "send",
+          "Reviewer",
+          "SubmitCode",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "receive",
+          "Executor",
+          "ResultReturned",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "Executor": {
+      "initial": "12",
+      "accepting": [
+        "13"
+      ],
+      "transitions": [
+        [
+          "12",
+          "receive",
+          "Reviewer",
+          "Approve",
+          "String",
+          "14"
+        ],
+        [
+          "14",
+          "send",
+          "Coder",
+          "ResultReturned",
+          "String",
+          "13"
+        ]
+      ]
+    },
+    "Reviewer": {
+      "initial": "20",
+      "accepting": [
+        "21"
+      ],
+      "transitions": [
+        [
+          "20",
+          "receive",
+          "Coder",
+          "SubmitCode",
+          "String",
+          "22"
+        ],
+        [
+          "22",
+          "send",
+          "Executor",
+          "Approve",
+          "String",
+          "21"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "print('Hello, World')",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 793
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "x = 42; print(x)",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 788
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def task(): return True",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 795
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "result = sum([1,2,3])",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 793
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "data = {'key': 'value'}",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 795
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "for i in range(5): print(i)",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 799
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "import sys; print(sys.version)",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 802
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "class Task: pass",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 788
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "if True: status = 'ready'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 797
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Coder",
+          "receiver": "Reviewer",
+          "label": "SubmitCode",
+          "payload": "def execute_task(): return 'done'",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Executor",
+          "receiver": "Coder",
+          "label": "ResultReturned",
+          "payload": "Hello, World!",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Reviewer",
+          "receiver": "Executor",
+          "label": "Approve",
+          "payload": "def hello_world():\n    return 'Hello, World!'",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 9,
+      "malformed": 0,
+      "prompt_chars": 7203,
+      "reply_chars": 805
+    }
+  ],
+  "agent_seconds": 744.604204416275
+}

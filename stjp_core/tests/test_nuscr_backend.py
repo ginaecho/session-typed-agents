@@ -64,6 +64,11 @@ SAMPLE_NUSCR_DOT = """digraph G {
 
 
 def _docker_ok() -> bool:
+    # A native binary (STJP_NUSCR_BIN) makes the runtime tests runnable
+    # without Docker — see nuscr_compiler.py.
+    from stjp_core.config import NUSCR_BIN
+    if NUSCR_BIN and shutil.which(NUSCR_BIN):
+        return True
     if shutil.which("docker") is None:
         return False
     try:

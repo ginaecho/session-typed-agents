@@ -184,6 +184,7 @@ Each follows the same template: at-a-glance summary → the story → how the te
 - `results/RESULT_5_SUBAGENT_VALIDATION.md` — **Foundry-free validation of the 2026-07 components** (Critic/Revisor, skill compaction, incremental extension): 211/211 stress checks over generated protocols; subagent-driven trials n=10 — unchecked prose skills 0/10 (all deadlock) vs STJP 10/10 at protocol-minimum cost, extended protocol 10/10, compaction gauntlet 10/10 detect + 10/10 repair.
 - `results/RESULT_6_BENCHMARK_HARDENING.md` — **Benchmark Plan v2** (test the testers + mutation testing + adversarial gate + pass^k + translation fidelity + roles/portability): verdict corpus 40/40, checker 95.6% detection/0% FP, gate exfiltration ladder 0→41.7→91.7→100%, pass^10 CI story, equivalence scorer 100%. Design in `reference/BENCHMARK_PLAN_V2.md`.
 - `results/RESULT_7_N100_SCALE.md` — **n=100 scale run** (all deterministic benchmarks): Wilson CI narrows from [72,100]% to [96.3,100]%; pass^10@floor jumps 0.039→0.686 (17.6×); integration stress 2105/2110; 100-protocol mutation corpus 95.1%/0% FP; subagent trials 0/100 unchecked vs 100/100 STJP; equivalence scorer 300/300.
+- `results/RESULT_8_SKILL_SAFETY.md` — **Real public skills, unvalidated vs STJP** (4 cases from openai-agents/crewAI/autogen/langgraph, Haiku-class subagents, n=10/cell, cloud run): original skills 0% GCR (40/40 stall or deadlock, ∞ cost); contract-as-text 100% GCR but 50% CGC with 20 duplicate-irreversible-act disasters (double charges/seat-writes); full STJP 100%/100%, 0 disasters, −45% tokens and 3.5 vs 10+ agent calls/trial. Both compilers ran live in-sandbox (scribble-java master + coinductive nuscr, `reference/NUSCR_CLOUD_INSTALL.md`).
 
 Earlier run reports, kept here for history (technical, not rewritten):
 
@@ -264,7 +265,7 @@ docs/
 │                                      extensions, gate internals, Foundry wiring, v3 plan,
 │                                      Benchmark Plan v2)
 ├── results/                         ← current evidence, plain English: RESULT_1_DEADLOCK …
-│                                      RESULT_7_N100_SCALE (latest)
+│                                      RESULT_8_SKILL_SAFETY (latest)
 ├── predictions/                     ← pre-registered predictions (written BEFORE a run,
 │                                      graded after) — e.g. BENCHMARK_V2_PREREGISTRATION
 ├── diary/                           ← the project journal (DIARY.md, newest-first)
@@ -284,7 +285,7 @@ Rules:
 ## 🔄 Where to get the latest
 
 - **Latest plan:** `reference/STJP_V3_PLAN.md` (governance plane + execution plane; summarized in `1_TECH_SETUP.md` section 7)
-- **Latest results:** `results/RESULT_7_N100_SCALE.md` (all deterministic benchmarks at n=100) and `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 — the pre-registered live-model run)
+- **Latest results:** `results/RESULT_8_SKILL_SAFETY.md` (real public skills, 3 arms, Haiku subagents), `results/RESULT_7_N100_SCALE.md` (all deterministic benchmarks at n=100) and `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 — the pre-registered live-model run)
 - **Latest code status:** `reference/GAP_CLOSED.md`
 - **Latest experiment design:** `archive/EXPERIMENT_DESIGN_V3_EXECUTION.md` (pre-registered; graded by the 2026-07-02 run report)
 

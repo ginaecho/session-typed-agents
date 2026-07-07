@@ -2,6 +2,18 @@
 
 Date: 2026-07-06. Status: in progress.
 
+> Progress (2026-07-06, cloud session): Phase 1 replicated WITHOUT Docker in
+> the Claude Code sandbox — nuscr built by GitHub Actions on the user's fork
+> (`ci-build` branch, OCaml 5.3) and consumed as a native binary via the new
+> `STJP_NUSCR_BIN`; scribble-java master built from source via Maven Central
+> (see `NUSCR_CLOUD_INSTALL.md`). Phases 2.3–2.5 DONE: revised skills validate
+> through BOTH backends live; the cheap-LLM A/B ran as 4 cases x 3 arms x n=10
+> on Haiku-class subagents (`experiments/subagent_trials/skills_cases.py`);
+> results in `docs/results/RESULT_8_SKILL_SAFETY.md` (0% GCR unvalidated vs
+> 100%/100% STJP at -45% tokens; contract-as-text arm exposes 20 duplicate
+> irreversible acts).
+
+
 > Progress (2026-07-06): Phase 1.1–1.4 DONE. nuscr coinductive fork builds as
 > Docker image `nuscr-coind:latest`; `stjp_core/compiler/` now has a
 > `ProtocolCompiler` interface (`compiler_iface.py`) with `get_compiler()`

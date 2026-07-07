@@ -40,6 +40,10 @@ COMPILER_BACKEND = os.environ.get("STJP_COMPILER_BACKEND", "scribble")
 # tools/nuscr/Dockerfile. See docs/reference/NUSCR_AND_SKILL_SAFETY_PLAN.md.
 NUSCR_DIR = REPO_ROOT / "nuscr-coinduction"
 NUSCR_DOCKER_IMAGE = os.environ.get("STJP_NUSCR_IMAGE", "nuscr-coind:latest")
+# Native nuscr binary (skips Docker entirely). Point this at a binary built by
+# the fork's build-nuscr GitHub Actions workflow (ci-artifacts branch) when the
+# environment cannot pull Docker images (e.g. Claude Code on the web).
+NUSCR_BIN = os.environ.get("STJP_NUSCR_BIN", "")
 # Projection mode: "inductive-full" (default nuscr), "coinductive-full"
 # (knowledge-set coinductive projection with full receive merge), or
 # "coinductive-plain". Coinductive modes project recursive receive-merges that

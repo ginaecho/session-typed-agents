@@ -1,0 +1,995 @@
+{
+  "case": "skills_booking_saga",
+  "arm": "bare",
+  "stjp_prompts": {},
+  "roles": [
+    "Hotel",
+    "Payment",
+    "Traveler"
+  ],
+  "max_rounds": 8,
+  "round": 4,
+  "efsms": {
+    "Hotel": {
+      "initial": "6",
+      "accepting": [
+        "7"
+      ],
+      "transitions": [
+        [
+          "6",
+          "receive",
+          "Traveler",
+          "RequestBooking",
+          "String",
+          "8"
+        ],
+        [
+          "8",
+          "send",
+          "Payment",
+          "RoomHeld",
+          "String",
+          "9"
+        ],
+        [
+          "9",
+          "receive",
+          "Payment",
+          "PaymentCaptured",
+          "Double",
+          "10"
+        ],
+        [
+          "10",
+          "send",
+          "Traveler",
+          "BookingConfirmed",
+          "String",
+          "7"
+        ]
+      ]
+    },
+    "Payment": {
+      "initial": "16",
+      "accepting": [
+        "17"
+      ],
+      "transitions": [
+        [
+          "16",
+          "receive",
+          "Hotel",
+          "RoomHeld",
+          "String",
+          "18"
+        ],
+        [
+          "18",
+          "send",
+          "Hotel",
+          "PaymentCaptured",
+          "Double",
+          "17"
+        ]
+      ]
+    },
+    "Traveler": {
+      "initial": "24",
+      "accepting": [
+        "25"
+      ],
+      "transitions": [
+        [
+          "24",
+          "send",
+          "Hotel",
+          "RequestBooking",
+          "String",
+          "26"
+        ],
+        [
+          "26",
+          "receive",
+          "Hotel",
+          "BookingConfirmed",
+          "String",
+          "25"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "standard_booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "250.0",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "premium room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "deluxe-room",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "150.0",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "deluxe room",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 11488,
+      "reply_chars": 973
+    }
+  ],
+  "agent_seconds": 880.6240282058716
+}

@@ -1,0 +1,35 @@
+{
+  "run_id": "ss2026",
+  "date": "2026-07-06",
+  "runner": "claude-haiku-4.5 subagents",
+  "n_per_cell": 10,
+  "arms": {
+    "bare": {
+      "n": 40,
+      "gcr_pct": 100.0,
+      "cgc_pct": 50.0,
+      "disasters": 20,
+      "avg_tokens_est": 2753,
+      "cost_to_goal_tokens": 2753,
+      "avg_agent_calls": 11.5
+    },
+    "stjp": {
+      "n": 40,
+      "gcr_pct": 100.0,
+      "cgc_pct": 100.0,
+      "disasters": 0,
+      "avg_tokens_est": 1518,
+      "cost_to_goal_tokens": 1518,
+      "avg_agent_calls": 3.5
+    },
+    "unchecked": {
+      "n": 40,
+      "gcr_pct": 0.0,
+      "cgc_pct": 0.0,
+      "disasters": 0,
+      "avg_tokens_est": 2656,
+      "cost_to_goal_tokens": null,
+      "avg_agent_calls": 10.0
+    }
+  }
+}

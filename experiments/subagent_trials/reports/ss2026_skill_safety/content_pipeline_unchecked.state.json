@@ -1,0 +1,614 @@
+{
+  "case": "skills_content_pipeline",
+  "arm": "unchecked",
+  "stjp_prompts": {},
+  "roles": [
+    "Editor",
+    "Publisher",
+    "Researcher",
+    "Writer"
+  ],
+  "max_rounds": 4,
+  "round": 4,
+  "efsms": {
+    "Editor": {
+      "initial": "5",
+      "accepting": [
+        "6"
+      ],
+      "transitions": [
+        [
+          "5",
+          "receive",
+          "Writer",
+          "SubmitDraft",
+          "String",
+          "7"
+        ],
+        [
+          "7",
+          "send",
+          "Publisher",
+          "Approve",
+          "String",
+          "8"
+        ],
+        [
+          "8",
+          "receive",
+          "Publisher",
+          "Published",
+          "String",
+          "6"
+        ]
+      ]
+    },
+    "Publisher": {
+      "initial": "14",
+      "accepting": [
+        "15"
+      ],
+      "transitions": [
+        [
+          "14",
+          "receive",
+          "Editor",
+          "Approve",
+          "String",
+          "16"
+        ],
+        [
+          "16",
+          "send",
+          "Editor",
+          "Published",
+          "String",
+          "15"
+        ]
+      ]
+    },
+    "Researcher": {
+      "initial": "21",
+      "accepting": [
+        "22"
+      ],
+      "transitions": [
+        [
+          "21",
+          "send",
+          "Writer",
+          "ResearchBrief",
+          "String",
+          "22"
+        ]
+      ]
+    },
+    "Writer": {
+      "initial": "28",
+      "accepting": [
+        "29"
+      ],
+      "transitions": [
+        [
+          "28",
+          "receive",
+          "Researcher",
+          "ResearchBrief",
+          "String",
+          "30"
+        ],
+        [
+          "30",
+          "send",
+          "Editor",
+          "SubmitDraft",
+          "String",
+          "29"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 2,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 3,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 4,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 5,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 6,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 7,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 8,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 9,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    },
+    {
+      "trial": 10,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 2,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "research materials ready",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "article draft",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "approved",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Researcher",
+          "label": "RequestBrief",
+          "payload": "send research brief",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "5",
+        "Publisher": "14",
+        "Researcher": "21",
+        "Writer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 14340,
+      "reply_chars": 1142
+    }
+  ],
+  "agent_seconds": 887.0134370326996
+}

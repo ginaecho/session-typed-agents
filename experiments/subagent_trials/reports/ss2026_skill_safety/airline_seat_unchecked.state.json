@@ -1,0 +1,249 @@
+{
+  "case": "skills_airline_seat",
+  "arm": "unchecked",
+  "stjp_prompts": {},
+  "roles": [
+    "FlightSystem",
+    "SeatBooking",
+    "Triage"
+  ],
+  "max_rounds": 4,
+  "round": 2,
+  "efsms": {
+    "FlightSystem": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "receive",
+          "SeatBooking",
+          "UpdateSeat",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "send",
+          "SeatBooking",
+          "SeatConfirmed",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "SeatBooking": {
+      "initial": "13",
+      "accepting": [
+        "14"
+      ],
+      "transitions": [
+        [
+          "13",
+          "receive",
+          "Triage",
+          "AssignFlight",
+          "String",
+          "15"
+        ],
+        [
+          "15",
+          "send",
+          "FlightSystem",
+          "UpdateSeat",
+          "String",
+          "16"
+        ],
+        [
+          "16",
+          "receive",
+          "FlightSystem",
+          "SeatConfirmed",
+          "String",
+          "14"
+        ]
+      ]
+    },
+    "Triage": {
+      "initial": "21",
+      "accepting": [
+        "22"
+      ],
+      "transitions": [
+        [
+          "21",
+          "send",
+          "SeatBooking",
+          "AssignFlight",
+          "String",
+          "22"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 2,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 3,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 4,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 5,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 6,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 7,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 8,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 9,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    },
+    {
+      "trial": 10,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "FlightSystem": "4",
+        "SeatBooking": "13",
+        "Triage": "21"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 7082,
+      "reply_chars": 449
+    }
+  ],
+  "agent_seconds": 567.3120429515839
+}

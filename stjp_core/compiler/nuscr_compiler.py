@@ -12,6 +12,12 @@ to ``.nuscr`` (``nuscr_syntax.scr_to_nuscr``) and written under
 ``<NUSCR_DIR>/_stjp_tmp/`` so the Docker mount exposes them at a space-free
 ``/work`` path inside the container (the repo itself sits under a path with a
 space, "OneDrive - Microsoft", which nuscr's CLI — like Scribble's — dislikes).
+
+Environments whose network policy blocks Docker Hub (e.g. Claude Code on the
+web) can point ``STJP_NUSCR_BIN`` at a native nuscr binary instead — built by
+the fork's ``build-nuscr`` GitHub Actions workflow and fetched from the
+``ci-artifacts`` branch (see docs/1_TECH_SETUP.md). When set, all invocations
+run the binary directly and Docker is not required.
 """
 from __future__ import annotations
 
@@ -20,6 +26,7 @@ import subprocess
 from pathlib import Path
 
 from stjp_core.config import (
+    NUSCR_BIN,
     NUSCR_DIR,
     NUSCR_DOCKER_IMAGE,
     NUSCR_PROJECTION_MODE,
@@ -40,10 +47,12 @@ class NuscrCompiler:
         image: str = NUSCR_DOCKER_IMAGE,
         mode: str = NUSCR_PROJECTION_MODE,
         nuscr_dir: Path = NUSCR_DIR,
+        binary: str | None = NUSCR_BIN,
     ):
         self.image = image
         self.mode = mode
         self.nuscr_dir = Path(nuscr_dir)
+        self.binary = binary or None
 
     # -- internals ---------------------------------------------------------
 
@@ -61,14 +70,20 @@ class NuscrCompiler:
                 scr_to_nuscr(protocol_path.read_text(encoding="utf-8")),
                 encoding="utf-8",
             )
+        if self.binary:
+            return str(out)
         return f"/work/{_TMP_SUBDIR}/{out.name}"
 
     def _docker(self, args: list[str]) -> subprocess.CompletedProcess:
-        cmd = [
-            "docker", "run", "--rm",
-            "-v", f"{self.nuscr_dir}:/work",
-            self.image, *args,
-        ]
+        """Run nuscr — natively when ``STJP_NUSCR_BIN`` is set, else via Docker."""
+        if self.binary:
+            cmd = [self.binary, *args]
+        else:
+            cmd = [
+                "docker", "run", "--rm",
+                "-v", f"{self.nuscr_dir}:/work",
+                self.image, *args,
+            ]
         return subprocess.run(cmd, capture_output=True, text=True)
 
     # -- ProtocolCompiler interface ---------------------------------------

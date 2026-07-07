@@ -1,0 +1,249 @@
+{
+  "case": "skills_code_execution",
+  "arm": "unchecked",
+  "stjp_prompts": {},
+  "roles": [
+    "Coder",
+    "Executor",
+    "Reviewer"
+  ],
+  "max_rounds": 4,
+  "round": 2,
+  "efsms": {
+    "Coder": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "send",
+          "Reviewer",
+          "SubmitCode",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "receive",
+          "Executor",
+          "ResultReturned",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "Executor": {
+      "initial": "12",
+      "accepting": [
+        "13"
+      ],
+      "transitions": [
+        [
+          "12",
+          "receive",
+          "Reviewer",
+          "Approve",
+          "String",
+          "14"
+        ],
+        [
+          "14",
+          "send",
+          "Coder",
+          "ResultReturned",
+          "String",
+          "13"
+        ]
+      ]
+    },
+    "Reviewer": {
+      "initial": "20",
+      "accepting": [
+        "21"
+      ],
+      "transitions": [
+        [
+          "20",
+          "receive",
+          "Coder",
+          "SubmitCode",
+          "String",
+          "22"
+        ],
+        [
+          "22",
+          "send",
+          "Executor",
+          "Approve",
+          "String",
+          "21"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 2,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 3,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 4,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 5,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 6,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 7,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 8,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 9,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    },
+    {
+      "trial": 10,
+      "status": "deadlock",
+      "trace": [],
+      "role_states": {
+        "Coder": "4",
+        "Executor": "12",
+        "Reviewer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 2,
+      "agent_calls": 6,
+      "malformed": 0,
+      "prompt_chars": 5242,
+      "reply_chars": 387
+    }
+  ],
+  "agent_seconds": 569.0905666351318
+}

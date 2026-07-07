@@ -1,0 +1,595 @@
+{
+  "case": "skills_booking_saga",
+  "arm": "unchecked",
+  "stjp_prompts": {},
+  "roles": [
+    "Hotel",
+    "Payment",
+    "Traveler"
+  ],
+  "max_rounds": 4,
+  "round": 4,
+  "efsms": {
+    "Hotel": {
+      "initial": "6",
+      "accepting": [
+        "7"
+      ],
+      "transitions": [
+        [
+          "6",
+          "receive",
+          "Traveler",
+          "RequestBooking",
+          "String",
+          "8"
+        ],
+        [
+          "8",
+          "send",
+          "Payment",
+          "RoomHeld",
+          "String",
+          "9"
+        ],
+        [
+          "9",
+          "receive",
+          "Payment",
+          "PaymentCaptured",
+          "Double",
+          "10"
+        ],
+        [
+          "10",
+          "send",
+          "Traveler",
+          "BookingConfirmed",
+          "String",
+          "7"
+        ]
+      ]
+    },
+    "Payment": {
+      "initial": "16",
+      "accepting": [
+        "17"
+      ],
+      "transitions": [
+        [
+          "16",
+          "receive",
+          "Hotel",
+          "RoomHeld",
+          "String",
+          "18"
+        ],
+        [
+          "18",
+          "send",
+          "Hotel",
+          "PaymentCaptured",
+          "Double",
+          "17"
+        ]
+      ]
+    },
+    "Traveler": {
+      "initial": "24",
+      "accepting": [
+        "25"
+      ],
+      "transitions": [
+        [
+          "24",
+          "send",
+          "Hotel",
+          "RequestBooking",
+          "String",
+          "26"
+        ],
+        [
+          "26",
+          "receive",
+          "Hotel",
+          "BookingConfirmed",
+          "String",
+          "25"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 2,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 3,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 4,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 5,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 6,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 7,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 8,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 9,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    },
+    {
+      "trial": 10,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking_request",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Hold room for booking",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "please_book",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "booking request",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "6",
+        "Payment": "16",
+        "Traveler": "24"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 12,
+      "malformed": 0,
+      "prompt_chars": 12938,
+      "reply_chars": 921
+    }
+  ],
+  "agent_seconds": 883.0225069522858
+}
