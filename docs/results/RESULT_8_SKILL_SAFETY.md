@@ -216,6 +216,8 @@ the **full per-trial traces** under
 `state.json` per (case, arm) with every trial's ordered message log and
 terminal status, plus the `replies_round*.json` decision ledger. `traces/VERIFY.md`
 shows how to re-derive every metric with `engine.py report` straight from the
-committed `state.json` (matches the reported numbers exactly).
+committed `state.json` (matches the reported numbers exactly). A plain-language walkthrough
+— re-derive every metric, read a trace by eye, exact metric definitions — is
+[`reference/HOW_TO_USE_TRACES.md`](../reference/HOW_TO_USE_TRACES.md).
 How to run the nuscr backend:
 [`reference/NUSCR_CLOUD_INSTALL.md`](../reference/NUSCR_CLOUD_INSTALL.md).

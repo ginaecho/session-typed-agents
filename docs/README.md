@@ -15,6 +15,7 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — the system f
 - **Reading the benchmark results?** → Start with `5_RUN_REPORTS_EXPLAINED.md`
 - **Understanding why safety matters?** → See `6_USE_CASE_DEADLOCK_SAFETY.md`
 - **Running the nuscr / nuscribble compiler backend?** → See `reference/NUSCR_CLOUD_INSTALL.md` (install routes + `STJP_COMPILER_BACKEND=nuscr`)
+- **Verifying the results from the raw traces?** → See `reference/HOW_TO_USE_TRACES.md` (re-derive every metric; read a trace by eye)
 
 ---
 
@@ -145,6 +146,7 @@ What you'll learn:
 - `reference/CHOICE_GUARDS_AND_GATE.md` — How value-dependent choice guards and the enforcement gate work (technical)
 - `reference/NUSCR_CLOUD_INSTALL.md` — **How to run the coinductive nuscr ("nuscribble") backend** in the cloud env: Docker route, CI-artifact native-binary route, building scribble-java from source, the `STJP_COMPILER_BACKEND=nuscr` / `STJP_NUSCR_BIN` env vars, and the 2017-Maven-release pitfall
 - `reference/NUSCR_AND_SKILL_SAFETY_PLAN.md` — The plan behind RESULT_8: swapping in the coinductive compiler and building the real-public-skills safety benchmark (unvalidated vs STJP)
+- `reference/HOW_TO_USE_TRACES.md` — **How to verify the results yourself** from the committed raw traces: re-derive every metric with `engine.py report` straight from `state.json`, read a trace by eye, the exact GCR/CGC/disaster definitions, and what is (and isn't) committed. Companion to the in-tree `reports/ss2026_n100_sonnet/traces/VERIFY.md`
 - `reference/FOUNDRY_VISIBILITY.md` — Exact code to make agents/threads/traces visible in the Azure AI Foundry portal
 - `reference/STJP_V3_PLAN.md` — **Latest plan**: governance plane + decentralized execution plane (summarized in `1_TECH_SETUP.md` section 7)
 - `reference/PROTOCOL_EVOLUTION.md` — How to update a protocol and re-validate (now includes the built incremental sub-protocol slice: child verified once, projection diff, monitor regen for affected roles only)
@@ -312,6 +314,7 @@ Rules:
 - **Latest plan:** `reference/STJP_V3_PLAN.md` (governance plane + execution plane; summarized in `1_TECH_SETUP.md` section 7)
 - **Latest results:** `results/RESULT_8_SKILL_SAFETY.md` (real public skills, 3 arms — n=10 Haiku **and** an n=100 Sonnet per-role-isolated addendum on the nuscr backend), `results/RESULT_7_N100_SCALE.md` (all deterministic benchmarks at n=100) and `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 — the pre-registered live-model run)
 - **How to run the compiler backends:** `reference/NUSCR_CLOUD_INSTALL.md` (coinductive nuscr / "nuscribble" — Docker or native binary via `STJP_COMPILER_BACKEND=nuscr`; scribble-java is the default backend)
+- **How to verify the results from raw traces:** `reference/HOW_TO_USE_TRACES.md` — the RESULT_8 n=100 per-trial traces are committed under `experiments/subagent_trials/reports/ss2026_n100_sonnet/traces/`; re-derive every metric with `engine.py report`
 - **Latest code status:** `reference/GAP_CLOSED.md`
 - **Latest experiment design:** `archive/EXPERIMENT_DESIGN_V3_EXECUTION.md` (pre-registered; graded by the 2026-07-02 run report)
 
