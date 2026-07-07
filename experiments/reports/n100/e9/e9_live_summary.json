@@ -1,0 +1,24 @@
+{
+  "benchmark": "E9 part 3 \u2014 live tolerant-gate rerun (escrow min_gate, haiku roles, n=15/arm)",
+  "model": "haiku",
+  "generated": "2026-07-05",
+  "method": "one haiku subagent per arm, per-poll genuine role reasoning; verified from state.json",
+  "arms": {
+    "strict_gate": {
+      "n": 15,
+      "success": 15,
+      "deadlocks": 0,
+      "disasters": 0,
+      "malformed": 0,
+      "anticipations_admitted": 0
+    },
+    "tolerant_gate": {
+      "n": 15,
+      "success": 15,
+      "deadlocks": 0,
+      "disasters": 0,
+      "malformed": 0,
+      "anticipations_admitted": 0
+    }
+  }
+}

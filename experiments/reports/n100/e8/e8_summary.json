@@ -1,0 +1,31 @@
+{
+  "benchmark": "E8 \u2014 cumulative-violation detection (budget_run)",
+  "seed": 20260705,
+  "n_per_class": 50,
+  "per_message_limit": 5000.0,
+  "session_budget": 10000.0,
+  "arms": {
+    "a_per_message": {
+      "detected_overruns": "0/50",
+      "detection_rate": 0.0,
+      "crossing_exact": "0/0",
+      "false_positives": "0/50",
+      "post_budget_debits_delivered": 0
+    },
+    "b_ledger_observe": {
+      "detected_overruns": "50/50",
+      "detection_rate": 1.0,
+      "crossing_exact": "50/50",
+      "false_positives": "0/50",
+      "post_budget_debits_delivered": 50
+    },
+    "c_ledger_gate": {
+      "detected_overruns": "50/50",
+      "detection_rate": 1.0,
+      "crossing_exact": "50/50",
+      "false_positives": "0/50",
+      "post_budget_debits_delivered": 0
+    }
+  },
+  "note": "Every debit is individually <= the per-message limit, so the overrun is invisible to any per-message guard by construction. Arm (a) is the shipped STJP; its 0 detections are the motivation."
+}

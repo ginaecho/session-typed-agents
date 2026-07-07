@@ -1,0 +1,7 @@
+# Prototype 3 crash-handling sidecar for escrow_trade (ESOP'18 failure regions).
+region Trade covers ALL
+on crash Buyer   : Escrow->Seller:AbortTrade ; goal := Refunded
+on crash Seller  : Escrow->Buyer:AbortTrade ; goal := Refunded
+on crash Carrier : Escrow->Buyer:AbortTrade ; Escrow->Seller:AbortTrade ; goal := Refunded
+on crash Escrow  : ESCALATE
+timeout * = 3 polls

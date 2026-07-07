@@ -1,0 +1,12 @@
+{
+  "benchmark": "E10 live flaky-role (escrow, haiku, n=15, one crash/trial)",
+  "generated": "2026-07-05",
+  "method": "haiku drives escrow; one designated role crashes (goes silent) at its crash round; verified from state.json; CF resolver applied to the partial trace",
+  "baseline_limbo": 15,
+  "n": 15,
+  "cf_typed_terminal": 15,
+  "cf_outcomes": {
+    "typed_degraded": 15
+  },
+  "cf_disasters": 0
+}

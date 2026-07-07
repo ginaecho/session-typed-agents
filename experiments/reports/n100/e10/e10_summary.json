@@ -1,0 +1,51 @@
+{
+  "benchmark": "E10 \u2014 crash-point sweep (escrow_trade)",
+  "generated": "2026-07-05",
+  "fail_spec_valid": true,
+  "fail_spec_errors": [],
+  "crash_point_grid": {
+    "cells": 14,
+    "baseline": {
+      "limbo": 14,
+      "typed": 0
+    },
+    "cf": {
+      "typed_degraded": 9,
+      "typed_abort": 5,
+      "limbo": 0
+    },
+    "cf_disasters": 0
+  },
+  "checker_mutation": {
+    "mutants": 5,
+    "rejected": 5,
+    "detail": {
+      "uncovered_pair": {
+        "rejected": true,
+        "reason": "coverage: no handler or ESCALATE for crash of Carrier"
+      },
+      "no_terminal_handler": {
+        "rejected": true,
+        "reason": "recoverability: handler for Buyer reaches no typed terminal (missing `goal :=`) and is not ESCALATE"
+      },
+      "sender_eq_receiver": {
+        "rejected": true,
+        "reason": "handler for Buyer: AbortTrade has sender==receiver"
+      },
+      "settlement_shortcut": {
+        "rejected": true,
+        "reason": "authorization-bypass: handler for Carrier would violate a safety policy: S2 (sequence)"
+      },
+      "dead_role_receiver": {
+        "rejected": true,
+        "reason": "handler for Buyer: receiver Buyer is not a live role"
+      }
+    }
+  },
+  "deadlock_replay": {
+    "n": 19,
+    "baseline_limbo": 19,
+    "cf_typed_terminal": 19,
+    "cf_limbo": 0
+  }
+}
