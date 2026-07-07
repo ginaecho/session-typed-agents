@@ -98,7 +98,8 @@ def _merge_and_submit(run_dir: Path, rnd: int) -> dict:
     return _engine(["submit", "--dir", str(run_dir), "--file", str(rfile)])
 
 
-def _emit_batches(run_dir: Path, polls: dict) -> list[dict]:
+def _emit_batches(run_dir: Path, polls: dict,
+                  chunk: int | None = None) -> list[dict]:
     rnd = polls["round"]
     bdir = run_dir / f"batches_round{rnd}"
     bdir.mkdir(exist_ok=True)
@@ -108,18 +109,24 @@ def _emit_batches(run_dir: Path, polls: dict) -> list[dict]:
             {"trial": p["trial"], "prompt": p["prompt"]})
     manifest = []
     for role, prompts in sorted(by_role.items()):
-        bf = bdir / f"{role}.json"
-        rf = bdir / f"{role}.reply.json"
-        bf.write_text(json.dumps({
-            "role": role, "reply_file": str(rf), "prompts": prompts},
-            indent=2), encoding="utf-8")
-        manifest.append({"run": run_dir.name, "round": rnd, "role": role,
-                         "batch_file": str(bf), "reply_file": str(rf),
-                         "n_prompts": len(prompts)})
+        # chunking caps prompts per subagent call (large n) and restores some
+        # cross-trial independence (each chunk is a separate model call)
+        chunks = ([prompts] if not chunk else
+                  [prompts[i:i + chunk] for i in range(0, len(prompts), chunk)])
+        for ci, part in enumerate(chunks):
+            suffix = "" if len(chunks) == 1 else f".c{ci + 1}"
+            bf = bdir / f"{role}{suffix}.json"
+            rf = bdir / f"{role}{suffix}.reply.json"
+            bf.write_text(json.dumps({
+                "role": role, "reply_file": str(rf), "prompts": part},
+                indent=2), encoding="utf-8")
+            manifest.append({"run": run_dir.name, "round": rnd, "role": role,
+                             "batch_file": str(bf), "reply_file": str(rf),
+                             "n_prompts": len(part)})
     return manifest
 
 
-def step(run_dirs: list[Path]) -> dict:
+def step(run_dirs: list[Path], chunk: int | None = None) -> dict:
     out = {"batches": [], "submitted": [], "done": []}
     for run_dir in run_dirs:
         rnd = _pending_round(run_dir)
@@ -138,7 +145,7 @@ def step(run_dirs: list[Path]) -> dict:
                     "success", "deadlock", "max_rounds",
                     "total_gate_rejections") if k in report}})
         else:
-            out["batches"].extend(_emit_batches(run_dir, polls))
+            out["batches"].extend(_emit_batches(run_dir, polls, chunk))
     return out
 
 
@@ -146,8 +153,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["step"])
     ap.add_argument("--dir", action="append", required=True)
+    ap.add_argument("--chunk", type=int, default=None)
     args = ap.parse_args()
-    print(json.dumps(step([Path(d) for d in args.dir]), indent=2))
+    print(json.dumps(step([Path(d) for d in args.dir], args.chunk), indent=2))
     return 0
 
 
