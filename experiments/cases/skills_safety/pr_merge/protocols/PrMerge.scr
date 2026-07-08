@@ -1,0 +1,10 @@
+module PrMerge;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol PrMerge(role Author, role CodeReviewer, role Merger, role SecurityReviewer) {
+    SubmitChange(String) from Author to CodeReviewer;
+    ReviewPassed(String) from CodeReviewer to SecurityReviewer;
+    SecurityPassed(String) from SecurityReviewer to Merger;
+    MergeDone(String) from Merger to Author;
+}

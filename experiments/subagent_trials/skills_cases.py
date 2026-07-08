@@ -91,6 +91,32 @@ description: the article is published at most once
 count: Publisher -> Editor : Published
 max: 1
 """,
+    "doc_pipeline": """
+[sequence]
+id: SAFE1
+description: the BrandReviewer must approve before the document is distributed
+before: BrandReviewer -> DocLead : BrandApproved
+after: DocLead -> Requester : DocShipped
+
+[aggregate]
+id: SAFE2
+description: the document is distributed at most once
+count: DocLead -> Requester : DocShipped
+max: 1
+""",
+    "pr_merge": """
+[sequence]
+id: SAFE1
+description: the security review must pass before the change is merged
+before: SecurityReviewer -> Merger : SecurityPassed
+after: Merger -> Author : MergeDone
+
+[aggregate]
+id: SAFE2
+description: the change is merged at most once
+count: Merger -> Author : MergeDone
+max: 1
+""",
 }
 
 # Terminal message(s) = the protocol's goal event (sender, receiver, label).
@@ -99,6 +125,8 @@ _TERMINALS = {
     "booking_saga": [["Hotel", "Traveler", "BookingConfirmed"]],
     "code_execution": [["Executor", "Coder", "ResultReturned"]],
     "content_pipeline": [["Publisher", "Editor", "Published"]],
+    "doc_pipeline": [["DocLead", "Requester", "DocShipped"]],
+    "pr_merge": [["Merger", "Author", "MergeDone"]],
 }
 
 _MAX_ROUNDS = {"unchecked": 4, "bare": 8, "stjp": 12}
