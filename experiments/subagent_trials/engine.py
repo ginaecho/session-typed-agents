@@ -46,7 +46,15 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 
-from stjp_core.compiler.efsm_parser import get_all_efsms          # noqa: E402
+from stjp_core.compiler.compiler_iface import get_compiler        # noqa: E402
+
+
+def get_all_efsms(protocol_path, protocol_name, roles):
+    """Project every role's EFSM through the selected compiler backend
+    (STJP_COMPILER_BACKEND: scribble default, or nuscr — see stjp_core.config)."""
+    compiler = get_compiler()
+    return {role: compiler.project_efsm(Path(protocol_path), protocol_name, role)
+            for role in roles}
 from stjp_core.monitor.monitor import SessionMonitor, TraceEvent  # noqa: E402
 from stjp_core.critic.policies import parse_policy_text           # noqa: E402
 from stjp_core.critic.critic import run_runtime_critic            # noqa: E402

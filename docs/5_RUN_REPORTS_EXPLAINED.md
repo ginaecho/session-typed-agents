@@ -2,15 +2,24 @@
 
 Reading the benchmark results in plain English: what the numbers mean, why they matter, and what they prove.
 
-**Updated: 2026-07-05** (added Part 2 — the n=100 reliability run; added the
-dollar-cost estimate of the n=100 reproduction to [§2](#2-reading-the-results-table)
-and [§10](#what-this-reproduction-actually-cost-in-dollars))
+**Updated: 2026-07-07** (added the real-skills ladder in Part 1 — a
+[2026-07-06 Haiku n=10 cloud run](#the-same-ladder-on-real-skills-2026-07-06-cloud-run)
+and a [2026-07-07 Sonnet n=100 per-role-isolated run on the nuscr backend](#the-same-real-skills-ladder-at-n100-with-a-stronger-model-sonnet-2026-07-07)).
+Earlier: 2026-07-05 added Part 2 — the n=100 reliability run — plus the
+dollar-cost estimate of the n=100 reproduction in [§2](#2-reading-the-results-table)
+and [§10](#what-this-reproduction-actually-cost-in-dollars).
 
 This document has two parts:
 
-- **Part 1 — the finance run (2026-07-02).** One realistic task, six AI agents,
-  run 10 times per setting. Shows that the full STJP system is both the safest
-  and the cheapest way to run the agents. Start here.
+- **Part 1 — the finance run (2026-07-02), then the same ladder on REAL public
+  skills.** One realistic task, six AI agents, run 10 times per setting: shows
+  that the full STJP system is both the safest and the cheapest way to run the
+  agents. Start here. Part 1 then repeats the ladder on **real MIT-licensed
+  agent skills nobody wrote for this benchmark** — first at
+  [n=10 with Haiku roles](#the-same-ladder-on-real-skills-2026-07-06-cloud-run),
+  then at
+  [n=100 with stronger Sonnet roles in strict per-role isolation on the nuscr
+  backend](#the-same-real-skills-ladder-at-n100-with-a-stronger-model-sonnet-2026-07-07).
 - **Part 2 — the n=100 reliability run (2026-07-04).** Seven focused experiments,
   each run 100 times, that stress-test one piece of the system at a time — the
   safety checker, the security gate, the reliability math, the translator, the
@@ -22,6 +31,15 @@ This document has two parts:
   column reads in *calls*, not *tokens*, and a
   [**dollar-cost estimate**](#what-this-reproduction-actually-cost-in-dollars) of
   the whole reproduction (**under $100**).
+- **Part 3 — the real-skills two-model run (2026-07-08), reported separately.**
+  Two agent teams built from *real, publicly shared skill files* (Anthropic's
+  `anthropics/skills` and GitHub's `awesome-copilot`), each run in three
+  settings, once with a small model (Haiku) and once with a mid-tier model
+  (Sonnet) playing the team members — 120 trials. Which team fails without a
+  coordination plan turns out to depend on the model; with full STJP both
+  models are flawless and indistinguishable at 3× lower cost. Full
+  plain-language report:
+  [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md).
 
 ---
 
@@ -165,6 +183,76 @@ Numbers, traces, and honest caveats (token counts are estimates; seconds are
 not comparable to the GPT-5.4 rows above because subagent dispatch was
 batched): [`results/RESULT_8_SKILL_SAFETY.md`](results/RESULT_8_SKILL_SAFETY.md);
 raw data in `experiments/subagent_trials/reports/ss2026_skill_safety/`.
+
+### The same real-skills ladder at n=100 with a STRONGER model (Sonnet, 2026-07-07)
+
+We re-ran the same four cases at **n=100 per cell** (1,200 trials), with every
+role played by a **Claude Sonnet** subagent, and — importantly — **each role
+decided in strict isolation** (a subagent seeing only that one role's own
+skill/contract and its own inbox, never the other roles' prompts or the global
+protocol). Projection ran through the **new nuscribble (coinductive nuscr)
+backend** (`STJP_COMPILER_BACKEND=nuscr`), which we first checked produces
+EFSMs identical to Scribble's on all four protocols.
+
+| arm | GCR (Wilson 95%) | CGC | Disasters | Cost-to-goal | Agent calls/trial |
+|---|---|---|---|---|---|
+| **unchecked** — original skills, **compiler-REJECTED**, no contract | 75% [70.5–79.0] | 50% | 100 | 3,941 | 10.8 |
+| **bare** — revised skills, **contract as text**, no enforcement | 75% [70.5–79.0] | 50% | 200 | 4,894 | 14.5 |
+| **STJP** — revised skills + **gate + scheduler** | **100% [99.0–100]** | **100%** | **0** | **1,674** | **4.0** |
+
+**The headline is unchanged and now tighter:** STJP is the *only* arm that is
+100% complete, 100% safe, and 0 disasters — and it is **2.4–2.9× cheaper**
+(cost-to-goal) and uses **~⅓ the agent calls** of the other two. Its Wilson
+interval [99, 100]% excludes every other arm's interval.
+
+**But a stronger model makes the two weak arms fail *differently* — and this is
+the honest, interesting part.** Per case (n=100 each):
+
+| case (source) | unchecked | bare | STJP |
+|---|---|---|---|
+| airline_seat (openai-agents) | **0% — deadlock** (skill says "transfer to Seat Booking"; that human name ≠ the role id, so the handoff message never routes) | 100% GCR but **0% CGC, 100 double seat-writes** | 100% / 100% / 0 |
+| booking_saga (langgraph) | 100% GCR but **0% CGC, 100 double charges** (Sonnet coordinates the hold-then-pay order from the intent, but re-sends `PaymentCaptured`) | **0% — livelock** (rigidly re-runs its 4-step contract, never advancing) | 100% / 100% / 0 |
+| code_execution (autogen) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
+| content_pipeline (crewAI) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
+
+**What this teaches (read carefully — it is more honest than "unchecked always
+dies"):**
+
+- **A strong model can sometimes paper over unvalidated skills at runtime.**
+  Sonnet coordinated `booking_saga` and both simple pipelines from the prose
+  intent alone, where the weaker Haiku model deadlocked all of them. So the
+  *runtime* success of unvalidated skills is **model-dependent and
+  unreliable** — you cannot count on it.
+- **The compiler's design-time verdict is NOT model-dependent.** All four
+  `unchecked` composed protocols are *rejected by the compiler before any
+  agent runs* (circular wait / unknown role / missing coordination) — that is
+  the robust guarantee. The runtime numbers are secondary evidence that the
+  rejection was pointing at something real.
+- **"Contract as text" (bare) is the worst for safety, at any model.** It
+  produced the **most disasters (200)** — double charges *and* double
+  seat-writes — because nothing stops a role re-sending, and on
+  `booking_saga` it livelocked entirely. Writing the validated contract into
+  the prompt is *not* enough; it has to be *enforced*.
+- **Only the gate + scheduler (STJP) is reliable across models.** Haiku and
+  Sonnet both get 100%/100%/0 on the STJP arm. The scheduler offers each role
+  only its enabled move, so there is nothing to re-send and nothing to get
+  wrong — which is also why it is the cheapest.
+
+Honest caveats specific to this run: (1) two failure modes are partly
+harness-shaped — the airline role-name mismatch, and an observe-only message
+view that doesn't echo a role its own past sends (the mechanism behind both
+the re-send disasters and the booking livelock); both are *properties of
+running unvalidated/unenforced skills*, but a different harness could soften
+them. (2) One isolated decision per (role, round) is replicated across the 100
+trials of a cell (the cases are deterministic given the role view), so n=100
+tightens the Wilson interval rather than adding behavioural variety. Full
+numbers, per-case reports and the committed **raw per-trial traces**
+(`.../reports/ss2026_n100_sonnet/traces/`, with `VERIFY.md` showing how to
+re-derive every metric from `state.json`):
+[`results/RESULT_8_SKILL_SAFETY.md`](results/RESULT_8_SKILL_SAFETY.md) and
+`experiments/subagent_trials/reports/ss2026_n100_sonnet/`. How to run the
+nuscribble backend that drove it:
+[`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md).
 
 ---
 

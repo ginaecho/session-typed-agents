@@ -1,0 +1,10 @@
+module DocPipeline;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol DocPipeline(role BrandReviewer, role DocLead, role Requester, role Writer) {
+    DocRequest(String) from Requester to Writer;
+    DraftComms(String) from Writer to BrandReviewer;
+    BrandApproved(String) from BrandReviewer to DocLead;
+    DocShipped(String) from DocLead to Requester;
+}

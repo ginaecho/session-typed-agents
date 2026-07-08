@@ -1,0 +1,9 @@
+module CodeExecution;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol CodeExecution(role Coder, role Executor, role Reviewer) {
+    SubmitCode(String) from Coder to Reviewer;
+    Approve(String) from Reviewer to Executor;
+    ResultReturned(String) from Executor to Coder;
+}

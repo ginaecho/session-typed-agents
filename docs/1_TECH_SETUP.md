@@ -22,6 +22,29 @@ Scribble outputs two things:
 1. A "yes it's safe" verdict for the global protocol
 2. A **local contract** for each agent—a summary of just that agent's part
 
+### Two compiler backends: scribble-java and nuscr ("nuscribble")
+
+STJP can drive **two** interchangeable protocol compilers, selected with the
+`STJP_COMPILER_BACKEND` environment variable:
+
+- **`scribble` (default)** — the reference `scribble-java` implementation
+  (built from source; the 2017 Maven releases silently accept everything, so
+  always build `master`).
+- **`nuscr`** — the OCaml **coinductive** fork ("nuscribble"). Set
+  `STJP_COMPILER_BACKEND=nuscr`. It runs either from a Docker image or, when
+  Docker Hub is blocked, from a **native binary** pointed at by
+  `STJP_NUSCR_BIN` (e.g. `STJP_NUSCR_BIN=/usr/local/bin/nuscr`).
+
+Both go through the same `stjp_core/compiler/compiler_iface.get_compiler()`
+seam, so the validator, the projected local types, and the EFSMs are produced
+the same way regardless of backend. We verified the two backends produce
+**isomorphic EFSMs** on all four RESULT_8 protocols, and the n=100 real-skills
+run (`5_RUN_REPORTS_EXPLAINED.md`) was projected through nuscr.
+
+**Full install + run instructions** (Docker route, CI-artifact native-binary
+route, building scribble-java from source, and the env-var reference) are in
+[`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md).
+
 ---
 
 ## 2. What does STJP add to Scribble?

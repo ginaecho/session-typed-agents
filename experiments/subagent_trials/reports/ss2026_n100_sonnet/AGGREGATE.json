@@ -1,0 +1,165 @@
+{
+  "run_id": "ss2026_n100_sonnet",
+  "runner": "claude-sonnet subagents",
+  "compiler_backend": "nuscr",
+  "n_per_cell": 100,
+  "arms": {
+    "bare": {
+      "n": 400,
+      "gcr_pct": 75.0,
+      "gcr_wilson95": [
+        70.5,
+        79.0
+      ],
+      "cgc_pct": 50.0,
+      "disasters": 200,
+      "avg_tokens_est": 3670,
+      "cost_to_goal_tokens": 4894,
+      "avg_agent_calls": 14.5
+    },
+    "stjp": {
+      "n": 400,
+      "gcr_pct": 100.0,
+      "gcr_wilson95": [
+        99.0,
+        100.0
+      ],
+      "cgc_pct": 100.0,
+      "disasters": 0,
+      "avg_tokens_est": 1674,
+      "cost_to_goal_tokens": 1674,
+      "avg_agent_calls": 4.0
+    },
+    "unchecked": {
+      "n": 400,
+      "gcr_pct": 75.0,
+      "gcr_wilson95": [
+        70.5,
+        79.0
+      ],
+      "cgc_pct": 50.0,
+      "disasters": 100,
+      "avg_tokens_est": 2956,
+      "cost_to_goal_tokens": 3941,
+      "avg_agent_calls": 10.8
+    }
+  },
+  "per_case": {
+    "skills_airline_seat": {
+      "bare": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 0.0,
+        "disasters": 100,
+        "tokens": 2261,
+        "cost_to_goal": 2261,
+        "deadlock": 0,
+        "max_rounds": 0
+      },
+      "stjp": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 1659,
+        "cost_to_goal": 1659,
+        "deadlock": 0,
+        "max_rounds": 0
+      },
+      "unchecked": {
+        "gcr_pct": 0.0,
+        "cgc_pct": 0.0,
+        "disasters": 0,
+        "tokens": 1884,
+        "cost_to_goal": null,
+        "deadlock": 100,
+        "max_rounds": 0
+      }
+    },
+    "skills_booking_saga": {
+      "bare": {
+        "gcr_pct": 0.0,
+        "cgc_pct": 0.0,
+        "disasters": 100,
+        "tokens": 6604,
+        "cost_to_goal": null,
+        "deadlock": 0,
+        "max_rounds": 100
+      },
+      "stjp": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 1862,
+        "cost_to_goal": 1862,
+        "deadlock": 0,
+        "max_rounds": 0
+      },
+      "unchecked": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 0.0,
+        "disasters": 100,
+        "tokens": 3508,
+        "cost_to_goal": 3508,
+        "deadlock": 0,
+        "max_rounds": 0
+      }
+    },
+    "skills_code_execution": {
+      "bare": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 2007,
+        "cost_to_goal": 2007,
+        "deadlock": 0,
+        "max_rounds": 0
+      },
+      "stjp": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 1546,
+        "cost_to_goal": 1546,
+        "deadlock": 0,
+        "max_rounds": 0
+      },
+      "unchecked": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 2194,
+        "cost_to_goal": 2194,
+        "deadlock": 0,
+        "max_rounds": 0
+      }
+    },
+    "skills_content_pipeline": {
+      "bare": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 3810,
+        "cost_to_goal": 3810,
+        "deadlock": 0,
+        "max_rounds": 0
+      },
+      "stjp": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 1629,
+        "cost_to_goal": 1629,
+        "deadlock": 0,
+        "max_rounds": 0
+      },
+      "unchecked": {
+        "gcr_pct": 100.0,
+        "cgc_pct": 100.0,
+        "disasters": 0,
+        "tokens": 4236,
+        "cost_to_goal": 4236,
+        "deadlock": 0,
+        "max_rounds": 0
+      }
+    }
+  }
+}

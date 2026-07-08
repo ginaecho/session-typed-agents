@@ -14,6 +14,10 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — the system f
 - **Creating your own use case?** → Follow `4_HOW_TO_CREATE_USE_CASES.md` step by step
 - **Reading the benchmark results?** → Start with `5_RUN_REPORTS_EXPLAINED.md`
 - **Understanding why safety matters?** → See `6_USE_CASE_DEADLOCK_SAFETY.md`
+- **Running the nuscr / nuscribble compiler backend?** → See `reference/NUSCR_CLOUD_INSTALL.md` (install routes + `STJP_COMPILER_BACKEND=nuscr`)
+- **Verifying the results from the raw traces?** → See `reference/HOW_TO_USE_TRACES.md` (re-derive every metric; read a trace by eye)
+- **Real Anthropic + GitHub Copilot skills, run by two different models?** → See [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md)
+- **Which developer use cases fit STJP (interview format)?** → See [`FABLE5_INTERVIEW_DEV_USE_CASES.md`](FABLE5_INTERVIEW_DEV_USE_CASES.md)
 
 ---
 
@@ -142,6 +146,9 @@ What you'll learn:
 - `reference/GLOSSARY.md` — Plain-language glossary (same terms as `1_TECH_SETUP.md` section 4; the canonical version)
 - `reference/SCRIBBLE_EXTENSIONS.md` — Deep dive on how STJP extends Scribble (technical)
 - `reference/CHOICE_GUARDS_AND_GATE.md` — How value-dependent choice guards and the enforcement gate work (technical)
+- `reference/NUSCR_CLOUD_INSTALL.md` — **How to run the coinductive nuscr ("nuscribble") backend** in the cloud env: Docker route, CI-artifact native-binary route, building scribble-java from source, the `STJP_COMPILER_BACKEND=nuscr` / `STJP_NUSCR_BIN` env vars, and the 2017-Maven-release pitfall
+- `reference/NUSCR_AND_SKILL_SAFETY_PLAN.md` — The plan behind RESULT_8: swapping in the coinductive compiler and building the real-public-skills safety benchmark (unvalidated vs STJP)
+- `reference/HOW_TO_USE_TRACES.md` — **How to verify the results yourself** from the committed raw traces: re-derive every metric with `engine.py report` straight from `state.json`, read a trace by eye, the exact GCR/CGC/disaster definitions, and what is (and isn't) committed. Companion to the in-tree `reports/ss2026_n100_sonnet/traces/VERIFY.md`
 - `reference/FOUNDRY_VISIBILITY.md` — Exact code to make agents/threads/traces visible in the Azure AI Foundry portal
 - `reference/STJP_V3_PLAN.md` — **Latest plan**: governance plane + decentralized execution plane (summarized in `1_TECH_SETUP.md` section 7)
 - `reference/PROTOCOL_EVOLUTION.md` — How to update a protocol and re-validate (now includes the built incremental sub-protocol slice: child verified once, projection diff, monitor regen for affected roles only)
@@ -153,6 +160,29 @@ What you'll learn:
 ### `results/` — the evidence behind the guides (current, plain English)
 
 Each follows the same template: at-a-glance summary → the story → how the test was set up → the numbers → what they mean → honest caveats → where the raw data is.
+
+#### What has been compared (map across every results doc)
+
+Every run compares the **same idea** — agents run with *less* protocol support
+vs *more* — and isolates *one* variable at a time. The table shows what each
+report holds fixed and what it varies, so you can see the whole comparison at a
+glance:
+
+| Report | Model / roles | Scale | Compiler | What is compared (the one variable) | Headline |
+|---|---|---|---|---|---|
+| RESULT_1 | deterministic | n=6–10 | scribble | validated vs unvalidated protocol (static check on/off) | only the checker catches the deadlock: 0/6 vs 6/6 |
+| RESULT_2 | gpt-5.4 | n=10 | scribble | no contract vs lean projected contract (tokens) | same task, −63% tokens |
+| RESULT_3 | gpt-5.4 | n=10 | scribble | the 8-setting ladder (no protocol → rejected → text → projected) | 0% → 10% → 40% → 60–100% |
+| RESULT_4 | gpt-5.4 | n=10 | scribble | global-text vs full STJP stack (safety **and** cost together) | STJP safest **and** 9× cheapest |
+| RESULT_5 | Haiku subagents | n=10 | scribble | unchecked prose skills vs STJP (Foundry-free components) | 0/10 deadlock vs 10/10 |
+| RESULT_6 | deterministic | n=100 | scribble | "test the testers": mutation / adversarial gate / pass^k / fidelity | checker 95.6%/0% FP, gate 0→100% |
+| RESULT_7 | mixed | n=100 | scribble | everything above re-run at 100× the trials (reliability) | Wilson CI narrows, pass^10 17.6× |
+| RESULT_8 | Haiku **&** Sonnet | n=10 **&** n=100 | scribble **&** **nuscr** | **real public skills**: unchecked vs contract-as-text vs STJP | STJP only arm at 100%/100%/0 disasters, and cheapest |
+| RESULT_9 | Haiku **vs** Sonnet (same grid twice) | n=10 × 12 runs | scribble | **real Anthropic + GitHub Copilot skills**: the same 3-setting ladder run once per model | no-plan failures flip BY MODEL (each fails a different team 0/10); STJP 40/40 identical on both, 3× cheaper |
+
+The single load-bearing comparison in all of them is **"validate + enforce"
+(STJP) vs "don't"** — RESULT_8 is the strongest form because the skills are
+real open-source code and the roles are strong models deciding in isolation.
 
 > **Decoding the shorthand in this list.** The entries below are terse on
 > purpose (they are an index, not the report). If a term is unfamiliar, the
@@ -184,7 +214,8 @@ Each follows the same template: at-a-glance summary → the story → how the te
 - `results/RESULT_5_SUBAGENT_VALIDATION.md` — **Foundry-free validation of the 2026-07 components** (Critic/Revisor, skill compaction, incremental extension): 211/211 stress checks over generated protocols; subagent-driven trials n=10 — unchecked prose skills 0/10 (all deadlock) vs STJP 10/10 at protocol-minimum cost, extended protocol 10/10, compaction gauntlet 10/10 detect + 10/10 repair.
 - `results/RESULT_6_BENCHMARK_HARDENING.md` — **Benchmark Plan v2** (test the testers + mutation testing + adversarial gate + pass^k + translation fidelity + roles/portability): verdict corpus 40/40, checker 95.6% detection/0% FP, gate exfiltration ladder 0→41.7→91.7→100%, pass^10 CI story, equivalence scorer 100%. Design in `reference/BENCHMARK_PLAN_V2.md`.
 - `results/RESULT_7_N100_SCALE.md` — **n=100 scale run** (all deterministic benchmarks): Wilson CI narrows from [72,100]% to [96.3,100]%; pass^10@floor jumps 0.039→0.686 (17.6×); integration stress 2105/2110; 100-protocol mutation corpus 95.1%/0% FP; subagent trials 0/100 unchecked vs 100/100 STJP; equivalence scorer 300/300.
-- `results/RESULT_8_SKILL_SAFETY.md` — **Real public skills, unvalidated vs STJP** (4 cases from openai-agents/crewAI/autogen/langgraph, Haiku-class subagents, n=10/cell, cloud run): original skills 0% GCR (40/40 stall or deadlock, ∞ cost); contract-as-text 100% GCR but 50% CGC with 20 duplicate-irreversible-act disasters (double charges/seat-writes); full STJP 100%/100%, 0 disasters, −45% tokens and 3.5 vs 10+ agent calls/trial. Both compilers ran live in-sandbox (scribble-java master + coinductive nuscr, `reference/NUSCR_CLOUD_INSTALL.md`).
+- `results/RESULT_8_SKILL_SAFETY.md` — **Real public skills, unvalidated vs STJP** (4 cases from openai-agents/crewAI/autogen/langgraph, cloud run, both compilers live in-sandbox — scribble-java master + coinductive nuscr, `reference/NUSCR_CLOUD_INSTALL.md`). *n=10, Haiku-class subagents:* original skills 0% GCR (40/40 stall or deadlock, ∞ cost); contract-as-text 100% GCR but 50% CGC with 20 duplicate-irreversible-act disasters (double charges/seat-writes); full STJP 100%/100%, 0 disasters, −45% tokens and 3.5 vs 10+ agent calls/trial. **Addendum — n=100, Sonnet subagents, strict per-role isolation, nuscr backend (1,200 trials):** STJP still 100%/100%/0 and 2.4–2.9× cheaper (Wilson CI excludes both other arms); the weak arms fail *differently* under a stronger model (200 disasters for contract-as-text, a booking livelock), so unvalidated skills' runtime success is model-dependent — but the design-time compiler rejection of all four `unchecked` protocols is model-independent.
+- [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md) — **Real Anthropic + GitHub Copilot skills, the same experiment run on two models** (2 teams built from anthropics/skills and github/awesome-copilot files × 3 settings × n=10, once with Haiku subagents and once with Sonnet subagents; written fully jargon-free, every term explained in place). Headline: with no coordination plan, *which* team fails is model-dependent — Haiku failed the code-change team 0/10, Sonnet failed the announcement team 0/10, on identical skills; with full STJP both models were flawless and indistinguishable (40/40, 0 rule-breaking messages, exactly 4 AI calls/trial, ~1.8k tokens = 3× cheaper than no-plan, 2.4× cheaper than plan-as-text). Evidence: `experiments/subagent_trials/reports/ss2026_new_skills/`.
 
 Earlier run reports, kept here for history (technical, not rewritten):
 
@@ -285,7 +316,9 @@ Rules:
 ## 🔄 Where to get the latest
 
 - **Latest plan:** `reference/STJP_V3_PLAN.md` (governance plane + execution plane; summarized in `1_TECH_SETUP.md` section 7)
-- **Latest results:** `results/RESULT_8_SKILL_SAFETY.md` (real public skills, 3 arms, Haiku subagents), `results/RESULT_7_N100_SCALE.md` (all deterministic benchmarks at n=100) and `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 — the pre-registered live-model run)
+- **Latest results:** `results/RESULT_8_SKILL_SAFETY.md` (real public skills, 3 arms — n=10 Haiku **and** an n=100 Sonnet per-role-isolated addendum on the nuscr backend), `results/RESULT_7_N100_SCALE.md` (all deterministic benchmarks at n=100) and `results/RESULT_4_FULL_STACK.md` (finance case, gpt-5.4, n=10 — the pre-registered live-model run)
+- **How to run the compiler backends:** `reference/NUSCR_CLOUD_INSTALL.md` (coinductive nuscr / "nuscribble" — Docker or native binary via `STJP_COMPILER_BACKEND=nuscr`; scribble-java is the default backend)
+- **How to verify the results from raw traces:** `reference/HOW_TO_USE_TRACES.md` — the RESULT_8 n=100 per-trial traces are committed under `experiments/subagent_trials/reports/ss2026_n100_sonnet/traces/`; re-derive every metric with `engine.py report`
 - **Latest code status:** `reference/GAP_CLOSED.md`
 - **Latest experiment design:** `archive/EXPERIMENT_DESIGN_V3_EXECUTION.md` (pre-registered; graded by the 2026-07-02 run report)
 

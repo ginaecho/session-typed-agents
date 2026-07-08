@@ -153,3 +153,71 @@ compare within this block, not across model tiers.
 issued and reply received), plus `AGGREGATE.json`. The gitignored working
 copies with per-round batch files live under
 `experiments/subagent_trials/runs/ss2026/`.
+
+---
+
+## Addendum — n=100 scale-up on a stronger model (Sonnet, per-role isolated, nuscr backend), 2026-07-07
+
+The 2026-07-06 run above used Haiku-class roles at n=10. We re-ran the same
+four cases at **n=100 per (case, arm)** (1,200 trials) with:
+
+- **Roles played by Claude Sonnet**, each deciding in **strict per-role
+  isolation** — one subagent sees only that role's own skill/contract and its
+  own inbox, never the other roles' prompts or the global protocol. (The first
+  attempt drove each whole run with a single subagent that could see all
+  roles; that leaked global-coordination knowledge and made the unchecked/bare
+  arms spuriously succeed — a good reminder that the "no coordination layer"
+  condition must be enforced at the harness level, not assumed.)
+- **Projection through the coinductive nuscr backend** (`STJP_COMPILER_BACKEND=nuscr`),
+  checked to produce EFSMs isomorphic to Scribble's on all four protocols.
+
+Arm-level (n=400 each):
+
+| arm | GCR (Wilson 95%) | CGC | Disasters | Cost-to-goal | Agent calls/trial |
+|---|---:|---:|---:|---:|---:|
+| unchecked (original, compiler-rejected) | 75% [70.5–79.0] | 50% | 100 | 3,941 | 10.8 |
+| bare (revised, contract-as-text, no gate) | 75% [70.5–79.0] | 50% | 200 | 4,894 | 14.5 |
+| **STJP (revised + gate + scheduler)** | **100% [99.0–100]** | **100%** | **0** | **1,674** | **4.0** |
+
+Per case (n=100 each): `airline_seat` — unchecked 0% (role-name mismatch
+deadlock), bare 100%/CGC 0% (100 double seat-writes), STJP 100/100/0;
+`booking_saga` — unchecked 100%/CGC 0% (100 double charges), bare 0% (re-send
+livelock), STJP 100/100/0; `code_execution` and `content_pipeline` — all three
+arms 100/100/0.
+
+**What changed from the Haiku run, and what didn't:**
+
+- **STJP is unchanged: 100%/100%/0, cheapest (2.4–2.9×), fewest agent calls
+  (~⅓).** Its Wilson interval excludes both other arms.
+- **The weak arms fail *differently* under a stronger model.** Sonnet
+  coordinated `booking_saga` and both pipelines from the prose intent where
+  Haiku deadlocked them — so unvalidated skills' *runtime* success is
+  **model-dependent and not dependable**. The **design-time compiler
+  rejection of all four `unchecked` protocols is model-independent** and
+  remains the robust guarantee.
+- **"Contract as text" is the least safe arm at any model** — 200 disasters
+  here (double charges + double seat-writes), and a full livelock on
+  `booking_saga`. Validation written into the prompt but not enforced does not
+  make interaction safe.
+
+Two failure modes are partly harness-shaped and are flagged honestly: the
+airline case's prose role name ("Seat Booking") not matching the engine role
+id (`SeatBooking`), and an observe-only message view that does not echo a role
+its own past sends (the mechanism behind both the re-send disasters and the
+booking livelock). Both are genuine consequences of running
+unvalidated/unenforced skills, but a different harness could soften them; the
+STJP arm is immune because the scheduler only ever offers a role its single
+enabled move.
+
+**Raw data (committed):** `experiments/subagent_trials/reports/ss2026_n100_sonnet/`
+(per-run `*.report.json` + `AGGREGATE.json` with Wilson CIs + `README.md`), and
+the **full per-trial traces** under
+`experiments/subagent_trials/reports/ss2026_n100_sonnet/traces/` — one
+`state.json` per (case, arm) with every trial's ordered message log and
+terminal status, plus the `replies_round*.json` decision ledger. `traces/VERIFY.md`
+shows how to re-derive every metric with `engine.py report` straight from the
+committed `state.json` (matches the reported numbers exactly). A plain-language walkthrough
+— re-derive every metric, read a trace by eye, exact metric definitions — is
+[`reference/HOW_TO_USE_TRACES.md`](../reference/HOW_TO_USE_TRACES.md).
+How to run the nuscr backend:
+[`reference/NUSCR_CLOUD_INSTALL.md`](../reference/NUSCR_CLOUD_INSTALL.md).

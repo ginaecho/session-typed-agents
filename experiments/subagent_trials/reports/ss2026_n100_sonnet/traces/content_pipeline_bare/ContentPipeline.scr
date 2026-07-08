@@ -1,0 +1,10 @@
+module ContentPipeline;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol ContentPipeline(role Editor, role Publisher, role Researcher, role Writer) {
+    ResearchBrief(String) from Researcher to Writer;
+    SubmitDraft(String) from Writer to Editor;
+    Approve(String) from Editor to Publisher;
+    Published(String) from Publisher to Editor;
+}
