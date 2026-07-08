@@ -203,6 +203,7 @@ alone (E6, [`REPORT_N100.md`](../experiments/reports/n100/REPORT_N100.md)).
 - [`docs/results/RESULT_2_TOKEN_EFFICIENCY.md`](results/RESULT_2_TOKEN_EFFICIENCY.md) — the −63% contract-size lever
 - [`docs/results/RESULT_4_FULL_STACK.md`](results/RESULT_4_FULL_STACK.md) — the 9×-cheaper full-stack headline
 - [`docs/results/RESULT_5_SUBAGENT_VALIDATION.md`](results/RESULT_5_SUBAGENT_VALIDATION.md) — Claude subagents under STJP governance
+- [`docs/results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md) — real Anthropic + GitHub Copilot skills run by Haiku and Sonnet subagents (the experiment the Q1 update refers to)
 - [`docs/results/RESULT_7_N100_SCALE.md`](results/RESULT_7_N100_SCALE.md) — n=100 confirmation
 - [`experiments/reports/TABLES_v2.md`](../experiments/reports/TABLES_v2.md) — reliability (pass^k) + translation fidelity
 - [`experiments/reports/n100/REPORT_N100.md`](../experiments/reports/n100/REPORT_N100.md) — full n=100 report incl. E6 roles sweep

@@ -22,6 +22,15 @@ This document has two parts:
   column reads in *calls*, not *tokens*, and a
   [**dollar-cost estimate**](#what-this-reproduction-actually-cost-in-dollars) of
   the whole reproduction (**under $100**).
+- **Part 3 — the real-skills two-model run (2026-07-08), reported separately.**
+  Two agent teams built from *real, publicly shared skill files* (Anthropic's
+  `anthropics/skills` and GitHub's `awesome-copilot`), each run in three
+  settings, once with a small model (Haiku) and once with a mid-tier model
+  (Sonnet) playing the team members — 120 trials. Which team fails without a
+  coordination plan turns out to depend on the model; with full STJP both
+  models are flawless and indistinguishable at 3× lower cost. Full
+  plain-language report:
+  [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md).
 
 ---
 
