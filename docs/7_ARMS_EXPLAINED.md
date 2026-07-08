@@ -1,6 +1,8 @@
 # The settings ("arms"), drawn out — what each configuration actually is
 
-Every benchmark in this project compares **settings**: configurations that
+STJP (Session-Typed Judge Panel) is this project's system for machine-checking
+a team of AI agents' coordination plan before the agents run, then enforcing
+it while they run. Every benchmark in this project compares **settings**: configurations that
 differ in exactly one thing, so the difference in outcome can be attributed
 to that one thing. Older documents call a setting an **"arm"** (a term from
 clinical trials: each "arm" of a study gets a different treatment). Same
@@ -21,7 +23,7 @@ coordinate → what (if anything) enforces the rules.**
 | **Human skills** | Job instructions written by a person (or downloaded from a public repo), never passed through the compiler check. |
 | **Project to local contracts** | Instead of pasting the whole plan into everyone, a program derives each agent's **own slice** of the plan — only what *it* receives and sends. "Verbose" = the full detailed rendering; "minimal" = one line per step (lighter prompt, same information). |
 | **Foundry agent** | An AI agent hosted in Azure AI Foundry (Microsoft's agent-hosting service). |
-| **MAF agent / MAF GroupChat** | The same agents run through the Microsoft Agent Framework; "GroupChat" adds an orchestrator — an extra AI call that picks who speaks next ("LLM speaker selection"). |
+| **MAF agent / MAF GroupChat** | MAF = Microsoft Agent Framework. The same agents run through it; "GroupChat" adds an orchestrator — an extra AI call that picks who speaks next ("LLM speaker selection"). |
 | **Free coordination** | Nothing enforces anything: agents send whatever they decide, to whomever they decide, and every message is delivered. |
 | **Decentralized execution** | No orchestrator: agents act on their own, in rounds. |
 | **Runtime gate** | A program (not an AI) that checks each outgoing message against the plan and **blocks a wrong message before delivery**, asking the agent to retry. |
@@ -85,7 +87,8 @@ vendor's bug.
 ```
 
 - **(i)** — every agent gets a projected local contract in a verbose,
-  full-detail format. The complete "local type" idea, without enforcement.
+  full-detail format (in session-type theory a local contract is called a
+  "local type" — same thing). The full idea, without enforcement.
 - **(j)** — same information, compressed to one line per step. Lighter prompt,
   same class of guidance.
 
@@ -136,10 +139,10 @@ simple STJP is overkill; no current case is rated Low.)
 
 | Case | What it is (short) | STJP fit | Why |
 |---|---|---|---|
-| `auction` | Sealed-bid multi-bidder auction with winner/outbid logic | Good | Multiparty fan-in and value constraints; good protocol-check target |
+| `auction` | Sealed-bid multi-bidder auction with winner/outbid logic | Good | Multiparty fan-in (several senders converging on one receiver) and value constraints; good protocol-check target |
 | `banking` | Transfer with amount-based approval/rejection branches | Good | Conditional branch safety and exception path are strong STJP use |
 | `clinical_enrollment` | Trial enrollment with screening, consent, lab, ethics approvals | Good | Multi-role sequencing with explicit approval dependencies |
-| `code_review` | PR review with reviewer quorum and CI gating | Good | Coordination + threshold-style constraints map well to contracts |
+| `code_review` | PR review with reviewer quorum and CI (automated test-run) gating | Good | Coordination + threshold-style constraints map well to contracts |
 | `finance` | Finance report with audit branching | Good | Known sequencing + refinement failure case; excellent benchmark |
 | `finance_nested` | Nested 2×2 branching with payload-driven choices | Good | Complex branch structure is exactly where STJP helps most |
 | `intel_report` | Multi-source intel fan-in, then review/publish pipeline | Good | Parallel/fan-in ordering pressure benefits from typed sequencing |
@@ -151,7 +154,7 @@ simple STJP is overkill; no current case is rated Low.)
 | `retry_loop` | Worker/manager retry-until-accept loop | Good | Classic loop + decision-branch safety pattern |
 | `trade_deadlock` | Intentional circular-wait deadlock demo | Good | Canonical compile-time deadlock-detection showcase |
 | `trade_settlement` | Goods-for-payment with hidden circular dependency | Good | Strong deadlock + enforcement comparison case |
-| `travel` | All-or-nothing travel booking with rollback | Good | Saga/compensation-style workflow suits protocol enforcement |
+| `travel` | All-or-nothing travel booking with rollback | Good | A "saga": a workflow that undoes (compensates) completed steps when a later step fails — suits protocol enforcement |
 | `travel_saga` | 3-supplier booking happy path (rollback planned later) | Medium | Useful now; becomes stronger when the compensation branch is added |
 | `doc_pipeline` | Announcement team built from real Anthropic public skills | Good | Real-skills approval-ordering case (see [RESULT_9](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md)) |
 | `pr_merge` | Code-change team built from real GitHub Copilot public files | Good | Real-skills merge-gating case (see [RESULT_9](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md)) |

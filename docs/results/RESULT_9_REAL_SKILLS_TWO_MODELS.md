@@ -1,7 +1,8 @@
 # Result 9 — Real skills from Anthropic and GitHub, run by two different AI models
 
-**Date: 2026-07-08 · Written by: Fable 5, the coordinating AI for this
-experiment. 120 trials, all completed, zero infrastructure errors.**
+**Date: 2026-07-08 · Written by: Fable 5 (the AI model that coordinated this
+experiment and wrote it up). 120 trials, all completed, zero infrastructure
+errors.**
 
 This report is written to be readable with no prior knowledge of this
 project. Every technical word is explained where it first appears.
@@ -20,9 +21,10 @@ The questions:
 1. **If you build a team out of real, well-written, publicly shared skill
    files — with no coordination plan — does the team work? What does it
    cost?**
-2. **Does adding an STJP coordination contract (a machine-checked plan of
-   who sends what to whom, in what order) fix it, and how much does it
-   save?**
+2. **Does adding an STJP coordination contract fix it, and how much does it
+   save?** (STJP = Session-Typed Judge Panel, this project's system; the
+   contract is a machine-checked plan of who sends what to whom, in what
+   order.)
 3. **Does the answer change if you swap the small AI model for a smarter
    one?**
 
@@ -56,7 +58,8 @@ GitHub's public Copilot customization collection
 - a **CodeReviewer** using the `code-review-generic` instructions
   (line-level quality review, can block a merge),
 - a **SecurityReviewer** using the `se-security-reviewer` agent file
-  (OWASP-style security review),
+  (a security review against OWASP, a standard checklist of common
+  security risks),
 - a **Merger** using the `principal-software-engineer` agent file (the
   tech lead who makes the ship call).
 
@@ -259,4 +262,6 @@ benchmark's four cases it showed up as both.)
   `experiments/cases/skills_safety/_incoming/`
 - How the runs were driven: `experiments/subagent_trials/dispatch_helper.py`
   (round batching) — each role-batch was answered by an independently
-  spawned Claude subagent of the group's model.
+  spawned Claude subagent of the group's model. Note: the harness code lives
+  on the compiler branch (`gc/stjp-skill-validation-bench`) until that branch
+  merges; the reports and traces here are self-contained.
