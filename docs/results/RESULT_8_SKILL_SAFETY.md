@@ -3,7 +3,8 @@
 **Date:** 2026-07-06 · **Environment:** Claude Code cloud sandbox ·
 **Runner LLM:** Claude Haiku 4.5 subagents (cheap model) ·
 **Compilers:** scribble-java master (built from source in-sandbox) + the
-coinductive nuscr fork `phou/nuscr_coinduction@cc7c72e` (native CI-built
+coinductive nuscr fork — nuscr is an alternate protocol-checking compiler;
+"coinductive" names the math it uses to check looping plans — `phou/nuscr_coinduction@cc7c72e` (native CI-built
 binary, `STJP_NUSCR_BIN`) — see
 [reference/NUSCR_CLOUD_INSTALL.md](../reference/NUSCR_CLOUD_INSTALL.md).
 
@@ -12,7 +13,28 @@ binary, `STJP_NUSCR_BIN`) — see
 Four cases of **real agent skills from trusted public repos** (OpenAI Agents
 SDK, CrewAI examples, AutoGen, LangGraph — MIT-licensed, benign; provenance in
 each case's `SOURCES.md`). Three arms per case, n=10 trials per arm, 120
-trials total, every role played by an independent Haiku-class subagent:
+trials total, every role played by an independent Haiku-class subagent.
+
+Terms used in the tables (see [`../7_ARMS_EXPLAINED.md`](../7_ARMS_EXPLAINED.md)
+for the settings themselves):
+
+- **STJP** = Session-Typed Judge Panel — this project's system: machine-check
+  the team's coordination plan before any agent runs, then enforce it while
+  they run.
+
+- **arm** = one experiment setting (one configuration of what the agents get
+  and what machinery is on); **n=10** = each arm was run 10 times.
+- **GCR** = goal-completion rate: % of trials where the team's deliverable
+  actually went out.
+- **CGC** = completed-with-guarantees rate: % of trials that completed AND
+  never broke the case's safety rule along the way.
+- **Disasters** = count of irreversible actions done out of order or twice
+  (double charge, double seat-write, publish-before-review).
+- **Cost-to-goal** = tokens per trial ÷ completion rate — what one *successful*
+  delivery really costs once failures are paid for; ∞ when nothing succeeds.
+  (A **token** ≈ 4 characters of AI-read/written text, the billing unit.)
+- **Agent calls/trial** = how many times any team member had to be asked to
+  think (each ask costs money, even if the answer is "wait").
 
 | arm | GCR | CGC | Disasters | Cost-to-goal | Agent calls/trial |
 |---|---:|---:|---:|---:|---:|
@@ -96,19 +118,23 @@ compare within this block, not across model tiers.
   `skills_cases.py` loader (arms: `unchecked` = original skills;
   `bare` = revised skills, contract as text; `stjp` = contract + gate +
   scheduler) and `dispatch_helper.py` (batches each round's polls per role
-  for external subagents; replies merged and submitted).
+  for external subagents; replies merged and submitted). Note: the harness
+  code lives on the compiler branch (`gc/stjp-skill-validation-bench`) until
+  that branch merges; this report and its traces are self-contained.
 - **Subagents:** one Haiku-class Claude subagent per (run, role) per round
-  answered all 10 trials' prompts for that role in one call. Cross-TRIAL
-  batching only — no subagent ever saw two roles of the same trial, so there
-  is no intra-trial leakage; the trade-off is that trials of the same
-  (case, arm) are not fully independent samples.
+  answered all 10 trials' prompts for that role in one call. Batching was
+  across trials only: no subagent ever saw two roles of the same trial, so no
+  role could peek at another role's information. The trade-off: because one
+  subagent answered all 10 trials for a role, those 10 trials are not fully
+  independent repetitions.
 - **Metrics:** GCR / CGC / disasters / cost-to-goal per
   [3_BENCHMARK_DESIGN_EXPLAINED.md](../3_BENCHMARK_DESIGN_EXPLAINED.md).
   A disaster is a delivered violation of a case's safety policy: a
   `[sequence]` order (B before A) or an `[aggregate]` at-most-once rule on
   the case's irreversible act (charge, publish, execute, seat-write).
-  Verdicts come from the runtime Critic + per-role EFSM monitors walking the
-  stored traces (`runs/ss2026/*/report.json`).
+  Verdicts come from the runtime Critic (a deterministic rule-checking
+  program — not an AI) plus per-role monitors (programs that replay each
+  agent's messages against its allowed steps) walking the stored traces (`runs/ss2026/*/report.json`).
 
 ## Per-case numbers (n=10 per cell)
 
@@ -136,14 +162,14 @@ compare within this block, not across model tiers.
   and concurrent runs sharing wall-clock; treat as upper bounds.
 - **Zero delivered disasters in the unchecked arm is not safety** — it is
   starvation: those trials never got far enough to act unsafely, and the
-  design-time compiler rejection is the "before" evidence. The engine's
-  scripted-oracle smoke test (committed run logs) confirms the disaster
-  detectors fire when wrong-order sends do occur.
+  design-time compiler rejection is the "before" evidence. A small hand-scripted
+  test (committed with the run logs) confirms the disaster detectors do fire
+  when wrong-order sends actually occur.
 - **Payloads are LLM output** (no data source), as everywhere in this
   benchmark suite.
 - The trade_deadlock (anthropics-skills escrow pair) case ran earlier on
   gpt-4o through Foundry hosted agents — 0% vs 100%, −44% tokens
-  ([IMPLEMENTATION_2026-07-06.md](../IMPLEMENTATION_2026-07-06.md)) — and on
+  (the 2026-07-06 entry in [the diary](../diary/DIARY.md)) — and on
   Claude subagents at n=100 in
   [RESULT_7_N100_SCALE.md](RESULT_7_N100_SCALE.md) (0/100 vs 100/100).
 
@@ -169,9 +195,12 @@ four cases at **n=100 per (case, arm)** (1,200 trials) with:
   arms spuriously succeed — a good reminder that the "no coordination layer"
   condition must be enforced at the harness level, not assumed.)
 - **Projection through the coinductive nuscr backend** (`STJP_COMPILER_BACKEND=nuscr`),
-  checked to produce EFSMs isomorphic to Scribble's on all four protocols.
+  checked to produce the same step-by-step execution logic (the same state
+  machines) as Scribble on all four protocols — two different checkers, one
+  answer.
 
-Arm-level (n=400 each):
+Arm-level (n=400 each; "Wilson 95%" = a statistically honest range for the
+true success rate given this many trials — narrower means more certain):
 
 | arm | GCR (Wilson 95%) | CGC | Disasters | Cost-to-goal | Agent calls/trial |
 |---|---:|---:|---:|---:|---:|
@@ -182,7 +211,7 @@ Arm-level (n=400 each):
 Per case (n=100 each): `airline_seat` — unchecked 0% (role-name mismatch
 deadlock), bare 100%/CGC 0% (100 double seat-writes), STJP 100/100/0;
 `booking_saga` — unchecked 100%/CGC 0% (100 double charges), bare 0% (re-send
-livelock), STJP 100/100/0; `code_execution` and `content_pipeline` — all three
+livelock — agents endlessly re-sending instead of progressing), STJP 100/100/0; `code_execution` and `content_pipeline` — all three
 arms 100/100/0.
 
 **What changed from the Haiku run, and what didn't:**
