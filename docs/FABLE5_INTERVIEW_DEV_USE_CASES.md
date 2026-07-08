@@ -37,29 +37,60 @@ polling of idle agents, and runtime discovery of statically-refutable design bug
 | **Deterministic gate + monitor** — O(1) state-machine step, no LLM in the hot path | Conformance checking and evaluation cost ~zero tokens — no LLM-as-judge | [`RESULTS.md`](results/RESULTS.md): per-event cost is a microsecond FSM step plus a sandboxed predicate; the composition theorem gives the *global* guarantee from local checks alone |
 | **Scale effect** — global-text cost grows with roles; the projected local contract stays flat | The more roles, the bigger the projection win | E6 roles sweep ([`REPORT_N100.md`](../experiments/reports/n100/REPORT_N100.md)): coordination-cost ratio grows **9.2× → 17.1×**; scale case [`report_pipeline_large`](../experiments/cases/report_pipeline_large/) (10 roles) |
 
-### The use cases we already have — hyperlinked
+### The developer use cases we already have — hyperlinked
 
-Every case below exists in this repo today, each with a `case.yaml` (intent,
-roles, goals) and a validated Scribble protocol under `protocols/`. Mapped to
-the real-world development workflow it stands for:
+For *development* the question is: **how do developers use agents and
+subagents, and where does the blueprint cut their token bill?** Five patterns
+cover it, and each one already exists as a runnable case in this repo:
 
-| Case in this repo | Development use case it blueprints | Why STJP cuts tokens here |
-|---|---|---|
-| [`trade_deadlock`](../experiments/cases/trade_deadlock/) | **Coordinating subagents** whose plausible per-agent skills hide a circular wait | THE DEADLOCK DEMO: static check refutes in milliseconds what runtime discovers after ~88 wasted agent calls; unchecked 0/100, STJP 100/100 ([`RESULT_1_DEADLOCK.md`](results/RESULT_1_DEADLOCK.md), [`RESULT_7_N100_SCALE.md`](results/RESULT_7_N100_SCALE.md)) |
-| [`report_pipeline`](../experiments/cases/report_pipeline/) | **Report/document production pipelines** (research → analyze → draft → review → publish) | THE TOKEN-EFFICIENCY DEMO: same finished report at **8.8k vs 24.1k tokens** ([`RESULT_2_TOKEN_EFFICIENCY.md`](results/RESULT_2_TOKEN_EFFICIENCY.md)) |
-| [`report_pipeline_large`](../experiments/cases/report_pipeline_large/) | The same pipeline at **10 roles** — scale test | Global-text cost grows with protocol size; the projected local contract stays flat (E6: 9.2×→17.1×) |
-| [`finance`](../experiments/cases/finance/) / [`finance_nested`](../experiments/cases/finance_nested/) | **Approval-gated reporting** with value-dependent branching (high-revenue ⇒ audit) | The full-stack headline: **13.3k tokens/delivered report, 9× cheaper** than protocol-as-text, 0 disasters ([`RESULT_4_FULL_STACK.md`](results/RESULT_4_FULL_STACK.md)) |
-| [`code_review`](../experiments/cases/code_review/) | **PR review / CI / merge pipelines** — author → two reviewers → CI → merger | Merge-only-after-both-approvals is a session type; agents stop re-deriving the ordering every turn |
-| [`banking`](../experiments/cases/banking/) | **Authorization workflows** with amount-dependent approval branch and rejection path | Policy encoded as a protocol choice + refinement instead of every agent reasoning about policy in-context |
-| [`clinical_enrollment`](../experiments/cases/clinical_enrollment/) | **Regulated intake workflows** (screening → consent → baseline, strictly sequenced) | Ordering constraints tied to irreversible/consent steps; gate blocks premature acts before delivery |
-| [`rag`](../experiments/cases/rag/) | **RAG with a bounded verification loop** (two retrievers + verifier) | Recursion budget lives in the type; idle retrievers are never polled |
-| [`retry_loop`](../experiments/cases/retry_loop/) / [`iterative_polling`](../experiments/cases/iterative_polling/) / [`nested_retry`](../experiments/cases/nested_retry/) | **Retry/polling/editorial-revision loops** (shapes D, E, F) | Loop-with-budget in the protocol: the loop can't run away, and only the enabled role is called each iteration |
-| [`travel`](../experiments/cases/travel/) / [`travel_saga`](../experiments/cases/travel_saga/) | **Transactional / saga orchestration** with all-or-nothing rollback across suppliers | Compensation paths verified deadlock-free before any token is spent |
-| [`trade_settlement`](../experiments/cases/trade_settlement/) | **Cross-party settlement** where the user's own stated intent hides a circular dependency | The checker catches the user's bug at authoring time — the cheapest possible failure |
-| [`auction`](../experiments/cases/auction/) | **Sealed-bid / competitive multi-party negotiation** | Strict sequencing + information-flow discipline between bidders comes from the protocol, not from prompt vigilance |
-| [`intel_report`](../experiments/cases/intel_report/) | **Multi-source synthesis** (editor coordinating 3 feeder sources) | Fan-in coordination as typed messages; the editor never polls sources that have nothing ready |
-| [`composition`](../experiments/cases/composition/) | **Composing sub-protocols** into larger systems | Verify a child once, cache it, splice it in — see the incremental pipeline in [`RESULT_5_SUBAGENT_VALIDATION.md`](results/RESULT_5_SUBAGENT_VALIDATION.md) (E3) |
-| [`skills_safety`](../experiments/cases/skills_safety/) | **Skill authoring itself** — compacting human prose skills into checkable local types | E1 compaction gauntlet: UNSAFE flagged 10/10 with an actionable diagnosis; an LLM repaired the design first-try 10/10 — one static refutation replaces ~88 wasted runtime calls |
+**1. Coordinating subagents** — [`trade_deadlock`](../experiments/cases/trade_deadlock/) + [`experiments/subagent_trials/`](../experiments/subagent_trials/).
+The developer writes plausible per-agent skills; a hidden circular wait makes
+the fleet starve. The static check refutes it in milliseconds instead of after
+~88 wasted agent calls; under the contract+gate+scheduler, real Claude
+subagents complete at the protocol-minimum call count — unchecked 0/100,
+STJP 100/100 ([`RESULT_1`](results/RESULT_1_DEADLOCK.md),
+[`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md),
+[`RESULT_7`](results/RESULT_7_N100_SCALE.md)).
+
+**2. Agent pipelines with review/approval gates** — [`code_review`](../experiments/cases/code_review/),
+[`report_pipeline`](../experiments/cases/report_pipeline/),
+[`finance`](../experiments/cases/finance/).
+The everyday dev shape: produce → review → approve → merge/publish, with a
+branch on a value (CI coverage, revenue threshold). The ordering lives in the
+projected contract, so agents stop re-deriving it every turn: **8.8k vs 24.1k
+tokens** for the same report ([`RESULT_2`](results/RESULT_2_TOKEN_EFFICIENCY.md)),
+**13.3k/delivered, 9× cheaper** on the full stack
+([`RESULT_4`](results/RESULT_4_FULL_STACK.md)). Scale test:
+[`report_pipeline_large`](../experiments/cases/report_pipeline_large/).
+
+**3. Loops with budgets** — [`rag`](../experiments/cases/rag/),
+[`retry_loop`](../experiments/cases/retry_loop/),
+[`iterative_polling`](../experiments/cases/iterative_polling/),
+[`nested_retry`](../experiments/cases/nested_retry/).
+Retrieve-verify-retry, poll-until-done, revise-until-accepted — the loop
+budget lives in the type, the loop can't run away, and only the enabled agent
+is called each iteration.
+
+**4. Skill/prompt authoring itself** — [`skills_safety`](../experiments/cases/skills_safety/).
+Compact a developer's prose skills into local types and check them *before*
+deployment: UNSAFE flagged 10/10 with an actionable diagnosis, repaired
+first-try 10/10 (E1 in [`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md)).
+One static refutation at authoring time is the cheapest token saving there is.
+
+**5. Growing the system without re-verifying everything** —
+[`composition`](../experiments/cases/composition/) + the incremental-extension
+pipeline (E3 in [`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md)).
+Add a sub-protocol or a new role; only the touched roles get re-verified and
+re-prompted — the multi-agent analogue of an incremental build.
+
+The remaining cases ([`banking`](../experiments/cases/banking/),
+[`clinical_enrollment`](../experiments/cases/clinical_enrollment/),
+[`travel_saga`](../experiments/cases/travel_saga/),
+[`trade_settlement`](../experiments/cases/trade_settlement/),
+[`auction`](../experiments/cases/auction/),
+[`intel_report`](../experiments/cases/intel_report/), …) are domain demos that
+stress the same five shapes — branching approvals, sagas/rollback, fan-in —
+in business settings.
 
 The general rule that falls out of the evidence: STJP pays off when the
 interaction has **≥3 roles, ordering constraints, branching or loops, and an
