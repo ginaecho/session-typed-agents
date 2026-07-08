@@ -1,6 +1,6 @@
 """engine_ladder.py — the finance-style ARM LADDER, without Foundry.
 
-Produces the same comparison table as Part 1 of docs/5_RUN_REPORTS_EXPLAINED.md
+Produces the same comparison table as Part 1 of docs/6_RUN_REPORTS_EXPLAINED.md
 (GCR / CGC / Disasters / Cost-to-goal / Seconds-per-trial) but with NO Azure /
 NO Foundry: the role agents are Claude SUBAGENTS invoked by the orchestrating
 session (cheaper model). The engine is deterministic plumbing — scheduler +

@@ -2,7 +2,7 @@
 
 Every headline number in the real-skills benchmark
 ([`docs/results/RESULT_8_SKILL_SAFETY.md`](../results/RESULT_8_SKILL_SAFETY.md),
-[`docs/5_RUN_REPORTS_EXPLAINED.md`](../5_RUN_REPORTS_EXPLAINED.md) §Part 1) is
+[`docs/6_RUN_REPORTS_EXPLAINED.md`](../6_RUN_REPORTS_EXPLAINED.md) §Part 1) is
 backed by **raw per-trial traces committed in the repo**. You do not have to
 trust the summary tables — you can re-derive them, or read the actual agent
 behaviour message by message. This guide shows how.
@@ -200,7 +200,7 @@ the harness (`engine.py init` → the `iso_*` round loop) with live agents.
 ## 8. See also
 
 - `reports/ss2026_n100_sonnet/traces/VERIFY.md` — the terse in-tree companion.
-- [`5_RUN_REPORTS_EXPLAINED.md`](../5_RUN_REPORTS_EXPLAINED.md) — the plain-English results.
+- [`6_RUN_REPORTS_EXPLAINED.md`](../6_RUN_REPORTS_EXPLAINED.md) — the plain-English results.
 - [`results/RESULT_8_SKILL_SAFETY.md`](../results/RESULT_8_SKILL_SAFETY.md) — the full report + caveats.
 - [`NUSCR_CLOUD_INSTALL.md`](NUSCR_CLOUD_INSTALL.md) — installing the compiler backend `report` uses.
 - `experiments/CLAUDE.md` — how the benchmark harness is wired.

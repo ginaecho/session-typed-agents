@@ -65,8 +65,8 @@ This file is for Claude and other AI agents working on the STJP codebase. It exp
 | `2_TESTING_STRATEGIES.md` | How we benchmark STJP fairly; the 4 claims |
 | `3_BENCHMARK_DESIGN_EXPLAINED.md` | Metrics: GCR, CGC, cost-to-goal, severity grading |
 | `4_HOW_TO_CREATE_USE_CASES.md` | Step-by-step: create protocol, agents, test |
-| `5_RUN_REPORTS_EXPLAINED.md` | How to read results; 2026-07-02 run explained |
-| `6_USE_CASE_DEADLOCK_SAFETY.md` | Why safety matters—concrete examples |
+| `6_RUN_REPORTS_EXPLAINED.md` | How to read results; 2026-07-02 run explained |
+| `7_USE_CASE_DEADLOCK_SAFETY.md` | Why safety matters—concrete examples |
 | `reference/` | Current technical deep-dives: `GLOSSARY.md` (canonical), `SCRIBBLE_EXTENSIONS.md`, `CHOICE_GUARDS_AND_GATE.md`, `FOUNDRY_VISIBILITY.md`, `GAP_CLOSED.md`, `PROTOCOL_EVOLUTION.md`, `STJP_V3_PLAN.md` |
 | `results/` | Current evidence: `RESULT_1_DEADLOCK.md`, `RESULT_2_TOKEN_EFFICIENCY.md`, `RESULT_3_PROTOCOL_LADDER.md`, `RESULT_4_FULL_STACK.md` (latest official result) |
 | `archive/` | Historical/superseded docs (reference only; nothing current) |
@@ -141,7 +141,7 @@ The results show: `local_lean_sched` is safest, cheapest, fastest.
 
 **What to do:**
 1. Read the Scribble error message (usually mentions deadlock or wait-for cycle)
-2. Look at [`docs/6_USE_CASE_DEADLOCK_SAFETY.md`](docs/6_USE_CASE_DEADLOCK_SAFETY.md) for examples
+2. Look at [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md) for examples
 3. Identify what's wrong:
    - **Circular dependency?** Reorder messages so one role can start
    - **Missing message?** Add it to both branches of a choice

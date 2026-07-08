@@ -11,8 +11,8 @@ Multi-agent systems fail in the spaces *between* agents: one agent acts before a
 **Quick tours:**
 - **What is STJP?** → [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md) (15 min)
 - **How do we test it?** → [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md) (20 min)
-- **Latest results** → [`docs/5_RUN_REPORTS_EXPLAINED.md`](docs/5_RUN_REPORTS_EXPLAINED.md) (plain English)
-- **Why safety matters** → [`docs/6_USE_CASE_DEADLOCK_SAFETY.md`](docs/6_USE_CASE_DEADLOCK_SAFETY.md) (real examples)
+- **Latest results** → [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) (plain English)
+- **Why safety matters** → [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md) (real examples)
 
 ---
 
@@ -292,7 +292,7 @@ The Scribble compiler found a problem (deadlock, unreachable state, inconsistenc
 
 **Fix:**
 1. Read the Scribble error message carefully
-2. Check [`docs/6_USE_CASE_DEADLOCK_SAFETY.md`](docs/6_USE_CASE_DEADLOCK_SAFETY.md) for examples
+2. Check [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md) for examples
 3. Revise your protocol and re-run
 
 ### "Agents are getting stuck"
@@ -342,8 +342,8 @@ az login --use-device-code
 │   ├── 2_TESTING_STRATEGIES.md   # Testing methodology
 │   ├── 3_BENCHMARK_DESIGN_EXPLAINED.md
 │   ├── 4_HOW_TO_CREATE_USE_CASES.md
-│   ├── 5_RUN_REPORTS_EXPLAINED.md
-│   ├── 6_USE_CASE_DEADLOCK_SAFETY.md
+│   ├── 6_RUN_REPORTS_EXPLAINED.md
+│   ├── 7_USE_CASE_DEADLOCK_SAFETY.md
 │   ├── reference/                 # Current technical deep-dives (glossary, Scribble
 │   │                              #   extensions, gate internals, Foundry wiring, v3 plan)
 │   ├── results/                   # Current evidence (latest run report, canonical
@@ -385,7 +385,7 @@ az login --use-device-code
 
 **The headline:** STJP is 9× cheaper, 4× faster, same safety as global protocol text.
 
-See [`docs/5_RUN_REPORTS_EXPLAINED.md`](docs/5_RUN_REPORTS_EXPLAINED.md) for the full breakdown.
+See [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) for the full breakdown.
 
 ---
 
@@ -394,7 +394,7 @@ See [`docs/5_RUN_REPORTS_EXPLAINED.md`](docs/5_RUN_REPORTS_EXPLAINED.md) for the
 **Learn the system:**
 1. Read [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md) (15 min)
 2. Run a 1-trial test: `python experiments/scripts/case_runner.py finance 1 --arms min_llmvalid_sched`
-3. Read [`docs/5_RUN_REPORTS_EXPLAINED.md`](docs/5_RUN_REPORTS_EXPLAINED.md) to interpret results
+3. Read [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) to interpret results
 
 **Run the full benchmark:**
 1. Read [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md) (understand fairness)
@@ -424,8 +424,8 @@ See [`docs/5_RUN_REPORTS_EXPLAINED.md`](docs/5_RUN_REPORTS_EXPLAINED.md) for the
 - **How do I run STJP?** → This README (you are here)
 - **What is STJP technically?** → [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md)
 - **Why are tests confounded?** → [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md)
-- **How do I read results?** → [`docs/5_RUN_REPORTS_EXPLAINED.md`](docs/5_RUN_REPORTS_EXPLAINED.md)
-- **Why does safety matter?** → [`docs/6_USE_CASE_DEADLOCK_SAFETY.md`](docs/6_USE_CASE_DEADLOCK_SAFETY.md)
+- **How do I read results?** → [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md)
+- **Why does safety matter?** → [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md)
 - **How do I create a case?** → [`docs/4_HOW_TO_CREATE_USE_CASES.md`](docs/4_HOW_TO_CREATE_USE_CASES.md)
 
 ---
