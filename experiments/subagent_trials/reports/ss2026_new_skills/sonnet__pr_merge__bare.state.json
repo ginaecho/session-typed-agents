@@ -1,0 +1,1094 @@
+{
+  "case": "skills_pr_merge",
+  "arm": "bare",
+  "stjp_prompts": {},
+  "roles": [
+    "Author",
+    "CodeReviewer",
+    "Merger",
+    "SecurityReviewer"
+  ],
+  "max_rounds": 8,
+  "round": 4,
+  "efsms": {
+    "Author": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "send",
+          "CodeReviewer",
+          "SubmitChange",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "receive",
+          "Merger",
+          "MergeDone",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "CodeReviewer": {
+      "initial": "12",
+      "accepting": [
+        "13"
+      ],
+      "transitions": [
+        [
+          "12",
+          "receive",
+          "Author",
+          "SubmitChange",
+          "String",
+          "14"
+        ],
+        [
+          "14",
+          "send",
+          "SecurityReviewer",
+          "ReviewPassed",
+          "String",
+          "13"
+        ]
+      ]
+    },
+    "Merger": {
+      "initial": "20",
+      "accepting": [
+        "21"
+      ],
+      "transitions": [
+        [
+          "20",
+          "receive",
+          "SecurityReviewer",
+          "SecurityPassed",
+          "String",
+          "22"
+        ],
+        [
+          "22",
+          "send",
+          "Author",
+          "MergeDone",
+          "String",
+          "21"
+        ]
+      ]
+    },
+    "SecurityReviewer": {
+      "initial": "28",
+      "accepting": [
+        "29"
+      ],
+      "transitions": [
+        [
+          "28",
+          "receive",
+          "CodeReviewer",
+          "ReviewPassed",
+          "String",
+          "30"
+        ],
+        [
+          "30",
+          "send",
+          "Merger",
+          "SecurityPassed",
+          "String",
+          "29"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review change #1 for merge",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review PR #101 change",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review, needs security review.",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 passed code review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 passed security review, safe to merge.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "Please review this change.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "Change #1 reviewed, passed, please security-check",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "Change #1 merged successfully.",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "Change #1 cleared security review.",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "4",
+        "CodeReviewer": "12",
+        "Merger": "20",
+        "SecurityReviewer": "28"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 16,
+      "malformed": 0,
+      "prompt_chars": 15386,
+      "reply_chars": 1600
+    }
+  ],
+  "agent_seconds": 1865.2465023994446
+}

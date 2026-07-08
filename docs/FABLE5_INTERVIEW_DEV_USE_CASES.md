@@ -83,6 +83,15 @@ pipeline (E3 in [`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md)).
 Add a sub-protocol or a new role; only the touched roles get re-verified and
 re-prompted — the multi-agent analogue of an incremental build.
 
+> **Update (2026-07-08):** patterns 1 and 2 were subsequently reproduced on
+> *real skills fetched from Anthropic's and GitHub Copilot's own public
+> collections* (anthropics/skills, github/awesome-copilot), run twice — once
+> with Haiku-class subagents and once with Sonnet-class subagents. Without a
+> coordination plan each model failed a different team 0/10; under full STJP
+> both models delivered 40/40 at the 4-call protocol minimum, 3× cheaper.
+> Plain-language write-up:
+> [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md).
+
 The remaining cases ([`banking`](../experiments/cases/banking/),
 [`clinical_enrollment`](../experiments/cases/clinical_enrollment/),
 [`travel_saga`](../experiments/cases/travel_saga/),

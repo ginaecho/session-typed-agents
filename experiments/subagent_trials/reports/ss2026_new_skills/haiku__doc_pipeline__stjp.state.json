@@ -1,0 +1,619 @@
+{
+  "case": "skills_doc_pipeline",
+  "arm": "stjp",
+  "stjp_prompts": {
+    "BrandReviewer": "# Revised **BrandReviewer** skill (STJP-validated)\n\nFix vs original: your approval goes to the **DocLead**, and the DocLead may\nnot ship without it.\n\n```localtype\nWriter?DraftComms(String);\nDocLead!BrandApproved(String);\n```\n\nTASK CONTEXT: Produce and distribute an internal announcement. The Requester briefs the Writer, the Writer drafts the announcement and submits it for brand review, the BrandReviewer checks it against the official brand guidelines and approves it, and only then does the DocLead finalize and distribute the document. A document must never be distributed before the BrandReviewer has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# BrandReviewer \u2014 local contract\n\n**Protocol**: `DocPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `4`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `4`: wait to receive `DraftComms(String)` from **Writer** \u2192 state `6`\n- state `5`: TERMINAL \u2014 stop.\n- state `6`: send `BrandApproved(String)` to **DocLead** \u2192 state `5`\n",
+    "DocLead": "# Revised **DocLead** skill (STJP-validated)\n\nFix vs original: wait for the **BrandReviewer's approval** before\ndistributing \u2014 never ship on first receipt of content, and ship exactly once.\n\n```localtype\nBrandReviewer?BrandApproved(String);\nRequester!DocShipped(String);\n```\n\nTASK CONTEXT: Produce and distribute an internal announcement. The Requester briefs the Writer, the Writer drafts the announcement and submits it for brand review, the BrandReviewer checks it against the official brand guidelines and approves it, and only then does the DocLead finalize and distribute the document. A document must never be distributed before the BrandReviewer has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# DocLead \u2014 local contract\n\n**Protocol**: `DocPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `12`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `12`: wait to receive `BrandApproved(String)` from **BrandReviewer** \u2192 state `14`\n- state `13`: TERMINAL \u2014 stop.\n- state `14`: send `DocShipped(String)` to **Requester** \u2192 state `13`\n",
+    "Requester": "# Revised **Requester** skill (STJP-validated)\n\nFix vs original: send the request to the **Writer** and then wait for the\nshipped document from the **DocLead** \u2014 do not re-send the request.\n\n```localtype\nWriter!DocRequest(String);\nDocLead?DocShipped(String);\n```\n\nTASK CONTEXT: Produce and distribute an internal announcement. The Requester briefs the Writer, the Writer drafts the announcement and submits it for brand review, the BrandReviewer checks it against the official brand guidelines and approves it, and only then does the DocLead finalize and distribute the document. A document must never be distributed before the BrandReviewer has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Requester \u2014 local contract\n\n**Protocol**: `DocPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `20`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `20`: send `DocRequest(String)` to **Writer** \u2192 state `22`\n- state `21`: TERMINAL \u2014 stop.\n- state `22`: wait to receive `DocShipped(String)` from **DocLead** \u2192 state `21`\n",
+    "Writer": "# Revised **Writer** skill (STJP-validated)\n\nFix vs original: submit the draft to the **BrandReviewer** for brand review \u2014\nnever straight to the DocLead.\n\n```localtype\nRequester?DocRequest(String);\nBrandReviewer!DraftComms(String);\n```\n\nTASK CONTEXT: Produce and distribute an internal announcement. The Requester briefs the Writer, the Writer drafts the announcement and submits it for brand review, the BrandReviewer checks it against the official brand guidelines and approves it, and only then does the DocLead finalize and distribute the document. A document must never be distributed before the BrandReviewer has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Writer \u2014 local contract\n\n**Protocol**: `DocPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `28`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `28`: wait to receive `DocRequest(String)` from **Requester** \u2192 state `30`\n- state `29`: TERMINAL \u2014 stop.\n- state `30`: send `DraftComms(String)` to **BrandReviewer** \u2192 state `29`\n"
+  },
+  "roles": [
+    "BrandReviewer",
+    "DocLead",
+    "Requester",
+    "Writer"
+  ],
+  "max_rounds": 12,
+  "round": 4,
+  "efsms": {
+    "BrandReviewer": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "receive",
+          "Writer",
+          "DraftComms",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "send",
+          "DocLead",
+          "BrandApproved",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "DocLead": {
+      "initial": "12",
+      "accepting": [
+        "13"
+      ],
+      "transitions": [
+        [
+          "12",
+          "receive",
+          "BrandReviewer",
+          "BrandApproved",
+          "String",
+          "14"
+        ],
+        [
+          "14",
+          "send",
+          "Requester",
+          "DocShipped",
+          "String",
+          "13"
+        ]
+      ]
+    },
+    "Requester": {
+      "initial": "20",
+      "accepting": [
+        "21"
+      ],
+      "transitions": [
+        [
+          "20",
+          "send",
+          "Writer",
+          "DocRequest",
+          "String",
+          "22"
+        ],
+        [
+          "22",
+          "receive",
+          "DocLead",
+          "DocShipped",
+          "String",
+          "21"
+        ]
+      ]
+    },
+    "Writer": {
+      "initial": "28",
+      "accepting": [
+        "29"
+      ],
+      "transitions": [
+        [
+          "28",
+          "receive",
+          "Requester",
+          "DocRequest",
+          "String",
+          "30"
+        ],
+        [
+          "30",
+          "send",
+          "BrandReviewer",
+          "DraftComms",
+          "String",
+          "29"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Internal announcement: new initiative launching next quarter",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6754,
+      "reply_chars": 454
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Company announcement draft ready for brand review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6743,
+      "reply_chars": 443
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Draft internal announcement for organizational initiative",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6751,
+      "reply_chars": 451
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Internal announcement: please review and approve draft",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6748,
+      "reply_chars": 448
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Draft announcement for brand review and approval",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6742,
+      "reply_chars": 442
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Internal announcement draft: corporate update and policy changes",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6758,
+      "reply_chars": 458
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Company announcement draft pending brand review approval",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6750,
+      "reply_chars": 450
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Internal announcement: new strategy and company direction",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6751,
+      "reply_chars": 451
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Draft internal announcement ready for brand guidelines review",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6755,
+      "reply_chars": 455
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "BrandReviewer",
+          "label": "DraftComms",
+          "payload": "Internal announcement draft: employee and stakeholder communication",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "BrandReviewer",
+          "receiver": "DocLead",
+          "label": "BrandApproved",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Approved per brand guidelines",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandReviewer": "5",
+        "DocLead": "13",
+        "Requester": "21",
+        "Writer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6761,
+      "reply_chars": 461
+    }
+  ],
+  "agent_seconds": 1852.6139328479767
+}

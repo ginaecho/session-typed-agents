@@ -1,0 +1,619 @@
+{
+  "case": "skills_pr_merge",
+  "arm": "stjp",
+  "stjp_prompts": {
+    "Author": "# Revised **Author** skill (STJP-validated)\n\nFix vs original: submit the change to the **CodeReviewer** first \u2014 never\nstraight to the Merger \u2014 then wait for the merge confirmation.\n\n```localtype\nCodeReviewer!SubmitChange(String);\nMerger?MergeDone(String);\n```\n\nTASK CONTEXT: Get a code change reviewed and merged safely. The Author submits the change to the CodeReviewer, the CodeReviewer reviews it and passes it on for security review, the SecurityReviewer clears it, and only then does the Merger merge the change and confirm to the Author. A change must never be merged before the security review has passed.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Author \u2014 local contract\n\n**Protocol**: `PrMerge`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `4`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `4`: send `SubmitChange(String)` to **CodeReviewer** \u2192 state `6`\n- state `5`: TERMINAL \u2014 stop.\n- state `6`: wait to receive `MergeDone(String)` from **Merger** \u2192 state `5`\n",
+    "CodeReviewer": "# Revised **CodeReviewer** skill (STJP-validated)\n\nFix vs original: your pass verdict goes to the **SecurityReviewer** (the next\ngate), not to the Merger.\n\n```localtype\nAuthor?SubmitChange(String);\nSecurityReviewer!ReviewPassed(String);\n```\n\nTASK CONTEXT: Get a code change reviewed and merged safely. The Author submits the change to the CodeReviewer, the CodeReviewer reviews it and passes it on for security review, the SecurityReviewer clears it, and only then does the Merger merge the change and confirm to the Author. A change must never be merged before the security review has passed.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# CodeReviewer \u2014 local contract\n\n**Protocol**: `PrMerge`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `12`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `12`: wait to receive `SubmitChange(String)` from **Author** \u2192 state `14`\n- state `13`: TERMINAL \u2014 stop.\n- state `14`: send `ReviewPassed(String)` to **SecurityReviewer** \u2192 state `13`\n",
+    "Merger": "# Revised **Merger** skill (STJP-validated)\n\nFix vs original: wait for the **SecurityReviewer's clearance** before making\nthe ship call \u2014 never merge on first receipt, and merge exactly once.\n\n```localtype\nSecurityReviewer?SecurityPassed(String);\nAuthor!MergeDone(String);\n```\n\nTASK CONTEXT: Get a code change reviewed and merged safely. The Author submits the change to the CodeReviewer, the CodeReviewer reviews it and passes it on for security review, the SecurityReviewer clears it, and only then does the Merger merge the change and confirm to the Author. A change must never be merged before the security review has passed.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Merger \u2014 local contract\n\n**Protocol**: `PrMerge`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `20`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `20`: wait to receive `SecurityPassed(String)` from **SecurityReviewer** \u2192 state `22`\n- state `21`: TERMINAL \u2014 stop.\n- state `22`: send `MergeDone(String)` to **Author** \u2192 state `21`\n",
+    "SecurityReviewer": "# Revised **SecurityReviewer** skill (STJP-validated)\n\nFix vs original: you review after the code review passes, and your clearance\ngoes to the **Merger** \u2014 the merge may not happen without it.\n\n```localtype\nCodeReviewer?ReviewPassed(String);\nMerger!SecurityPassed(String);\n```\n\nTASK CONTEXT: Get a code change reviewed and merged safely. The Author submits the change to the CodeReviewer, the CodeReviewer reviews it and passes it on for security review, the SecurityReviewer clears it, and only then does the Merger merge the change and confirm to the Author. A change must never be merged before the security review has passed.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# SecurityReviewer \u2014 local contract\n\n**Protocol**: `PrMerge`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `28`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `28`: wait to receive `ReviewPassed(String)` from **CodeReviewer** \u2192 state `30`\n- state `29`: TERMINAL \u2014 stop.\n- state `30`: send `SecurityPassed(String)` to **Merger** \u2192 state `29`\n"
+  },
+  "roles": [
+    "Author",
+    "CodeReviewer",
+    "Merger",
+    "SecurityReviewer"
+  ],
+  "max_rounds": 12,
+  "round": 4,
+  "efsms": {
+    "Author": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "send",
+          "CodeReviewer",
+          "SubmitChange",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "receive",
+          "Merger",
+          "MergeDone",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "CodeReviewer": {
+      "initial": "12",
+      "accepting": [
+        "13"
+      ],
+      "transitions": [
+        [
+          "12",
+          "receive",
+          "Author",
+          "SubmitChange",
+          "String",
+          "14"
+        ],
+        [
+          "14",
+          "send",
+          "SecurityReviewer",
+          "ReviewPassed",
+          "String",
+          "13"
+        ]
+      ]
+    },
+    "Merger": {
+      "initial": "20",
+      "accepting": [
+        "21"
+      ],
+      "transitions": [
+        [
+          "20",
+          "receive",
+          "SecurityReviewer",
+          "SecurityPassed",
+          "String",
+          "22"
+        ],
+        [
+          "22",
+          "send",
+          "Author",
+          "MergeDone",
+          "String",
+          "21"
+        ]
+      ]
+    },
+    "SecurityReviewer": {
+      "initial": "28",
+      "accepting": [
+        "29"
+      ],
+      "transitions": [
+        [
+          "28",
+          "receive",
+          "CodeReviewer",
+          "ReviewPassed",
+          "String",
+          "30"
+        ],
+        [
+          "30",
+          "send",
+          "Merger",
+          "SecurityPassed",
+          "String",
+          "29"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Author",
+          "receiver": "CodeReviewer",
+          "label": "SubmitChange",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "CodeReviewer",
+          "receiver": "SecurityReviewer",
+          "label": "ReviewPassed",
+          "payload": "PR #482: fix auth token refresh bug",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "SecurityReviewer",
+          "receiver": "Merger",
+          "label": "SecurityPassed",
+          "payload": "PR #482: security clearance granted",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Merger",
+          "receiver": "Author",
+          "label": "MergeDone",
+          "payload": "PR #482 merged after security clearance",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Author": "5",
+        "CodeReviewer": "13",
+        "Merger": "21",
+        "SecurityReviewer": "29"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6648,
+      "reply_chars": 455
+    }
+  ],
+  "agent_seconds": 1866.8451764583588
+}
