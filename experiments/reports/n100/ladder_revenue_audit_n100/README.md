@@ -8,7 +8,7 @@ that discipline was necessary.
 
 Part of the combined ladder writeup:
 [`../LADDER_NOFOUNDRY.md`](../LADDER_NOFOUNDRY.md) (master), and
-[`docs/5_RUN_REPORTS_EXPLAINED.md` §10](../../../../docs/5_RUN_REPORTS_EXPLAINED.md#10-the-full-arm-ladder-at-n100-reproduced-without-foundry)
+[`docs/6_RUN_REPORTS_EXPLAINED.md` §10](../../../../docs/6_RUN_REPORTS_EXPLAINED.md#10-the-full-arm-ladder-at-n100-reproduced-without-foundry)
 (plain-English).
 
 ## The table

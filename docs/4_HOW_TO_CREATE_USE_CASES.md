@@ -432,4 +432,4 @@ Result: 13.3k tokens with protocol + gate + scheduler vs 120.3k with global text
 
 - **To understand the testing framework:** Read `2_TESTING_STRATEGIES.md`
 - **To understand benchmark metrics:** Read `3_BENCHMARK_DESIGN_EXPLAINED.md`
-- **To see real results:** Read `5_RUN_REPORTS_EXPLAINED.md`
+- **To see real results:** Read `6_RUN_REPORTS_EXPLAINED.md`

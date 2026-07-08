@@ -12,10 +12,10 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
 - **Want to understand the testing?** → Read `2_TESTING_STRATEGIES.md`
 - **Need to run STJP locally?** → See `1_TECH_SETUP.md` section 5 ("Running STJP with Azure AI Foundry")
 - **Creating your own use case?** → Follow `4_HOW_TO_CREATE_USE_CASES.md` step by step
-- **Reading the benchmark results?** → Start with `5_RUN_REPORTS_EXPLAINED.md`
-- **Understanding why safety matters?** → See `6_USE_CASE_DEADLOCK_SAFETY.md`
+- **Reading the benchmark results?** → Start with `6_RUN_REPORTS_EXPLAINED.md`
+- **Understanding why safety matters?** → See `7_USE_CASE_DEADLOCK_SAFETY.md`
 - **What do the results prove, in one page?** → Start with [`results/README.md`](results/README.md) (purpose, what it detects, and the takeaway of every report)
-- **What exactly is an "arm" / a "setting"?** → See [`7_ARMS_EXPLAINED.md`](7_ARMS_EXPLAINED.md) (every configuration drawn as one flow line, plus which test cases fit STJP)
+- **What exactly is an "arm" / a "setting"?** → See [`5_ARMS_EXPLAINED.md`](5_ARMS_EXPLAINED.md) (every configuration drawn as one flow line, plus which test cases fit STJP)
 - **Real Anthropic + GitHub Copilot skills, run by two different models?** → See [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md)
 - **Running the nuscr / nuscribble compiler backend?** → See `reference/NUSCR_CLOUD_INSTALL.md` (install routes + `STJP_COMPILER_BACKEND=nuscr`)
 - **Verifying the results from the raw traces?** → See `reference/HOW_TO_USE_TRACES.md` (re-derive every metric; read a trace by eye)
@@ -98,7 +98,28 @@ What you'll learn:
 
 ---
 
-### Section 5: Run Reports Explained — `5_RUN_REPORTS_EXPLAINED.md`
+### Section 5: The Settings ("Arms") Explained — `5_ARMS_EXPLAINED.md`
+
+Every benchmark configuration drawn as one left-to-right flow line — what the
+agents receive → who runs them → how they coordinate → what enforces the rules
+— following the team's box-and-arrow arm diagrams. Read this **before** the
+results (Section 6): once you can read the flow lines, every results table is
+self-explanatory.
+
+What you'll learn:
+- What a "setting"/"arm" is, and the building blocks every one is made of
+- All 13 configurations, grouped as a ladder: no plan → plan as text →
+  per-agent contracts → enforced contracts → the full STJP stack
+- Which test cases fit STJP well, and why (the case-fit table)
+
+**Read time:** 10 minutes
+
+**Why this matters:** every results table in this project compares these
+settings; this page is the key that makes those tables readable.
+
+---
+
+### Section 6: Run Reports Explained — `6_RUN_REPORTS_EXPLAINED.md`
 
 Reading the benchmark results in plain English: what the numbers mean and why they matter. Opens with a plain-English glossary so it is fully self-contained (every term — agent, protocol, gate, monitor, scheduler, GCR, cost-to-goal — defined before use).
 
@@ -112,7 +133,7 @@ What you'll learn:
 
 ---
 
-### Section 6: Use Cases — Why Interaction Safety Matters — `6_USE_CASE_DEADLOCK_SAFETY.md`
+### Section 7: Use Cases — Why Interaction Safety Matters — `7_USE_CASE_DEADLOCK_SAFETY.md`
 
 Concrete examples where protocols catch real problems that would crash unreliable systems.
 
@@ -130,27 +151,6 @@ What you'll learn:
 
 ---
 
-### Section 7: The Settings ("Arms") Explained — `7_ARMS_EXPLAINED.md`
-
-Every benchmark configuration drawn as one left-to-right flow line — what the
-agents receive → who runs them → how they coordinate → what enforces the rules
-— following the team's box-and-arrow arm diagrams. Read this whenever a
-results table says "arm X vs arm Y" and you want to see the ONE thing that
-differs.
-
-What you'll learn:
-- What a "setting"/"arm" is, and the building blocks every one is made of
-- All 13 configurations, grouped as a ladder: no plan → plan as text →
-  per-agent contracts → enforced contracts → the full STJP stack
-- Which test cases fit STJP well, and why (the case-fit table)
-
-**Read time:** 10 minutes
-
-**Why this matters:** every results table in this project compares these
-settings; once you can read the flow lines, every table is self-explanatory.
-
----
-
 ## 📁 File reference
 
 ### Main documents (read these)
@@ -161,9 +161,9 @@ settings; once you can read the flow lines, every table is self-explanatory.
 | `2_TESTING_STRATEGIES.md` | **Methodology.** How do we benchmark STJP fairly? What are the fairness rules? |
 | `3_BENCHMARK_DESIGN_EXPLAINED.md` | **Metrics.** What do we measure? How do we interpret results? |
 | `4_HOW_TO_CREATE_USE_CASES.md` | **Build guide.** How do I create my own test case? |
-| `5_RUN_REPORTS_EXPLAINED.md` | **Results.** How do I read benchmark results? What do the numbers mean? |
-| `6_USE_CASE_DEADLOCK_SAFETY.md` | **Safety cases.** Why do protocols matter? Real examples. |
-| `7_ARMS_EXPLAINED.md` | **The settings ("arms").** Every benchmark configuration as one flow line; the case-fit table. |
+| `5_ARMS_EXPLAINED.md` | **The settings ("arms").** Every benchmark configuration as one flow line; the case-fit table. |
+| `6_RUN_REPORTS_EXPLAINED.md` | **Results.** How do I read benchmark results? What do the numbers mean? |
+| `7_USE_CASE_DEADLOCK_SAFETY.md` | **Safety cases.** Why do protocols matter? Real examples. |
 
 ### `reference/` — technical deep-dives (current, for researchers)
 
@@ -190,7 +190,7 @@ Each report follows the same template: at-a-glance summary → the story → how
 
 > **Decoding the shorthand in this list.** The entries below are terse on
 > purpose (they are an index, not the report). If a term is unfamiliar, the
-> plain-English version is in `5_RUN_REPORTS_EXPLAINED.md` (which opens with a
+> plain-English version is in `6_RUN_REPORTS_EXPLAINED.md` (which opens with a
 > glossary and explains every experiment). Quick key:
 > - **E1–E7** = the seven "Benchmark Plan v2" experiments, each stress-testing
 >   ONE piece of the system: **E1** = does the safety checker catch broken
@@ -265,9 +265,9 @@ Earlier run reports, kept here for history (technical, not rewritten):
 
 ### "I'm new to STJP"
 1. `1_TECH_SETUP.md` (understand the foundation)
-2. `6_USE_CASE_DEADLOCK_SAFETY.md` (see why it matters)
+2. `7_USE_CASE_DEADLOCK_SAFETY.md` (see why it matters)
 3. `2_TESTING_STRATEGIES.md` (learn how we measure it)
-4. `5_RUN_REPORTS_EXPLAINED.md` (see real results)
+4. `6_RUN_REPORTS_EXPLAINED.md` (see real results)
 
 ### "I want to run STJP"
 1. `1_TECH_SETUP.md` section 5 (setup steps)
@@ -282,7 +282,7 @@ Earlier run reports, kept here for history (technical, not rewritten):
 
 ### "I'm reviewing the results"
 1. `3_BENCHMARK_DESIGN_EXPLAINED.md` (how we measure)
-2. `5_RUN_REPORTS_EXPLAINED.md` (what the numbers mean)
+2. `6_RUN_REPORTS_EXPLAINED.md` (what the numbers mean)
 3. `2_TESTING_STRATEGIES.md` (what was controlled/varied)
 
 ### "I'm a researcher"
@@ -335,7 +335,7 @@ Rules:
 
 - Need to understand a specific term? → `1_TECH_SETUP.md` section 4 or `reference/GLOSSARY.md`
 - Want to know how to debug a protocol? → `4_HOW_TO_CREATE_USE_CASES.md` step 5
-- Curious about a specific benchmark arm? → `5_RUN_REPORTS_EXPLAINED.md` section 3
-- Want to understand why a particular result? → `5_RUN_REPORTS_EXPLAINED.md` section 6
+- Curious about a specific benchmark arm? → `6_RUN_REPORTS_EXPLAINED.md` section 3
+- Want to understand why a particular result? → `6_RUN_REPORTS_EXPLAINED.md` section 6
 - Need to view traces? → `1_TECH_SETUP.md` section 5 or `reference/FOUNDRY_VISIBILITY.md`
-- Wondering if STJP applies to your use case? → `6_USE_CASE_DEADLOCK_SAFETY.md`
+- Wondering if STJP applies to your use case? → `7_USE_CASE_DEADLOCK_SAFETY.md`

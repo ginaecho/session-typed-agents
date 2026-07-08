@@ -1,7 +1,7 @@
 # The finance-style arm ladder, reproduced without Foundry (cheap subagents)
 
 **Updated 2026-07-04, n=100.** The finance run (Part 1 of
-[`docs/5_RUN_REPORTS_EXPLAINED.md`](../../../docs/5_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table))
+[`docs/6_RUN_REPORTS_EXPLAINED.md`](../../../docs/6_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table))
 used Azure Foundry + GPT-5.4. This
 reproduces the same **arm ladder** (A: Intent → STJP) with **no Foundry** and
 **cheap Claude haiku subagents** answering each poll, across two complementary
@@ -217,7 +217,7 @@ Data: [`ladder_revenue_audit_n100/`](ladder_revenue_audit_n100/README.md),
 history).
 
 See also the plain-English writeup of these tables in the main run report:
-[`docs/5_RUN_REPORTS_EXPLAINED.md` §10](../../../docs/5_RUN_REPORTS_EXPLAINED.md#10-the-full-arm-ladder-at-n100-reproduced-without-foundry).
+[`docs/6_RUN_REPORTS_EXPLAINED.md` §10](../../../docs/6_RUN_REPORTS_EXPLAINED.md#10-the-full-arm-ladder-at-n100-reproduced-without-foundry).
 
 What this suite cost to run (haiku roles + opus orchestration): see
 [`COST_ESTIMATE.md`](COST_ESTIMATE.md) — the whole n=100 ladder was **~$60 in

@@ -296,5 +296,5 @@ FilingAgent → Fetcher: ReportFiled
 ## 8. What to read next
 
 - **To understand how we test this:** Read `2_TESTING_STRATEGIES.md`
-- **To see real results:** Read `5_RUN_REPORTS_EXPLAINED.md`
+- **To see real results:** Read `6_RUN_REPORTS_EXPLAINED.md`
 - **To create a test case:** Read `4_HOW_TO_CREATE_USE_CASES.md`

@@ -19,7 +19,7 @@ other — read them in order the first time.
 - **Setting** (older reports say **"arm"** — same thing) — one configuration
   of the experiment: what the agents are given and what machinery is switched
   on. We compare settings that differ in exactly one thing. All settings are
-  drawn as pictures in [`../7_ARMS_EXPLAINED.md`](../7_ARMS_EXPLAINED.md).
+  drawn as pictures in [`../5_ARMS_EXPLAINED.md`](../5_ARMS_EXPLAINED.md).
 - **Token** — the unit AI usage is billed in; roughly 4 characters of text.
   Fewer tokens = cheaper.
 - **Disaster** — an irreversible action done before its required approval, or

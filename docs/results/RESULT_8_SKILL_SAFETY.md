@@ -15,7 +15,7 @@ SDK, CrewAI examples, AutoGen, LangGraph — MIT-licensed, benign; provenance in
 each case's `SOURCES.md`). Three arms per case, n=10 trials per arm, 120
 trials total, every role played by an independent Haiku-class subagent.
 
-Terms used in the tables (see [`../7_ARMS_EXPLAINED.md`](../7_ARMS_EXPLAINED.md)
+Terms used in the tables (see [`../5_ARMS_EXPLAINED.md`](../5_ARMS_EXPLAINED.md)
 for the settings themselves):
 
 - **STJP** = Session-Typed Judge Panel — this project's system: machine-check

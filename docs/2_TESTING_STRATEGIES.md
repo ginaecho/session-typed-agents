@@ -222,5 +222,5 @@ Seven implementations tested on finance case, gpt-5.4, n=10 trials each:
 ## 7. What to read next
 
 - **To understand how benchmarks measure:** Read `3_BENCHMARK_DESIGN_EXPLAINED.md`
-- **To see actual results:** Read `5_RUN_REPORTS_EXPLAINED.md`
-- **To understand safety cases:** Read `6_USE_CASE_DEADLOCK_SAFETY.md`
+- **To see actual results:** Read `6_RUN_REPORTS_EXPLAINED.md`
+- **To understand safety cases:** Read `7_USE_CASE_DEADLOCK_SAFETY.md`

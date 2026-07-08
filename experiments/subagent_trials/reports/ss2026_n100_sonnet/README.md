@@ -1,7 +1,7 @@
 # ss2026_n100_sonnet — real-skills safety benchmark, n=100, Sonnet roles
 
 Committed evidence for the n=100 run described in
-[`docs/5_RUN_REPORTS_EXPLAINED.md`](../../../../docs/5_RUN_REPORTS_EXPLAINED.md)
+[`docs/6_RUN_REPORTS_EXPLAINED.md`](../../../../docs/6_RUN_REPORTS_EXPLAINED.md)
 §2 and [`docs/results/RESULT_8_SKILL_SAFETY.md`](../../../../docs/results/RESULT_8_SKILL_SAFETY.md).
 
 - **Cases:** the four `experiments/cases/skills_safety/*` cases (real,

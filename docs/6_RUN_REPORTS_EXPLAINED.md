@@ -1007,6 +1007,6 @@ The design rationale for each experiment (the deeper "why") is in
 
 - **To understand how this benchmark is designed:** Read `3_BENCHMARK_DESIGN_EXPLAINED.md`
 - **To learn about testing strategies:** Read `2_TESTING_STRATEGIES.md`
-- **To see why safety cases matter:** Read `6_USE_CASE_DEADLOCK_SAFETY.md`
+- **To see why safety cases matter:** Read `7_USE_CASE_DEADLOCK_SAFETY.md`
 - **To see the earlier component-validation run (n=10, live model):** Read `results/RESULT_5_SUBAGENT_VALIDATION.md`
 - **For the n=100 technical detail and honest caveats:** Read `results/RESULT_7_N100_SCALE.md`
