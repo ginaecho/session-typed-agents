@@ -1,0 +1,5009 @@
+{
+  "case": "skills_booking_saga",
+  "arm": "stjp",
+  "stjp_prompts": {
+    "Hotel": "# Revised **Hotel** skill (STJP-validated)\n\nFix vs original: HOLD the room first, then let Payment capture the charge, then\nconfirm \u2014 breaking the pay-vs-reserve circular wait.\n\n```localtype\nTraveler?RequestBooking(String);\nPayment!RoomHeld(String);\nPayment?PaymentCaptured(Double);\nTraveler!BookingConfirmed(String);\n```\n\nTASK CONTEXT: Book a hotel stay. The Traveler requests a booking; the Hotel holds the room and the Payment service charges the traveler, coordinating so the room is held before payment is captured and the booking is confirmed only once both the room is held and payment has succeeded. The traveler must never be charged for a room that was never held, and the booking must not hang.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Hotel \u2014 local contract\n\n**Protocol**: `BookingSaga`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `0`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `0`: wait to receive `RequestBooking(String)` from **Traveler** \u2192 state `1`\n- state `1`: send `RoomHeld(String)` to **Payment** \u2192 state `2`\n- state `2`: wait to receive `PaymentCaptured(int)` from **Payment** \u2192 state `3`\n- state `3`: send `BookingConfirmed(String)` to **Traveler** \u2192 state `4`\n- state `4`: TERMINAL \u2014 stop.\n",
+    "Payment": "# Revised **Payment** skill (STJP-validated)\n\nFix vs original: capture the charge as soon as the room is held (no longer waits\non a confirmation that the Hotel was withholding until payment).\n\n```localtype\nHotel?RoomHeld(String);\nHotel!PaymentCaptured(Double);\n```\n\nTASK CONTEXT: Book a hotel stay. The Traveler requests a booking; the Hotel holds the room and the Payment service charges the traveler, coordinating so the room is held before payment is captured and the booking is confirmed only once both the room is held and payment has succeeded. The traveler must never be charged for a room that was never held, and the booking must not hang.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Payment \u2014 local contract\n\n**Protocol**: `BookingSaga`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `0`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `0`: wait to receive `RoomHeld(String)` from **Hotel** \u2192 state `1`\n- state `1`: send `PaymentCaptured(int)` to **Hotel** \u2192 state `2`\n- state `2`: TERMINAL \u2014 stop.\n",
+    "Traveler": "# Revised **Traveler** skill (STJP-validated)\n\n```localtype\nHotel!RequestBooking(String);\nHotel?BookingConfirmed(String);\n```\n\nTASK CONTEXT: Book a hotel stay. The Traveler requests a booking; the Hotel holds the room and the Payment service charges the traveler, coordinating so the room is held before payment is captured and the booking is confirmed only once both the room is held and payment has succeeded. The traveler must never be charged for a room that was never held, and the booking must not hang.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Traveler \u2014 local contract\n\n**Protocol**: `BookingSaga`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `0`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `0`: send `RequestBooking(String)` to **Hotel** \u2192 state `1`\n- state `1`: wait to receive `BookingConfirmed(String)` from **Hotel** \u2192 state `2`\n- state `2`: TERMINAL \u2014 stop.\n"
+  },
+  "roles": [
+    "Hotel",
+    "Payment",
+    "Traveler"
+  ],
+  "max_rounds": 12,
+  "round": 4,
+  "efsms": {
+    "Hotel": {
+      "initial": "0",
+      "accepting": [
+        "4"
+      ],
+      "transitions": [
+        [
+          "0",
+          "receive",
+          "Traveler",
+          "RequestBooking",
+          "String",
+          "1"
+        ],
+        [
+          "1",
+          "send",
+          "Payment",
+          "RoomHeld",
+          "String",
+          "2"
+        ],
+        [
+          "2",
+          "receive",
+          "Payment",
+          "PaymentCaptured",
+          "int",
+          "3"
+        ],
+        [
+          "3",
+          "send",
+          "Traveler",
+          "BookingConfirmed",
+          "String",
+          "4"
+        ]
+      ]
+    },
+    "Payment": {
+      "initial": "0",
+      "accepting": [
+        "2"
+      ],
+      "transitions": [
+        [
+          "0",
+          "receive",
+          "Hotel",
+          "RoomHeld",
+          "String",
+          "1"
+        ],
+        [
+          "1",
+          "send",
+          "Hotel",
+          "PaymentCaptured",
+          "int",
+          "2"
+        ]
+      ]
+    },
+    "Traveler": {
+      "initial": "0",
+      "accepting": [
+        "2"
+      ],
+      "transitions": [
+        [
+          "0",
+          "send",
+          "Hotel",
+          "RequestBooking",
+          "String",
+          "1"
+        ],
+        [
+          "1",
+          "receive",
+          "Hotel",
+          "BookingConfirmed",
+          "String",
+          "2"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 11,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 12,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 13,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 14,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 15,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 16,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 17,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 18,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 19,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 20,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 21,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 22,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 23,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 24,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 25,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 26,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 27,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 28,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 29,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 30,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 31,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 32,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 33,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 34,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 35,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 36,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 37,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 38,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 39,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 40,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 41,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 42,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 43,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 44,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 45,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 46,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 47,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 48,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 49,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 50,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 51,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 52,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 53,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 54,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 55,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 56,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 57,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 58,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 59,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 60,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 61,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 62,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 63,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 64,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 65,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 66,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 67,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 68,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 69,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 70,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 71,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 72,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 73,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 74,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 75,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 76,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 77,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 78,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 79,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 80,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 81,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 82,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 83,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 84,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 85,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 86,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 87,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 88,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 89,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 90,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 91,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 92,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 93,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 94,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 95,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 96,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 97,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 98,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 99,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    },
+    {
+      "trial": 100,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Traveler",
+          "receiver": "Hotel",
+          "label": "RequestBooking",
+          "payload": "Grand Plaza Hotel, 2026-08-10 to 2026-08-12",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Hotel",
+          "receiver": "Payment",
+          "label": "RoomHeld",
+          "payload": "Room 204, Grand Plaza Hotel",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Payment",
+          "receiver": "Hotel",
+          "label": "PaymentCaptured",
+          "payload": "245.00",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Hotel",
+          "receiver": "Traveler",
+          "label": "BookingConfirmed",
+          "payload": "Confirmed: Room 204, Grand Plaza Hotel",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Hotel": "4",
+        "Payment": "2",
+        "Traveler": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 7033,
+      "reply_chars": 416
+    }
+  ],
+  "agent_seconds": 60.46634340286255
+}

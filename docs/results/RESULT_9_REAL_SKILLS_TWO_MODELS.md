@@ -210,8 +210,9 @@ even the expensive model fails half the time — and you don't get to know
 which half in advance.
 
 **5. One honest surprise: zero safety violations even without the plan.**
-Unlike this project's earlier benchmark (where unvalidated teams
-double-charged a traveler in 10/10 trials), neither model ever shipped
+Unlike this project's earlier benchmark
+([`RESULT_8_SKILL_SAFETY.md`](RESULT_8_SKILL_SAFETY.md), where unvalidated
+teams double-charged a traveler in 10/10 trials), neither model ever shipped
 before approval or merged before clearance here — the task description's
 plain-English warning was enough to prevent the *worst* outcome in these
 two scenarios. The no-plan setting failed by stalling and duplicating, not
@@ -230,8 +231,8 @@ benchmark's four cases it showed up as both.)
 - The two teams are strictly linear, four-message jobs. They have no
   branching decisions and no built-in deadlock trap, which is why the
   no-plan failures here are stalls rather than deadlocks; the earlier
-  four-case benchmark (`RESULT_8_SKILL_SAFETY.md`) covers those harder
-  shapes.
+  four-case benchmark ([`RESULT_8_SKILL_SAFETY.md`](RESULT_8_SKILL_SAFETY.md))
+  covers those harder shapes.
 - The original-skills setting has the tightest round budget (4 rounds).
   The budget equals the number of messages the job needs, so a perfectly
   coordinated team fits, but there is no slack for waste — that is the

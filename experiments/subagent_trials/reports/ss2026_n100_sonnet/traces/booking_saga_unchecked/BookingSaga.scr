@@ -1,0 +1,11 @@
+module BookingSaga;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+
+global protocol BookingSaga(role Hotel, role Payment, role Traveler) {
+    RequestBooking(String) from Traveler to Hotel;
+    RoomHeld(String) from Hotel to Payment;
+    PaymentCaptured(Double) from Payment to Hotel;
+    BookingConfirmed(String) from Hotel to Traveler;
+}

@@ -14,12 +14,16 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — the system f
 - **Creating your own use case?** → Follow `4_HOW_TO_CREATE_USE_CASES.md` step by step
 - **Reading the benchmark results?** → Start with `5_RUN_REPORTS_EXPLAINED.md`
 - **Understanding why safety matters?** → See `6_USE_CASE_DEADLOCK_SAFETY.md`
+- **What do the results prove, in one page?** → Start with [`results/README.md`](results/README.md) (purpose, what it detects, and the takeaway of every report)
+- **What exactly is an "arm" / a "setting"?** → See [`7_ARMS_EXPLAINED.md`](7_ARMS_EXPLAINED.md) (every configuration drawn as one flow line, plus which test cases fit STJP)
 - **Real Anthropic + GitHub Copilot skills, run by two different models?** → See [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md)
+- **Running the nuscr / nuscribble compiler backend?** → See `reference/NUSCR_CLOUD_INSTALL.md` (install routes + `STJP_COMPILER_BACKEND=nuscr`)
+- **Verifying the results from the raw traces?** → See `reference/HOW_TO_USE_TRACES.md` (re-derive every metric; read a trace by eye)
 - **Which developer use cases fit STJP (interview format)?** → See [`FABLE5_INTERVIEW_DEV_USE_CASES.md`](FABLE5_INTERVIEW_DEV_USE_CASES.md)
 
 ---
 
-## 📚 The Four Sections
+## 📚 The Guides (read in order)
 
 ### Section 1: Tech Setup — `1_TECH_SETUP.md`
 
@@ -126,6 +130,27 @@ What you'll learn:
 
 ---
 
+### Section 7: The Settings ("Arms") Explained — `7_ARMS_EXPLAINED.md`
+
+Every benchmark configuration drawn as one left-to-right flow line — what the
+agents receive → who runs them → how they coordinate → what enforces the rules
+— following the team's box-and-arrow arm diagrams. Read this whenever a
+results table says "arm X vs arm Y" and you want to see the ONE thing that
+differs.
+
+What you'll learn:
+- What a "setting"/"arm" is, and the building blocks every one is made of
+- All 13 configurations, grouped as a ladder: no plan → plan as text →
+  per-agent contracts → enforced contracts → the full STJP stack
+- Which test cases fit STJP well, and why (the case-fit table)
+
+**Read time:** 10 minutes
+
+**Why this matters:** every results table in this project compares these
+settings; once you can read the flow lines, every table is self-explanatory.
+
+---
+
 ## 📁 File reference
 
 ### Main documents (read these)
@@ -138,6 +163,7 @@ What you'll learn:
 | `4_HOW_TO_CREATE_USE_CASES.md` | **Build guide.** How do I create my own test case? |
 | `5_RUN_REPORTS_EXPLAINED.md` | **Results.** How do I read benchmark results? What do the numbers mean? |
 | `6_USE_CASE_DEADLOCK_SAFETY.md` | **Safety cases.** Why do protocols matter? Real examples. |
+| `7_ARMS_EXPLAINED.md` | **The settings ("arms").** Every benchmark configuration as one flow line; the case-fit table. |
 
 ### `reference/` — technical deep-dives (current, for researchers)
 
@@ -151,10 +177,16 @@ What you'll learn:
 - `reference/SKILL_COMPACTION.md` — Bottom-up STJP: compact EXISTING skill markdowns into local types, compose the global type, Scribble-validate it
 - `reference/BENCHMARK_PLAN_V2.md` — Benchmark hardening (E1–E7 + verdict corpus): what each experiment measures, real numbers vs measurement-pending, and how to swap real data into the figures/tables
 - `reference/GAP_CLOSED.md` — Refinement call-site closure record (referenced by `experiments/README.md` and `stjp_core/README.md`)
+- `reference/NUSCR_CLOUD_INSTALL.md` — **How to run the coinductive nuscr ("nuscribble") backend** in the cloud env: Docker route, CI-artifact native-binary route, building scribble-java from source, the `STJP_COMPILER_BACKEND=nuscr` / `STJP_NUSCR_BIN` env vars, and the 2017-Maven-release pitfall
+- `reference/HOW_TO_USE_TRACES.md` — **Verify the results yourself from the committed raw traces**: what each trace file contains, how to read one message by eye, and how to re-derive every headline metric
 
 ### `results/` — the evidence behind the guides (current, plain English)
 
-Each follows the same template: at-a-glance summary → the story → how the test was set up → the numbers → what they mean → honest caveats → where the raw data is.
+**Start with the index: [`results/README.md`](results/README.md)** — for every
+report it states, in plain words, *why we ran it, what it detects, the result,
+and the takeaway*, and defines the handful of words the reports use.
+
+Each report follows the same template: at-a-glance summary → the story → how the test was set up → the numbers → what they mean → honest caveats → where the raw data is.
 
 > **Decoding the shorthand in this list.** The entries below are terse on
 > purpose (they are an index, not the report). If a term is unfamiliar, the
@@ -186,6 +218,7 @@ Each follows the same template: at-a-glance summary → the story → how the te
 - `results/RESULT_5_SUBAGENT_VALIDATION.md` — **Foundry-free validation of the 2026-07 components** (Critic/Revisor, skill compaction, incremental extension): 211/211 stress checks over generated protocols; subagent-driven trials n=10 — unchecked prose skills 0/10 (all deadlock) vs STJP 10/10 at protocol-minimum cost, extended protocol 10/10, compaction gauntlet 10/10 detect + 10/10 repair.
 - `results/RESULT_6_BENCHMARK_HARDENING.md` — **Benchmark Plan v2** (test the testers + mutation testing + adversarial gate + pass^k + translation fidelity + roles/portability): verdict corpus 40/40, checker 95.6% detection/0% FP, gate exfiltration ladder 0→41.7→91.7→100%, pass^10 CI story, equivalence scorer 100%. Design in `reference/BENCHMARK_PLAN_V2.md`.
 - `results/RESULT_7_N100_SCALE.md` — **n=100 scale run** (all deterministic benchmarks): Wilson CI narrows from [72,100]% to [96.3,100]%; pass^10@floor jumps 0.039→0.686 (17.6×); integration stress 2105/2110; 100-protocol mutation corpus 95.1%/0% FP; subagent trials 0/100 unchecked vs 100/100 STJP; equivalence scorer 300/300.
+- [`results/RESULT_8_SKILL_SAFETY.md`](results/RESULT_8_SKILL_SAFETY.md) — **Real public skills, unvalidated vs STJP** (4 teams built from real OpenAI Agents SDK / CrewAI / AutoGen / LangGraph example skills — benign, MIT-licensed, provenance in each case's `SOURCES.md`). The compiler rejected all 4 combined plans at design time, and at runtime every unvalidated trial failed (40/40 stall or deadlock). Writing the contract in as text fixed completion but produced 20 double-charge/double-write disasters; full STJP: 100% success, 0 disasters, cheapest. An n=100 re-run with a stronger model (Sonnet) confirmed all of it — the weak settings fail *differently* under a different model, but the design-time rejection is model-independent.
 - [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md) — **Real Anthropic + GitHub Copilot skills, the same experiment run on two models** (2 teams built from anthropics/skills and github/awesome-copilot files × 3 settings × n=10, once with Haiku subagents and once with Sonnet subagents; written fully jargon-free, every term explained in place). Headline: with no coordination plan, *which* team fails is model-dependent — Haiku failed the code-change team 0/10, Sonnet failed the announcement team 0/10, on identical skills; with full STJP both models were flawless and indistinguishable (40/40, 0 rule-breaking messages, exactly 4 AI calls/trial, ~1.8k tokens = 3× cheaper than no-plan, 2.4× cheaper than plan-as-text). Evidence: `experiments/subagent_trials/reports/ss2026_new_skills/`.
 
 Earlier run reports, kept here for history (technical, not rewritten):

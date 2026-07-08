@@ -1,0 +1,2004 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Editor",
+      "reply": "{\"action\": \"send\", \"to\": \"Publisher\", \"label\": \"Approve\", \"payload\": \"Draft article approved for publication.\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Publisher",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"Published\", \"payload\": \"Article published to the live site.\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key facts, sources, and angle summary on the assigned topic for the article draft.\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Editor\", \"label\": \"SubmitDraft\", \"payload\": \"Draft article based on research brief, ready for review\"}"
+    }
+  ]
+}

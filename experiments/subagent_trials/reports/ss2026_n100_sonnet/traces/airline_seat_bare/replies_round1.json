@@ -1,0 +1,1504 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 1,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 2,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 2,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 3,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 3,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 4,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 4,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 5,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 5,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 6,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 6,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 7,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 7,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 8,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 8,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 9,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 9,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 10,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 10,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 11,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 11,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 12,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 12,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 13,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 13,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 14,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 14,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 15,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 15,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 16,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 16,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 17,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 17,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 18,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 18,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 19,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 19,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 20,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 20,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 21,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 21,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 22,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 22,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 23,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 23,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 24,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 24,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 25,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 25,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 26,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 26,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 27,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 27,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 28,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 28,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 29,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 29,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 30,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 30,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 31,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 31,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 32,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 32,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 33,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 33,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 34,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 34,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 35,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 35,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 36,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 36,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 37,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 37,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 38,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 38,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 39,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 39,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 40,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 40,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 41,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 41,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 42,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 42,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 43,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 43,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 44,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 44,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 45,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 45,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 46,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 46,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 47,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 47,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 48,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 48,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 49,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 49,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 50,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 50,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 51,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 51,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 52,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 52,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 53,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 53,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 54,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 54,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 55,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 55,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 56,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 56,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 57,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 57,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 58,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 58,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 59,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 59,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 60,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 60,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 61,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 61,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 62,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 62,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 63,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 63,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 64,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 64,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 65,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 65,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 66,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 66,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 67,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 67,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 68,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 68,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 69,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 69,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 70,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 70,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 71,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 71,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 72,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 72,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 73,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 73,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 74,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 74,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 75,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 75,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 76,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 76,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 77,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 77,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 78,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 78,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 79,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 79,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 80,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 80,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 81,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 81,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 82,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 82,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 83,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 83,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 84,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 84,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 85,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 85,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 86,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 86,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 87,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 87,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 88,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 88,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 89,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 89,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 90,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 90,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 91,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 91,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 92,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 92,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 93,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 93,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 94,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 94,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 95,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 95,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 96,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 96,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 97,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 97,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 98,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 98,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 99,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 99,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    },
+    {
+      "trial": 100,
+      "role": "FlightSystem",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No UpdateSeat message received yet\"}"
+    },
+    {
+      "trial": 100,
+      "role": "SeatBooking",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Triage to assign flight first\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Triage",
+      "reply": "{\"action\": \"send\", \"to\": \"SeatBooking\", \"label\": \"AssignFlight\", \"payload\": \"FL1234\"}"
+    }
+  ]
+}

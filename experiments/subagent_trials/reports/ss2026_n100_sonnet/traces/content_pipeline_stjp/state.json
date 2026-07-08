@@ -1,0 +1,5119 @@
+{
+  "case": "skills_content_pipeline",
+  "arm": "stjp",
+  "stjp_prompts": {
+    "Editor": "# Revised **Editor** skill (STJP-validated)\n\nThe review/approval gate: only the Editor can send Approve, and it must happen\nbefore the Publisher can publish.\n\n```localtype\nWriter?SubmitDraft(String);\nPublisher!Approve(String);\nPublisher?Published(String);\n```\n\nTASK CONTEXT: Produce and publish an article. The Researcher briefs the Writer, the Writer drafts the article and submits it to the Editor, the Editor reviews and approves it, and only then does the Publisher publish it. An article must never be published before the Editor has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Editor \u2014 local contract\n\n**Protocol**: `ContentPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `0`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `0`: wait to receive `SubmitDraft(String)` from **Writer** \u2192 state `1`\n- state `1`: send `Approve(String)` to **Publisher** \u2192 state `2`\n- state `2`: wait to receive `Published(String)` from **Publisher** \u2192 state `3`\n- state `3`: TERMINAL \u2014 stop.\n",
+    "Publisher": "# Revised **Publisher** skill (STJP-validated)\n\nFix vs original: publish only AFTER receiving the Editor's approval.\n\n```localtype\nEditor?Approve(String);\nEditor!Published(String);\n```\n\nTASK CONTEXT: Produce and publish an article. The Researcher briefs the Writer, the Writer drafts the article and submits it to the Editor, the Editor reviews and approves it, and only then does the Publisher publish it. An article must never be published before the Editor has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Publisher \u2014 local contract\n\n**Protocol**: `ContentPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `0`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `0`: wait to receive `Approve(String)` from **Editor** \u2192 state `1`\n- state `1`: send `Published(String)` to **Editor** \u2192 state `2`\n- state `2`: TERMINAL \u2014 stop.\n",
+    "Researcher": "# Revised **Researcher** skill (STJP-validated)\n\n```localtype\nWriter!ResearchBrief(String);\n```\n\nTASK CONTEXT: Produce and publish an article. The Researcher briefs the Writer, the Writer drafts the article and submits it to the Editor, the Editor reviews and approves it, and only then does the Publisher publish it. An article must never be published before the Editor has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Researcher \u2014 local contract\n\n**Protocol**: `ContentPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `0`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `0`: send `ResearchBrief(String)` to **Writer** \u2192 state `1`\n- state `1`: TERMINAL \u2014 stop.\n",
+    "Writer": "# Revised **Writer** skill (STJP-validated)\n\nFix vs original: submit the draft to the **Editor**, not straight to the\nPublisher.\n\n```localtype\nResearcher?ResearchBrief(String);\nEditor!SubmitDraft(String);\n```\n\nTASK CONTEXT: Produce and publish an article. The Researcher briefs the Writer, the Writer drafts the article and submits it to the Editor, the Editor reviews and approves it, and only then does the Publisher publish it. An article must never be published before the Editor has approved it.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Writer \u2014 local contract\n\n**Protocol**: `ContentPipeline`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `0`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `0`: wait to receive `ResearchBrief(String)` from **Researcher** \u2192 state `1`\n- state `1`: send `SubmitDraft(String)` to **Editor** \u2192 state `2`\n- state `2`: TERMINAL \u2014 stop.\n"
+  },
+  "roles": [
+    "Editor",
+    "Publisher",
+    "Researcher",
+    "Writer"
+  ],
+  "max_rounds": 12,
+  "round": 4,
+  "efsms": {
+    "Editor": {
+      "initial": "0",
+      "accepting": [
+        "3"
+      ],
+      "transitions": [
+        [
+          "0",
+          "receive",
+          "Writer",
+          "SubmitDraft",
+          "String",
+          "1"
+        ],
+        [
+          "1",
+          "send",
+          "Publisher",
+          "Approve",
+          "String",
+          "2"
+        ],
+        [
+          "2",
+          "receive",
+          "Publisher",
+          "Published",
+          "String",
+          "3"
+        ]
+      ]
+    },
+    "Publisher": {
+      "initial": "0",
+      "accepting": [
+        "2"
+      ],
+      "transitions": [
+        [
+          "0",
+          "receive",
+          "Editor",
+          "Approve",
+          "String",
+          "1"
+        ],
+        [
+          "1",
+          "send",
+          "Editor",
+          "Published",
+          "String",
+          "2"
+        ]
+      ]
+    },
+    "Researcher": {
+      "initial": "0",
+      "accepting": [
+        "1"
+      ],
+      "transitions": [
+        [
+          "0",
+          "send",
+          "Writer",
+          "ResearchBrief",
+          "String",
+          "1"
+        ]
+      ]
+    },
+    "Writer": {
+      "initial": "0",
+      "accepting": [
+        "2"
+      ],
+      "transitions": [
+        [
+          "0",
+          "receive",
+          "Researcher",
+          "ResearchBrief",
+          "String",
+          "1"
+        ],
+        [
+          "1",
+          "send",
+          "Editor",
+          "SubmitDraft",
+          "String",
+          "2"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 11,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 12,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 13,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 14,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 15,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 16,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 17,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 18,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 19,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 20,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 21,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 22,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 23,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 24,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 25,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 26,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 27,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 28,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 29,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 30,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 31,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 32,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 33,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 34,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 35,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 36,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 37,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 38,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 39,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 40,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 41,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 42,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 43,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 44,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 45,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 46,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 47,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 48,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 49,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 50,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 51,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 52,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 53,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 54,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 55,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 56,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 57,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 58,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 59,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 60,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 61,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 62,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 63,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 64,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 65,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 66,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 67,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 68,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 69,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 70,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 71,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 72,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 73,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 74,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 75,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 76,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 77,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 78,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 79,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 80,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 81,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 82,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 83,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 84,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 85,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 86,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 87,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 88,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 89,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 90,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 91,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 92,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 93,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 94,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 95,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 96,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 97,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 98,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 99,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    },
+    {
+      "trial": 100,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Researcher",
+          "receiver": "Writer",
+          "label": "ResearchBrief",
+          "payload": "Key trends and audience insights for the upcoming article",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Writer",
+          "receiver": "Editor",
+          "label": "SubmitDraft",
+          "payload": "Draft article covering key trends and audience insights",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Editor",
+          "receiver": "Publisher",
+          "label": "Approve",
+          "payload": "Approved for publication",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Publisher",
+          "receiver": "Editor",
+          "label": "Published",
+          "payload": "Article published successfully",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "Editor": "3",
+        "Publisher": "2",
+        "Researcher": "1",
+        "Writer": "2"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 4,
+      "malformed": 0,
+      "prompt_chars": 6059,
+      "reply_chars": 457
+    }
+  ],
+  "agent_seconds": 73.0878677368164
+}

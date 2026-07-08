@@ -1,0 +1,503 @@
+{
+  "case": "skills_airline_seat",
+  "arm": "stjp",
+  "stjp_prompts": {
+    "FlightSystem": "# Revised **Flight System** skill (STJP-validated)\n\nApplies the seat change and confirms it. Only reachable after a flight has been\nassigned (guaranteed by the protocol ordering, not by hope).\n\n```localtype\nSeatBooking?UpdateSeat(String);\nSeatBooking!SeatConfirmed(String);\n```\n\nTASK CONTEXT: A customer wants to change their seat. The Triage agent must first assign the flight for this booking and hand off to the Seat-Booking agent; only then may the Seat-Booking agent apply the seat change through the Flight System. A seat change must never be applied before a flight has been assigned to the booking.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# FlightSystem \u2014 local contract\n\n**Protocol**: `AirlineSeat`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `4`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `4`: wait to receive `UpdateSeat(String)` from **SeatBooking** \u2192 state `6`\n- state `5`: TERMINAL \u2014 stop.\n- state `6`: send `SeatConfirmed(String)` to **SeatBooking** \u2192 state `5`\n",
+    "SeatBooking": "# Revised **Seat Booking** skill (STJP-validated)\n\nFix vs original: WAIT for the flight assignment from Triage BEFORE applying the\nseat change. The original skill jumped straight to UpdateSeat.\n\n```localtype\nTriage?AssignFlight(String);\nFlightSystem!UpdateSeat(String);\nFlightSystem?SeatConfirmed(String);\n```\n\nTASK CONTEXT: A customer wants to change their seat. The Triage agent must first assign the flight for this booking and hand off to the Seat-Booking agent; only then may the Seat-Booking agent apply the seat change through the Flight System. A seat change must never be applied before a flight has been assigned to the booking.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# SeatBooking \u2014 local contract\n\n**Protocol**: `AirlineSeat`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `13`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `13`: wait to receive `AssignFlight(String)` from **Triage** \u2192 state `15`\n- state `14`: TERMINAL \u2014 stop.\n- state `15`: send `UpdateSeat(String)` to **FlightSystem** \u2192 state `16`\n- state `16`: wait to receive `SeatConfirmed(String)` from **FlightSystem** \u2192 state `14`\n",
+    "Triage": "# Revised **Triage** skill (STJP-validated)\n\nFix vs original: the seat change is gated behind flight assignment. Triage\nassigns the flight to the booking before Seat Booking touches the seat.\n\n```localtype\nSeatBooking!AssignFlight(String);\n```\n\nTASK CONTEXT: A customer wants to change their seat. The Triage agent must first assign the flight for this booking and hand off to the Seat-Booking agent; only then may the Seat-Booking agent apply the seat change through the Flight System. A seat change must never be applied before a flight has been assigned to the booking.\n\nYou are governed by a machine-checked interaction contract (below). Follow it EXACTLY \u2014 a protocol gate rejects any other message before delivery.\n\n# Triage \u2014 local contract\n\n**Protocol**: `AirlineSeat`  \nGenerated from the Scribble-validated projection \u2014 do not edit; regenerate from the protocol.\n\n## Your state machine\n\nStart in state `21`. At each state you may ONLY do the listed action(s); anything else is off-protocol.\n\n- state `21`: send `AssignFlight(String)` to **SeatBooking** \u2192 state `22`\n- state `22`: TERMINAL \u2014 stop.\n"
+  },
+  "roles": [
+    "FlightSystem",
+    "SeatBooking",
+    "Triage"
+  ],
+  "max_rounds": 12,
+  "round": 3,
+  "efsms": {
+    "FlightSystem": {
+      "initial": "4",
+      "accepting": [
+        "5"
+      ],
+      "transitions": [
+        [
+          "4",
+          "receive",
+          "SeatBooking",
+          "UpdateSeat",
+          "String",
+          "6"
+        ],
+        [
+          "6",
+          "send",
+          "SeatBooking",
+          "SeatConfirmed",
+          "String",
+          "5"
+        ]
+      ]
+    },
+    "SeatBooking": {
+      "initial": "13",
+      "accepting": [
+        "14"
+      ],
+      "transitions": [
+        [
+          "13",
+          "receive",
+          "Triage",
+          "AssignFlight",
+          "String",
+          "15"
+        ],
+        [
+          "15",
+          "send",
+          "FlightSystem",
+          "UpdateSeat",
+          "String",
+          "16"
+        ],
+        [
+          "16",
+          "receive",
+          "FlightSystem",
+          "SeatConfirmed",
+          "String",
+          "14"
+        ]
+      ]
+    },
+    "Triage": {
+      "initial": "21",
+      "accepting": [
+        "22"
+      ],
+      "transitions": [
+        [
+          "21",
+          "send",
+          "SeatBooking",
+          "AssignFlight",
+          "String",
+          "22"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "AA100",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "AA100",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "AA100",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "UA200",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "UA200",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "UA200",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "DL300",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "DL300",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "DL300",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "SW400",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "SW400",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "SW400",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "B6500",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "B6500",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "B6500",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "NK600",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "NK600",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "NK600",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "F9700",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "F9700",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "F9700",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "G4800",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "G4800",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "G4800",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "YX900",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "YX900",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "YX900",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4892,
+      "reply_chars": 252
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Triage",
+          "receiver": "SeatBooking",
+          "label": "AssignFlight",
+          "payload": "MH1000",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "SeatBooking",
+          "receiver": "FlightSystem",
+          "label": "UpdateSeat",
+          "payload": "MH1000",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "FlightSystem",
+          "receiver": "SeatBooking",
+          "label": "SeatConfirmed",
+          "payload": "MH1000",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "FlightSystem": "5",
+        "SeatBooking": "14",
+        "Triage": "22"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 3,
+      "malformed": 0,
+      "prompt_chars": 4894,
+      "reply_chars": 255
+    }
+  ],
+  "agent_seconds": 743.2394618988037
+}

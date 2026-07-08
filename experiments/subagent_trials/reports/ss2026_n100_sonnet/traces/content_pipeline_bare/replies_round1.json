@@ -1,0 +1,2004 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 11,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 12,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 13,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 14,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 15,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 16,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 17,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 18,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 19,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 20,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 21,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 22,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 23,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 24,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 25,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 26,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 27,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 28,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 29,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 30,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 31,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 32,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 33,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 34,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 35,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 36,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 37,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 38,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 39,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 40,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 41,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 42,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 43,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 44,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 45,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 46,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 47,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 48,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 49,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 50,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 51,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 52,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 53,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 54,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 55,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 56,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 57,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 58,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 59,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 60,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 61,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 62,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 63,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 64,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 65,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 66,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 67,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 68,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 69,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 70,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 71,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 72,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 73,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 74,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 75,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 76,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 77,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 78,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 79,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 80,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 81,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 82,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 83,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 84,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 85,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 86,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 87,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 88,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 89,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 90,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 91,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 92,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 93,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 94,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 95,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 96,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 97,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 98,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 99,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Editor",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to submit draft first\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Publisher",
+      "reply": "{\"action\": \"wait\", \"reason\": \"No Editor approval received yet\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Researcher",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ResearchBrief\", \"payload\": \"Key research findings and sources compiled for the article draft.\"}"
+    },
+    {
+      "trial": 100,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for ResearchBrief from Researcher first\"}"
+    }
+  ]
+}
