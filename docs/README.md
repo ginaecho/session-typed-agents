@@ -1,6 +1,6 @@
 # STJP Documentation
 
-Clean, organized guides to the Session-Typed Judge Panel (STJP) — the system for running session-typed agents safely. Start with section 1; read others as needed.
+Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system that machine-checks a team of AI agents' coordination plan (who talks to whom, in what order) before they run, and enforces it while they run. Start with section 1; read others as needed.
 
 **Reorganized: 2026-07-03. Plain language, no jargon. Every term explained.**
 
@@ -171,10 +171,10 @@ settings; once you can read the flow lines, every table is self-explanatory.
 - `reference/SCRIBBLE_EXTENSIONS.md` — Deep dive on how STJP extends Scribble (technical)
 - `reference/CHOICE_GUARDS_AND_GATE.md` — How value-dependent choice guards and the enforcement gate work (technical)
 - `reference/FOUNDRY_VISIBILITY.md` — Exact code to make agents/threads/traces visible in the Azure AI Foundry portal
-- `reference/STJP_V3_PLAN.md` — **Latest plan**: governance plane + decentralized execution plane (summarized in `1_TECH_SETUP.md` section 7)
+- `reference/STJP_V3_PLAN.md` — **Latest plan**: governance plane (the layer that checks the plan) + decentralized execution plane (the layer that runs it) — summarized in `1_TECH_SETUP.md` section 7
 - `reference/PROTOCOL_EVOLUTION.md` — How to update a protocol and re-validate (now includes the built incremental sub-protocol slice: child verified once, projection diff, monitor regen for affected roles only)
-- `reference/CRITIC_REVISOR.md` — The Critic (cross-message policies: information flow, ordering, separation of duty, aggregates — static AND runtime) and the Revisor repair loop
-- `reference/SKILL_COMPACTION.md` — Bottom-up STJP: compact EXISTING skill markdowns into local types, compose the global type, Scribble-validate it
+- `reference/CRITIC_REVISOR.md` — The Critic (a rule checker for rules that span several messages — e.g. who may see what, what must come first, what may happen at most once), and the Revisor (the loop that automatically repairs a plan the checker rejected)
+- `reference/SKILL_COMPACTION.md` — Bottom-up STJP: distill EXISTING prose skill files into each agent's formal slice of a plan ("local types"), assemble them into the team-wide plan ("global type"), and have Scribble validate it
 - `reference/BENCHMARK_PLAN_V2.md` — Benchmark hardening (E1–E7 + verdict corpus): what each experiment measures, real numbers vs measurement-pending, and how to swap real data into the figures/tables
 - `reference/GAP_CLOSED.md` — Refinement call-site closure record (referenced by `experiments/README.md` and `stjp_core/README.md`)
 - `reference/NUSCR_CLOUD_INSTALL.md` — **How to run the coinductive nuscr ("nuscribble") backend** in the cloud env: Docker route, CI-artifact native-binary route, building scribble-java from source, the `STJP_COMPILER_BACKEND=nuscr` / `STJP_NUSCR_BIN` env vars, and the 2017-Maven-release pitfall
@@ -210,6 +210,11 @@ Each report follows the same template: at-a-glance summary → the story → how
 > - **Wilson CI** = Wilson confidence interval — a statistically honest range for
 >   a success rate given a finite number of trials. A narrow range = more certain.
 > - **n=10 / n=100** = how many times each setting was run.
+> - **arm** = one experiment setting/configuration (a clinical-trials word).
+> - **GCR** = goal-completion rate (% of trials whose deliverable went out);
+>   **CGC** = completed **with guarantees** (% that completed AND never broke
+>   the safety rule); **cost-to-goal** = tokens per trial ÷ completion rate —
+>   what one successful delivery really costs once failures are paid for.
 
 - `results/RESULT_1_DEADLOCK.md` — **Only a static checker catches a deadlock**: unchecked rules 0/6 trials, 0 messages, ∞ cost; validated 6/6 first try. Plus the authoring-risk measurement (unchecked AI-drafted protocols are safe only 3/10 times; the checker caught all 7 unsafe drafts).
 - `results/RESULT_2_TOKEN_EFFICIENCY.md` — **Same task, one-third the tokens**: everyone completes 100%; lean projected contract 8.8k tokens vs 24.1k with no contract (−63%). Mechanism: less deliberation + smaller prompts.

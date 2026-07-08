@@ -1,6 +1,8 @@
 # The results, in order — what we tested, why, and what we learned
 
-This folder holds the evidence for every claim STJP makes. Each numbered
+This folder holds the evidence for every claim STJP (Session-Typed Judge
+Panel — this project's system for checking and enforcing a team of AI agents'
+coordination plan) makes. Each numbered
 report (RESULT_1 … RESULT_9) answers **one question**, and they build on each
 other — read them in order the first time.
 
@@ -28,8 +30,9 @@ other — read them in order the first time.
 ### [RESULT_1 — Can anything except a compiler catch a deadlock?](RESULT_1_DEADLOCK.md)
 **Why:** a deadlock (two agents each waiting forever for the other) burns money
 and delivers nothing — and it is invisible in the written instructions.
-**What it detects:** whether the static check (checking the plan *before*
-running) is genuinely necessary, or whether careful prose is enough.
+**What it detects:** whether the static check — the compiler pass that
+inspects the plan *before* running — is genuinely necessary, or whether
+careful prose is enough.
 **Result:** unchecked rules: 0 of 6 trials finished, zero messages exchanged,
 infinite cost. Compiler-checked plan: 6 of 6 finished first try. Bonus
 finding: of 10 AI-drafted plans, only 3 were safe — the compiler caught all 7
@@ -59,7 +62,8 @@ traces, what a "violation" concretely looks like.
 **Why:** safety features usually cost extra; we tested whether these do.
 **What it detects:** whether contract + gate (a program that blocks a
 wrong message before delivery) + scheduler (a program that only wakes an agent
-whose turn it can be) beats every simpler setting on *both* axes at once. The
+whose turn it can be) beats every simpler setting on *both* axes — safety AND
+cost — at once. The
 predictions were written down and committed before the run — so the grading
 is honest.
 **Result:** 100% completion, 0 disasters, 13,300 tokens per delivered report —
