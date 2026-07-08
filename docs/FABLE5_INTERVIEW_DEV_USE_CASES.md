@@ -8,13 +8,15 @@
 >
 > **Interview date:** 2026-07-08.
 >
-> The three questions:
+> The questions:
 > 1. Which **development use cases** (e.g., coordinating subagents) can use the
 >    STJP blueprint — a global protocol supported by multiparty session type
 >    (MPST) theorems — to **reduce token cost**?
 > 2. When *you* (Fable 5) organize a group of subagents, how would the STJP
 >    blueprint help you?
 > 3. Would you want to use this tool?
+> 4. Could STJP help Google's "dynamic subagent" deep-research agent? *(added
+>    2026-07-08)*
 
 ---
 
@@ -195,6 +197,116 @@ alone (E6, [`REPORT_N100.md`](../experiments/reports/n100/REPORT_N100.md)).
 
 ---
 
+## Q4 — Could STJP help Google's "dynamic subagent" deep-research agent?
+
+**Fable 5:** Yes — and this is close to a best-case fit. Let me first say plainly
+what the thing is, because the name is dense.
+
+**What we're talking about.** Google published a design for a "deep research
+agent" built with its **Agent Development Kit** — ADK for short, which is simply
+Google's open-source toolkit (a code library) for wiring several AI agents
+together into a pipeline. In their example the top-level agent runs a *fixed*
+assembly line: find companies → clean up the list → **research each company** →
+combine → write the final report. The interesting middle step is what people
+mean by "dynamic subagent": the research stage does **not** know in advance how
+many companies it will get, so at run time it **stamps out one identical little
+research pipeline per company and runs them all in parallel**. Google's own
+words: *"Our ResearchOrchestratorAgent dynamically creates a mini-pipeline for
+each company and runs them all in parallel."* Each little pipeline also runs a
+checker agent (they call it a Validator) alongside it.
+(Source: [Build a deep research agent with Google ADK](https://cloud.google.com/blog/products/ai-machine-learning/build-a-deep-research-agent-with-google-adk/),
+Google Cloud Blog, Aug 2025.)
+
+Two things to clear up so we compare the right systems:
+
+- Google's consumer **"Deep Research" feature in Gemini** is a *single* agent
+  (one planner that browses and writes), not a team — so the multi-agent
+  discussion below doesn't apply to it
+  ([Gemini Deep Research docs](https://ai.google.dev/gemini-api/docs/deep-research)).
+- Google's **"AI co-scientist"** *is* a team, but its members are a **fixed**
+  cast decided up front, not created on the fly
+  ([AI co-scientist, Google DeepMind](https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/)).
+
+So the phrase "dynamic subagent" specifically means the **ADK pattern**: a
+*pre-designed* mini-pipeline, **copied N times at run time**, where N is only
+known once the input list arrives.
+
+**Why that is a good fit for STJP.** The word "dynamic" here is doing less than
+it sounds. It does **not** mean "the AI invents brand-new coordination shapes
+mid-run." It means "a known template, instantiated a run-time number of times."
+That is exactly the kind of structure STJP is built to handle, in three layers:
+
+1. **The outer assembly line is a plain ordered pipeline** — the same shape as
+   this project's `report_pipeline` case. STJP would prove it can't dead-end
+   (two steps waiting on each other forever) in milliseconds *before* running,
+   and hand each step a written slice of the plan. Google's version encodes that
+   ordering in ordinary program code; if it's wired wrong, you find out only at
+   run time — after paying for web crawling.
+
+2. **The per-company mini-pipeline is a reusable sub-plan** — and STJP already
+   has the machinery to **check a sub-plan once and reuse it many times**
+   (validated 10/10 with live subagents in
+   [`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md)). Stamping out N verified
+   copies of a fixed template is the easy case. The "N is unknown until run time"
+   part has a name in the underlying theory — **parameterised multiparty session
+   types** (a protocol written once but indexed over *n* workers; Yoshida,
+   Deniélou, Bejleri, Hu, 2010), which this project's research notes already flag
+   as the direct match for fan-out.
+
+3. **The safety orderings STJP enforces are exactly the ones a research fan-out
+   needs** — "only write the final report after every company's pipeline has
+   returned or timed out," "combine only validated results." Google's blog post
+   describes no mechanism that *enforces* these; it trusts the code to be right.
+   That is precisely the gap this project measured: with real public skills and
+   no enforcement, teams failed or acted unsafely; with the enforcing layer,
+   they went to 100% ([`RESULT_8`](results/RESULT_8_SKILL_SAFETY.md)).
+
+**What STJP would concretely add to such a system:**
+
+- **Catch coordination bugs before the run, not during it.** The lesson from
+  [`RESULT_8`](results/RESULT_8_SKILL_SAFETY.md) transfers directly: each piece
+  reads fine alone; the *combination* is where the dead-end or the wasted loop
+  hides, and only a plan-level check sees it before you've spent anything.
+- **A cheap referee for research-specific rules** — "don't publish before the
+  checker passed," "don't process the same company twice" — enforced by a small
+  program, with no extra AI call. Without it, you get the publish-before-review
+  and do-it-twice failures that hit 10 out of 10 unenforced trials in
+  [`RESULT_8`](results/RESULT_8_SKILL_SAFETY.md).
+- **Big savings exactly at fan-out scale.** When you run many little pipelines in
+  parallel, most agents are idle most of the time; STJP's scheduler simply never
+  wakes an agent whose turn it can't be. That saving grows with the number of
+  roles — from **9.2× to 17.1×** on coordination cost in our scaling test
+  ([`RESULT_7`](results/RESULT_7_N100_SCALE.md)).
+- **Let the cheapest model do it.** Our two-model run found that *with* the
+  enforced plan, the small cheap model performed identically to the pricier one
+  ([`RESULT_9`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md)). Across a
+  hundred-company research fan-out, staffing it with the cheapest tier and
+  letting the structure carry correctness is a real-money difference.
+
+**Where I'd be honest about the limits:**
+
+- If the agent's dynamism is genuinely open-ended — the model inventing *new
+  coordination shapes* mid-run, not just new copies of a known template — that
+  is beyond what STJP can check *today*. The theory for it exists (roles that
+  join and leave a live conversation — "dynamic multirole" session types,
+  Deniélou & Yoshida, 2011/2012) and is on this project's roadmap, but it is not
+  built yet.
+- STJP checks the **structure** of the conversation, not the **content** of a
+  message. It cannot tell that a research summary contains a made-up citation;
+  it can only guarantee the summary was produced in the right order, by the right
+  agent, after the right checks. (It *can* enforce "every claim must point back
+  to a fetched source," but only at the level of whole messages.)
+
+**Bottom line:** Google's ADK deep-research pattern is dynamic in the mild,
+tractable sense — a verified template run a run-time number of times — which is
+the parameterised, reuse-a-checked-sub-plan slice of the theory STJP already
+demonstrates. The failure-handling and enforcement that Google's write-up leaves
+to careful coding are exactly the layer where this project measured the
+difference between "fails half the time, unpredictably" and "100%, provably." So
+yes: I'd want STJP there.
+
+---
+
 ## Appendix — the sources this interview drew on
 
 - [`docs/README.md`](README.md) — documentation index
@@ -209,3 +321,10 @@ alone (E6, [`REPORT_N100.md`](../experiments/reports/n100/REPORT_N100.md)).
 - [`experiments/reports/n100/REPORT_N100.md`](../experiments/reports/n100/REPORT_N100.md) — full n=100 report incl. E6 roles sweep
 - [`experiments/subagent_trials/reports/SUBAGENT_TRIALS_REPORT.md`](../experiments/subagent_trials/reports/SUBAGENT_TRIALS_REPORT.md) — method: agent interaction without Foundry
 - [`pitch/STJP_pitch.html`](../pitch/STJP_pitch.html) — governance positioning ("enforced with code, not another AI")
+
+**External sources cited in Q4 (Google's deep-research agents):**
+
+- [Build a deep research agent with Google ADK](https://cloud.google.com/blog/products/ai-machine-learning/build-a-deep-research-agent-with-google-adk/) — Google Cloud Blog (Aug 2025); the "dynamic subagent" pattern Q4 analyses. ADK = Google's open-source Agent Development Kit ([google/adk-python](https://github.com/google/adk-python)).
+- [Gemini Deep Research](https://ai.google.dev/gemini-api/docs/deep-research) — Google's consumer deep-research feature; a *single* agent, noted in Q4 as not-a-team.
+- [AI co-scientist](https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/) — Google DeepMind (Feb 2025); a multi-agent team with a *fixed* cast, contrasted in Q4 with the dynamic pattern.
+- Underlying theory referenced in Q4: parameterised MPST (Yoshida, Deniélou, Bejleri, Hu, 2010) and dynamic-multirole session types (Deniélou & Yoshida, ESOP'11 / ICALP'12) — see [`RESEARCH.md`](../RESEARCH.md) and [`ROADMAP.md`](../ROADMAP.md).
