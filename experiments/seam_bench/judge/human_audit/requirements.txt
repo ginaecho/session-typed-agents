@@ -1,0 +1,5 @@
+# human_audit/ tool-specific dependency — deliberately NOT merged into
+# stjp_core's requirements (this is a standalone labeling UI, not part of
+# the trained system). Install with:
+#   pip install -r experiments/seam_bench/judge/human_audit/requirements.txt
+streamlit>=1.30

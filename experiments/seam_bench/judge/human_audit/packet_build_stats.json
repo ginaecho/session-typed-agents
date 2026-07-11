@@ -1,0 +1,18 @@
+{
+  "seed": 13,
+  "target": 220,
+  "total_items": 220,
+  "n_gold": 23,
+  "n_easy_negative": 23,
+  "n_hard_negative": 154,
+  "n_repeats": 20,
+  "hard_negative_stats": {
+    "candidates_total": 200,
+    "candidates_resolved": 200,
+    "candidates_skipped": 0,
+    "skipped_ids": [],
+    "hard_negatives_requested": 154,
+    "hard_negatives_sampled": 154,
+    "hard_negatives_shortfall": 0
+  }
+}
