@@ -5,7 +5,8 @@ This directory contains LaTeX sources for the STJP (Semantic Type Judgment Probl
 ## Directory Structure
 
 - **v6/** - Version 6 of the paper
-- **v7/** - Version 7 of the paper (latest)
+- **v7/** - Version 7 of the paper
+- **v8/** - Version 8 of the paper (latest)
 
 Each version contains:
 - `main.tex` - Main LaTeX source file
@@ -38,7 +39,7 @@ sudo apt-get install texlive-full
 Navigate to the desired version and run:
 
 ```bash
-cd v7  # or v6
+cd v8  # or v7, v6
 make   # Compiles main.tex -> main.pdf
 ```
 
@@ -76,7 +77,8 @@ This requires:
 
 ## Version History
 
-- **v7** - Latest version with refinements
+- **v8** - Latest version: ICLR-facing repositioning (thesis-first title, empirical-first abstract, reordered contributions), new citations and positioning against concurrent work, new trainable-seam section, governance paragraph, and vector figures. See `v8/CHANGELOG_v8.md` for the full change list.
+- **v7** - Previous version with refinements
 - **v6** - Previous stable version
 
 ## PDF Versions
@@ -84,6 +86,7 @@ This requires:
 Pre-compiled PDFs are available:
 - `STJP_paper_v6_compiled.pdf`
 - `STJP_paper_v7_compiled.pdf`
+- `v8/main.pdf` and `v8/STJP_paper_v8.docx`
 
 ## Editing
 

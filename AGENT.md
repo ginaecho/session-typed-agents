@@ -479,23 +479,26 @@ If still stuck, look at existing cases (finance, banking) for examples.
 
 ---
 
-## 🔐 Git identity — ALWAYS commit/push/PR as Gina Chen
+## 🔐 Git identity — ALWAYS commit/push/PR as ginaecho
 
-**Every** git commit, push, branch, and pull request you make in this project must be attributed to the project owner, never to Claude:
+**Every** git commit, push, branch, and pull request you make in this project must be attributed to the project owner, never to Claude or any other AI/bot identity:
 
-- **Author / committer:** `Gina Chen <tzuchunchen+microsoft@microsoft.com>`
-- **GitHub account for push & PR:** `tzuchunchen_microsoft` (the `gh` CLI is authenticated as this account)
-- **Do NOT** add a `Co-Authored-By: Claude ...` trailer. Do NOT set the author to any bot/assistant identity.
+- **Author / committer for this repo (`ginaecho/session-typed-agents`):** `ginaecho <gina.tcchen@gmail.com>`
+- **GitHub account for push & PR:** `ginaecho`
+- **Do NOT** add a `Co-Authored-By: Claude ...` trailer or any assistant/session trailer. Do NOT set the author to any bot/assistant identity.
+- **No "claude" keywords anywhere** in git artifacts: not in branch names, commit messages, trailers, tags, or PR titles/bodies.
+- When working in the Microsoft mirror flow (below), the identity there is `Gina Chen <tzuchunchen+microsoft@microsoft.com>` / account `tzuchunchen_microsoft`.
 
 Set the identity inline on every commit so it is correct regardless of local git config:
 
 ```bash
-git -c user.name="Gina Chen" -c user.email="tzuchunchen+microsoft@microsoft.com" \
+git -c user.name="ginaecho" -c user.email="gina.tcchen@gmail.com" \
     commit -m "<message>"
 ```
 
-Branches you create for review use the `gc/` prefix, e.g. `gc/stjp-updates-docs`.
-Open PRs with `gh pr create` (runs as `tzuchunchen_microsoft`).
+**Branch naming:** every branch ALWAYS starts with the `gc/` prefix, e.g.
+`gc/paper-v8-iclr-reposition-concurrent-work`. Never create `claude/...` or
+other-prefixed branches.
 
 ---
 

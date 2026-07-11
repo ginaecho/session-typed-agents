@@ -1,0 +1,158 @@
+<mxfile host="app.diagrams.net" agent="STJP paper toolchain" version="24.7.7">
+  <diagram name="STJP system (paper Fig. 1)" id="stjp-fig1">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="760" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c2" value="COMPILE TIME" style="text;html=1;fontSize=12;fontColor=#5A6570;align=left;verticalAlign=middle;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="20" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="static — runs before any agent exists" style="text;html=1;fontSize=10;fontColor=#8A939C;align=left;verticalAlign=middle;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="180" y="20" width="420" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="RUN TIME" style="text;html=1;fontSize=12;fontColor=#5A6570;align=left;verticalAlign=middle;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="322" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" value="deterministic code, not agents — O(1) per message, zero tokens" style="text;html=1;fontSize=10;fontColor=#8A939C;align=left;verticalAlign=middle;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="130" y="322" width="620" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" value="MEASUREMENT" style="text;html=1;fontSize=12;fontColor=#5A6570;align=left;verticalAlign=middle;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="560" width="200" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" value="offline, bit-reproducible" style="text;html=1;fontSize=10;fontColor=#8A939C;align=left;verticalAlign=middle;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="180" y="560" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" value="" style="line;html=1;strokeColor=#C9CED4;dashed=1;dashPattern=2 4;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="310" width="1560" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" value="" style="line;html=1;strokeColor=#C9CED4;dashed=1;dashPattern=2 4;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="548" width="1560" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" value="&lt;b&gt;User intent&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;natural language&lt;br&gt;task + policies&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F6F7F9;strokeColor=#9AA3AD;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="30" y="90" width="170" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" value="&lt;b&gt;LLM drafter&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;intent → protocol&lt;br&gt;(+ guard sidecar)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF1F8;strokeColor=#9AA3AD;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="250" y="90" width="175" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" value="&lt;b&gt;Global type G&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;Scribble .scr + .refn guards&lt;br&gt;+ goal markers&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF1F8;strokeColor=#9AA3AD;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="475" y="90" width="185" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" value="&lt;b&gt;Static validator&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;projectability · deadlock&lt;br&gt;guarded recursion&lt;br&gt;goal reachability&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF5EF;strokeColor=#4E9B6F;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="710" y="90" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" value="&lt;b&gt;Projection G↾Rᵢ&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;one local type per role&lt;br&gt;→ EFSM&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF5EF;strokeColor=#4E9B6F;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="960" y="90" width="190" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" value="&lt;b&gt;3 artifacts per role&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF5EF;strokeColor=#4E9B6F;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="90" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" value="&lt;b&gt;S1&lt;/b&gt;" style="ellipse;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="238" y="76" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" value="&lt;b&gt;S2&lt;/b&gt;" style="ellipse;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="698" y="76" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" value="&lt;b&gt;S3&lt;/b&gt;" style="ellipse;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="948" y="76" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;" edge="1" parent="1" source="c10" target="c11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c20" value="draft" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;" edge="1" parent="1" source="c11" target="c12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;" edge="1" parent="1" source="c12" target="c13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c22" value="VALID" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;" edge="1" parent="1" source="c13" target="c14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;" edge="1" parent="1" source="c14" target="c15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c24" value="REJECTED + counterexample → re-draft&amp;nbsp;&amp;nbsp;(human endorses the final G)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D55E00;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#D55E00;fontStyle=2;dashed=1;dashPattern=6 4;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c13" target="c11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="810" y="48" />
+              <mxPoint x="338" y="48" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c25" value="&lt;b&gt;LLM agents&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;receive lean local skill&lt;br&gt;(SEND/RECV table + guards);&lt;br&gt;untyped 'dyn' participants&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F6F7F9;strokeColor=#9AA3AD;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="30" y="380" width="220" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="c26" value="&lt;b&gt;Monitor + Gate (generated)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;EFSM interpreter per role;&lt;br&gt;off-contract send rejected&lt;br&gt;pre-delivery → re-prompt&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FBF0EC;strokeColor=#C2836B;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="360" y="380" width="245" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="c27" value="&lt;b&gt;EFSM scheduler&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;prompts only roles enabled at&lt;br&gt;the current protocol state;&lt;br&gt;no idle polling&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FBF0EC;strokeColor=#C2836B;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="715" y="380" width="240" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="c28" value="&lt;b&gt;Typed event log&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;role · state · branch · verdict&lt;br&gt;· guard result · goal marker&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF1F8;strokeColor=#9AA3AD;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="380" width="240" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="c29" value="&lt;b&gt;S4&lt;/b&gt;" style="ellipse;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="348" y="366" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c30" value="&lt;b&gt;S5&lt;/b&gt;" style="ellipse;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="703" y="366" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c31" value="skill" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4E9B6F;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#4E9B6F;fontStyle=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.35;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c15" target="c25">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1475" y="250" />
+              <mxPoint x="107" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c32" value="monitor" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4E9B6F;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#4E9B6F;fontStyle=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c15" target="c26">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1475" y="265" />
+              <mxPoint x="482" y="265" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c33" value="schedule" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4E9B6F;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#4E9B6F;fontStyle=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.65;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c15" target="c27">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1475" y="280" />
+              <mxPoint x="871" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c34" value="send m" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0;entryY=0.35;entryDx=0;entryDy=0;" edge="1" parent="1" source="c25" target="c26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c35" value="block + re-prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D55E00;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#D55E00;fontStyle=2;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="c26" target="c25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c36" value="allow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;" edge="1" parent="1" source="c26" target="c27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c37" value="event" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;" edge="1" parent="1" source="c27" target="c28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c38" value="turn control: 'you are the enabled sender at this state'" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#8A939C;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#8A939C;fontStyle=2;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="c27" target="c25">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="835" y="522" />
+              <mxPoint x="140" y="522" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c39" value="&lt;b&gt;Deterministic metric engine (no golden trajectory, no LLM judge)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;conformance rate · path distribution · goal progress · detour cost · repair burden · S0–S4 severity&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EAF5EF;strokeColor=#4E9B6F;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="230" y="610" width="700" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c40" value="&lt;b&gt;Human outcome anchor (sampled)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#555555'&gt;divergence ⇒ re-draft G with the user, not patch agents&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F6F7F9;strokeColor=#9AA3AD;fontColor=#3A3A3A;fontSize=11;verticalAlign=middle;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="610" width="380" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c28" target="c39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c42" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3A3A3A;strokeWidth=1.5;endArrow=blockThin;endFill=1;fontSize=9;fontColor=#3A3A3A;fontStyle=2;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c28" target="c40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
