@@ -77,7 +77,12 @@ This requires:
 
 ## Version History
 
-- **v8** - Latest version: ICLR-facing repositioning (thesis-first title, empirical-first abstract, reordered contributions), new citations and positioning against concurrent work, new trainable-seam section, governance paragraph, and vector figures. See `v8/CHANGELOG_v8.md` for the full change list.
+- **v8** - Latest version: *"Guarantees, Not Averages: Type-Checking Agent Conversations with Multiparty Session Types"* (supersedes v7). Three groups of changes:
+  1. **Repositioning (ICLR-facing)** - thesis-first title; abstract ~40% shorter and empirical-first; contributions reordered (judge-free eval + CGC and the three empirical regularities lead, guarantee transfer follows).
+  2. **Concurrent/adjacent work cited and positioned** - ZipperGen (Bollig–Függer–Nowak, arXiv:2604.17612) in Related Work plus a new Table 1 row; Contribution 1 rescoped to cite its own counterexample inline; also Li–Stutz–Wies–Zufferey (CAV'23 / OOPSLA'25 / ITP'25), Paduraru et al. (arXiv:2603.18096), and Kaptein et al. + EU AI Act motivation (arXiv:2603.16586).
+  3. **New content** - §3.2 merge-as-lint flip; §7 "The seam is trainable, not merely open"; Limitations translation-seam paragraph updated to verifier-in-the-loop framing.
+
+  See `v8/CHANGELOG_v8.md` for all edits with rationale and `v8/README.txt` for build/status notes.
 - **v7** - Previous version with refinements
 - **v6** - Previous stable version
 
