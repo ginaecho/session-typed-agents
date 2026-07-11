@@ -306,3 +306,33 @@ No failures were found in this pass. The gaps in §4 are the honest,
 already-self-reported boundary of the implemented work (data-scale targets
 not yet reached, GPU-dependent training stages not yet started) rather than
 anything contradicting the components' correctness.
+
+---
+
+## Addendum — post-audit integrations (same day, planner-verified)
+
+Commits landed on `gc/user_intent_global_protocol_training` after the audit
+above, each independently verified by the planner before integration:
+
+| commit | addition | verification evidence |
+|---|---|---|
+| 5f3e2fa | docs guide 8 (`docs/8_INTENT_TO_PROTOCOL_TRAINING.md`) + README index | every documented entry-point file confirmed present on the branch |
+| adbd7b4 | `docs/reference/GPU_TRAINING_RUNBOOK.md` (710 lines) | spot-checks: R2 pin block verbatim (vllm==0.23.0 cap), generation_kwargs grammar pass-through, az-login owner-machine rule |
+| 8d3bec7 | this audit report | — |
+| 4dc329b | T0 baseline runner (`experiments/seam_bench/t0/`) | independent re-run: 47/47 tests; 23/23 gold pairs validate under real Scribble (`smoke_gold`) |
+| 0e24881 | paper v9 (`paper-writing/v9/`): §8 "The Trainable Seam, Realized" + 26-macro results template | independent structural check: 39/39 begin/end, all seam macros resolve, seam_results.tex included |
+| 17e3da3 | human fit/no-fit labeling tool (`experiments/seam_bench/judge/human_audit/`) | independent re-run: 98/98 judge tests; committed 220-item packet verified blind (fields = intent/item_id/order_index/protocol_text only; strata in separate key file) |
+| 3463b70 | recursion generator (W15): 200 recursive families, d1_expand race fix | independent re-run: 34/34 data tests; recursion signature report 150/150 + 20/20 vs unoptimized checker |
+
+Updated component totals on this branch: 265 passing tests across
+seam_bench (eval 86, data 34, judge 98, mining 37, t0 47 — note judge
+includes human_audit's 36) + grammar 23+1skip; 671 non-recursive + 200
+recursive = 871 EFSM-deduped protocol families; the 220-item blind human
+audit packet ready for labeling.
+
+Remaining GPU-dependent work is unchanged from the section above; the
+full re-run commands for the new packages:
+`python -m pytest experiments/seam_bench/t0/tests/ -q`,
+`python -m pytest experiments/seam_bench/judge/human_audit/tests/ -q`,
+`python -m pytest experiments/seam_bench/data/tests/ -q`,
+`python -m experiments.seam_bench.t0.smoke_gold`.
