@@ -278,7 +278,19 @@ MUTATIONS = ["drop_receive", "retype_payload", "swap_fifo", "reroute_peer",
              "rename_label"]
 
 
-def s2_mutation(rng, lts: dict[str, LocalType], rec):
+def apply_local_mutation(rng, lts: dict[str, LocalType]
+                        ) -> tuple[dict[str, LocalType], str, str]:
+    """Pure LocalType-level mutation step: pick one of the 5 MUTATIONS
+    classes and apply it to a deep copy of `lts`. Returns
+    (mutated_lts, victim_role, kind_actually_applied) — `kind` may differ
+    from the originally-sampled class when that class doesn't apply (same
+    fallback-to-rename_label behaviour as before the extraction).
+
+    Extracted from `s2_mutation` (unchanged RNG consumption order, so
+    seeded runs of this module are bit-for-bit unaffected) so other callers
+    — the D3 repair-tuple builder in experiments/seam_bench/data/d3_repair
+    .py — can reuse these operators without duplicating the selection
+    logic. Prefer importing this function over copying it."""
     import copy
     mutated = copy.deepcopy(lts)
     kind = rng.choice(MUTATIONS)
@@ -315,7 +327,11 @@ def s2_mutation(rng, lts: dict[str, LocalType], rec):
         i = rng.choice(acts)
         a = body[i]
         body[i] = LAction(a.direction, a.peer, a.label + "X", a.payload_type)
+    return mutated, role, kind
 
+
+def s2_mutation(rng, lts: dict[str, LocalType], rec):
+    mutated, role, kind = apply_local_mutation(rng, lts)
     caught_by = ""
     findings = check_compatibility(mutated)
     if any(f.severity == "ERROR" for f in findings):
