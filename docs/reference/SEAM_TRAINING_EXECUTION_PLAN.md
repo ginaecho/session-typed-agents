@@ -313,9 +313,17 @@ vote count, or even that other judges exist.
   planner-written analysis routed WITH the case to the human gate; the
   planner's analysis is advisory and never a counted vote, because the
   planner holds exactly the contaminating context (drafting traces,
-  reward design) that §5.2 strips from every judge. Cost control: strong
-  panel for gate decisions, mined items, and escalations; §6-calibrated
-  cheaper seats only for bulk screening where per-seat AUC proves parity.
+  reward design) that §5.2 strips from every judge. **Planner load cap
+  (owner directive, v2.2):** the planner personally reviews at most 25
+  escalations per phase gate, stratified-sampled (worst disagreements +
+  random draws), and reviews for PATTERNS, not verdicts — the deliverable
+  is a one-page rubric-improvement memo per gate. Escalations beyond the
+  cap flow stateless-Fable-seat → human gate without planner involvement.
+  Rationale: planner context is the program's scarcest resource; spending
+  it on case-by-case judging displaces the planning/adjudication role
+  that nothing else can fill. Cost control: strong panel for gate
+  decisions, mined items, and escalations; §6-calibrated cheaper seats
+  only for bulk screening where per-seat AUC proves parity.
   Temperatures drawn per-seat from {0.3, 0.7}; rubric emphasis rotated
   per-seat (roles / ordering / prohibitions / termination) so even
   same-model seats attend differently.
