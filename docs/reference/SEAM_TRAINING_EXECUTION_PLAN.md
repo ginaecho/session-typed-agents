@@ -300,11 +300,25 @@ vote count, or even that other judges exist.
 - **J-probe**: an LLM call compiles the intent into probe queries; the
   *verdict* is `critic`-style deterministic reachability/trace checking on
   G's EFSM. Immune to correlation entirely (no sampling in the verdict).
-- Model mix: default panel = 2×J-fwd (Sonnet, distinct paraphrases) +
-  2×J-back (Sonnet, Haiku) + J-probe. Where a non-Anthropic family is
-  available, swap one J-back seat for it. Temperatures drawn per-seat from
-  {0.3, 0.7}; rubric emphasis rotated per-seat (roles / ordering /
-  prohibitions / termination) so even same-model seats attend differently.
+- Model mix (v2.1, owner directive: judges use top-tier models): default
+  panel = 2×J-fwd (Opus 4.8 + Sonnet 5, distinct paraphrases) + 2×J-back
+  (Sonnet 5 + Opus 4.6) + J-probe (deterministic). Where a non-Anthropic
+  family is available, swap one seat for it. Monoculture caveat (R1
+  effective-votes finding): mixed Anthropic versions buy ACCURACY, not
+  independence — the class structure (fwd/back/probe) carries
+  decorrelation; the effective-votes ≥3 gate still binds. **Escalation
+  tier** for borderline cases (aggregate in [0.4, 0.6], or probe-vote
+  conflict, or any abstention): a stateless Fable-5 seat (fresh context,
+  sanitized payload — the model, never the planner session) plus a
+  planner-written analysis routed WITH the case to the human gate; the
+  planner's analysis is advisory and never a counted vote, because the
+  planner holds exactly the contaminating context (drafting traces,
+  reward design) that §5.2 strips from every judge. Cost control: strong
+  panel for gate decisions, mined items, and escalations; §6-calibrated
+  cheaper seats only for bulk screening where per-seat AUC proves parity.
+  Temperatures drawn per-seat from {0.3, 0.7}; rubric emphasis rotated
+  per-seat (roles / ordering / prohibitions / termination) so even
+  same-model seats attend differently.
 - **Order randomization** for any comparative payload (A/B position bias).
 
 **5.4 Structured verdicts with evidence pointers.** Schema:
