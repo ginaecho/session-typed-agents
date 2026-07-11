@@ -9,7 +9,9 @@ actually wants?), and (C) a corpus-generation design — synthetic and mined
 from real-world repositories — that feeds both.
 
 Status: proposal. Companion to paper v8 §7 ("The seam is trainable, not
-merely open") and to the pending E5 cells.
+merely open") and to the pending E5 cells. The executable version — stacks,
+hyperparameters, judge-isolation mechanics, preregistered go/no-go gates,
+and worker task cards — is `SEAM_TRAINING_EXECUTION_PLAN.md`.
 
 ---
 
