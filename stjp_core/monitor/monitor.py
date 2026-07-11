@@ -25,6 +25,7 @@ class ViolationType(Enum):
     PREMATURE_TERMINATION = "premature_termination"
     UNEXPECTED_PEER = "unexpected_peer"
     CHOICE_GUARD = "choice_guard_violation"
+    STATEFUL_INVARIANT = "stateful_invariant_violation"
 
 
 @dataclass
@@ -340,17 +341,51 @@ class SessionMonitor:
     Global compliance = all local monitors pass (FORTE'13 theorem).
     """
 
-    def __init__(self, efsms: dict[str, EFSM], refinements: dict | None = None):
+    def __init__(self, efsms: dict[str, EFSM], refinements: dict | None = None,
+                 gate: bool = False):
         self.monitors = {
             role: RoleMonitor(efsm, refinements)
             for role, efsm in efsms.items()
         }
+        # Prototype 1: the session ledger is CENTRAL (it sees the ordered stream,
+        # unlike the per-role monitors). `gate` selects observe vs enforce mode.
+        self.ledger = (refinements or {}).get('__ledger__')
+        self.gate = gate
+        self.ledger_violations: list[Violation] = []
+        if self.ledger is not None:
+            self.ledger.reset()
+
+    @staticmethod
+    def _norm(label: str) -> str:
+        idx = label.find("(")
+        return label[:idx] if idx > 0 else label
 
     def process_trace(self, events: list[TraceEvent]) -> dict[str, MonitorVerdict]:
-        """Run all monitors against a complete trace."""
+        """Run all monitors against a complete trace.
+
+        The central session ledger is stepped on each event in stream order,
+        after the per-role monitors, and any stateful-invariant breach is
+        attributed to the message's sender at the exact crossing message.
+        """
         for event in events:
             for monitor in self.monitors.values():
                 monitor.process_event(event)
+            if self.ledger is not None:
+                for lv in self.ledger.step(self._norm(event.label), event.payload,
+                                           step_no=event.step, gate=self.gate):
+                    v = Violation(
+                        role=event.sender,
+                        violation_type=ViolationType.STATEFUL_INVARIANT,
+                        step=event.step, event=event, state="",
+                        expected=[lv.invariant],
+                        message=(f"stateful invariant `{lv.invariant}` breached at "
+                                 f"{event.label} (step {event.step}); virtual state "
+                                 f"{ {k: round(v, 2) if isinstance(v, float) else v for k, v in lv.values.items()} }"
+                                 + ("; REJECTED pre-delivery" if lv.blocked else "")),
+                    )
+                    self.ledger_violations.append(v)
+                    if event.sender in self.monitors:
+                        self.monitors[event.sender].violations.append(v)
 
         # Check termination for all roles
         for monitor in self.monitors.values():
