@@ -1,0 +1,32 @@
+======================================================================
+LEAKAGE CHECK
+======================================================================
+[1] no family in two splits: PASS (0 offending families)
+[2] no seed family straddles: PASS (0 offending seeds)
+[3] strat table matches splitter.py's cached table: PASS
+
+roles rec    depth |  train(fam/rec)  dev(fam/rec)  test-syn(fam/rec)
+---------------------------------------------------------------------
+    2 False     deep |      4/19         1/7             1/5      
+    2 False     flat |     19/88         2/10            2/8      
+    2 False  shallow |     10/53         1/6             1/4      
+    3 False     deep |      4/25         1/6             1/6      
+    3 False     flat |     41/184        5/22            5/21     
+    3 False  shallow |     84/442       11/60           11/58     
+    3 True  shallow |      1/4          1/2             1/4      
+    4 False     deep |      4/23         1/4             1/5      
+    4 False     flat |     70/310        9/40            9/40     
+    4 False  shallow |    101/515       12/55           12/61     
+    4 True     deep |      1/2          0/0             0/0      
+    4 True  shallow |      2/9          0/0             0/0      
+    5 False     deep |      2/10         1/2             1/5      
+    5 False     flat |     58/251        7/32            7/29     
+    5 False  shallow |     80/385       10/39           10/46     
+    5 True     deep |      1/8          0/0             0/0      
+    5 True  shallow |      2/11         0/0             0/0      
+    6 False     deep |      4/27         1/5             1/8      
+    6 False     flat |     52/227        6/24            6/28     
+    6 False  shallow |     57/229        7/32            7/36     
+    6 True  shallow |      2/12         0/0             0/0      
+
+VERDICT: GREEN — all leakage checks pass

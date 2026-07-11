@@ -1,0 +1,101 @@
+{
+  "target": 20000,
+  "max_mutations": 3200,
+  "seed": 1,
+  "workers": 4,
+  "n_golds": 802,
+  "golds_with_lts": 80,
+  "mutations_attempted": 3200,
+  "repair_records": 860,
+  "calibration_candidates": 1746,
+  "not_applicable": 469,
+  "synthesis_rejected": 125,
+  "elapsed_seconds": 636.8,
+  "mutations_per_second": 5.025,
+  "per_operator_yield": {
+    "undeclare_role": {
+      "applied": 429,
+      "rejected": 429,
+      "validator_passed": 0,
+      "synthesis_rejected": 0,
+      "not_applicable": 0
+    },
+    "branch_asymmetry": {
+      "applied": 251,
+      "rejected": 154,
+      "validator_passed": 97,
+      "synthesis_rejected": 0,
+      "not_applicable": 170
+    },
+    "flip_branch_subject": {
+      "applied": 272,
+      "rejected": 272,
+      "validator_passed": 0,
+      "synthesis_rejected": 0,
+      "not_applicable": 193
+    },
+    "circular_wait": {
+      "applied": 402,
+      "rejected": 0,
+      "validator_passed": 402,
+      "synthesis_rejected": 0,
+      "not_applicable": 0
+    },
+    "swap_order": {
+      "applied": 485,
+      "rejected": 0,
+      "validator_passed": 485,
+      "synthesis_rejected": 0,
+      "not_applicable": 2
+    },
+    "drop_message": {
+      "applied": 425,
+      "rejected": 1,
+      "validator_passed": 424,
+      "synthesis_rejected": 0,
+      "not_applicable": 0
+    },
+    "rewire_peer": {
+      "applied": 341,
+      "rejected": 4,
+      "validator_passed": 337,
+      "synthesis_rejected": 0,
+      "not_applicable": 104
+    },
+    "drop_receive": {
+      "applied": 0,
+      "rejected": 0,
+      "validator_passed": 0,
+      "synthesis_rejected": 22,
+      "not_applicable": 0
+    },
+    "retype_payload": {
+      "applied": 0,
+      "rejected": 0,
+      "validator_passed": 0,
+      "synthesis_rejected": 27,
+      "not_applicable": 0
+    },
+    "swap_fifo": {
+      "applied": 1,
+      "rejected": 0,
+      "validator_passed": 1,
+      "synthesis_rejected": 19,
+      "not_applicable": 0
+    },
+    "reroute_peer": {
+      "applied": 0,
+      "rejected": 0,
+      "validator_passed": 0,
+      "synthesis_rejected": 24,
+      "not_applicable": 0
+    },
+    "rename_label": {
+      "applied": 0,
+      "rejected": 0,
+      "validator_passed": 0,
+      "synthesis_rejected": 33,
+      "not_applicable": 0
+    }
+  }
+}

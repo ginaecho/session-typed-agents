@@ -1,0 +1,8 @@
+{
+  "families_total": 751,
+  "by_split": {
+    "dev": 76,
+    "test-syn": 76,
+    "train": 599
+  }
+}

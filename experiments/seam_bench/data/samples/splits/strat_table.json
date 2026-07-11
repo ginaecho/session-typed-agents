@@ -1,0 +1,233 @@
+[
+  {
+    "role_count": 2,
+    "has_recursion": false,
+    "depth_bucket": "deep",
+    "train_families": 4,
+    "train_records": 19,
+    "dev_families": 1,
+    "dev_records": 7,
+    "test-syn_families": 1,
+    "test-syn_records": 5
+  },
+  {
+    "role_count": 2,
+    "has_recursion": false,
+    "depth_bucket": "flat",
+    "train_families": 19,
+    "train_records": 88,
+    "dev_families": 2,
+    "dev_records": 10,
+    "test-syn_families": 2,
+    "test-syn_records": 8
+  },
+  {
+    "role_count": 2,
+    "has_recursion": false,
+    "depth_bucket": "shallow",
+    "train_families": 10,
+    "train_records": 53,
+    "dev_families": 1,
+    "dev_records": 6,
+    "test-syn_families": 1,
+    "test-syn_records": 4
+  },
+  {
+    "role_count": 3,
+    "has_recursion": false,
+    "depth_bucket": "deep",
+    "train_families": 4,
+    "train_records": 25,
+    "dev_families": 1,
+    "dev_records": 6,
+    "test-syn_families": 1,
+    "test-syn_records": 6
+  },
+  {
+    "role_count": 3,
+    "has_recursion": false,
+    "depth_bucket": "flat",
+    "train_families": 41,
+    "train_records": 184,
+    "dev_families": 5,
+    "dev_records": 22,
+    "test-syn_families": 5,
+    "test-syn_records": 21
+  },
+  {
+    "role_count": 3,
+    "has_recursion": false,
+    "depth_bucket": "shallow",
+    "train_families": 84,
+    "train_records": 442,
+    "dev_families": 11,
+    "dev_records": 60,
+    "test-syn_families": 11,
+    "test-syn_records": 58
+  },
+  {
+    "role_count": 3,
+    "has_recursion": true,
+    "depth_bucket": "shallow",
+    "train_families": 1,
+    "train_records": 4,
+    "dev_families": 1,
+    "dev_records": 2,
+    "test-syn_families": 1,
+    "test-syn_records": 4
+  },
+  {
+    "role_count": 4,
+    "has_recursion": false,
+    "depth_bucket": "deep",
+    "train_families": 4,
+    "train_records": 23,
+    "dev_families": 1,
+    "dev_records": 4,
+    "test-syn_families": 1,
+    "test-syn_records": 5
+  },
+  {
+    "role_count": 4,
+    "has_recursion": false,
+    "depth_bucket": "flat",
+    "train_families": 70,
+    "train_records": 310,
+    "dev_families": 9,
+    "dev_records": 40,
+    "test-syn_families": 9,
+    "test-syn_records": 40
+  },
+  {
+    "role_count": 4,
+    "has_recursion": false,
+    "depth_bucket": "shallow",
+    "train_families": 101,
+    "train_records": 515,
+    "dev_families": 12,
+    "dev_records": 55,
+    "test-syn_families": 12,
+    "test-syn_records": 61
+  },
+  {
+    "role_count": 4,
+    "has_recursion": true,
+    "depth_bucket": "deep",
+    "train_families": 1,
+    "train_records": 2,
+    "dev_families": 0,
+    "dev_records": 0,
+    "test-syn_families": 0,
+    "test-syn_records": 0
+  },
+  {
+    "role_count": 4,
+    "has_recursion": true,
+    "depth_bucket": "shallow",
+    "train_families": 2,
+    "train_records": 9,
+    "dev_families": 0,
+    "dev_records": 0,
+    "test-syn_families": 0,
+    "test-syn_records": 0
+  },
+  {
+    "role_count": 5,
+    "has_recursion": false,
+    "depth_bucket": "deep",
+    "train_families": 2,
+    "train_records": 10,
+    "dev_families": 1,
+    "dev_records": 2,
+    "test-syn_families": 1,
+    "test-syn_records": 5
+  },
+  {
+    "role_count": 5,
+    "has_recursion": false,
+    "depth_bucket": "flat",
+    "train_families": 58,
+    "train_records": 251,
+    "dev_families": 7,
+    "dev_records": 32,
+    "test-syn_families": 7,
+    "test-syn_records": 29
+  },
+  {
+    "role_count": 5,
+    "has_recursion": false,
+    "depth_bucket": "shallow",
+    "train_families": 80,
+    "train_records": 385,
+    "dev_families": 10,
+    "dev_records": 39,
+    "test-syn_families": 10,
+    "test-syn_records": 46
+  },
+  {
+    "role_count": 5,
+    "has_recursion": true,
+    "depth_bucket": "deep",
+    "train_families": 1,
+    "train_records": 8,
+    "dev_families": 0,
+    "dev_records": 0,
+    "test-syn_families": 0,
+    "test-syn_records": 0
+  },
+  {
+    "role_count": 5,
+    "has_recursion": true,
+    "depth_bucket": "shallow",
+    "train_families": 2,
+    "train_records": 11,
+    "dev_families": 0,
+    "dev_records": 0,
+    "test-syn_families": 0,
+    "test-syn_records": 0
+  },
+  {
+    "role_count": 6,
+    "has_recursion": false,
+    "depth_bucket": "deep",
+    "train_families": 4,
+    "train_records": 27,
+    "dev_families": 1,
+    "dev_records": 5,
+    "test-syn_families": 1,
+    "test-syn_records": 8
+  },
+  {
+    "role_count": 6,
+    "has_recursion": false,
+    "depth_bucket": "flat",
+    "train_families": 52,
+    "train_records": 227,
+    "dev_families": 6,
+    "dev_records": 24,
+    "test-syn_families": 6,
+    "test-syn_records": 28
+  },
+  {
+    "role_count": 6,
+    "has_recursion": false,
+    "depth_bucket": "shallow",
+    "train_families": 57,
+    "train_records": 229,
+    "dev_families": 7,
+    "dev_records": 32,
+    "test-syn_families": 7,
+    "test-syn_records": 36
+  },
+  {
+    "role_count": 6,
+    "has_recursion": true,
+    "depth_bucket": "shallow",
+    "train_families": 2,
+    "train_records": 12,
+    "dev_families": 0,
+    "dev_records": 0,
+    "test-syn_families": 0,
+    "test-syn_records": 0
+  }
+]

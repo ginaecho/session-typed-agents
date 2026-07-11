@@ -1,0 +1,641 @@
+{
+  "note": "run timeout-bounded at 1380s; epilogue stats reconstructed from run.log; records from last 30s checkpoint",
+  "command": "python3 d1_expand.py --target 800 --max-candidates 3000 --seed 1 --workers 4 --curve-every 50 -o d1_dataset.jsonl",
+  "records_kept": 671,
+  "last_curve_point": {
+    "candidates": 803,
+    "uniques": 661,
+    "rejected": 0,
+    "duplicates": 109,
+    "not_applicable": 33,
+    "rate_cps": 0.6,
+    "elapsed_s": 1345.4
+  },
+  "by_operator": {
+    "sweep": 344,
+    "crossover": 181,
+    "compose": 146
+  },
+  "by_role_count": {
+    "2": 41,
+    "3": 153,
+    "4": 202,
+    "5": 156,
+    "6": 119
+  },
+  "recursion": {
+    "False": 662,
+    "True": 9
+  },
+  "depth_bucket": {
+    "flat": 287,
+    "shallow": 356,
+    "deep": 28
+  },
+  "with_refn": 220,
+  "saturation_curve": [
+    {
+      "candidates": 1,
+      "uniques": 1,
+      "rejected": 0,
+      "duplicates": 0,
+      "not_applicable": 0,
+      "rate_cps": 0.59,
+      "elapsed_s": 1.7
+    },
+    {
+      "candidates": 2,
+      "uniques": 2,
+      "rejected": 0,
+      "duplicates": 0,
+      "not_applicable": 0,
+      "rate_cps": 1.12,
+      "elapsed_s": 1.8
+    },
+    {
+      "candidates": 3,
+      "uniques": 3,
+      "rejected": 0,
+      "duplicates": 0,
+      "not_applicable": 0,
+      "rate_cps": 1.68,
+      "elapsed_s": 1.8
+    },
+    {
+      "candidates": 50,
+      "uniques": 43,
+      "rejected": 0,
+      "duplicates": 6,
+      "not_applicable": 1,
+      "rate_cps": 0.81,
+      "elapsed_s": 61.6
+    },
+    {
+      "candidates": 51,
+      "uniques": 44,
+      "rejected": 0,
+      "duplicates": 6,
+      "not_applicable": 1,
+      "rate_cps": 0.79,
+      "elapsed_s": 64.6
+    },
+    {
+      "candidates": 52,
+      "uniques": 45,
+      "rejected": 0,
+      "duplicates": 6,
+      "not_applicable": 1,
+      "rate_cps": 0.77,
+      "elapsed_s": 67.7
+    },
+    {
+      "candidates": 53,
+      "uniques": 46,
+      "rejected": 0,
+      "duplicates": 6,
+      "not_applicable": 1,
+      "rate_cps": 0.78,
+      "elapsed_s": 67.9
+    },
+    {
+      "candidates": 100,
+      "uniques": 84,
+      "rejected": 0,
+      "duplicates": 13,
+      "not_applicable": 3,
+      "rate_cps": 0.73,
+      "elapsed_s": 136.4
+    },
+    {
+      "candidates": 101,
+      "uniques": 85,
+      "rejected": 0,
+      "duplicates": 13,
+      "not_applicable": 3,
+      "rate_cps": 0.73,
+      "elapsed_s": 138.9
+    },
+    {
+      "candidates": 102,
+      "uniques": 86,
+      "rejected": 0,
+      "duplicates": 13,
+      "not_applicable": 3,
+      "rate_cps": 0.73,
+      "elapsed_s": 139.0
+    },
+    {
+      "candidates": 103,
+      "uniques": 86,
+      "rejected": 0,
+      "duplicates": 13,
+      "not_applicable": 4,
+      "rate_cps": 0.73,
+      "elapsed_s": 140.2
+    },
+    {
+      "candidates": 150,
+      "uniques": 124,
+      "rejected": 0,
+      "duplicates": 20,
+      "not_applicable": 6,
+      "rate_cps": 0.71,
+      "elapsed_s": 210.2
+    },
+    {
+      "candidates": 151,
+      "uniques": 125,
+      "rejected": 0,
+      "duplicates": 20,
+      "not_applicable": 6,
+      "rate_cps": 0.72,
+      "elapsed_s": 210.2
+    },
+    {
+      "candidates": 152,
+      "uniques": 126,
+      "rejected": 0,
+      "duplicates": 20,
+      "not_applicable": 6,
+      "rate_cps": 0.71,
+      "elapsed_s": 213.0
+    },
+    {
+      "candidates": 153,
+      "uniques": 127,
+      "rejected": 0,
+      "duplicates": 20,
+      "not_applicable": 6,
+      "rate_cps": 0.72,
+      "elapsed_s": 213.4
+    },
+    {
+      "candidates": 200,
+      "uniques": 165,
+      "rejected": 0,
+      "duplicates": 27,
+      "not_applicable": 8,
+      "rate_cps": 0.71,
+      "elapsed_s": 282.1
+    },
+    {
+      "candidates": 201,
+      "uniques": 166,
+      "rejected": 0,
+      "duplicates": 27,
+      "not_applicable": 8,
+      "rate_cps": 0.71,
+      "elapsed_s": 283.9
+    },
+    {
+      "candidates": 202,
+      "uniques": 167,
+      "rejected": 0,
+      "duplicates": 27,
+      "not_applicable": 8,
+      "rate_cps": 0.71,
+      "elapsed_s": 284.4
+    },
+    {
+      "candidates": 203,
+      "uniques": 168,
+      "rejected": 0,
+      "duplicates": 27,
+      "not_applicable": 8,
+      "rate_cps": 0.71,
+      "elapsed_s": 286.0
+    },
+    {
+      "candidates": 250,
+      "uniques": 212,
+      "rejected": 0,
+      "duplicates": 29,
+      "not_applicable": 9,
+      "rate_cps": 0.68,
+      "elapsed_s": 365.0
+    },
+    {
+      "candidates": 251,
+      "uniques": 213,
+      "rejected": 0,
+      "duplicates": 29,
+      "not_applicable": 9,
+      "rate_cps": 0.69,
+      "elapsed_s": 365.6
+    },
+    {
+      "candidates": 252,
+      "uniques": 214,
+      "rejected": 0,
+      "duplicates": 29,
+      "not_applicable": 9,
+      "rate_cps": 0.68,
+      "elapsed_s": 369.2
+    },
+    {
+      "candidates": 253,
+      "uniques": 215,
+      "rejected": 0,
+      "duplicates": 29,
+      "not_applicable": 9,
+      "rate_cps": 0.68,
+      "elapsed_s": 370.9
+    },
+    {
+      "candidates": 300,
+      "uniques": 254,
+      "rejected": 0,
+      "duplicates": 35,
+      "not_applicable": 11,
+      "rate_cps": 0.68,
+      "elapsed_s": 443.9
+    },
+    {
+      "candidates": 301,
+      "uniques": 255,
+      "rejected": 0,
+      "duplicates": 35,
+      "not_applicable": 11,
+      "rate_cps": 0.68,
+      "elapsed_s": 445.2
+    },
+    {
+      "candidates": 302,
+      "uniques": 255,
+      "rejected": 0,
+      "duplicates": 35,
+      "not_applicable": 12,
+      "rate_cps": 0.68,
+      "elapsed_s": 445.4
+    },
+    {
+      "candidates": 303,
+      "uniques": 256,
+      "rejected": 0,
+      "duplicates": 35,
+      "not_applicable": 12,
+      "rate_cps": 0.68,
+      "elapsed_s": 446.6
+    },
+    {
+      "candidates": 350,
+      "uniques": 298,
+      "rejected": 0,
+      "duplicates": 37,
+      "not_applicable": 15,
+      "rate_cps": 0.65,
+      "elapsed_s": 536.3
+    },
+    {
+      "candidates": 351,
+      "uniques": 299,
+      "rejected": 0,
+      "duplicates": 37,
+      "not_applicable": 15,
+      "rate_cps": 0.65,
+      "elapsed_s": 542.0
+    },
+    {
+      "candidates": 352,
+      "uniques": 299,
+      "rejected": 0,
+      "duplicates": 38,
+      "not_applicable": 15,
+      "rate_cps": 0.64,
+      "elapsed_s": 546.1
+    },
+    {
+      "candidates": 353,
+      "uniques": 300,
+      "rejected": 0,
+      "duplicates": 38,
+      "not_applicable": 15,
+      "rate_cps": 0.64,
+      "elapsed_s": 549.4
+    },
+    {
+      "candidates": 400,
+      "uniques": 341,
+      "rejected": 0,
+      "duplicates": 42,
+      "not_applicable": 17,
+      "rate_cps": 0.63,
+      "elapsed_s": 639.8
+    },
+    {
+      "candidates": 401,
+      "uniques": 342,
+      "rejected": 0,
+      "duplicates": 42,
+      "not_applicable": 17,
+      "rate_cps": 0.63,
+      "elapsed_s": 640.8
+    },
+    {
+      "candidates": 402,
+      "uniques": 343,
+      "rejected": 0,
+      "duplicates": 42,
+      "not_applicable": 17,
+      "rate_cps": 0.63,
+      "elapsed_s": 641.0
+    },
+    {
+      "candidates": 403,
+      "uniques": 344,
+      "rejected": 0,
+      "duplicates": 42,
+      "not_applicable": 17,
+      "rate_cps": 0.63,
+      "elapsed_s": 642.7
+    },
+    {
+      "candidates": 450,
+      "uniques": 388,
+      "rejected": 0,
+      "duplicates": 45,
+      "not_applicable": 17,
+      "rate_cps": 0.57,
+      "elapsed_s": 792.6
+    },
+    {
+      "candidates": 451,
+      "uniques": 389,
+      "rejected": 0,
+      "duplicates": 45,
+      "not_applicable": 17,
+      "rate_cps": 0.56,
+      "elapsed_s": 799.7
+    },
+    {
+      "candidates": 452,
+      "uniques": 390,
+      "rejected": 0,
+      "duplicates": 45,
+      "not_applicable": 17,
+      "rate_cps": 0.56,
+      "elapsed_s": 803.0
+    },
+    {
+      "candidates": 453,
+      "uniques": 391,
+      "rejected": 0,
+      "duplicates": 45,
+      "not_applicable": 17,
+      "rate_cps": 0.56,
+      "elapsed_s": 808.6
+    },
+    {
+      "candidates": 500,
+      "uniques": 423,
+      "rejected": 0,
+      "duplicates": 55,
+      "not_applicable": 22,
+      "rate_cps": 0.55,
+      "elapsed_s": 913.7
+    },
+    {
+      "candidates": 501,
+      "uniques": 424,
+      "rejected": 0,
+      "duplicates": 55,
+      "not_applicable": 22,
+      "rate_cps": 0.55,
+      "elapsed_s": 914.1
+    },
+    {
+      "candidates": 502,
+      "uniques": 425,
+      "rejected": 0,
+      "duplicates": 55,
+      "not_applicable": 22,
+      "rate_cps": 0.55,
+      "elapsed_s": 916.5
+    },
+    {
+      "candidates": 503,
+      "uniques": 425,
+      "rejected": 0,
+      "duplicates": 56,
+      "not_applicable": 22,
+      "rate_cps": 0.55,
+      "elapsed_s": 916.7
+    },
+    {
+      "candidates": 550,
+      "uniques": 459,
+      "rejected": 0,
+      "duplicates": 66,
+      "not_applicable": 25,
+      "rate_cps": 0.57,
+      "elapsed_s": 971.9
+    },
+    {
+      "candidates": 551,
+      "uniques": 460,
+      "rejected": 0,
+      "duplicates": 66,
+      "not_applicable": 25,
+      "rate_cps": 0.57,
+      "elapsed_s": 972.7
+    },
+    {
+      "candidates": 552,
+      "uniques": 461,
+      "rejected": 0,
+      "duplicates": 66,
+      "not_applicable": 25,
+      "rate_cps": 0.57,
+      "elapsed_s": 973.6
+    },
+    {
+      "candidates": 553,
+      "uniques": 462,
+      "rejected": 0,
+      "duplicates": 66,
+      "not_applicable": 25,
+      "rate_cps": 0.57,
+      "elapsed_s": 973.7
+    },
+    {
+      "candidates": 600,
+      "uniques": 495,
+      "rejected": 0,
+      "duplicates": 78,
+      "not_applicable": 27,
+      "rate_cps": 0.58,
+      "elapsed_s": 1039.5
+    },
+    {
+      "candidates": 601,
+      "uniques": 496,
+      "rejected": 0,
+      "duplicates": 78,
+      "not_applicable": 27,
+      "rate_cps": 0.58,
+      "elapsed_s": 1041.8
+    },
+    {
+      "candidates": 602,
+      "uniques": 497,
+      "rejected": 0,
+      "duplicates": 78,
+      "not_applicable": 27,
+      "rate_cps": 0.58,
+      "elapsed_s": 1042.2
+    },
+    {
+      "candidates": 603,
+      "uniques": 498,
+      "rejected": 0,
+      "duplicates": 78,
+      "not_applicable": 27,
+      "rate_cps": 0.58,
+      "elapsed_s": 1043.1
+    },
+    {
+      "candidates": 650,
+      "uniques": 533,
+      "rejected": 0,
+      "duplicates": 88,
+      "not_applicable": 29,
+      "rate_cps": 0.59,
+      "elapsed_s": 1106.9
+    },
+    {
+      "candidates": 651,
+      "uniques": 533,
+      "rejected": 0,
+      "duplicates": 89,
+      "not_applicable": 29,
+      "rate_cps": 0.59,
+      "elapsed_s": 1107.7
+    },
+    {
+      "candidates": 652,
+      "uniques": 534,
+      "rejected": 0,
+      "duplicates": 89,
+      "not_applicable": 29,
+      "rate_cps": 0.59,
+      "elapsed_s": 1108.1
+    },
+    {
+      "candidates": 653,
+      "uniques": 535,
+      "rejected": 0,
+      "duplicates": 89,
+      "not_applicable": 29,
+      "rate_cps": 0.59,
+      "elapsed_s": 1108.2
+    },
+    {
+      "candidates": 700,
+      "uniques": 573,
+      "rejected": 0,
+      "duplicates": 96,
+      "not_applicable": 31,
+      "rate_cps": 0.59,
+      "elapsed_s": 1178.4
+    },
+    {
+      "candidates": 701,
+      "uniques": 574,
+      "rejected": 0,
+      "duplicates": 96,
+      "not_applicable": 31,
+      "rate_cps": 0.59,
+      "elapsed_s": 1180.4
+    },
+    {
+      "candidates": 702,
+      "uniques": 575,
+      "rejected": 0,
+      "duplicates": 96,
+      "not_applicable": 31,
+      "rate_cps": 0.59,
+      "elapsed_s": 1181.9
+    },
+    {
+      "candidates": 703,
+      "uniques": 575,
+      "rejected": 0,
+      "duplicates": 97,
+      "not_applicable": 31,
+      "rate_cps": 0.59,
+      "elapsed_s": 1184.3
+    },
+    {
+      "candidates": 750,
+      "uniques": 615,
+      "rejected": 0,
+      "duplicates": 104,
+      "not_applicable": 31,
+      "rate_cps": 0.59,
+      "elapsed_s": 1260.6
+    },
+    {
+      "candidates": 751,
+      "uniques": 616,
+      "rejected": 0,
+      "duplicates": 104,
+      "not_applicable": 31,
+      "rate_cps": 0.6,
+      "elapsed_s": 1261.4
+    },
+    {
+      "candidates": 752,
+      "uniques": 617,
+      "rejected": 0,
+      "duplicates": 104,
+      "not_applicable": 31,
+      "rate_cps": 0.6,
+      "elapsed_s": 1261.9
+    },
+    {
+      "candidates": 753,
+      "uniques": 618,
+      "rejected": 0,
+      "duplicates": 104,
+      "not_applicable": 31,
+      "rate_cps": 0.6,
+      "elapsed_s": 1264.9
+    },
+    {
+      "candidates": 800,
+      "uniques": 658,
+      "rejected": 0,
+      "duplicates": 109,
+      "not_applicable": 33,
+      "rate_cps": 0.6,
+      "elapsed_s": 1335.3
+    },
+    {
+      "candidates": 801,
+      "uniques": 659,
+      "rejected": 0,
+      "duplicates": 109,
+      "not_applicable": 33,
+      "rate_cps": 0.6,
+      "elapsed_s": 1338.8
+    },
+    {
+      "candidates": 802,
+      "uniques": 660,
+      "rejected": 0,
+      "duplicates": 109,
+      "not_applicable": 33,
+      "rate_cps": 0.6,
+      "elapsed_s": 1339.0
+    },
+    {
+      "candidates": 803,
+      "uniques": 661,
+      "rejected": 0,
+      "duplicates": 109,
+      "not_applicable": 33,
+      "rate_cps": 0.6,
+      "elapsed_s": 1345.4
+    }
+  ]
+}

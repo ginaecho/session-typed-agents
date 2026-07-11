@@ -1,0 +1,13 @@
+{
+  "unique_protocols_considered": 120,
+  "unique_protocols_validated": 97,
+  "unique_protocols_skipped_invalid": 23,
+  "pairs_tested": 200,
+  "agree": 200,
+  "disagree": 0,
+  "agreement_rate_pct": 100.0,
+  "disagreements_sample": [],
+  "spot_check_pairs": 20,
+  "spot_check_agree": 20,
+  "spot_check_matches_real_checker": true
+}
