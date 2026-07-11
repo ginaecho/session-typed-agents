@@ -64,3 +64,9 @@ subagent tokens end to end.
 - Aggregation here was simple vote/score display; the merged W6 package
   (geometric median, evidence verification, effective-votes) takes over
   for calibration runs.
+
+## Raw trace
+
+The unedited verdict journal of this run (every seat's full JSON verdict,
+reconstructed-intent texts, canary results) is committed at
+`traces/panel_smoke_2026-07-11.journal.jsonl` for audit.
