@@ -1,0 +1,6 @@
+# Full-size build outputs are reproducible via the documented commands in
+# the W3 report; only small samples (<=200 records) are committed.
+samples/*.full.jsonl
+samples/*.stats.json.bak
+.sig_cache.json
+*.full.jsonl
