@@ -69,6 +69,21 @@ Exact numbers (turns to completion, token cost, success rate across
 trials) are not asserted here — they come from the live and Azure AI
 Foundry runs, not from this authoring pass.
 
+## Running this on Azure AI Foundry
+
+This case is set up (author-time, no credentials required to read or
+review) as an almost-ready Azure AI Foundry benchmark run, including a
+sweep across a matrix of model deployments:
+
+- `foundry_run.md` (this directory) — the exact commands, prerequisites,
+  and one documented harness gap.
+- `run_foundry_matrix.sh` (this directory) — a wrapper that loops the
+  Foundry run once per model deployment name.
+- `.claude/skills/foundry-run-agenticpay/SKILL.md` — the condensed
+  copilot runbook version of the above.
+- `.claude/agents/foundry-benchmark-runner.md` — a subagent that executes
+  the run and assembles the model-comparison table.
+
 ## Files
 
 - `case.yaml` — intent, roles, goals, terminal label, max steps (same
