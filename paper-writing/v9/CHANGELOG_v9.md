@@ -205,3 +205,13 @@ authored skills under-determine coordination while noting mined data yields
 too few test-real items to stand alone. Table row and docs guide 8 synced.
 Human-read baseline packaged, pending. LaTeX balance re-checked: begin/end
 39/39, braces balanced.
+
+## Update 2026-07-11c — denominator caveat on the mining claim
+
+Owner review asked whether the mined "teams" were verified to need
+coordination at all. They were not — and the follow-up's own data shows 6
+of 13 did not (4 single-agent tool documents, 2 grouping false positives).
+Added that caveat to §8 and guide 8: the surviving real-world evidence is
+two upstream teams whose tasks plainly require multi-party interaction but
+whose texts contain no cross-role language; a task-level coordination
+filter is named as the required miner improvement before the claim scales.

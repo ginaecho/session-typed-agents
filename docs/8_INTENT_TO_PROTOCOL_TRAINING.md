@@ -211,7 +211,15 @@ yield a valid protocol and a 4th surfaces a real deadlock — and, decisively,
 those recoveries all come from this project's own worked examples; the teams
 built from unmodified upstream GitHub files recover zero. So the finding
 holds: ordinary skill authors do not write down interaction structure even
-when a disciplined reader looks hard for it. The human-read baseline is
+when a disciplined reader looks hard for it. One caveat the follow-up
+itself exposed: the harvester groups files into "teams" without first
+checking the task actually needs multi-party coordination — and 6 of the
+13 turned out not to (4 single-agent tool documents, 2 grouping mistakes).
+So the strongest real-world evidence is just two teams whose tasks clearly
+do involve several interacting parties (pull-request review-and-merge, a
+document pipeline) but whose texts contain no cross-role language; a
+"does this task need coordination?" filter is the next miner improvement.
+The human-read baseline is
 packaged (`experiments/seam_bench/mining/human_read/PACKET.md`) and pending.
 See `docs/reference/reports/seam/W8_miner.md` and `W16_llm_read_extraction.md`
 for the full funnels.
