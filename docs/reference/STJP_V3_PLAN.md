@@ -1,8 +1,9 @@
 # STJP v3 — plan: a governed, decentralized session-typed runtime
 
 **Drafted 2026-06-17.** Synthesizes `../archive/GOVERNANCE_TOOLKIT_ASSESSMENT.md` (MS Agent
-Governance Toolkit) and `../archive/RELATED_WORK_DELM.md` (DeLM) into a concrete next-version
-architecture. The thesis in one line:
+Governance Toolkit) and `../archive/RELATED_WORK_DELM.md` (DeLM — "Decentralized
+Language Models," an external paper/runtime for fast, controller-free multi-agent
+execution) into a concrete next-version architecture. The thesis in one line:
 
 > **v1/v2 proved STJP makes coordination correct. v3 makes it (a) *governed* —
 > STJP becomes a policy generator other systems consume — and (b) *decentralized*
@@ -76,8 +77,9 @@ polling every role each turn — `../results/RUN_REPORT_2026-06-11.md` §4.4) wi
 DeLM-style **shared-context + async-claim** substrate, made *safe* by STJP.
 
 **✅ Prototype DONE 2026-06-17** — `stjp_core/runtime/delm_runner.py` +
-`experiments/scripts/smoke_delm_runtime.py`. Offline mechanics smoke (deterministic
-oracle, finance valid draft) proves B1+B2+B3 below in one runtime:
+`experiments/scripts/smoke_delm_runtime.py`. Offline mechanics smoke test (a
+quick end-to-end check; deterministic oracle, finance valid draft) proves
+B1+B2+B3 below in one runtime:
 - terminates deadlock-free on **both** branches, 0 violations;
 - **−83% agent calls** vs round-robin (11 scheduled polls vs 66) — the cost lever
   realized: only enabled senders are polled, never idle WAIT roles;
@@ -117,8 +119,8 @@ an unverified shared context invites.
 Run the **5 arms × {neutral, critical} variants** (BENCHMARK_DESIGN_V3) on **two
 runtimes**: the current round-robin and the new DeLM-style substrate. New columns:
 - **cost-to-goal** and **time-to-goal** on each runtime (does decentralization
-  cut the cost we identified, at equal CGC?);
-- **CGC** (Critical-Goal Completion) as the headline;
+  cut the cost we identified, at equal CGC — Critical-Goal Completion?);
+- **CGC** as the headline;
 - **audit completeness** (does every decision produce a compliant entry?).
 Expected story: the DeLM substrate cuts cost-to-goal substantially while the STJP
 monitor holds CGC and S4=0 — *fast AND correct*, which neither alone delivers.

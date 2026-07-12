@@ -57,6 +57,7 @@ The arm-level rollup (with Wilson 95% CIs and the per-case grid) is
 
 Hotel re-sends `RoomHeld` every round and never advances to `BookingConfirmed`
 (the observe-only view never echoes a role its own past sends), so the trial
-ends `max_rounds` → 0% GCR. That behaviour is the raw evidence behind the
+ends `max_rounds` → 0% GCR (goal-completion rate — % of trials that reached
+the goal). That behaviour is the raw evidence behind the
 `booking_saga_bare` row; you can see it directly here rather than taking the
 report's word for it.

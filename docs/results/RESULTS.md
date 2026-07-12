@@ -3,7 +3,8 @@
 Two independent 10-trial runs of `experiment_4_scenarios.py` against the
 Quarterly Finance Report protocol (`P1_v2.scr`). Each trial drives 6 agents
 (one per protocol role) with `gpt-5.4` via Azure OpenAI; the runtime monitor
-walks each role's projected EFSM against the captured trace.
+walks each role's projected EFSM (extended finite-state machine — the
+step-by-step map of that role's allowed messages) against the captured trace.
 
 Run dates: 2026-05-07. Total: 20 trials / scenario × 2 scenarios = 80 trials.
 

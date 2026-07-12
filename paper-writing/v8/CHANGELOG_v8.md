@@ -29,11 +29,12 @@
    compiles away (undefined merge = diagnostic signal for human endorsement).
 
 ## New content
-9. §7 (after E5): "The seam is trainable, not merely open" — grammar-constrained
+9. §7 (after E5): "Training the intent-to-protocol translation step is
+   possible, not merely a stated goal" — grammar-constrained
    decoding, best-of-n validated sampling (fills pending E5 cells), corpus
    back-translation for (intent, gold) pairs, mutant repair curriculum.
-10. Limitations "translation seam": Planned sentence replaced with the
-    verifier-in-the-loop framing.
+10. Limitations "The intent-to-protocol translation step": Planned sentence
+    replaced with the verifier-in-the-loop framing.
 11. Governance paragraph: EU AI Act (Aug 2026) sentence, cites Kaptein et al.
     "Policies on Paths" (arXiv:2603.16586).
 
@@ -46,3 +47,16 @@ Build verified: pdflatex x2 clean (0 undefined control sequences, 0 LaTeX errors
 0 citation warnings, 0 "??" in pdftotext); 18 pages; pandoc docx 0 warnings.
 Pre-submission TODO (from review discussion): run best-of-n E5 experiment;
 consider one non-Claude E3 point; swap preamble for iclr2027_conference kit.
+
+## 2026-07-12 — plain-language terminology pass
+15. Project-invented shorthand reworded per the house plain-language rule:
+    the §7 lead phrase "The seam is trainable, not merely open" became
+    "Training the intent-to-protocol translation step is possible, not
+    merely a stated goal"; the Limitations bold lead "The translation seam."
+    became "The intent-to-protocol translation step."; "seam" is now defined
+    on first use (E5 paragraph) as "the intent-to-protocol translation step
+    (called ``the seam'' below)", so later short-form uses of "seam" in the
+    same paragraphs remain valid. "gold" (E5 paragraph) and "escrow"
+    (six-arm ladder paragraph) glossed on first use. No claims, numbers, or
+    labels/macros/citation keys changed. Brace/environment balance verified
+    (\begin{}=\end{}=32; braces balanced, depth 0).

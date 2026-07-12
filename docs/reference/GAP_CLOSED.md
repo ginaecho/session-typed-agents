@@ -25,8 +25,9 @@ inside `SessionMonitor(efsms, refinements)`. By that point the agent had
 already decided to send and emitted on the wire. The agent's own tools
 contained no payload constraint at all; refinements appeared in skill
 markdown only as English prose decision rules (e.g. "if value > $10,000"),
-which is precisely the failure mode the
-DELEGATE-52-aligned empirical finding identified: **LLM agents follow
+which is precisely the failure mode the empirical finding identified —
+aligned with DELEGATE-52 (a Microsoft Research benchmark on LLM document
+corruption during long delegated workflows): **LLM agents follow
 structural local types at near-100% but fail value-dependent constraints
 because the constraint is only natural language to them.**
 

@@ -9,8 +9,11 @@ below was read directly from the trial files.
 **Headline:** four of the five suspected spots are *correct as reported* (with
 better explanations now available for the paper); item 4 is reproduced and
 awaiting per-mutant adjudication; and the audit surfaced **one material new
-bug** the five items did not target — 18 escrow C+spec trials were incomplete,
-not failed, which understated that arm's GCR (79%). **That bug is now fixed:**
+bug** the five items did not target — 18 `escrow_trade` (the goods-for-payment
+case, named for its Escrow role: a neutral third party that holds funds until
+both sides deliver; "escrow" below is shorthand for this case) C+spec trials
+were incomplete, not failed, which understated that arm's GCR (goal-completion
+rate — % of trials that reached the goal; 79%). **That bug is now fixed:**
 all 22 non-terminal trials across the suite were driven to completion by haiku
 players, moving escrow C+spec to **97%** (see the RESOLVED note at the bottom).
 
@@ -61,8 +64,9 @@ Filed in 99/99 filed trials.**
 
 The 591 monitor violations are **duplicate sends** (295 `Revenue`, 197
 `Approval` across 100 trials ≈ the Analyst re-emitting `Revenue` each round
-while waiting) — S1 "waste", not disasters. That is exactly why CGC = 1%
-(99 trials carry a duplicate-send violation → not clean) while disasters = 0
+while waiting) — S1 "waste", not disasters. That is exactly why CGC
+(critical-goal completion — reached the goal AND had zero critical-safety
+violations) = 1% (99 trials carry a duplicate-send violation → not clean) while disasters = 0
 (ordering was safe). **Paper-worthy point:** A's safety is *accidental
 serialization from slow fumbling*; B's danger is that handing the weak model
 the whole protocol made it fire the entire pipeline in round 1 under concurrent

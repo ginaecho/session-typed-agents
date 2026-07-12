@@ -7,7 +7,7 @@ experiment measures ONE component**, so a good/bad number is attributable.
 
 Everything deterministic was run for real with the vendored Scribble compiler;
 everything needing multiple model families, a live LLM draft loop, or extra
-runtime adapters is a wired harness marked **MEASUREMENT PENDING** with real
+runtime adapters is a connected harness marked **MEASUREMENT PENDING** with real
 anchor points and clearly-tagged synthetic placeholders (so the paper renders
 now and real numbers swap in per §10).
 
@@ -33,7 +33,8 @@ pre-registration in `docs/predictions/BENCHMARK_V2_PREREGISTRATION.md`.
 
 `experiments/tests/verdict_corpus/` — 40 hand-derived traces run against the
 `SessionMonitor` (24, incl. async-commuting and value-dependent choice guards)
-and the `severity_grader.AttemptGrader` (16, S0–S4, incl. the payload-blind
+and the `severity_grader.AttemptGrader` (16, S0–S4 — severity levels running
+from benign to irreversible disaster, incl. the payload-blind
 `Approval(False)` case). **40/40.** Building it surfaced two real semantics a
 naive reviewer gets wrong (both endpoints flag a bad message; a role's
 send/receive to the same peer commute), and forced three of my own
@@ -78,7 +79,8 @@ layered story is stronger than a bare "gate 100%".
 
 ## E4 — reliability operators actually need (pass^k)
 
-`stats.py` — Wilson score interval + pass^k, no scipy. On the **real** n=10
+`stats.py` — Wilson score interval + pass^k (the probability that all of the
+next k runs succeed), no scipy. On the **real** n=10
 subagent-trial data, a 10/10 arm still has a Wilson lower bound of 72.2%, so
 `pass^10` at the CI floor is 0.039 — **this is the concrete "n=10 is too few"
 argument**, computed rather than asserted. The n=30 ladder in Table 5 is a
@@ -89,7 +91,9 @@ tagged SYNTH placeholder to be replaced by real n=30 runs.
 `efsm_equiv.py` compares two protocols by MEANING (per-role EFSM bisimulation +
 identical conversation language), validated by `test_efsm_equiv.py` (equivalent
 to itself/reformat; different under relabel/reorder/role-rename) and a `--demo`
-that scores 90 real (gold,draft) pairs at **100% classification accuracy**. The
+that scores 90 real (gold, draft) pairs — gold being a known-correct reference
+answer, paired with the model's draft translation — at **100% classification
+accuracy**. The
 four fidelity measures over 100 intents (first-draft-valid, ≤3-round repair,
 equivalence rate, guard-sidecar) need the LLM draft loop and are pending; the
 hard deterministic part — comparing meaning — is done and reusable.
@@ -109,8 +113,9 @@ runs and is pending.
 `monitor_codegen.py` (a separate "runtime") agrees with the in-process
 `SessionMonitor` on **100%** of role-checks over canonical conformant traces.
 (Async-reordered traces diverge by the documented strict-sequential codegen
-limitation, out of scope.) The three-harness live comparison (MAF / LangGraph /
-skills+hooks; conformance + GCR) needs those adapters and is pending.
+limitation, out of scope.) The three-harness live comparison (MAF, i.e.
+Microsoft Agent Framework / LangGraph / skills+hooks; conformance + GCR, the
+goal-completion rate) needs those adapters and is pending.
 
 ## E3 — story vs model strength (capability sweep)
 

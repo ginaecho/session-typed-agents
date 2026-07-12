@@ -167,7 +167,8 @@ compare within this block, not across model tiers.
   when wrong-order sends actually occur.
 - **Payloads are LLM output** (no data source), as everywhere in this
   benchmark suite.
-- The trade_deadlock (anthropics-skills escrow pair) case ran earlier on
+- The trade_deadlock (anthropics-skills escrow pair — escrow being a neutral
+  third party that holds funds until both sides deliver) case ran earlier on
   gpt-4o through Foundry hosted agents — 0% vs 100%, −44% tokens
   (the 2026-07-06 entry in [the diary](../diary/DIARY.md)) — and on
   Claude subagents at n=100 in

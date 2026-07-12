@@ -139,7 +139,7 @@ re-route/declassify a flow, reassign a duty, prune repetitions) and the
 Scribble well-formedness rules, but its output is **never trusted** — only
 validated.
 
-## 6. Wired into the authoring loop
+## 6. Connected into the authoring loop
 
 `authoring/evolution_loop.py` gained step **[2.5] CRITIC**: when a `.policy`
 sidecar exists for the case, every Scribble-valid draft is critiqued before

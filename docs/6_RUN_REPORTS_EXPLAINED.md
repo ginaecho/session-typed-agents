@@ -660,7 +660,9 @@ haiku → sonnet → opus — on both tasks.** The story is clean and consistent
 
 - **Without the gate, safety tracks model strength.** On the revenue task the
   global-text arm goes from **95 disasters (haiku) → 0 (sonnet) → 0 (opus)**; on
-  the escrow task the unguided arm goes from **26–35 disasters (haiku) → 0
+  the escrow task (a goods-for-payment trade where an *escrow* — a neutral
+  third party that holds funds until both sides deliver — is the safe
+  ordering) the unguided arm goes from **26–35 disasters (haiku) → 0
   (sonnet)**. A stronger model reasons about ordering and stops racing — but you
   are betting safety on capability.
 - **With the gate, safety is flat at 0 disasters on every tier** — it does not
@@ -723,7 +725,7 @@ unlucky.
 
 **What it tests.** When a machine turns an English description into a formal
 protocol, we need to know the protocol *means the same thing* as a
-human-written gold-standard one — not just that it looks similar. This
+human-written gold-standard one (a known-correct reference answer) — not just that it looks similar. This
 experiment compares protocols **by behaviour** (do they accept exactly the same
 set of conversations?), not by text. We ran **300 comparisons**: each of 100
 protocols paired with an identical copy, a reformatted copy, and a
@@ -862,7 +864,7 @@ tables that correspond, arm-for-arm, to the §2 finance table.
 | C+min: Local + gate | 83% | 83% | 0 | 2978 | $3.72 |
 | STJP: Local + gate + scheduler | 98% | 98% | 0 | **714** | **$0.89** |
 
-*(Tables refreshed 2026-07-05: a P-1 data audit found 22 trials — 18 of them an
+*(Tables refreshed 2026-07-05: a post-run data audit found 22 trials — 18 of them an
 abandoned escrow C+spec block — left non-terminal and counted as failures; they
 were driven to completion by haiku players, moving escrow C+spec 79→97%,
 C+min 82→83%, STJP 97→98%, and revenue A 99→100%, C-min 31→32%. Detail:

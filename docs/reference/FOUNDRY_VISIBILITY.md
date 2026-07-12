@@ -10,7 +10,7 @@ the underlying data is in the project.
 | **Threads** | same page → My threads tab | A **successful** run on a registered agent. Failed runs DO NOT make the thread visible. |
 | **Tracing** | Tracing tab (left nav, project scope) | OpenTelemetry spans exported to the project's connected Application Insights resource |
 
-Below: the exact code for each, all wired in this repo.
+Below: the exact code for each, all connected in this repo.
 
 ## Deep links for this project (verified 2026-06-11)
 
@@ -25,7 +25,7 @@ wsid=/subscriptions/ef669702-542a-4abc-95a6-edf9f972cd3c/resourceGroups/rg-tzuc0
 - Tracing:     `https://ai.azure.com/resource/tracing?wsid=<wsid>`
 
 The Foundry-stack arms (`bare`/`spec_llmvalid`/`min_llmvalid`) appear under
-Agents/Threads; the MAF arms bypass Agent Service and appear **only** in
+Agents/Threads; the MAF (Microsoft Agent Framework) arms bypass Agent Service and appear **only** in
 Tracing (OTel spans, `service.name = stjp-case-runner`, full message content
 captured via `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true`).
 
@@ -83,7 +83,7 @@ Reference impl: `experiment_via_agent_service.py` (each trial creates 6 threads
 
 This is the one that requires explicit setup. The Foundry Agent Service does
 NOT auto-emit OpenTelemetry spans to the project's App Insights — your code
-must wire OpenTelemetry → App Insights manually.
+must connect OpenTelemetry → App Insights manually.
 
 ```python
 import os
@@ -102,7 +102,7 @@ project = AIProjectClient(
 )
 conn_str = project.telemetry.get_application_insights_connection_string()
 
-# Wire OTel exporter
+# Connect OTel exporter
 configure_azure_monitor(
     connection_string=conn_str,
     resource_attributes={"service.name": "stjp-experiment"},
@@ -170,13 +170,13 @@ instructions NOT to call tools (see `restore_strict_instructions.py`).
 
 ## One-shot setup
 
-A single script that wires everything for a fresh project:
+A single script that connects everything for a fresh project:
 
 ```bash
 # 1. Set up agents in the Agent Service (visible in My agents)
 python register_agent_service.py
 
-# 2. Wire Connected Agents per the protocol topology
+# 2. Connect Connected Agents per the protocol topology
 python wire_connected_agents.py
 
 # 3. Run an experiment with tracing enabled (creates threads + spans)

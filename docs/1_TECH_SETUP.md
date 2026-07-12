@@ -36,7 +36,7 @@ STJP can drive **two** interchangeable protocol compilers, selected with the
   `STJP_NUSCR_BIN` (e.g. `STJP_NUSCR_BIN=/usr/local/bin/nuscr`).
 
 Both go through the same `stjp_core/compiler/compiler_iface.get_compiler()`
-seam, so the validator, the projected local types, and the EFSMs are produced
+interface point, so the validator, the projected local types, and the EFSMs are produced
 the same way regardless of backend. We verified the two backends produce
 **isomorphic EFSMs** on all four RESULT_8 protocols, and the n=100 real-skills
 run (`6_RUN_REPORTS_EXPLAINED.md`) was projected through nuscr.
@@ -206,16 +206,16 @@ Once your agents are running, the Foundry portal has **three separate places** t
 |---|---|---|
 | **Agents** | "Create and debug your agents" → My agents | The agent was created with a model that is deployed in *this* project (check Project → Models + endpoints) |
 | **Threads** | Same page → My threads tab | A run that **finished successfully**. Failed runs do NOT show their thread in the portal (it still exists via the API) |
-| **Tracing** | Tracing tab in the left navigation | Your code exports OpenTelemetry data to the project's connected Application Insights resource — this is NOT automatic; the run scripts in this repo wire it up (`foundry_tracing.py`) |
+| **Tracing** | Tracing tab in the left navigation | Your code exports OpenTelemetry data to the project's connected Application Insights resource — this is NOT automatic; the run scripts in this repo connect it (`foundry_tracing.py`) |
 
 Practical tips (learned the hard way):
 
 - **Nothing showing?** Click **Refresh**, and click the **Filter** button and clear any agent/date filters. New data can take 30–60 seconds to appear.
 - **A thread is "missing"?** If the run failed, the portal hides the thread. The API is the source of truth — the repo's `dump_conversations.py` writes every thread to readable markdown files.
-- **Tracing tab empty?** The project needs an Application Insights connection (Project Settings → Connections). The benchmark scripts print `[trace] tracing enabled -> ...` at startup when tracing is correctly wired.
+- **Tracing tab empty?** The project needs an Application Insights connection (Project Settings → Connections). The benchmark scripts print `[trace] tracing enabled -> ...` at startup when tracing is correctly connected.
 - Each trace shows every message sent and received, every model call, and (in this repo's runs) whether the runtime monitor accepted or rejected each message.
 
-For the exact code that wires each of these up, see `reference/FOUNDRY_VISIBILITY.md`.
+For the exact code that connects each of these up, see `reference/FOUNDRY_VISIBILITY.md`.
 
 ### Key files in a hosted agent project
 
@@ -256,7 +256,7 @@ STJP becomes a **policy generator**: it takes a verified protocol and automatica
 
 Instead of a central orchestrator asking every agent "is it your turn?" each round, the protocol's own state machine says exactly which agents are able to act at any moment. The runtime only asks those agents.
 
-**Status: built and measured.** This is the scheduler described in section 6, wired to real Azure agents on 2026-07-02. Results: same 100% completion and zero disasters, at −65% tokens and −66% agent calls versus the identical prompts on the ask-everyone runtime.
+**Status: built and measured.** This is the scheduler described in section 6, connected to real Azure agents on 2026-07-02. Results: same 100% completion and zero disasters, at −65% tokens and −66% agent calls versus the identical prompts on the ask-everyone runtime.
 
 The one-line summary of v3: **one verified contract drives everything** — the per-agent prompt, the runtime guard, the scheduler, and the compliance policy.
 

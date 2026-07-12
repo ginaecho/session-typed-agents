@@ -42,4 +42,6 @@ plan calls for n=30.** The wide interval is the finding, not a defect.
 
 The EFSM-equivalence *scorer* (the hard part — comparing meaning, not text) is
 real and validated (`efsm_equiv.py`, `test_efsm_equiv.py`, the `--demo`). The
-percentage OVER 100 intents needs the LLM draft loop and is pending.
+percentage OVER 100 intents needs the LLM draft loop and is pending. ("Gold"
+pairs are known-correct reference protocols the LLM-drafted output is scored
+against.)

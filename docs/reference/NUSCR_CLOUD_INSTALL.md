@@ -25,7 +25,7 @@ git clone --branch coinductive_projection \
 # 2. build the wrapper image (adds m4, libgmp, protobuf, pkg-config)
 docker build -t nuscr-coind:latest -f tools/nuscr/Dockerfile ./nuscr-coinduction
 
-# 3. smoke test
+# 3. smoke test (a quick end-to-end check)
 docker run --rm nuscr-coind --help
 docker run --rm -v "$PWD/nuscr-coinduction:/work" nuscr-coind \
     check /work/examples/from-scribble-java/tutorial/AsyncAdder.nuscr

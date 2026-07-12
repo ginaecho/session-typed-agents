@@ -80,7 +80,7 @@ Foundry run completed on the cheap model.**
 
 | Case | Source (license) | Failure when NOT validated |
 |---|---|---|
-| `trade_deadlock` | escrow buyer/seller (existing) | deadlock — "Buyer would wait forever" |
+| `trade_deadlock` | escrow (a neutral third party that holds funds until both sides deliver) buyer/seller (existing) | deadlock — "Buyer would wait forever" |
 | `airline_seat` | openai/openai-agents-python (MIT) | wrong-order — `SeatBooking` never receives `AssignFlight` |
 | `content_pipeline` | crewAIInc/crewAI-examples (MIT) | publish-before-review — `Writer→Publisher` skips `Editor` |
 | `code_execution` | microsoft/autogen (MIT) | execute-before-review — `Coder→Executor` skips `Reviewer` |
@@ -100,7 +100,7 @@ design time via the bottom-up skill-compaction pipeline).
 
 ### Real run on the cheap model (gpt-4o)
 
-Wired the cases into the 8-arm harness (`unchecked_skills` = original unsafe vs
+Connected the cases into the 8-arm harness (`unchecked_skills` = original unsafe vs
 `min_llmvalid` = validated) and ran on `gpt-4o` through Foundry hosted agents.
 `trade_deadlock`, n=1:
 
@@ -198,8 +198,9 @@ deliberation/output tokens per call bare 1534 -> min 552 (-64%; the "agents keep
 thinking how to proceed" waste), and prompt/input tokens bare 13.4k -> min 5.5k
 (lean contract is a fraction of the prose/verbose-EFSM size). Doc:
 TOKEN_EFFICIENCY_DEMO.md. The bigger lever (EFSM scheduler -83% calls vs polling
-every idle agent) is shown in the delm_runner oracle smoke; wiring the real LLM
-into the scheduler is the remaining online step.
+every idle agent) is shown in the delm_runner oracle smoke test (a quick
+end-to-end check); connecting the real LLM into the scheduler is the
+remaining online step.
 
 ---
 
@@ -236,7 +237,7 @@ monitor judging messages can't see a deadlock; only the static checker can).
 **Drafting further improved** (DRAFTING_IMPROVEMENTS.md): diagnosed the real error
 ("Unfinished roles" — the model half-applies the choice fan-out, skipping roles
 idle in a branch). Built a deterministic `fanout_normalizer.py` (insert-only,
-minimal-target, provably leaves valid protocols unchanged) wired into
+minimal-target, provably leaves valid protocols unchanged) connected into
 `ArchitectAgent(auto_fanout=True)`. A/B (gpt-5.4, fresh intent): first-pass
 0/4 -> 3/4, fix-rounds 2.25 -> 0.25. SLM verdict: not yet (Scribble loop already
 guarantees correctness; collect dataset, train only at volume).
@@ -246,7 +247,9 @@ guarantees correctness; collect dataset, train only at volume).
   rules, banking 44; ordering + stateful choice-guard + refinement; default deny).
 - step 2 `governance/audit_export.py`: verdicts -> toolkit audit entries with
   OWASP/NIST tags (intent 180 deny, gate 100 allow/5 deny on real traces).
-- steps 4+5 `runtime/delm_runner.py` + smoke: DeLM-style runtime, STJP monitor =
+- steps 4+5 `runtime/delm_runner.py` + smoke: DeLM-style runtime (DeLM =
+  "Decentralized Language Models," an external fast controller-free
+  multi-agent runtime; see §5 below), STJP monitor =
   write-verifier, EFSM enabled-set = claim predicate, type-directed views.
   -83% agent calls vs round-robin; deadlock-free both branches; enforce blocks /
   observe flags the value-wrong branch; order-jumping structurally impossible.
@@ -279,7 +282,8 @@ The user's insight: protocol-following is only *provably* valuable on CRITICAL
 dependencies (data-before-act / read-all-context / authorize-before-irreversible),
 not universally. `BENCHMARK_DESIGN_V3_CRITICALITY.md`: three classes C1/C2/C3,
 the two-variant fairness design (neutral vs critical so the benchmark can show
-itself NOT helping when it shouldn't), CGC metric. Implemented
+itself NOT helping when it shouldn't), CGC metric (Critical-Goal Completion —
+goals AND all critical properties satisfied). Implemented
 `criticality_gate.py` + `finance/protocols/criticality.yaml`; smoke on the grand
 n=10 traces computes + discriminates, surfaced the coverage-proxy zero-value
 limitation (documented). FROZE the prior design first in
@@ -320,7 +324,7 @@ All today's docs in docs/ per standing policy; README index updated.
   2/3 → **3/3**, ~23% faster. `RUN_REPORT_2026-06-17.md §1`.
 
 ### 2. Criticality-aware test redesign (designed + gates implemented + smoke)
-- **Why:** v2's GCR credits *order-following*; on gpt-5.4 the global-text arm
+- **Why:** v2's GCR (goal-completion rate) credits *order-following*; on gpt-5.4 the global-text arm
   hit 100% anyway, so a reviewer can call protocol overhead incidental. The user's
   insight: following a protocol is only *provably* valuable on **critical
   dependencies** (must get real data before acting; must read all context;
@@ -413,6 +417,9 @@ eventually.
 
 ## 3. Live runs (real Azure AI Foundry / MAF agents)
 
+(MAF = Microsoft Agent Framework; used throughout this diary for the
+comparison-runtime arms.)
+
 - `case_runner.py` gained `--arms a,b,c` (slice-assigns SCENARIOS).
 - finance `runs/20260611T175113-n1-dual`: A intent-only 19/19 events
   off-protocol 0 goals; B global-text passed G1–G5 but never delivered (0%);
@@ -451,7 +458,8 @@ demonstrated on our own arm. Full numbers in RUN_REPORT Part 2.
 
 `docs/EVOLUTION_DEMO_DESIGN.md`: "the demand changed on Tuesday" act —
 banking + new ComplianceScreen role; intent-only absorbs the change
-statistically (disaster/half-landing/regression metrics), STJP absorbs it as a
+statistically (disaster / half-landing — the new obligation fired on some but
+not all triggering branches — / regression metrics), STJP absorbs it as a
 re-validated diff with provable blast radius (unchanged contracts hash-equal).
 Build plan needs only ordered-pair goal predicates, the severity grader
 (done), and a banking v2 protocol dir.
@@ -665,7 +673,7 @@ entry for the auth gotcha.
 ## Open threads (pick up next session)
 
 1. **Fix `az login` to Microsoft tenant** so Draft & Verify works for
-   all cases. The VALID/UNSAFE graphs are wired and will render the
+   all cases. The VALID/UNSAFE graphs are connected and will render the
    moment a draft succeeds.
 2. **n=10 runs on banking / travel / rag.** These cases have canonical
    protocols but still need `draft_llm_protocols.py` + `re_anchor_goals.py`
@@ -1393,7 +1401,7 @@ Open issues to address before the n=10 / n=20 runs:
 - MAF 400 errors at end-of-day n=2: full error body got truncated by
   line-based log capture; need to dump and diagnose. Likely
   oversized prompt or MAF SDK regression.
-- Three-metric evaluator is built but not yet auto-run; either wire
+- Three-metric evaluator is built but not yet auto-run; either connect
   into case_runner end-of-run, or commit to running
   `evaluate_run.py <case> <run_dir>` after each smoke.
 

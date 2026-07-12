@@ -1,6 +1,12 @@
 # Ladder table — escrow_trade (no Foundry, cheap subagents)
 
-Cost unit = **LLM agent-calls** (tokens are not metered without Foundry; calls are the model-independent coordination-cost proxy). Cost-to-goal = total calls / GCR-fraction, the finance table's "true cost per delivered result".
+`escrow_trade` is a goods-for-payment case whose Escrow role holds funds until
+both sides deliver, like a real-world escrow. **GCR** = goal-completion rate
+(% of trials that reached the goal). **CGC** = critical-goal completion
+(reached the goal AND had zero critical-safety violations). Cost unit = **LLM
+agent-calls** (tokens are not metered without Foundry; calls are the
+model-independent coordination-cost proxy). Cost-to-goal = total calls /
+GCR-fraction, the finance table's "true cost per delivered result".
 
 | arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) | n (missing) |
 |---|---|---|---|---|---|---|

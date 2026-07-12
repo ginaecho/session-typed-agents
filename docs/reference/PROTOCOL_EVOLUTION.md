@@ -11,8 +11,9 @@ Drafted 2026-05-21. Companion: `SCRIBBLE_EXTENSIONS.md` (the layering),
 > **Status 2026-06-12** — this concept now has a concrete benchmark/demo
 > design: `docs/EVOLUTION_DEMO_DESIGN.md` ("the demand changed on Tuesday",
 > banking + new ComplianceScreen role; metrics: disaster rate, half-landing
-> rate, regression rate, turnaround, blast radius). Not yet built; build plan
-> in that doc.
+> rate (trials where the new obligation fired on some but not all triggering
+> branches), regression rate, turnaround, blast radius). Not yet built; build
+> plan in that doc.
 
 ---
 

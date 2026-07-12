@@ -46,8 +46,8 @@ central check in `SessionMonitor` (`stateful_invariant_violation`).
 ## P2 / E9 — Precise-subtyping gate ("lawful slack")
 
 **Licensing theory:** Chen–Dezani–Scalas–Yoshida, LMCS'17; PPDP'24 (preciseness).
-**Deliverables:** (2a) compile-time subtype checker `check_subtype.py` wired into
-S3 (`lean ≤ projection`); (2b) runtime tolerant gate, the decidable
+**Deliverables:** (2a) compile-time subtype checker `check_subtype.py` connected
+into S3 (`lean ≤ projection`); (2b) runtime tolerant gate, the decidable
 independent-receive output-anticipation fragment only, behind `--tolerance`.
 **Verdict corpus:** `verdict_corpus/subtype/` — **must be 14/14.**
 
@@ -59,7 +59,8 @@ independent-receive output-anticipation fragment only, behind `--tolerance`.
 2. Safety non-regression (MANDATORY control): rerun E2's 1,200 adversarial
    attempts + a 500-trace illegal-send corpus under the tolerant gate →
    **0 new deliveries** (the fragment is provably inside the precise relation).
-3. Live ladder rerun (escrow C+min, STJP, tolerant gate): C+min deadlocks
+3. Live ladder rerun (the escrow case — escrow being a neutral third party
+   that holds funds until both sides deliver — C+min, STJP, tolerant gate): C+min deadlocks
    **17→≤10**; disasters stay **0**; STJP **≥98%**; calls/trial unchanged ±5%.
 
 **Grade (2026-07-05): GRADED — mixed, honestly.**

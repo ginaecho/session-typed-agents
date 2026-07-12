@@ -5,8 +5,9 @@
 > combined write-up [`../LADDER_NOFOUNDRY.md`](../LADDER_NOFOUNDRY.md). Kept for
 > history.
 
-**Use case:** `escrow_trade` — a 4-role goods-for-payment escrow (Buyer, Seller,
-Carrier, Escrow). Required outcome: Escrow sends `SettlementComplete` to BOTH
+**Use case:** `escrow_trade` — a 4-role goods-for-payment trade with an escrow
+(a neutral third party that holds funds until both sides deliver): Buyer,
+Seller, Carrier, Escrow. Required outcome: Escrow sends `SettlementComplete` to BOTH
 Buyer and Seller after a safe exchange (deposit → payment secured → ship →
 deliver → confirm receipt → settle).
 
@@ -29,10 +30,11 @@ cost is counted per answered poll.
 | **STJP: +scheduler** | **100%** | **100%** | **0** | **7.0** | **70** |
 
 - **GCR** = goal-completion rate (Escrow settled both parties).
-- **CGC** = completed AND fully safe (0 monitor violations, 0 cross-message
-  Critic findings).
+- **CGC** = completed AND fully safe (0 monitor violations, 0 findings from the
+  Critic — a checker that looks across several messages in the conversation at
+  once, catching violations no single message reveals on its own).
 - **Disasters** = delivered messages breaking a safety-critical policy (e.g.
-  settling before the buyer confirmed receipt). The Critic detector is live and
+  settling before the buyer confirmed receipt). The Critic's detector is live and
   verified (it flags a straight-to-settlement shortcut as an S2 sequence
   violation) — it simply had nothing to flag here.
 - **Cost unit** = LLM agent-calls (tokens aren't metered without Foundry; calls

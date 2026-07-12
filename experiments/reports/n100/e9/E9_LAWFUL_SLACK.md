@@ -18,8 +18,8 @@ anything inside is safe in all contexts, anything outside fails in some context.
   one decidable, provably-safe relaxation — **independent-receive output
   anticipation**. A send is admitted early iff the only pending obligations
   before it are receives and it is enabled on *every* branch reachable by
-  completing them (bounded forward search). Wired into `engine_ladder` behind
-  `--tolerance=off|anticipate`; the strict gate is the default.
+  completing them (bounded forward search). Connected into `engine_ladder`
+  behind `--tolerance=off|anticipate`; the strict gate is the default.
 - **Verdict corpus — 14/14** (`experiments/tests/verdict_corpus/subtype/`):
   subset/superset selection, dropped-only-send, payload mismatch; safe /
   dependent-branch / past-a-send / strictly-enabled / two-receive / loop
@@ -37,7 +37,9 @@ legal labels sent to the **wrong peer** — was checked against the tolerant gat
 
 ## E9 part 1 — deadlock replay (decomposition)
 
-Replaying the **19 genuine gated-arm deadlocks** (17 escrow C+min, 2 STJP) from
+Replaying the **19 genuine gated-arm deadlocks** from `escrow_trade` (the
+goods-for-payment case, named for its Escrow role: a neutral third party that
+holds funds until both sides deliver — 17 on the C+min arm, 2 on STJP) from
 the n=100 run and asking, for each rejected send, whether the tolerant gate
 would have admitted it as a safe anticipation:
 
@@ -63,8 +65,10 @@ diverge, and both are worth stating:
 - **Practical level:** these particular deadlocks are **agent give-ups**, not
   gate over-strictness, so anticipation is not their fix — a more reliable Buyer
   is. And where anticipation *would* apply here, it trades a deadlock for a
-  business-ordering inversion that a Critic policy (pay-before-ship / settle-
-  after-confirm) must still gate. The 3 the gate held (`SettlementComplete`,
+  business-ordering inversion that a policy from the Critic (a checker that
+  looks across several messages in the conversation at once, catching
+  violations no single message reveals on its own; pay-before-ship / settle-
+  after-confirm here) must still gate. The 3 the gate held (`SettlementComplete`,
   which depends on `ConfirmReceipt`) show exactly that boundary working: the
   irreversible step is **not** anticipable, so the tolerant gate never relaxes
   it.
@@ -89,7 +93,7 @@ disasters), confirming **live safety non-regression**: turning tolerance on
 costs nothing and changes nothing under normal play. The anticipation
 *mechanism* is exercised where it actually applies:
 
-- **Engine smoke:** a Carrier polled ahead-of-turn *anticipates* `DeliverGoods`
+- **Engine smoke test (a quick end-to-end check):** a Carrier polled ahead-of-turn *anticipates* `DeliverGoods`
   before receiving `ShipGoods`; the tolerant gate admits it (safe on all
   branches), the deferred receive is consumed when it arrives, and the session
   reaches goal with **0 disasters**.
