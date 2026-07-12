@@ -181,7 +181,11 @@ def test_run_formalize_end_to_end_on_all_vendored_teams_is_toolchain_safe():
 
     assert len(results) == 6
     assert funnel.counts["harvested"] == len(artifacts)
-    assert funnel.counts["team_license_ok"] == 6
+    # content_pipeline dropped from 6 to 5 on 2026-07-12: its upstream
+    # crewAIInc/crewAI-examples was verified to carry NO license (W20), so
+    # the ledger no longer marks it permissive. The other 5 vendored teams
+    # remain licensed. See docs/reference/MINED_SKILLS_SOURCES.md.
+    assert funnel.counts["team_license_ok"] == 5
     # honest, expected result under the --no-llm constraint (see task
     # report for the full discussion):
     assert funnel.counts["compactor_survived"] == 0

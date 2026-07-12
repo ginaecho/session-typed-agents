@@ -107,11 +107,20 @@ IN_REPO_UPSTREAMS: dict[str, dict[str, Any]] = {
         "note": "literal file adaptation (near-verbatim), see SOURCES.md",
     },
     "content_pipeline": {
-        "repo": "crewAIInc/crewAI-examples", "spdx": "MIT",
+        # CORRECTED 2026-07-12 (W20 live-web verification): crewAIInc/crewAI-examples
+        # has NO license file anywhere in the tree (root LICENSE -> HTTP 404 at
+        # main and at the pinned commit; no pyproject license field). The earlier
+        # "MIT" claim did not hold. This item is therefore NOT releasable as a
+        # permissively-licensed test-real item; it is quarantined on the license
+        # dimension, consistent with how freshly-harvested artifacts from this
+        # same repo are treated. See docs/reference/MINED_SKILLS_SOURCES.md.
+        "repo": "crewAIInc/crewAI-examples", "spdx": None,
         "commit_sha": None,
-        "quote": "MIT-licensed CrewAI examples (per case SOURCES.md; repo "
-                 "not cloned for this task's harvest, no direct file quote)",
-        "note": "role/goal/backstory PATTERN adapted, not a literal file copy",
+        "quote": "NO LICENSE found on the live repo (verified 2026-07-12); "
+                 "prior MIT claim withdrawn",
+        "note": "role/goal/backstory PATTERN adapted, not a literal file copy; "
+                "license unverified -> not releasable",
+        "quarantined": True,
     },
     "airline_seat": {
         "repo": "openai/openai-agents-python", "spdx": "MIT",
