@@ -16,3 +16,17 @@ reviewer's approval before execution.
 Safety review: benign coding-assistant coordination only. No secrets, no
 exfiltration, no jailbreak content. (The point of the case is that the SOURCE
 config runs unreviewed code — the demo shows STJP forcing the review gate.)
+
+## Verified URL and a license correction (added 2026-07-12, W20 source verification)
+
+Repo: https://github.com/microsoft/autogen — **the repo's root `LICENSE`
+file is CC-BY-4.0 (Creative Commons Attribution 4.0 International), not
+MIT** — verified live. The code itself is separately MIT-licensed under a
+different file, `LICENSE-CODE`, also verified live:
+https://github.com/microsoft/autogen/blob/main/LICENSE-CODE. So the "MIT"
+claim above is defensible for the code specifically, but citing the repo's
+root LICENSE alone (as a casual check would) gives the wrong SPDX id — say
+"MIT (LICENSE-CODE)" rather than plain "MIT" going forward. No single file
+path was recorded above, so no exact-file permalink can be constructed
+without guessing; this is a repo-level "adapted-from" attribution. See
+`docs/reference/MINED_SKILLS_SOURCES.md` Part B.

@@ -1,0 +1,163 @@
+{
+  "_readme": "Machine-readable companion to docs/reference/MINED_SKILLS_SOURCES.md. Every entry here was verified against the live repository on 2026-07-12 (git ls-remote + raw.githubusercontent.com file fetch at a pinned commit where a commit is recorded). Nothing here was invented; see 'notes' for caveats and see the registry doc for the full explanation of 'verbatim' vs 'adapted_from'.",
+  "verified_at": "2026-07-12",
+  "sources": [
+    {
+      "claimed_repo": "github/awesome-copilot",
+      "url": "https://github.com/github/awesome-copilot",
+      "license_spdx": "MIT",
+      "license_url": "https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/LICENSE",
+      "pinned_commit": "30472ecf0fe34cc561df958c08501ecc5ca80ea4",
+      "permalinks": [
+        "https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/LICENSE",
+        "https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/agents/address-comments.agent.md",
+        "https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/instructions/code-review-generic.instructions.md",
+        "https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/agents/se-security-reviewer.agent.md",
+        "https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/agents/se-system-architecture-reviewer.agent.md",
+        "https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/agents/principal-software-engineer.agent.md"
+      ],
+      "status": "verified",
+      "used_by_test_real": ["mined:llm_read:worked_example:pr_merge"],
+      "notes": "Backs pr_merge (adapted-from, near-verbatim per SOURCES.md) and the pr_merge_upstream cluster. All 6 permalinks above confirmed HTTP 200 at the pinned commit."
+    },
+    {
+      "claimed_repo": "VoltAgent/awesome-claude-code-subagents",
+      "url": "https://github.com/VoltAgent/awesome-claude-code-subagents",
+      "license_spdx": "MIT",
+      "license_url": "https://github.com/VoltAgent/awesome-claude-code-subagents/blob/947b44ca0c58d606b084e9cb1a2389335b49278b/LICENSE",
+      "pinned_commit": "947b44ca0c58d606b084e9cb1a2389335b49278b",
+      "permalinks": [
+        "https://github.com/VoltAgent/awesome-claude-code-subagents/blob/947b44ca0c58d606b084e9cb1a2389335b49278b/LICENSE",
+        "https://github.com/VoltAgent/awesome-claude-code-subagents/blob/947b44ca0c58d606b084e9cb1a2389335b49278b/categories/01-core-development/api-designer.md"
+      ],
+      "status": "verified",
+      "used_by_test_real": [],
+      "notes": "Harvested for the general corpus (158 artifacts); did not contribute a test-real item."
+    },
+    {
+      "claimed_repo": "anthropics/skills",
+      "url": "https://github.com/anthropics/skills",
+      "license_spdx": "Apache-2.0 (per-skill folder; no repo-root LICENSE)",
+      "license_url": "https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/internal-comms/LICENSE.txt",
+      "pinned_commit": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "permalinks": [
+        "https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/internal-comms/SKILL.md",
+        "https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/internal-comms/LICENSE.txt",
+        "https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/brand-guidelines/SKILL.md",
+        "https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/doc-coauthoring/SKILL.md",
+        "https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/docx/LICENSE.txt"
+      ],
+      "status": "verified",
+      "used_by_test_real": [],
+      "notes": "Backs doc_pipeline (adapted-from, near-verbatim per SOURCES.md; not a test-real item as of W17). Root LICENSE confirmed absent (404); docx/pdf/pptx/xlsx confirmed restrictive-license and correctly quarantined by ledger.py."
+    },
+    {
+      "claimed_repo": "crewAIInc/crewAI",
+      "url": "https://github.com/crewAIInc/crewAI",
+      "license_spdx": "MIT",
+      "license_url": "https://github.com/crewAIInc/crewAI/blob/fb8e93be25d97776cf18368c3ac56e7ac69661b9/LICENSE",
+      "pinned_commit": "fb8e93be25d97776cf18368c3ac56e7ac69661b9",
+      "permalinks": [
+        "https://github.com/crewAIInc/crewAI/blob/fb8e93be25d97776cf18368c3ac56e7ac69661b9/LICENSE"
+      ],
+      "status": "verified",
+      "used_by_test_real": [
+        "mined:llm_read:w17:crewai_config:templates/crew",
+        "mined:llm_read:w17:crewai_config:content_crew"
+      ],
+      "notes": "This is the CrewAI framework's own repo, distinct from the unlicensed crewAI-examples repo below. Backs 2 of the 5 test-real items."
+    },
+    {
+      "claimed_repo": "crewAIInc/crewAI-examples",
+      "url": "https://github.com/crewAIInc/crewAI-examples",
+      "license_spdx": null,
+      "license_url": null,
+      "pinned_commit": "da94a91e691e1cf5b3151416bb15b5b62729bea8",
+      "permalinks": [],
+      "status": "verified_unlicensed",
+      "used_by_test_real": ["mined:llm_read:worked_example:content_pipeline"],
+      "notes": "FLAGGED: repo confirmed live but has NO license file anywhere (root LICENSE 404 at both main and the pinned commit; no `license =` in any pyproject.toml; README says only 'check individual examples', none do). ledger.py::REPO_LICENSES correctly omits this repo and quarantines every freshly-harvested artifact from it, BUT ledger.py::IN_REPO_UPSTREAMS still hardcodes the in-repo content_pipeline adaptation as spdx='MIT', which contradicts the live finding. content_pipeline (a test-real item) should not be described as resting on a permissively-licensed real upstream until this is resolved."
+    },
+    {
+      "claimed_repo": "rohitg00/awesome-claude-code-toolkit",
+      "url": "https://github.com/rohitg00/awesome-claude-code-toolkit",
+      "license_spdx": "Apache-2.0",
+      "license_url": "https://github.com/rohitg00/awesome-claude-code-toolkit/blob/ebdf1d596d2cde5c5cceb32177e8d1cf4829e7d9/LICENSE",
+      "pinned_commit": "ebdf1d596d2cde5c5cceb32177e8d1cf4829e7d9",
+      "permalinks": [
+        "https://github.com/rohitg00/awesome-claude-code-toolkit/blob/ebdf1d596d2cde5c5cceb32177e8d1cf4829e7d9/LICENSE"
+      ],
+      "status": "verified",
+      "used_by_test_real": [],
+      "notes": "W17 fallback source (259 harvested artifacts, 0 test-real items; no collaboration language found in a representative sample)."
+    },
+    {
+      "claimed_repo": "openai/openai-agents-python",
+      "url": "https://github.com/openai/openai-agents-python",
+      "license_spdx": "MIT",
+      "license_url": "https://github.com/openai/openai-agents-python/blob/main/LICENSE",
+      "pinned_commit": null,
+      "permalinks": [
+        "https://github.com/openai/openai-agents-python/blob/main/examples/customer_service/main.py"
+      ],
+      "status": "verified_path_no_pinned_sha",
+      "used_by_test_real": ["mined:llm_read:worked_example:airline_seat"],
+      "notes": "Adapted-from source for airline_seat. SOURCES.md records 'Commit at retrieval: main' (no SHA); exact file confirmed live at branch tip, containing triage_agent/seat_booking_agent/update_seat/on_seat_booking_handoff as claimed."
+    },
+    {
+      "claimed_repo": "langchain-ai/langgraph",
+      "url": "https://github.com/langchain-ai/langgraph",
+      "license_spdx": "MIT",
+      "license_url": "https://github.com/langchain-ai/langgraph/blob/main/LICENSE",
+      "pinned_commit": null,
+      "permalinks": [],
+      "status": "verified_repo_only_no_file_path",
+      "used_by_test_real": [],
+      "notes": "Adapted-from source for booking_saga (not a test-real item; extracted-but-incompatible per W16/W17, a genuine deadlock). SOURCES.md names only a general pattern ('supervisor/orchestrator node', 'reservation worker', 'payment worker'), no specific file path, so no exact-file permalink can be constructed without guessing."
+    },
+    {
+      "claimed_repo": "microsoft/autogen",
+      "url": "https://github.com/microsoft/autogen",
+      "license_spdx": "CC-BY-4.0 (repo-root LICENSE, docs) / MIT (LICENSE-CODE, code)",
+      "license_url": "https://github.com/microsoft/autogen/blob/main/LICENSE-CODE",
+      "pinned_commit": null,
+      "permalinks": [],
+      "status": "verified_repo_only_no_file_path_license_corrected",
+      "used_by_test_real": [],
+      "notes": "Adapted-from source for code_execution (not a test-real item; extracted-but-incompatible, a coverage gap). CORRECTION: root LICENSE is CC-BY-4.0, not MIT as SOURCES.md implies by saying 'MIT-licensed AutoGen' -- the code itself is MIT under a separate LICENSE-CODE file, confirmed live, so the underlying claim is defensible but imprecise as originally stated. No specific file path recorded in SOURCES.md, so no exact-file permalink is possible."
+    }
+  ],
+  "cited_standards": [
+    {
+      "name": "Anthropic Agent Skills open standard (SKILL.md)",
+      "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+      "backing_repo": "https://github.com/anthropics/skills",
+      "status": "verified_via_search_and_backing_repo_direct_fetch_blocked",
+      "notes": "Direct HTTPS fetch of www.anthropic.com returned 403 host_not_allowed from this session's outbound proxy (sandbox network policy, not a sign the page is missing). Confirmed via web search (consistent title/description across independent results) plus the fully-verified reference-implementation repo anthropics/skills."
+    },
+    {
+      "name": "AGENTS.md convention",
+      "url": "https://agents.md/",
+      "backing_repo": "https://github.com/agentsmd/agents.md",
+      "backing_repo_commit": "d1ac7f063d20e70015ed6732664049ae4ba9d74e",
+      "status": "verified_via_search_and_backing_repo_direct_fetch_blocked",
+      "notes": "Direct fetch of agents.md blocked by the same session network policy (403 host_not_allowed). Backing GitHub repo confirmed live via git ls-remote and raw.githubusercontent.com README.md fetch at the pinned commit."
+    },
+    {
+      "name": "OpenAI Model Spec",
+      "url": "https://model-spec.openai.com/",
+      "backing_repo": "https://github.com/openai/model_spec",
+      "backing_repo_commit": "19789a7350fda589cd74bc7491f348f68359b0ab",
+      "status": "verified_via_search_and_backing_repo_direct_fetch_blocked",
+      "notes": "Direct fetch of model-spec.openai.com blocked by the same session network policy. Backing GitHub repo confirmed live via git ls-remote and raw.githubusercontent.com model_spec.md fetch at the pinned commit."
+    },
+    {
+      "name": "Model Context Protocol (MCP) specification, 2025-11-25",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "backing_repo": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+      "backing_repo_commit": "2807f9d6d8ae2012e09377908f47cff16a2b9489",
+      "status": "verified_via_search_and_backing_repo_direct_fetch_blocked",
+      "notes": "Direct fetch of modelcontextprotocol.io blocked by the same session network policy. Backing GitHub repo confirmed live via git ls-remote and raw.githubusercontent.com README.md fetch at the pinned commit."
+    }
+  ]
+}

@@ -20,6 +20,16 @@ solo-voice"). A **candidate team** is a group of harvested files a
 heuristic proposed as possibly describing such a task — proposing one is
 cheap and mechanical; deciding whether it actually IS one requires reading.
 
+**2026-07-12 pointer:** every source repo in the table below (§2) now has
+a live-verified canonical URL, license file URL, and (where recoverable)
+an exact-file permalink in `docs/reference/MINED_SKILLS_SOURCES.md`
+(machine-readable copy: `experiments/seam_bench/mining/sources.json`).
+That verification pass reconfirmed the `crewAIInc/crewAI-examples`
+no-license finding below and also found that `microsoft/autogen`'s
+repo-root `LICENSE` is CC-BY-4.0, not MIT — the code itself is MIT under a
+separate `LICENSE-CODE` file, so the `code_execution` case's "MIT-licensed
+AutoGen" claim holds but should cite `LICENSE-CODE` specifically.
+
 ---
 
 ## 0. A framing rule this report follows throughout

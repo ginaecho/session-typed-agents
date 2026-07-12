@@ -22,3 +22,19 @@ team together — exactly the gap STJP closes.
 
 Safety review: benign document-production coordination only. No secrets, no
 exfiltration, no jailbreak content.
+
+## Verified URLs (added 2026-07-12, W20 source verification)
+
+Repo: https://github.com/anthropics/skills — no repo-root LICENSE (per-skill
+licensing confirmed live, root LICENSE returns HTTP 404). Exact-file
+permalinks at the pinned commit `9d2f1ae187231d8199c64b5b762e1bdf2244733d`
+(all confirmed HTTP 200):
+
+- Writer.md ← https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/internal-comms/SKILL.md (license: https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/internal-comms/LICENSE.txt, Apache-2.0)
+- BrandReviewer.md ← https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/brand-guidelines/SKILL.md
+- DocLead.md ← https://github.com/anthropics/skills/blob/9d2f1ae187231d8199c64b5b762e1bdf2244733d/skills/doc-coauthoring/SKILL.md
+
+These are labeled "adapted-from" upstream files ("literal file adaptation
+(near-verbatim)" per `ledger.py::IN_REPO_UPSTREAMS`), not verbatim copies —
+see `docs/reference/MINED_SKILLS_SOURCES.md` Part B for the full
+verification record.

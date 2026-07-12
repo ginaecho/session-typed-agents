@@ -24,3 +24,22 @@ call happen before the security gate.
 
 Safety review: benign code-review coordination only. No secrets, no
 exfiltration, no jailbreak content.
+
+## Verified URLs (added 2026-07-12, W20 source verification)
+
+Repo: https://github.com/github/awesome-copilot — license file:
+https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/LICENSE
+(MIT, verified live). Exact-file permalinks at the pinned commit
+`30472ecf0fe34cc561df958c08501ecc5ca80ea4` (all confirmed HTTP 200 —
+this is the commit W17 recorded as this repo's HEAD at harvest time, not
+the exact commit this file's contents were read at, since no commit SHA
+was recordable in the original sandbox; see `../../_incoming/awesome_copilot/PROVENANCE.md`):
+
+- Author.md ← https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/agents/address-comments.agent.md
+- CodeReviewer.md ← https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/instructions/code-review-generic.instructions.md
+- SecurityReviewer.md ← https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/agents/se-security-reviewer.agent.md
+- Merger.md ← https://github.com/github/awesome-copilot/blob/30472ecf0fe34cc561df958c08501ecc5ca80ea4/agents/principal-software-engineer.agent.md
+
+These are labeled "adapted-from" upstream files, not verbatim copies —
+see `docs/reference/MINED_SKILLS_SOURCES.md` Part A row 1 for the full
+verification record.

@@ -15,3 +15,14 @@ rules produce a circular wait.
 
 Safety review: benign booking-coordination logic only. No secrets, no
 exfiltration, no jailbreak content.
+
+## Verified URL (added 2026-07-12, W20 source verification)
+
+Repo: https://github.com/langchain-ai/langgraph — license file:
+https://github.com/langchain-ai/langgraph/blob/main/LICENSE (MIT, verified
+live). No single file path was recorded above ("supervisor/orchestrator
+node", "reservation worker", "payment worker" are pattern descriptions, not
+paths), so no exact-file permalink can be constructed without guessing —
+per this task's verify-never-invent rule, none is given. This is a
+repo-level "adapted-from" attribution, not a file-level one. See
+`docs/reference/MINED_SKILLS_SOURCES.md` Part B.

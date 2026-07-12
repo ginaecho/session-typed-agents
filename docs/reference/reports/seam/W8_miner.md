@@ -10,6 +10,14 @@ execution plan; `docs/reference/reports/seam/scouts/R3_datasets_mining.md`
 (ranked shortlist); `docs/reference/SKILL_COMPACTION.md`;
 `experiments/cases/skills_safety/` (the existing recipe).
 
+**2026-07-12 pointer:** every source repo named below now has a
+live-verified canonical URL, license file URL, and (where a commit SHA and
+path are both recorded) an exact-file permalink in
+`docs/reference/MINED_SKILLS_SOURCES.md`, with a machine-readable copy at
+`experiments/seam_bench/mining/sources.json`. That pass also found and
+flagged a license inconsistency on the `crewAIInc/crewAI-examples`-derived
+`content_pipeline` item — see the registry's Part A row 2.
+
 ---
 
 ## 1. Probe results (verbatim)
