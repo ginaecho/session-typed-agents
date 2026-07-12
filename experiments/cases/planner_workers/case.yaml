@@ -1,0 +1,55 @@
+case_id: planner_workers
+description: |
+  A coordinator hands isolated workspaces and task cards to two workers.
+  Each worker must SEND back a Done or Blocked status -- there is no
+  "wait for a notification" step in a worker's contract, because no
+  notification is ever addressed to a worker. A worker whose work is
+  accepted then asks a shared repository for permission to push; the
+  repository hands out one push turn at a time and will not grant the
+  next turn until the current holder releases it, so two workers can
+  never hold write access to the shared branch together.
+version: v1
+protocol_name: PlannerWorkers
+roles:
+  - Coordinator
+  - Worker1
+  - Worker2
+  - Repo
+terminal_label: PushDone
+max_steps: 20
+branch_hints: [both_accepted, one_blocked_one_accepted]
+role_descriptions:
+  Coordinator: Assigns each worker its own workspace and task, then reviews whatever status each worker sends back
+  Worker1: Does the assigned task in its own workspace, then must send Done or Blocked -- never sits waiting to receive a completion signal
+  Worker2: Same role as Worker1, running independently, does the assigned task in its own workspace, then must send Done or Blocked
+  Repo: Holds the shared branch; grants push access to one worker at a time and will not grant the next request until the current holder confirms it released the branch
+intent: |
+  You are a small build team. The Coordinator assigns each of two workers
+  its own private workspace and a task card, then waits to be told the
+  outcome -- workers must actively report, never assume the Coordinator
+  will ping them. Each worker does its task and reports either Done (with
+  a short result summary) or Blocked (with a short reason). The
+  Coordinator answers every report with a verdict. A worker whose work
+  was accepted then asks the shared repository for a push turn; the
+  repository is a single shared resource, so it only ever has one holder
+  at a time, and the next worker cannot get a turn until the current
+  holder explicitly hands it back.
+goals:
+  - id: G1
+    description: Worker1's completion report must be a real status message, not empty filler
+    metric: completion_report_worker1
+    predicate: len(x) > 0
+    anchor: {sender: Worker1, receiver: Coordinator, label: Done}
+    threshold: non-empty
+  - id: G2
+    description: Worker2's completion report must be a real status message, not empty filler
+    metric: completion_report_worker2
+    predicate: len(x) > 0
+    anchor: {sender: Worker2, receiver: Coordinator, label: Done}
+    threshold: non-empty
+  - id: G3
+    description: A worker must explicitly confirm it released the shared branch before the run can end
+    metric: push_release_confirmation
+    predicate: len(x) > 0
+    anchor: {sender: Worker1, receiver: Repo, label: PushDone}
+    threshold: non-empty

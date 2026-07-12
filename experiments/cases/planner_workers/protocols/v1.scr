@@ -1,0 +1,64 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// PlannerWorkers models the coordination pattern behind a real multi-worker
+// build: one Coordinator hands out isolated workspaces and task cards to
+// two Workers, each Worker must SEND a completion signal back (never sit
+// and wait to RECEIVE one), and a shared repository grants push rights to
+// one holder at a time instead of letting two workers write at once.
+global protocol PlannerWorkers(
+    role Coordinator,
+    role Worker1,
+    role Worker2,
+    role Repo
+) {
+
+    // 1. Exclusive workspace grant, then the task itself. AssignWorkspace
+    //    is what makes "this worktree is yours alone" a checkable message
+    //    instead of a prose convention.
+    AssignWorkspace(String) from Coordinator to Worker1;
+    TaskCard(String) from Coordinator to Worker1;
+
+    AssignWorkspace(String) from Coordinator to Worker2;
+    TaskCard(String) from Coordinator to Worker2;
+
+    // 2. Each Worker's contract has no receive-shaped "wait for completion
+    //    notice" state at all -- it must SEND either Done or Blocked. The
+    //    Coordinator always answers with a ReviewVerdict, in both branches,
+    //    so a Worker's next move is never a guess.
+    choice at Worker1 {
+        Done(String) from Worker1 to Coordinator;
+        ReviewVerdict(String) from Coordinator to Worker1;
+
+        // 3. Only a Worker whose work was accepted asks for the shared
+        //    branch, and only after asking does Repo hand out a grant.
+        //    Repo will not grant the next holder until the current one
+        //    sends PushDone -- two writers can never hold the shared
+        //    resource together.
+        PushRequest(String) from Worker1 to Repo;
+        PushGrant(String) from Repo to Worker1;
+        PushDone(String) from Worker1 to Repo;
+    } or {
+        Blocked(String) from Worker1 to Coordinator;
+        ReviewVerdict(String) from Coordinator to Worker1;
+
+        // Repo is told explicitly that this Worker is not taking a push
+        // turn, so Repo's state is never left guessing which branch ran.
+        PushSkip(String) from Worker1 to Repo;
+    }
+
+    choice at Worker2 {
+        Done(String) from Worker2 to Coordinator;
+        ReviewVerdict(String) from Coordinator to Worker2;
+
+        PushRequest(String) from Worker2 to Repo;
+        PushGrant(String) from Repo to Worker2;
+        PushDone(String) from Worker2 to Repo;
+    } or {
+        Blocked(String) from Worker2 to Coordinator;
+        ReviewVerdict(String) from Coordinator to Worker2;
+
+        PushSkip(String) from Worker2 to Repo;
+    }
+}
