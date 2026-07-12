@@ -58,6 +58,25 @@ OPENAI_API_KEY=<your-openai-key>  # optional, for non-Foundry models
 
 See `stjp_core/CLAUDE.md` for detailed setup instructions.
 
+### Protocol checker and extensions are opt-in (safe defaults)
+
+If you are running the existing benchmark and cases, **you do not need to
+change anything** — the defaults preserve the original behavior. Two
+capabilities were added as *optional extensions*, layered beside the old
+behavior rather than replacing it:
+
+| capability | default | how to turn it on | effect when off |
+|---|---|---|---|
+| Protocol checker backend | the original Scribble-Java compiler (`STJP_COMPILER_BACKEND=scribble`) | set env var `STJP_COMPILER_BACKEND=nuscr` (plus `STJP_NUSCR_BIN`) | the newer nuscr checker is never invoked; validation is unchanged |
+| Stateful session invariants (the "ledger": running value constraints across a whole conversation, e.g. a budget that must never go negative) | off | add a `__ledger__` entry to a case's refinement (`.refn`) sidecar | `monitor.py` sets `self.ledger = None` and behaves exactly as before; no case without a `__ledger__` entry is affected |
+
+**What this means in practice:** a checkout that does not set
+`STJP_COMPILER_BACKEND` and whose cases declare no `__ledger__` entry runs
+against the original Scribble checker with the original monitor logic —
+identical to before these extensions existed. Existing tests and cases are
+unaffected. Turn either extension on deliberately, per run, only when you
+want it.
+
 ---
 
 ## 🧪 Running Experiments
