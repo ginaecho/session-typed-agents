@@ -190,3 +190,18 @@ for pandoc export; `make figs` regenerates figures. NOT COMPILED in this sandbox
 run best-of-n T0 to fill E5 + T0 cells; the T1/T2/panel-calibration runs fill the
 rest via seam_results.tex; consider one non-Claude E3 point; swap preamble for
 iclr2027_conference kit.
+
+## Update 2026-07-11b — mining claim now reports the run follow-up
+
+The §8 real-skills passage and its instruments-table row previously framed
+the absent-vs-implicit question as a preregistered follow-up not yet run.
+That follow-up (model-read extraction over the same 13 teams, evidence-only
+discipline) has now run (report `W16_llm_read_extraction.md`). Rewrote the
+passage to report its measured result: 3/13 teams yield a valid protocol
+(all from this project's own worked examples), a 4th surfaces a genuine
+deadlock, 7/13 have nothing to surface, and the unmodified upstream GitHub
+teams recover zero — strengthening the scoped claim that real independently
+authored skills under-determine coordination while noting mined data yields
+too few test-real items to stand alone. Table row and docs guide 8 synced.
+Human-read baseline packaged, pending. LaTeX balance re-checked: begin/end
+39/39, braces balanced.

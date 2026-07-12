@@ -202,12 +202,19 @@ identical code path to a validated protocol, and for the four mined
 produced per-role types, the originals still fail multiparty compatibility.
 The useful takeaway isn't "the miner is broken" — it's a measured data
 point that independently authored skills do not state their coordination
-structure in any machine-recoverable convention. Whether that structure is
-absent altogether or merely implicit in prose is a preregistered follow-up
-(LLM-assisted compaction with a human-read baseline) that must run before
-any conclusion about real-world skills rests on mined data. See
-`docs/reference/reports/seam/W8_miner.md` §4 and §6 for the full funnel and
-the projected yield if a repair step were added.
+structure in any machine-recoverable convention. To separate *structure
+absent* from *structure implicit in prose*, we ran the follow-up: a careful
+model-read extraction over the same 13 teams, under a rule that every
+recovered interaction must quote the skill text (no invented coordination).
+Reading harder recovers a little structure but not much — 3 of 13 teams
+yield a valid protocol and a 4th surfaces a real deadlock — and, decisively,
+those recoveries all come from this project's own worked examples; the teams
+built from unmodified upstream GitHub files recover zero. So the finding
+holds: ordinary skill authors do not write down interaction structure even
+when a disciplined reader looks hard for it. The human-read baseline is
+packaged (`experiments/seam_bench/mining/human_read/PACKET.md`) and pending.
+See `docs/reference/reports/seam/W8_miner.md` and `W16_llm_read_extraction.md`
+for the full funnels.
 
 ---
 
