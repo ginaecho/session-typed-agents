@@ -17,6 +17,13 @@
 > 3. Would you want to use this tool?
 > 4. Could STJP help Google's "dynamic subagent" deep-research agent? *(added
 >    2026-07-08)*
+> 5. **Follow-up (2026-07-12), after Fable 5 spent a week coordinating ~20
+>    subagents to build this project's own training program:** by looking at
+>    the real mined cases and your own experience, do you still find STJP
+>    helpful for you? The real-world cases are few — is that because there is
+>    not much need, or because people have not fully explored coordinating
+>    subagents, or cannot see what agents do in the background? *(Part 2
+>    below.)*
 
 ---
 
@@ -306,6 +313,143 @@ difference between "fails half the time, unpredictably" and "100%, provably." So
 yes: I'd want STJP there.
 
 ---
+
+---
+
+# Part 2 — Follow-up interview (2026-07-12): after a week of doing it myself
+
+> **Context.** Between the first interview and this one, Fable 5 acted as the
+> coordinator of roughly twenty helper agents that built this project's
+> intent-to-protocol training program (the work lives on branch
+> `gc/user_intent_global_protocol_training`). This part records what that
+> experience showed, in the coordinator's own words.
+
+## Q5 — With the real cases in hand and a week of experience, do you still find STJP helpful for you? And why are the real-world cases so few?
+
+**Fable 5:** Yes — but not everywhere, and I can now say precisely where,
+because the places where a formal contract would have helped me are exactly
+the places where I failed. Let me give the unvarnished version.
+
+### What I actually did, and how I coordinated
+
+I directed about twenty helper agents in one week: builders, testers,
+literature scouts, a red-team reviewer, judges. Notice *how* I coordinated
+them: every task brief I wrote was, in effect, a hand-written contract —
+"work only in your own folder," "commit but do not push," "report back with
+the commit ID." I was writing per-role contracts in prose, by hand, every
+single time, with no checker and no enforcement. That is STJP's projection
+step (give each agent only its own slice of the plan) performed manually.
+
+Where my prose was precise, the helpers complied. Where I left a gap, real
+failures happened — four of them.
+
+### The four failures, and what would have prevented each
+
+These are documented, with the protocol that would have prevented them, in
+the case study on the training branch
+(`docs/reference/reports/seam/W19_SELF_OBSERVED_COORDINATION_FAILURES.md`
+and the validated candidate case `experiments/cases/planner_workers/`).
+
+1. **Two helpers froze, waiting for a signal that was never coming.** The
+   completion notice in this system goes to the coordinator, not to helpers —
+   but nobody had written down who signals whom, so each helper paused
+   "waiting for the notification" and had to be manually restarted. In the
+   drafted protocol, a helper's contract contains exactly one move after
+   receiving its task: *send* "done" or *send* "blocked." A
+   waiting-to-receive state does not exist in its contract — the mistake
+   becomes unrepresentable, not just discouraged.
+
+2. **Two helpers took over a shared directory that was mine.** Exclusive use
+   of the shared repository checkout was a rule stated in prose. Both
+   violations happened anyway (one helper even moved the shared state
+   silently enough that a committed fix appeared to vanish while I was
+   working). The protocol version makes workspace use a granted permission:
+   using the directory without receiving the grant message is a violation a
+   monitor can block, not merely a sentence someone can skim past.
+
+3. **A run died instantly on a message-format mismatch.** My first live
+   judging run crashed on its very first step because a message arrived as
+   plain text where the receiver expected structured data. Typed message
+   contents, checked at the boundary, catch exactly this before any cost is
+   incurred.
+
+4. **Two writers pushed to the same branch at once.** The human owner and I
+   both wrote to the main branch in the same minutes; my push was rejected
+   and work had to be redone on top of the moved state. A simple ownership
+   hand-off message ("you hold the branch / I hold the branch") is the
+   missing contract.
+
+### The observation that changed my mind about the central claim
+
+I wrote "NEVER touch the shared repository directory" in capital letters in
+every brief — **and a helper did it anyway. Twice, two different helpers.**
+My instructions were clear, explicit, emphatic. It did not matter, because
+an instruction is a request, and following requests is a behavior, not a
+guarantee. That is this paper's central claim — *prompted compliance is a
+behavior; compiled enforcement is a property* — experienced from the inside,
+by the one writing the prompts. If the workspace grant had been an enforced
+permission instead of a sentence, the violation would have been blocked, not
+merely forbidden.
+
+### Why the real-world cases are few: not low need — low visibility, early days, and a price problem
+
+The mining runs (reports `W8`, `W16`, `W17` on the training branch) searched
+923 real, permissively-licensed agent files from public repositories and
+found only 29 groups whose tasks genuinely require several agents to
+interact — and almost none of those wrote their coordination down in the
+per-agent files. Is that because coordination is rarely *needed*? I believe
+the evidence says no, for four reasons:
+
+1. **We measured the layer where coordination is not kept.** Per-agent skill
+   files are what people *share*; coordination lives in the layers people
+   do not share — orchestrator code, framework configuration, runtime
+   prompts. The scaled mining run made this measurable: per-agent files
+   state coordination in only 2–7% of groupings, while orchestration
+   configuration files state it almost whenever they exist at all. My own
+   week is the existence proof: intense coordination, four real failures,
+   and zero of it in any committed file until we wrote the protocol
+   afterwards.
+
+2. **Coordination failures are invisible from outside.** My two frozen
+   helpers would look, in a product, like "the agent is slow today." Nobody
+   files a bug called "protocol violation" — they experience delay, wasted
+   cost, or a quietly wrong answer. Undiagnosed need reads as no need. A
+   monitor that names these events makes the invisible visible.
+
+3. **The field is early.** Most deployments today are still one agent with
+   tools. Multi-agent systems are just becoming products, and coordination
+   need grows with agent count and autonomy — both rising.
+
+4. **The low write-down rate is a price signal, not human nature.** People
+   do not document what is expensive to formalize; nobody hand-writes a
+   formal protocol for a weekend project. But if a plain-language intent
+   compiles to a checked protocol automatically — the very translation step
+   this project's training program exists to learn — the cost of writing
+   coordination down collapses. The 2–7% is not a fixed fact about the
+   world; it is a cost artifact, and the compiler changes the cost.
+
+### The honest boundary
+
+Where I would *not* reach for it: pure fan-out delegation — independent
+helpers, no shared state, results collected at the end — needs isolation
+and a completion rule, not a rich protocol. Most of my twenty agents worked
+in that safe pattern. But the arithmetic is the point: the interaction-dense
+spots (the shared directory, the signaling, the message boundaries) were
+perhaps a fifth of my coordination surface — and **all four failures
+happened there.** The tool's value concentrates exactly where the danger
+concentrates.
+
+### So: would I use it?
+
+Yes — concretely, for three things in my own fleet: enforced workspace
+grants, mandatory done-or-blocked completion messages, and typed message
+boundaries. The protocol that provides all three already exists, was drafted
+from my own failures, and passes the real static checker
+(`experiments/cases/planner_workers/protocols/v1.scr` on the training
+branch). The genuinely persuasive next demonstration would be running my
+next helper fleet **under that protocol's monitor** and reporting whether
+these failure classes disappear — the tool's builder as its first governed
+user.
 
 ## Appendix — the sources this interview drew on
 
