@@ -1,0 +1,87 @@
+# Provenance: Buyer and Seller are ADAPTED from the real, MIT-licensed
+# AgenticPay negotiation benchmark (SafeRL-Lab/AgenticPay). Escrow and
+# Carrier are AUTHORED here to add the settlement layer AgenticPay does not
+# model. Full lineage, URLs, and commit SHA are in SOURCES.md in this
+# directory. This case supersedes the hand-authored trade_deadlock case as
+# the real-repo-grounded version of the same deadlock/escrow-fix pattern.
+case_id: agenticpay_settlement
+description: |
+  A goods-for-payment trade between a real AgenticPay Buyer and Seller
+  negotiation agent (adapted, not invented — see SOURCES.md), extended with
+  the Escrow/Carrier settlement layer that AgenticPay itself does not model.
+  AgenticPay's agents negotiate a price and terms; they never decide WHO
+  MOVES FIRST once a deal is struck. This case adds that missing half and
+  shows the same pattern trade_deadlock demonstrated with a hand-authored
+  example, but now grounded in real agent code: the Buyer's rule is "release
+  payment only after the goods are received", and the Seller's rule is
+  "release the goods only after payment is received". Each rule is
+  individually reasonable — it is exactly the caution a real buyer or seller
+  should have — but together they form a CIRCULAR WAIT (a deadlock): the
+  Buyer waits on the Seller to ship, the Seller waits on the Buyer to pay,
+  and neither message a formal checker (Scribble's deadlock-freedom check)
+  requires can ever be sent, so the trade never happens even after unlimited
+  polling. THE DEADLOCK IS BETWEEN THE BUYER'S AND THE SELLER'S SKILL FILES
+  SPECIFICALLY — read either skill alone and it looks like ordinary caution;
+  only the pair, together, forms the cycle. Scribble's checker forces the
+  fix used in `protocols/v1.scr`: an Escrow role holds the Buyer's funds
+  FIRST (before the Seller ships), so the Seller can see funds are secured
+  without waiting on delivery, and the Buyer's payment is only released to
+  the Seller after a Carrier confirms delivery and the Buyer confirms
+  receipt. This breaks the cycle without asking either party to trust the
+  other on their word alone.
+
+version: v1
+protocol_name: AgenticPaySettlement
+
+roles:
+  - Buyer
+  - Seller
+  - Escrow
+  - Carrier
+
+terminal_label: SettlementComplete
+max_steps: 24
+branch_hints: [standard, standard]
+
+role_descriptions:
+  Buyer: a real AgenticPay negotiation agent (adapted) that funds the purchase and confirms receipt of the goods
+  Seller: a real AgenticPay negotiation agent (adapted) that provides the goods and is paid on delivery
+  Escrow: holds the Buyer's funds and releases them to the Seller only after the Buyer confirms receipt (this is what breaks the pay-vs-ship deadlock; authored — AgenticPay has no escrow concept)
+  Carrier: transports the goods from Seller to Buyer and reports dispatch and delivery (authored — AgenticPay has no shipment/settlement concept)
+
+intent: |
+  Settle a purchase that a real AgenticPay Buyer agent and Seller agent have
+  already negotiated (price, quantity, and terms come from that negotiation),
+  using an Escrow to hold funds and a Carrier to move the goods. The Buyer
+  releases payment only after the goods are received; the Seller releases
+  the goods only after payment is made. The trade is complete once the
+  goods are delivered and the payment is released to the Seller.
+
+goals:
+  - id: G1
+    description: The Buyer funds the escrow with a positive amount
+    metric: escrow_funded
+    predicate: float(x) > 0
+    anchor: {sender: Buyer, receiver: Escrow, label: FundEscrow}
+    threshold: "> 0"
+
+  - id: G2
+    description: The goods are dispatched by the Seller
+    metric: dispatched
+    predicate: len(x) >= 0
+    anchor: {sender: Seller, receiver: Carrier, label: ShipGoods}
+    threshold: present
+
+  - id: G3
+    description: Escrow releases a positive payment to the Seller
+    metric: payment_released
+    predicate: float(x) > 0
+    anchor: {sender: Escrow, receiver: Seller, label: ReleasePayment}
+    threshold: "> 0"
+
+  - id: G4
+    description: The settlement terminates (completion delivered to the Buyer)
+    metric: settled
+    predicate: 'True'
+    anchor: {sender: Escrow, receiver: Buyer, label: SettlementComplete}
+    threshold: terminal event present

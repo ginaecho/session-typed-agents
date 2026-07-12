@@ -1,0 +1,9 @@
+# Refinement contracts for AgenticPaySettlement (v1.scr).
+
+[Buyer -> Escrow : FundEscrow]
+type: float
+require: x > 0
+
+[Escrow -> Seller : ReleasePayment]
+type: float
+require: x > 0

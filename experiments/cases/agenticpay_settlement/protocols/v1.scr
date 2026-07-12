@@ -1,0 +1,20 @@
+module v1;
+
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// SAFE protocol: the Escrow holds the Buyer's funds FIRST, which breaks the
+// circular "pay-after-deliver / ship-after-pay" wait that the real AgenticPay
+// Buyer/Seller agents' settlement rules describe (see case.yaml and
+// unchecked_skills/Buyer.md, Seller.md). The unchecked-skills version of the
+// same intent deadlocks; Scribble rejects any protocol that keeps the cycle,
+// forcing this escrow-first ordering.
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    FundEscrow(Double) from Buyer to Escrow;
+    FundsSecured(String) from Escrow to Seller;
+    ShipGoods(String) from Seller to Carrier;
+    DeliverGoods(String) from Carrier to Buyer;
+    ConfirmReceipt(String) from Buyer to Escrow;
+    ReleasePayment(Double) from Escrow to Seller;
+    SettlementComplete(String) from Escrow to Buyer;
+}
