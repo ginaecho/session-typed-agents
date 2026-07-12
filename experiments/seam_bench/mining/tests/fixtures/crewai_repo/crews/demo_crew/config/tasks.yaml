@@ -1,0 +1,14 @@
+research_task:
+  description: >
+    Research the given topic and produce a brief.
+  expected_output: >
+    A bulleted research brief.
+  agent: researcher
+
+writing_task:
+  description: >
+    Write the article from the research brief.
+  expected_output: >
+    A polished article.
+  agent: writer
+  context: [research_task]

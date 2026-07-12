@@ -54,6 +54,29 @@ REPO_LICENSES: dict[str, dict[str, str]] = {
                  "(per-skill LICENSE.txt)",
         "commit_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
     },
+    "crewAIInc/crewAI": {
+        "spdx": "MIT",
+        "quote": "MIT License\n\nCopyright (c) 2025 crewAI, Inc.",
+        "commit_sha": "fb8e93be25d97776cf18368c3ac56e7ac69661b9",
+    },
+    "rohitg00/awesome-claude-code-toolkit": {
+        "spdx": "Apache-2.0",
+        "quote": "Apache License\n                           Version 2.0, January 2004",
+        "commit_sha": "ebdf1d596d2cde5c5cceb32177e8d1cf4829e7d9",
+    },
+    # crewAIInc/crewAI-examples is DELIBERATELY absent from this table.
+    # Verified 2026-07-12 (W17): no LICENSE file anywhere in the repo tree,
+    # no `license =` field in any of its 20 pyproject.toml files, and the
+    # README states only "Check individual examples for specific licensing
+    # information" without any example actually doing so. A live WebFetch
+    # of the repo's GitHub page confirmed no SPDX badge/declaration either.
+    # `ledger.entry_for` therefore falls through to its `spdx is None`
+    # branch for every crewAI-examples artifact: verdict "unknown",
+    # quarantined, `quarantine_reason` records exactly this. The 12
+    # candidate teams this repo's crews form (see W17_coordination_scale_up)
+    # still go through `coordination_filter` — the license gate is a
+    # DatasetRecord-emission gate (`formalize.py::team_license_ok`), not a
+    # reason to skip judging whether the task needs coordination.
 }
 
 # path prefixes (relative to the repo checkout root) that carry a

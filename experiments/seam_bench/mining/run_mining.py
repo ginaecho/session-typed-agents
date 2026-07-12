@@ -42,7 +42,8 @@ for p in (str(REPO_ROOT), str(HERE)):
         sys.path.insert(0, p)
 
 from harvest import (                                             # noqa: E402
-    Artifact, adapter_copilot_style, adapter_skill_dir_style, adapter_local_vendored)
+    Artifact, adapter_copilot_style, adapter_skill_dir_style,
+    adapter_local_vendored, adapter_crewai_style)
 from ledger import build_ledger, to_json as ledger_to_json         # noqa: E402
 from team_builder import build_teams                               # noqa: E402
 from formalize import run_formalize, assert_toolchain, ToolchainMissing  # noqa: E402
@@ -53,6 +54,13 @@ DEFAULT_REMOTES = {
     "awesome-copilot": ("awesome-copilot", "github/awesome-copilot", "copilot"),
     "VoltAgent": ("VoltAgent", "VoltAgent/awesome-claude-code-subagents", "skilldir"),
     "anthropic-skills": ("anthropic-skills", "anthropics/skills", "skilldir"),
+    # W17 additions (R3's item 2.d, "if still short of target"):
+    "crewAI-core": ("crewAI-core", "crewAIInc/crewAI", "crewai"),
+    "crewAI-examples": ("crewAI-examples", "crewAIInc/crewAI-examples", "crewai"),
+    # W17 fallback source (74 candidates from a-c+crewai fell short of the
+    # ~100 coordination-requiring target; probed reachable, Apache-2.0
+    # confirmed via root LICENSE file):
+    "rohitg00-toolkit": ("rohitg00-toolkit", "rohitg00/awesome-claude-code-toolkit", "skilldir"),
 }
 
 
@@ -75,6 +83,8 @@ def harvest_all(remote_root: Path | None) -> list[Artifact]:
             continue
         if kind == "copilot":
             found = adapter_copilot_style(checkout, repo)
+        elif kind == "crewai":
+            found = adapter_crewai_style(checkout, repo)
         else:
             found = adapter_skill_dir_style(checkout, repo)
         artifacts.extend(found)

@@ -9,7 +9,7 @@ sys.path.insert(0, str(HERE.parent))
 
 from harvest import (                                    # noqa: E402
     adapter_copilot_style, adapter_skill_dir_style, adapter_local_vendored,
-    adapter_crewai_stub, adapter_langgraph_stub, _parse_frontmatter)
+    adapter_crewai_style, adapter_crewai_stub, adapter_langgraph_stub, _parse_frontmatter)
 
 FIXTURES = HERE / "fixtures"
 
@@ -94,8 +94,31 @@ def test_frontmatter_parser_returns_empty_without_fence():
     assert _parse_frontmatter("no frontmatter here") == {}
 
 
-def test_crewai_and_langgraph_adapters_are_documented_stubs():
-    with pytest.raises(NotImplementedError):
-        adapter_crewai_stub(Path("."), "fixture/crewai")
+def test_langgraph_adapter_is_a_documented_stub():
     with pytest.raises(NotImplementedError):
         adapter_langgraph_stub(Path("."), "fixture/langgraph")
+
+
+def test_crewai_style_parses_agents_and_assigns_own_tasks():
+    arts = adapter_crewai_style(FIXTURES / "crewai_repo", "fixture/crewai")
+    by_role = {a.role_hint: a for a in arts}
+    assert set(by_role) == {"researcher", "writer"}
+    researcher = by_role["researcher"]
+    assert researcher.adapter == "crewai_style"
+    assert researcher.frontmatter["_crew_dir"] == "crews/demo_crew"
+    assert "research_task" in researcher.frontmatter["_own_task_keys"]
+    assert "Senior Researcher" in researcher.text
+    assert "Research the given topic" in researcher.text
+    writer = by_role["writer"]
+    assert "writing_task" in writer.frontmatter["_own_task_keys"]
+    # the context: [research_task] dependency must be carried into the
+    # rendered text verbatim so team_builder can find it as a real edge,
+    # not invent one.
+    assert "research_task" in writer.text
+
+
+def test_crewai_stub_alias_delegates_to_real_adapter():
+    # kept for backward compatibility with any external caller of the old
+    # stub name; no longer raises.
+    arts = adapter_crewai_stub(FIXTURES / "crewai_repo", "fixture/crewai")
+    assert len(arts) == 2

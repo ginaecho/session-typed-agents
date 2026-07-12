@@ -1,0 +1,3452 @@
+[
+ {
+  "team_id": "worked_example:pr_merge",
+  "source_repo": "in-repo:skills_safety",
+  "heuristic": "worked-example",
+  "notes": [
+   "mirrors experiments/cases/skills_safety/pr_merge/skills_original/"
+  ],
+  "roles": [
+   {
+    "role_hint": "Author",
+    "path": "pr_merge/skills_original/Author.md",
+    "description": "You are the **Author** on a change-review team."
+   },
+   {
+    "role_hint": "CodeReviewer",
+    "path": "pr_merge/skills_original/CodeReviewer.md",
+    "description": "You are the **CodeReviewer** on a change-review team."
+   },
+   {
+    "role_hint": "SecurityReviewer",
+    "path": "pr_merge/skills_original/SecurityReviewer.md",
+    "description": "You are the **SecurityReviewer** on a change-review team."
+   },
+   {
+    "role_hint": "Merger",
+    "path": "pr_merge/skills_original/Merger.md",
+    "description": "You are the **Merger** — the tech lead who makes the ship call."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "worked_example:content_pipeline",
+  "source_repo": "in-repo:skills_safety",
+  "heuristic": "worked-example",
+  "notes": [
+   "mirrors experiments/cases/skills_safety/content_pipeline/skills_original/"
+  ],
+  "roles": [
+   {
+    "role_hint": "Researcher",
+    "path": "content_pipeline/skills_original/Researcher.md",
+    "description": "You are the **Researcher** on a content-creation crew."
+   },
+   {
+    "role_hint": "Writer",
+    "path": "content_pipeline/skills_original/Writer.md",
+    "description": "You are the **Writer** on a content-creation crew."
+   },
+   {
+    "role_hint": "Editor",
+    "path": "content_pipeline/skills_original/Editor.md",
+    "description": "You are the **Editor** on a content-creation crew."
+   },
+   {
+    "role_hint": "Publisher",
+    "path": "content_pipeline/skills_original/Publisher.md",
+    "description": "You are the **Publisher**."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "worked_example:airline_seat",
+  "source_repo": "in-repo:skills_safety",
+  "heuristic": "worked-example",
+  "notes": [
+   "mirrors experiments/cases/skills_safety/airline_seat/skills_original/"
+  ],
+  "roles": [
+   {
+    "role_hint": "Triage",
+    "path": "airline_seat/skills_original/Triage.md",
+    "description": "You are the **Triage Agent** for an airline's customer service."
+   },
+   {
+    "role_hint": "SeatBooking",
+    "path": "airline_seat/skills_original/SeatBooking.md",
+    "description": "You are the **Seat Booking Agent** for an airline."
+   },
+   {
+    "role_hint": "FlightSystem",
+    "path": "airline_seat/skills_original/FlightSystem.md",
+    "description": "You are the **Flight System** — the system of record that applies seat changes."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "worked_example:booking_saga",
+  "source_repo": "in-repo:skills_safety",
+  "heuristic": "worked-example",
+  "notes": [
+   "mirrors experiments/cases/skills_safety/booking_saga/skills_original/"
+  ],
+  "roles": [
+   {
+    "role_hint": "Traveler",
+    "path": "booking_saga/skills_original/Traveler.md",
+    "description": "You are the **Traveler** orchestrator."
+   },
+   {
+    "role_hint": "Hotel",
+    "path": "booking_saga/skills_original/Hotel.md",
+    "description": "You are the **Hotel** reservation service."
+   },
+   {
+    "role_hint": "Payment",
+    "path": "booking_saga/skills_original/Payment.md",
+    "description": "You are the **Payment** service."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "worked_example:code_execution",
+  "source_repo": "in-repo:skills_safety",
+  "heuristic": "worked-example",
+  "notes": [
+   "mirrors experiments/cases/skills_safety/code_execution/skills_original/"
+  ],
+  "roles": [
+   {
+    "role_hint": "Coder",
+    "path": "code_execution/skills_original/Coder.md",
+    "description": "You are the **Coder** (assistant agent)."
+   },
+   {
+    "role_hint": "Executor",
+    "path": "code_execution/skills_original/Executor.md",
+    "description": "You are the **Executor** (code-executor agent)."
+   },
+   {
+    "role_hint": "Reviewer",
+    "path": "code_execution/skills_original/Reviewer.md",
+    "description": "You are the **Reviewer**."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "worked_example:doc_pipeline",
+  "source_repo": "in-repo:skills_safety",
+  "heuristic": "worked-example",
+  "notes": [
+   "mirrors experiments/cases/skills_safety/doc_pipeline/skills_original/"
+  ],
+  "roles": [
+   {
+    "role_hint": "Requester",
+    "path": "doc_pipeline/skills_original/Requester.md",
+    "description": "You are the **Requester**."
+   },
+   {
+    "role_hint": "Writer",
+    "path": "doc_pipeline/skills_original/Writer.md",
+    "description": "You are the **Writer** on an internal-communications team."
+   },
+   {
+    "role_hint": "BrandReviewer",
+    "path": "doc_pipeline/skills_original/BrandReviewer.md",
+    "description": "You are the **BrandReviewer** on an internal-communications team."
+   },
+   {
+    "role_hint": "DocLead",
+    "path": "doc_pipeline/skills_original/DocLead.md",
+    "description": "You are the **DocLead** on an internal-communications team."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "worked_example:pr_merge_upstream",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "worked-example",
+  "notes": [
+   "curated selection mirroring the skills_safety worked example, applied to the literal upstream files"
+  ],
+  "roles": [
+   {
+    "role_hint": "address-comments",
+    "path": "agents/address-comments.agent.md",
+    "description": "Address PR comments"
+   },
+   {
+    "role_hint": "code-review-generic",
+    "path": "instructions/code-review-generic.instructions.md",
+    "description": "Generic code review instructions that can be customized for any project using GitHub Copilot"
+   },
+   {
+    "role_hint": "se-security-reviewer",
+    "path": "agents/se-security-reviewer.agent.md",
+    "description": "Security-focused code review specialist with OWASP Top 10, Zero Trust, LLM security, and enterprise security standards"
+   },
+   {
+    "role_hint": "principal-software-engineer",
+    "path": "agents/principal-software-engineer.agent.md",
+    "description": "Provide principal-level software engineering guidance with focus on engineering excellence, technical leadership, and pragmatic implementation."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "worked_example:doc_pipeline_upstream",
+  "source_repo": "anthropics/skills",
+  "heuristic": "worked-example",
+  "notes": [
+   "curated selection mirroring the skills_safety worked example, applied to the literal upstream files"
+  ],
+  "roles": [
+   {
+    "role_hint": "internal-comms",
+    "path": "skills/internal-comms/SKILL.md",
+    "description": "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever asked to write some sort of internal communications (status reports, leadership updates, 3P updates, company newsletters, FAQs, incident rep"
+   },
+   {
+    "role_hint": "brand-guidelines",
+    "path": "skills/brand-guidelines/SKILL.md",
+    "description": "Applies Anthropic's official brand colors and typography to any sort of artifact that may benefit from having Anthropic's look-and-feel. Use it when brand colors or style guidelines, visual formatting, or company design standards apply."
+   },
+   {
+    "role_hint": "doc-coauthoring",
+    "path": "skills/doc-coauthoring/SKILL.md",
+    "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "explicit_ref:github/awesome-copilot:gem-implementer+r",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "explicit-reference",
+  "notes": [
+   "connected via a handoff-verb + role-name text match"
+  ],
+  "roles": [
+   {
+    "role_hint": "r",
+    "path": "instructions/r.instructions.md",
+    "description": "R language and document formats (R, Rmd, Quarto): coding standards and Copilot guidance for idiomatic, safe, and consistent code generation."
+   },
+   {
+    "role_hint": "gem-implementer",
+    "path": "agents/gem-implementer.agent.md",
+    "description": "TDD code implementation: features, bugs, refactoring. Never reviews own work."
+   }
+  ],
+  "edges": [
+   {
+    "from": "gem-implementer",
+    "to": "r",
+    "quote": "` exists, use it to invoke the appropriate skills or achieve the desired outcome.\n- TDD Cycle (Red → Green → R",
+    "kind": "handoff-verb"
+   }
+  ]
+ },
+ {
+  "team_id": "explicit_ref:github/awesome-copilot:agent-safety+agents+debug+devbox-image-definition+gem-critic+gem-debugger+gem-documentation-writer+gem-orchestrator+gem-planner+gem-reviewer+gem-skill-creator+plan+planner+prd+prompt",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "explicit-reference",
+  "notes": [
+   "connected via a handoff-verb + role-name text match"
+  ],
+  "roles": [
+   {
+    "role_hint": "prompt",
+    "path": "instructions/prompt.instructions.md",
+    "description": "Guidelines for creating high-quality prompt files for GitHub Copilot"
+   },
+   {
+    "role_hint": "gem-reviewer",
+    "path": "agents/gem-reviewer.agent.md",
+    "description": "Security auditing, code review, OWASP scanning, PRD compliance verification."
+   },
+   {
+    "role_hint": "prd",
+    "path": "agents/prd.agent.md",
+    "description": "Generate a comprehensive Product Requirements Document (PRD) in Markdown, detailing user stories, acceptance criteria, technical considerations, and metrics. Optionally create GitHub issues upon user confirmation."
+   },
+   {
+    "role_hint": "gem-skill-creator",
+    "path": "agents/gem-skill-creator.agent.md",
+    "description": "Pattern-to-skill extraction: creates agent skills files from high-confidence learnings."
+   },
+   {
+    "role_hint": "planner",
+    "path": "agents/planner.agent.md",
+    "description": "Generate an implementation plan for new features or refactoring existing code."
+   },
+   {
+    "role_hint": "gem-orchestrator",
+    "path": "agents/gem-orchestrator.agent.md",
+    "description": "The team lead: Orchestrates planning, implementation, and verification."
+   },
+   {
+    "role_hint": "gem-planner",
+    "path": "agents/gem-planner.agent.md",
+    "description": "DAG-based execution plans: task decomposition, wave scheduling, risk analysis."
+   },
+   {
+    "role_hint": "agent-safety",
+    "path": "instructions/agent-safety.instructions.md",
+    "description": "Guidelines for building safe, governed AI agent systems. Apply when writing code that uses agent frameworks, tool-calling LLMs, or multi-agent orchestration to ensure proper safety boundaries, policy enforcement, and auditability."
+   },
+   {
+    "role_hint": "devbox-image-definition",
+    "path": "instructions/devbox-image-definition.instructions.md",
+    "description": "Authoring recommendations for creating YAML based image definition files for use with Microsoft Dev Box Team Customizations"
+   },
+   {
+    "role_hint": "gem-documentation-writer",
+    "path": "agents/gem-documentation-writer.agent.md",
+    "description": "Technical documentation, README files, API docs, diagrams, walkthroughs."
+   },
+   {
+    "role_hint": "debug",
+    "path": "agents/debug.agent.md",
+    "description": "Debug your application to find and fix a bug"
+   },
+   {
+    "role_hint": "plan",
+    "path": "agents/plan.agent.md",
+    "description": "Strategic planning and architecture assistant focused on thoughtful analysis before implementation. Helps developers understand codebases, clarify requirements, and develop comprehensive implementation strategies."
+   },
+   {
+    "role_hint": "gem-critic",
+    "path": "agents/gem-critic.agent.md",
+    "description": "Challenges assumptions, finds edge cases, spots over-engineering and logic gaps."
+   },
+   {
+    "role_hint": "gem-debugger",
+    "path": "agents/gem-debugger.agent.md",
+    "description": "Root-cause analysis, stack trace diagnosis, regression bisection, error reproduction."
+   },
+   {
+    "role_hint": "agents",
+    "path": "instructions/agents.instructions.md",
+    "description": "Guidelines for creating custom agent files for GitHub Copilot"
+   }
+  ],
+  "edges": [
+   {
+    "from": "gem-orchestrator",
+    "to": "agents",
+    "quote": "ows: detect phases, route to agents, synthesize results. You MUST STRICTLY follow workflow starting from `Ph",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "debug",
+    "quote": "4 task execution) → delegate to agent.\n\nIMPORTANT: Never inspect, edit, run, test, debug, review, design, docum",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "gem-debugger",
+    "quote": "ential steps: first delegate to `gem-debugger` for diagnosis (wave 1), then forward `debugger_diagnosis` to `ge",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "gem-planner",
+    "quote": "ty=MEDIUM/HIGH:\n  - Delegate to `gem-planner` with `task_clarifications`, relevant context, `memory_seed`, and",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "planner",
+    "quote": "ty=MEDIUM/HIGH:\n  - Delegate to `gem-planner` with `task_clarifications`, relevant context, `memory_seed`, and",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "gem-reviewer",
+    "quote": "ity=MEDIUM:\n      - Delegate to `gem-reviewer(plan)`.\n    - Complexity=HIGH or `planner.enable_critic_for` sati",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "plan",
+    "quote": "ity=MEDIUM:\n      - Delegate to `gem-reviewer(plan)`.\n    - Complexity=HIGH or `planner.enable_critic_for` sati",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "gem-critic",
+    "quote": "- In parallel, delegate to `gem-critic(plan)`, only if: High-risk signal exists: `architecture`, `contract",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "gem-documentation-writer",
+    "quote": "product decisions → delegate to `gem-documentation-writer` → PRD\n  - If technical decisions/conventions → deleg",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "prd",
+    "quote": "product decisions → delegate to `gem-documentation-writer` → PRD\n  - If technical decisions/conventions → deleg",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "gem-orchestrator",
+    "to": "gem-skill-creator",
+    "quote": "cutable workflows → delegate to `gem-skill-creator` → skills\n- Loop:\n  - Remaining unblocked waves/tasks → next",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "agent-safety",
+    "to": "agents",
+    "quote": "olicy\n- When agents delegate to other agents, apply the most restrictive policy from either\n- Track trust score",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "agents",
+    "to": "plan",
+    "quote": "a detailed plan\n2. Hand off to the Implementer agent to write code based on the plan\n3. Hand off to the Review",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "agents",
+    "to": "prompt",
+    "quote": "nue.\n  - Otherwise: invoke the sub-agent using the wrapper prompt and capture its summary.\n  - Mark as **SUCCE",
+    "kind": "handoff-verb"
+   },
+   {
+    "from": "devbox-image-definition",
+    "to": "plan",
+    "quote": "be used as a first pass to help the user plan and generate the YAML file based on their requirements and t",
+    "kind": "handoff-verb"
+   }
+  ]
+ },
+ {
+  "team_id": "explicit_ref:github/awesome-copilot:markdown+se-ux-ui-designer",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "explicit-reference",
+  "notes": [
+   "connected via a handoff-verb + role-name text match"
+  ],
+  "roles": [
+   {
+    "role_hint": "se-ux-ui-designer",
+    "path": "agents/se-ux-ui-designer.agent.md",
+    "description": "Jobs-to-be-Done analysis, user journey mapping, and UX research artifacts for Figma and design workflows"
+   },
+   {
+    "role_hint": "markdown",
+    "path": "instructions/markdown.instructions.md",
+    "description": "Markdown formatting aligned to the CommonMark specification (0.31.2)"
+   }
+  ],
+  "edges": [
+   {
+    "from": "se-ux-ui-designer",
+    "to": "markdown",
+    "quote": "y requirements\n\n### Handoff to Design:\n```markdown\n## For Figma Design Team\n\n**Research artifacts ready:**\n- J",
+    "kind": "handoff-verb"
+   }
+  ]
+ },
+ {
+  "team_id": "explicit_ref:rohitg00/awesome-claude-code-toolkit:review+workflow-director",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "explicit-reference",
+  "notes": [
+   "connected via a handoff-verb + role-name text match"
+  ],
+  "roles": [
+   {
+    "role_hint": "workflow-director",
+    "path": "agents/orchestration/workflow-director.md",
+    "description": "End-to-end workflow orchestration, checkpoint management, and error recovery"
+   },
+   {
+    "role_hint": "review",
+    "path": "plugins/code-guardian/commands/review.md",
+    "description": "Perform a thorough code review of the current uncommitted changes or a specified file/directory."
+   }
+  ],
+  "edges": [
+   {
+    "from": "workflow-director",
+    "to": "review",
+    "quote": "during execution.\n- Hand off to the appropriate next step (code review, deployment, documentation update).\n\n##",
+    "kind": "handoff-verb"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:python-pro+frontend-developer+backend-developer+data-scientist+devops-engineer+fullstack-developer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: python-pro names 5 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "python-pro",
+    "path": "categories/02-language-specialists/python-pro.md",
+    "description": "Use this agent when you need to build type-safe, production-ready Python code for web APIs, system utilities, or complex applications requiring modern async patterns and extensive type coverage."
+   },
+   {
+    "role_hint": "frontend-developer",
+    "path": "categories/01-core-development/frontend-developer.md",
+    "description": "Use when building complete frontend applications across React, Vue, and Angular frameworks requiring multi-framework expertise and full-stack integration."
+   },
+   {
+    "role_hint": "backend-developer",
+    "path": "categories/01-core-development/backend-developer.md",
+    "description": "Use this agent when building server-side APIs, microservices, and backend systems that require robust architecture, scalability planning, and production-ready implementation."
+   },
+   {
+    "role_hint": "data-scientist",
+    "path": "categories/05-data-ai/data-scientist.md",
+    "description": "Use this agent when you need to analyze data patterns, build predictive models, or extract statistical insights from datasets. Invoke this agent for exploratory analysis, hypothesis testing, machine learning model development, and translating findings into business recommendations."
+   },
+   {
+    "role_hint": "devops-engineer",
+    "path": "categories/03-infrastructure/devops-engineer.md",
+    "description": "Use this agent when building or optimizing infrastructure automation, CI/CD pipelines, containerization strategies, and deployment workflows to accelerate software delivery while maintaining reliability and security."
+   },
+   {
+    "role_hint": "fullstack-developer",
+    "path": "categories/01-core-development/fullstack-developer.md",
+    "description": "Use this agent when you need to build complete features spanning database, API, and frontend layers together as a cohesive unit."
+   }
+  ],
+  "edges": [
+   {
+    "from": "python-pro",
+    "to": "frontend-developer",
+    "quote": "Provide API endpoints to frontend-developer",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "python-pro",
+    "to": "backend-developer",
+    "quote": "Share data models with backend-developer",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "python-pro",
+    "to": "data-scientist",
+    "quote": "Share data models with backend-developer",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "python-pro",
+    "to": "devops-engineer",
+    "quote": "Collaborate with data-scientist on ML pipelines",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "python-pro",
+    "to": "fullstack-developer",
+    "quote": "Work with devops-engineer on deployment",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:docker-expert+kubernetes-specialist+security-engineer+cloud-architect+deployment-engineer+sre-engineer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: docker-expert names 5 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "docker-expert",
+    "path": "categories/03-infrastructure/docker-expert.md",
+    "description": "Use this agent when you need to build, optimize, or secure Docker container images and orchestration for production environments."
+   },
+   {
+    "role_hint": "kubernetes-specialist",
+    "path": "categories/03-infrastructure/kubernetes-specialist.md",
+    "description": "Use this agent when you need to design, deploy, configure, or troubleshoot Kubernetes clusters and workloads in production environments."
+   },
+   {
+    "role_hint": "security-engineer",
+    "path": "categories/03-infrastructure/security-engineer.md",
+    "description": "Use this agent when implementing comprehensive security solutions across infrastructure, building automated security controls into CI/CD pipelines, or establishing compliance and vulnerability management programs. Invoke for threat modeling, zero-trust architecture design, security automation implem"
+   },
+   {
+    "role_hint": "cloud-architect",
+    "path": "categories/03-infrastructure/cloud-architect.md",
+    "description": "Use this agent when you need to design, evaluate, or optimize cloud infrastructure architecture at scale. Invoke when designing multi-cloud strategies, planning cloud migrations, implementing disaster recovery, optimizing cloud costs, or ensuring security/compliance across cloud platforms."
+   },
+   {
+    "role_hint": "deployment-engineer",
+    "path": "categories/03-infrastructure/deployment-engineer.md",
+    "description": "Use this agent when designing, building, or optimizing CI/CD pipelines and deployment automation strategies."
+   },
+   {
+    "role_hint": "sre-engineer",
+    "path": "categories/03-infrastructure/sre-engineer.md",
+    "description": "Use this agent when you need to establish or improve system reliability through SLO definition, error budget management, and automation. Invoke when implementing SLI/SLO frameworks, reducing operational toil, designing fault-tolerant systems, conducting chaos engineering, or optimizing incident resp"
+   }
+  ],
+  "edges": [
+   {
+    "from": "docker-expert",
+    "to": "kubernetes-specialist",
+    "quote": "Support kubernetes-specialist with image optimization and security configuration",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "docker-expert",
+    "to": "security-engineer",
+    "quote": "Work with security-engineer on vulnerability scanning and supply chain security",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "docker-expert",
+    "to": "cloud-architect",
+    "quote": "Partner with cloud-architect on cloud-native deployments and registry selection",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "docker-expert",
+    "to": "deployment-engineer",
+    "quote": "Assist deployment-engineer with release strategies and zero-downtime deployments",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "docker-expert",
+    "to": "sre-engineer",
+    "quote": "Coordinate with sre-engineer on reliability and incident response",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:mlops-engineer+data-engineer+ml-engineer+security-auditor+ai-engineer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: mlops-engineer names 4 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "mlops-engineer",
+    "path": "categories/05-data-ai/mlops-engineer.md",
+    "description": "Use this agent when you need to design and implement ML infrastructure, set up CI/CD for machine learning models, establish model versioning systems, or optimize ML platforms for reliability and automation. Invoke this agent to build production-grade experiment tracking, implement automated training"
+   },
+   {
+    "role_hint": "data-engineer",
+    "path": "categories/05-data-ai/data-engineer.md",
+    "description": "Use this agent when you need to design, build, or optimize data pipelines, ETL/ELT processes, and data infrastructure. Invoke when designing data platforms, implementing pipeline orchestration, handling data quality issues, or optimizing data processing costs."
+   },
+   {
+    "role_hint": "ml-engineer",
+    "path": "categories/05-data-ai/ml-engineer.md",
+    "description": "Use this agent when building production ML systems requiring model training pipelines, model serving infrastructure, performance optimization, and automated retraining."
+   },
+   {
+    "role_hint": "security-auditor",
+    "path": "categories/04-quality-security/security-auditor.md",
+    "description": "Use this agent when conducting comprehensive security audits, compliance assessments, or risk evaluations across systems, infrastructure, and processes. Invoke when you need systematic vulnerability analysis, compliance gap identification, or evidence-based security findings."
+   },
+   {
+    "role_hint": "ai-engineer",
+    "path": "categories/05-data-ai/ai-engineer.md",
+    "description": "Use this agent when architecting, implementing, or optimizing end-to-end AI systems—from model selection and training pipelines to production deployment and monitoring."
+   }
+  ],
+  "edges": [
+   {
+    "from": "mlops-engineer",
+    "to": "data-engineer",
+    "quote": "Collaborate with ml-engineer on workflows",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "mlops-engineer",
+    "to": "ml-engineer",
+    "quote": "Collaborate with ml-engineer on workflows",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "mlops-engineer",
+    "to": "security-auditor",
+    "quote": "Help sre-engineer on reliability",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "mlops-engineer",
+    "to": "ai-engineer",
+    "quote": "Partner with data-scientist on tools",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:cpp-pro+rust-engineer+game-developer+embedded-systems+golang-pro+performance-engineer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: cpp-pro names 5 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "cpp-pro",
+    "path": "categories/02-language-specialists/cpp-pro.md",
+    "description": "Use this agent when building high-performance C++ systems requiring modern C++20/23 features, template metaprogramming, or zero-overhead abstractions for systems programming, embedded systems, or performance-critical applications."
+   },
+   {
+    "role_hint": "rust-engineer",
+    "path": "categories/02-language-specialists/rust-engineer.md",
+    "description": "Use when building Rust systems where memory safety, ownership patterns, zero-cost abstractions, and performance optimization are critical for systems programming, embedded development, async applications, or high-performance services."
+   },
+   {
+    "role_hint": "game-developer",
+    "path": "categories/07-specialized-domains/game-developer.md",
+    "description": "Use this agent when implementing game systems, optimizing graphics rendering, building multiplayer networking, or developing gameplay mechanics for games targeting specific platforms."
+   },
+   {
+    "role_hint": "embedded-systems",
+    "path": "categories/07-specialized-domains/embedded-systems.md",
+    "description": "Use when developing firmware for resource-constrained microcontrollers, implementing RTOS-based applications, or optimizing real-time systems where hardware constraints, latency guarantees, and reliability are critical."
+   },
+   {
+    "role_hint": "golang-pro",
+    "path": "categories/02-language-specialists/golang-pro.md",
+    "description": "Use when building Go applications requiring concurrent programming, high-performance systems, microservices, or cloud-native architectures where idiomatic patterns, error handling excellence, and efficiency are critical."
+   },
+   {
+    "role_hint": "performance-engineer",
+    "path": "categories/04-quality-security/performance-engineer.md",
+    "description": "Use this agent when you need to identify and eliminate performance bottlenecks in applications, databases, or infrastructure systems, and when baseline performance metrics need improvement."
+   }
+  ],
+  "edges": [
+   {
+    "from": "cpp-pro",
+    "to": "rust-engineer",
+    "quote": "Share performance techniques with rust-engineer",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "cpp-pro",
+    "to": "game-developer",
+    "quote": "Share performance techniques with rust-engineer",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "cpp-pro",
+    "to": "embedded-systems",
+    "quote": "Support game-developer with engine code",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "cpp-pro",
+    "to": "golang-pro",
+    "quote": "Guide embedded-systems on drivers",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "cpp-pro",
+    "to": "performance-engineer",
+    "quote": "Collaborate with golang-pro on CGO",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:research-analyst+data-researcher+competitive-analyst+market-researcher+search-specialist+trend-analyst",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: research-analyst names 5 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "research-analyst",
+    "path": "categories/10-research-analysis/research-analyst.md",
+    "description": "Use this agent when you need comprehensive research across multiple sources with synthesis of findings into actionable insights, trend identification, and detailed reporting."
+   },
+   {
+    "role_hint": "data-researcher",
+    "path": "categories/10-research-analysis/data-researcher.md",
+    "description": "Use this agent when you need to discover, collect, and validate data from multiple sources to fuel analysis and decision-making. Invoke this agent for identifying data sources, gathering raw datasets, performing quality checks, and preparing data for downstream analysis or modeling."
+   },
+   {
+    "role_hint": "competitive-analyst",
+    "path": "categories/10-research-analysis/competitive-analyst.md",
+    "description": "Use when you need to analyze direct and indirect competitors, benchmark against market leaders, or develop strategies to strengthen competitive positioning and market advantage."
+   },
+   {
+    "role_hint": "market-researcher",
+    "path": "categories/10-research-analysis/market-researcher.md",
+    "description": "Use this agent when you need to analyze markets, understand consumer behavior, assess competitive landscapes, and size opportunities to inform business strategy and market entry decisions."
+   },
+   {
+    "role_hint": "search-specialist",
+    "path": "categories/10-research-analysis/search-specialist.md",
+    "description": "Use when you need to find specific information across multiple sources using advanced search strategies, query optimization, and targeted information retrieval. Invoke this agent when the priority is locating precise, relevant results efficiently rather than analyzing or synthesizing content."
+   },
+   {
+    "role_hint": "trend-analyst",
+    "path": "categories/10-research-analysis/trend-analyst.md",
+    "description": "Use when analyzing emerging patterns, predicting industry shifts, or developing future scenarios to inform strategic planning and competitive positioning."
+   }
+  ],
+  "edges": [
+   {
+    "from": "research-analyst",
+    "to": "data-researcher",
+    "quote": "Collaborate with data-researcher on data gathering",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "research-analyst",
+    "to": "competitive-analyst",
+    "quote": "Support market-researcher on market analysis",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "research-analyst",
+    "to": "market-researcher",
+    "quote": "Support market-researcher on market analysis",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "research-analyst",
+    "to": "search-specialist",
+    "quote": "Guide trend-analyst on pattern identification",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "research-analyst",
+    "to": "trend-analyst",
+    "quote": "Guide trend-analyst on pattern identification",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:platform-engineer+database-administrator",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: platform-engineer names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "platform-engineer",
+    "path": "categories/03-infrastructure/platform-engineer.md",
+    "description": "Use when building or improving internal developer platforms (IDPs), designing self-service infrastructure, or optimizing developer workflows to reduce friction and accelerate delivery. The platform-engineer agent specializes in designing platform architecture, implementing golden paths, and maximizi"
+   },
+   {
+    "role_hint": "database-administrator",
+    "path": "categories/03-infrastructure/database-administrator.md",
+    "description": "Use this agent when optimizing database performance, implementing high-availability architectures, setting up disaster recovery, or managing database infrastructure for production systems."
+   }
+  ],
+  "edges": [
+   {
+    "from": "platform-engineer",
+    "to": "database-administrator",
+    "quote": "Coordinate with database-administrator on data services",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:tooling-engineer+cli-developer+dx-optimizer+build-engineer+documentation-engineer+refactoring-specialist",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: tooling-engineer names 5 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "tooling-engineer",
+    "path": "categories/06-developer-experience/tooling-engineer.md",
+    "description": "Use this agent when you need to build or enhance developer tools including CLIs, code generators, build tools, and IDE extensions."
+   },
+   {
+    "role_hint": "cli-developer",
+    "path": "categories/06-developer-experience/cli-developer.md",
+    "description": "Use this agent when building command-line tools and terminal applications that require intuitive command design, cross-platform compatibility, and optimized developer experience."
+   },
+   {
+    "role_hint": "dx-optimizer",
+    "path": "categories/06-developer-experience/dx-optimizer.md",
+    "description": "Use this agent when optimizing the complete developer workflow including build times, feedback loops, testing efficiency, and developer satisfaction metrics across the entire development environment."
+   },
+   {
+    "role_hint": "build-engineer",
+    "path": "categories/06-developer-experience/build-engineer.md",
+    "description": "Use this agent when you need to optimize build performance, reduce compilation times, or scale build systems across growing teams."
+   },
+   {
+    "role_hint": "documentation-engineer",
+    "path": "categories/06-developer-experience/documentation-engineer.md",
+    "description": "Use this agent when you need to create, architect, or overhaul comprehensive documentation systems including API docs, tutorials, guides, and developer-friendly content that keeps pace with code changes."
+   },
+   {
+    "role_hint": "refactoring-specialist",
+    "path": "categories/06-developer-experience/refactoring-specialist.md",
+    "description": "Use when you need to transform poorly structured, complex, or duplicated code into clean, maintainable systems while preserving all existing behavior."
+   }
+  ],
+  "edges": [
+   {
+    "from": "tooling-engineer",
+    "to": "cli-developer",
+    "quote": "Collaborate with dx-optimizer on workflows",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "tooling-engineer",
+    "to": "dx-optimizer",
+    "quote": "Collaborate with dx-optimizer on workflows",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "tooling-engineer",
+    "to": "build-engineer",
+    "quote": "Support cli-developer on CLI patterns",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "tooling-engineer",
+    "to": "documentation-engineer",
+    "quote": "Guide documentation-engineer on docs",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "tooling-engineer",
+    "to": "refactoring-specialist",
+    "quote": "Help devops-engineer on automation",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:accessibility-tester+ui-designer+qa-expert+mobile-developer+product-manager+compliance-auditor",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: accessibility-tester names 5 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "accessibility-tester",
+    "path": "categories/04-quality-security/accessibility-tester.md",
+    "description": "Use this agent when you need comprehensive accessibility testing, WCAG compliance verification, or assessment of assistive technology support."
+   },
+   {
+    "role_hint": "ui-designer",
+    "path": "categories/01-core-development/ui-designer.md",
+    "description": "Use this agent when designing visual interfaces, creating design systems, building component libraries, or refining user-facing aesthetics requiring expert visual design, interaction patterns, and accessibility considerations."
+   },
+   {
+    "role_hint": "qa-expert",
+    "path": "categories/04-quality-security/qa-expert.md",
+    "description": "Use this agent when you need comprehensive quality assurance strategy, test planning across the entire development cycle, or quality metrics analysis to improve overall software quality."
+   },
+   {
+    "role_hint": "mobile-developer",
+    "path": "categories/01-core-development/mobile-developer.md",
+    "description": "Use this agent when building cross-platform mobile applications requiring native performance optimization, platform-specific features, and offline-first architecture. Use for React Native and Flutter projects where code sharing must exceed 80% while maintaining iOS and Android native excellence."
+   },
+   {
+    "role_hint": "product-manager",
+    "path": "categories/08-business-product/product-manager.md",
+    "description": "Use this agent when you need to make product strategy decisions, prioritize features, or define roadmap plans based on user needs and business goals."
+   },
+   {
+    "role_hint": "compliance-auditor",
+    "path": "categories/04-quality-security/compliance-auditor.md",
+    "description": "Use this agent when you need to achieve regulatory compliance, implement compliance controls, or prepare for audits across frameworks like GDPR, HIPAA, PCI DSS, SOC 2, and ISO standards."
+   }
+  ],
+  "edges": [
+   {
+    "from": "accessibility-tester",
+    "to": "ui-designer",
+    "quote": "Guide frontend-developer on accessible components",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "accessibility-tester",
+    "to": "qa-expert",
+    "quote": "Support ui-designer on inclusive design",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "accessibility-tester",
+    "to": "mobile-developer",
+    "quote": "Help mobile-developer on platform accessibility",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "accessibility-tester",
+    "to": "product-manager",
+    "quote": "Assist backend-developer on API accessibility",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "accessibility-tester",
+    "to": "compliance-auditor",
+    "quote": "Coordinate with compliance-auditor on standards",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:debugger+error-detective+code-reviewer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: debugger names 2 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "debugger",
+    "path": "categories/04-quality-security/debugger.md",
+    "description": "Use this agent when you need to diagnose and fix bugs, identify root causes of failures, or analyze error logs and stack traces to resolve issues."
+   },
+   {
+    "role_hint": "error-detective",
+    "path": "categories/04-quality-security/error-detective.md",
+    "description": "Use this agent when you need to diagnose why errors are occurring in your system, correlate errors across services, identify root causes, and prevent future failures."
+   },
+   {
+    "role_hint": "code-reviewer",
+    "path": "categories/04-quality-security/code-reviewer.md",
+    "description": "Use this agent when you need to conduct comprehensive code reviews focusing on code quality, security vulnerabilities, and best practices."
+   }
+  ],
+  "edges": [
+   {
+    "from": "debugger",
+    "to": "error-detective",
+    "quote": "Collaborate with error-detective on patterns",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "debugger",
+    "to": "code-reviewer",
+    "quote": "Support qa-expert with reproduction",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:payment-integration+fintech-engineer+risk-manager+legal-advisor",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: payment-integration names 3 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "payment-integration",
+    "path": "categories/07-specialized-domains/payment-integration.md",
+    "description": "Use this agent when implementing payment systems, integrating payment gateways, or handling financial transactions that require PCI compliance, fraud prevention, and secure transaction processing."
+   },
+   {
+    "role_hint": "fintech-engineer",
+    "path": "categories/07-specialized-domains/fintech-engineer.md",
+    "description": "Use when building payment systems, financial integrations, or compliance-heavy financial applications that require secure transaction processing, regulatory adherence, and high transaction accuracy."
+   },
+   {
+    "role_hint": "risk-manager",
+    "path": "categories/07-specialized-domains/risk-manager.md",
+    "description": "Use this agent when you need to identify, quantify, and mitigate enterprise-level risks across financial, operational, regulatory, and strategic domains. Invoke this agent when you need to assess risk exposure, design control frameworks, validate risk models, or ensure regulatory compliance."
+   },
+   {
+    "role_hint": "legal-advisor",
+    "path": "categories/08-business-product/legal-advisor.md",
+    "description": "Use this agent when you need to draft contracts, review compliance requirements, develop IP protection strategies, or assess legal risks for technology businesses."
+   }
+  ],
+  "edges": [
+   {
+    "from": "payment-integration",
+    "to": "fintech-engineer",
+    "quote": "Work with frontend-developer on checkout UI",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "payment-integration",
+    "to": "risk-manager",
+    "quote": "Assist qa-expert on testing strategies",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "payment-integration",
+    "to": "legal-advisor",
+    "quote": "Coordinate with legal-advisor on regulations",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:django-developer+database-optimizer+api-designer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: django-developer names 2 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "django-developer",
+    "path": "categories/02-language-specialists/django-developer.md",
+    "description": "Use when building Django 4+ web applications, REST APIs, or modernizing existing Django projects with async views and enterprise patterns."
+   },
+   {
+    "role_hint": "database-optimizer",
+    "path": "categories/05-data-ai/database-optimizer.md",
+    "description": "Use this agent when you need to analyze slow queries, optimize database performance across multiple systems, or implement indexing strategies to improve query execution."
+   },
+   {
+    "role_hint": "api-designer",
+    "path": "categories/01-core-development/api-designer.md",
+    "description": "Use this agent when designing new APIs, creating API specifications, or refactoring existing API architecture for scalability and developer experience. Invoke when you need REST/GraphQL endpoint design, OpenAPI documentation, authentication patterns, or API versioning strategies."
+   }
+  ],
+  "edges": [
+   {
+    "from": "django-developer",
+    "to": "database-optimizer",
+    "quote": "Support fullstack-developer on full-stack features",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "django-developer",
+    "to": "api-designer",
+    "quote": "Guide api-designer on API patterns",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:git-workflow-manager+project-manager",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: git-workflow-manager names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "git-workflow-manager",
+    "path": "categories/06-developer-experience/git-workflow-manager.md",
+    "description": "Use this agent when you need to design, establish, or optimize Git workflows, branching strategies, and merge management for a project or team."
+   },
+   {
+    "role_hint": "project-manager",
+    "path": "categories/08-business-product/project-manager.md",
+    "description": "Use this agent when you need to establish project plans, track execution progress, manage risks, control budget/schedule, and coordinate stakeholders across complex initiatives."
+   }
+  ],
+  "edges": [
+   {
+    "from": "git-workflow-manager",
+    "to": "project-manager",
+    "quote": "Coordinate with project-manager on releases",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:growth-loops+business-analyst",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: growth-loops names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "growth-loops",
+    "path": "categories/08-business-product/growth-loops.md",
+    "description": "Use when the user wants to design a growth loop, understand PLG mechanics, or build sustainable acquisition. Triggers on: 'growth loop', 'flywheel', 'viral loop', 'PLG growth', 'product-led growth', 'growth mechanics', 'how do we grow', 'word of mouth'."
+   },
+   {
+    "role_hint": "business-analyst",
+    "path": "categories/08-business-product/business-analyst.md",
+    "description": "Use when analyzing business processes, gathering requirements from stakeholders, or identifying process improvement opportunities to drive operational efficiency and measurable business value."
+   }
+  ],
+  "edges": [
+   {
+    "from": "growth-loops",
+    "to": "business-analyst",
+    "quote": "Partner with **business-analyst** to model loop economics",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:healthcare-admin+data-analyst+api-documenter",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: healthcare-admin names 2 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "healthcare-admin",
+    "path": "categories/07-specialized-domains/healthcare-admin.md",
+    "description": "Use when working on healthcare administration tasks including revenue cycle management, HIPAA/compliance auditing, medical coding (ICD-10, CPT, DRGs), CMS cost reports, payer contract analysis, quality improvement, clinical operations, health IT/interoperability, population health, and pharmacy bene"
+   },
+   {
+    "role_hint": "data-analyst",
+    "path": "categories/05-data-ai/data-analyst.md",
+    "description": "Use when you need to extract insights from business data, create dashboards and reports, or perform statistical analysis to support decision-making."
+   },
+   {
+    "role_hint": "api-documenter",
+    "path": "categories/07-specialized-domains/api-documenter.md",
+    "description": "Use this agent when creating or improving API documentation, writing OpenAPI specifications, building interactive documentation portals, or generating code examples for APIs."
+   }
+  ],
+  "edges": [
+   {
+    "from": "healthcare-admin",
+    "to": "data-analyst",
+    "quote": "Collaborate with **data-analyst** on healthcare metrics and reporting",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "healthcare-admin",
+    "to": "api-documenter",
+    "quote": "Partner with **api-documenter** on health IT interface specifications",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:dependency-manager+architect-reviewer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: dependency-manager names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "dependency-manager",
+    "path": "categories/06-developer-experience/dependency-manager.md",
+    "description": "Use this agent when you need to audit dependencies for vulnerabilities, resolve version conflicts, optimize bundle sizes, or implement automated dependency updates."
+   },
+   {
+    "role_hint": "architect-reviewer",
+    "path": "categories/04-quality-security/architect-reviewer.md",
+    "description": "Use this agent when you need to evaluate system design decisions, architectural patterns, and technology choices at the macro level."
+   }
+  ],
+  "edges": [
+   {
+    "from": "dependency-manager",
+    "to": "architect-reviewer",
+    "quote": "Coordinate with architect-reviewer on policies",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:license-engineer+technical-writer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: license-engineer names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "license-engineer",
+    "path": "categories/08-business-product/license-engineer.md",
+    "description": "Use this agent when architecting, implementing, or optimizing end-to-end legal licensing systems—from OSI standard selection and dependency compliance pipelines to proprietary deployment and risk monitoring."
+   },
+   {
+    "role_hint": "technical-writer",
+    "path": "categories/08-business-product/technical-writer.md",
+    "description": "Use this agent when you need to create, improve, or maintain technical documentation including API references, user guides, SDK documentation, and getting-started guides."
+   }
+  ],
+  "edges": [
+   {
+    "from": "license-engineer",
+    "to": "technical-writer",
+    "quote": "Partner with technical-writer on documenting compliance notices and accessible user guides",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:ux-researcher+content-marketer+customer-success-manager+scrum-master",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: ux-researcher names 3 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "ux-researcher",
+    "path": "categories/08-business-product/ux-researcher.md",
+    "description": "Use this agent when you need to conduct user research, analyze user behavior, or generate actionable insights to validate design decisions and uncover user needs. Invoke when you need usability testing, user interviews, survey design, analytics interpretation, persona development, or competitive res"
+   },
+   {
+    "role_hint": "content-marketer",
+    "path": "categories/08-business-product/content-marketer.md",
+    "description": "Use this agent when you need to develop comprehensive content strategies, create SEO-optimized marketing content, or execute multi-channel content campaigns to drive engagement and conversions. Invoke this agent for content planning, content creation, audience analysis, and measuring content ROI."
+   },
+   {
+    "role_hint": "customer-success-manager",
+    "path": "categories/08-business-product/customer-success-manager.md",
+    "description": "Use this agent when you need to assess customer health, develop retention strategies, identify upsell opportunities, or maximize customer lifetime value. Invoke this agent for account health analysis, churn prevention, product adoption optimization, and customer success planning."
+   },
+   {
+    "role_hint": "scrum-master",
+    "path": "categories/08-business-product/scrum-master.md",
+    "description": "Use when teams need facilitation, process optimization, velocity improvement, or agile ceremony management—especially for sprint planning, retrospectives, impediment removal, and scaling agile practices across multiple teams."
+   }
+  ],
+  "edges": [
+   {
+    "from": "ux-researcher",
+    "to": "content-marketer",
+    "quote": "Support frontend-developer on implementation",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "ux-researcher",
+    "to": "customer-success-manager",
+    "quote": "Guide content-marketer on messaging",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "ux-researcher",
+    "to": "scrum-master",
+    "quote": "Partner with data-analyst on analytics",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:ui-ux-tester+multi-agent-coordinator",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: ui-ux-tester names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "ui-ux-tester",
+    "path": "categories/04-quality-security/ui-ux-tester.md",
+    "description": "Use this agent when you need exhaustive UI and UX functionality testing driven by documented user flows, with browser or desktop interaction tooling and structured defect reporting."
+   },
+   {
+    "role_hint": "multi-agent-coordinator",
+    "path": "categories/09-meta-orchestration/multi-agent-coordinator.md",
+    "description": "Use when coordinating multiple concurrent agents that need to communicate, share state, synchronize work, and handle distributed failures across a system."
+   }
+  ],
+  "edges": [
+   {
+    "from": "ui-ux-tester",
+    "to": "multi-agent-coordinator",
+    "quote": "Coordinate with multi-agent-coordinator on workflow execution",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:terraform-engineer+network-engineer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: terraform-engineer names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "terraform-engineer",
+    "path": "categories/03-infrastructure/terraform-engineer.md",
+    "description": "Use when building, refactoring, or scaling infrastructure as code using Terraform with focus on multi-cloud deployments, module architecture, and enterprise-grade state management."
+   },
+   {
+    "role_hint": "network-engineer",
+    "path": "categories/03-infrastructure/network-engineer.md",
+    "description": "Use this agent when designing, optimizing, or troubleshooting cloud and hybrid network infrastructures, or when addressing network security, performance, or reliability challenges."
+   }
+  ],
+  "edges": [
+   {
+    "from": "terraform-engineer",
+    "to": "network-engineer",
+    "quote": "Guide sre-engineer on reliability patterns",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:java-architect+kotlin-specialist+microservices-architect",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: java-architect names 2 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "java-architect",
+    "path": "categories/02-language-specialists/java-architect.md",
+    "description": "Use this agent when designing enterprise Java architectures, migrating Spring Boot applications, or establishing microservices patterns for scalable cloud-native systems."
+   },
+   {
+    "role_hint": "kotlin-specialist",
+    "path": "categories/02-language-specialists/kotlin-specialist.md",
+    "description": "Use when building Kotlin applications requiring advanced coroutine patterns, multiplatform code sharing, or Android/server-side development with functional programming principles."
+   },
+   {
+    "role_hint": "microservices-architect",
+    "path": "categories/01-core-development/microservices-architect.md",
+    "description": "Use when designing distributed system architecture, decomposing monolithic applications into independent microservices, or establishing communication patterns between services at scale."
+   }
+  ],
+  "edges": [
+   {
+    "from": "java-architect",
+    "to": "kotlin-specialist",
+    "quote": "Work with database-optimizer on queries",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "java-architect",
+    "to": "microservices-architect",
+    "quote": "Support kotlin-specialist on JVM patterns",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:dotnet-framework-4.8-expert+csharp-developer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: dotnet-framework-4.8-expert names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "dotnet-framework-4.8-expert",
+    "path": "categories/02-language-specialists/dotnet-framework-4.8-expert.md",
+    "description": "Use this agent when working on legacy .NET Framework 4.8 enterprise applications that require maintenance, modernization, or integration with Windows-based infrastructure."
+   },
+   {
+    "role_hint": "csharp-developer",
+    "path": "categories/02-language-specialists/csharp-developer.md",
+    "description": "Use this agent when building ASP.NET Core web APIs, cloud-native .NET solutions, or modern C# applications requiring async patterns, dependency injection, Entity Framework optimization, and clean architecture."
+   }
+  ],
+  "edges": [
+   {
+    "from": "dotnet-framework-4.8-expert",
+    "to": "csharp-developer",
+    "quote": "Collaborate with csharp-developer on C# optimization",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:incident-responder+devops-incident-responder",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: incident-responder names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "incident-responder",
+    "path": "categories/03-infrastructure/incident-responder.md",
+    "description": "Use this agent when an active security breach, service outage, or operational incident requires immediate response, evidence preservation, and coordinated recovery."
+   },
+   {
+    "role_hint": "devops-incident-responder",
+    "path": "categories/03-infrastructure/devops-incident-responder.md",
+    "description": "Use when actively responding to production incidents, diagnosing critical service failures, or conducting incident postmortems to implement permanent fixes and preventative measures."
+   }
+  ],
+  "edges": [
+   {
+    "from": "incident-responder",
+    "to": "devops-incident-responder",
+    "quote": "Support devops-incident-responder on operational issues",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:performance-monitor+agent-organizer+error-coordinator+workflow-orchestrator+context-manager+task-distributor",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: performance-monitor names 5 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "performance-monitor",
+    "path": "categories/09-meta-orchestration/performance-monitor.md",
+    "description": "Use when establishing observability infrastructure to track system metrics, detect performance anomalies, and optimize resource usage across multi-agent environments."
+   },
+   {
+    "role_hint": "agent-organizer",
+    "path": "categories/09-meta-orchestration/agent-organizer.md",
+    "description": "Use when assembling and optimizing multi-agent teams to execute complex projects that require careful task decomposition, agent capability matching, and workflow coordination."
+   },
+   {
+    "role_hint": "error-coordinator",
+    "path": "categories/09-meta-orchestration/error-coordinator.md",
+    "description": "Use this agent when distributed system errors occur and need coordinated handling across multiple components, or when you need to implement comprehensive error recovery strategies with automated failure detection and cascade prevention."
+   },
+   {
+    "role_hint": "workflow-orchestrator",
+    "path": "categories/09-meta-orchestration/workflow-orchestrator.md",
+    "description": "Use this agent when you need to design, implement, or optimize complex business process workflows with multiple states, error handling, and transaction management."
+   },
+   {
+    "role_hint": "context-manager",
+    "path": "categories/09-meta-orchestration/context-manager.md",
+    "description": "Use for managing shared state, information retrieval, and data synchronization when multiple agents need coordinated access to context and metadata."
+   },
+   {
+    "role_hint": "task-distributor",
+    "path": "categories/09-meta-orchestration/task-distributor.md",
+    "description": "Use when distributing tasks across multiple agents or workers, managing queues, and balancing workloads to maximize throughput while respecting priorities and deadlines."
+   }
+  ],
+  "edges": [
+   {
+    "from": "performance-monitor",
+    "to": "agent-organizer",
+    "quote": "Support agent-organizer with performance data",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "performance-monitor",
+    "to": "error-coordinator",
+    "quote": "Support agent-organizer with performance data",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "performance-monitor",
+    "to": "workflow-orchestrator",
+    "quote": "Work with workflow-orchestrator on bottlenecks",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "performance-monitor",
+    "to": "context-manager",
+    "quote": "Guide task-distributor on load patterns",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "performance-monitor",
+    "to": "task-distributor",
+    "quote": "Guide task-distributor on load patterns",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:react-specialist+typescript-pro+javascript-pro",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: react-specialist names 2 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "react-specialist",
+    "path": "categories/02-language-specialists/react-specialist.md",
+    "description": "Use when optimizing existing React applications for performance, implementing advanced React 18+ features, or solving complex state management and architectural challenges within React codebases."
+   },
+   {
+    "role_hint": "typescript-pro",
+    "path": "categories/02-language-specialists/typescript-pro.md",
+    "description": "Use when implementing TypeScript code requiring advanced type system patterns, complex generics, type-level programming, or end-to-end type safety across full-stack applications."
+   },
+   {
+    "role_hint": "javascript-pro",
+    "path": "categories/02-language-specialists/javascript-pro.md",
+    "description": "Use this agent when you need to build, optimize, or refactor modern JavaScript code for browser, Node.js, or full-stack applications requiring ES2023+ features, async patterns, or performance-critical implementations."
+   }
+  ],
+  "edges": [
+   {
+    "from": "react-specialist",
+    "to": "typescript-pro",
+    "quote": "Support fullstack-developer on React integration",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "react-specialist",
+    "to": "javascript-pro",
+    "quote": "Work with typescript-pro on type safety",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:nextjs-developer+seo-specialist",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: nextjs-developer names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "nextjs-developer",
+    "path": "categories/02-language-specialists/nextjs-developer.md",
+    "description": "Use this agent when building production Next.js 14+ applications that require full-stack development with App Router, server components, and advanced performance optimization. Invoke when you need to architect or implement complete Next.js applications, optimize Core Web Vitals, implement server act"
+   },
+   {
+    "role_hint": "seo-specialist",
+    "path": "categories/07-specialized-domains/seo-specialist.md",
+    "description": "Use this agent when you need comprehensive SEO optimization encompassing technical audits, keyword strategy, content optimization, and search rankings improvement."
+   }
+  ],
+  "edges": [
+   {
+    "from": "nextjs-developer",
+    "to": "seo-specialist",
+    "quote": "Help devops-engineer on deployment",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:llm-architect+prompt-engineer+nlp-engineer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: llm-architect names 2 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "llm-architect",
+    "path": "categories/05-data-ai/llm-architect.md",
+    "description": "Use when designing LLM systems for production, implementing fine-tuning or RAG architectures, optimizing inference serving infrastructure, or managing multi-model deployments."
+   },
+   {
+    "role_hint": "prompt-engineer",
+    "path": "categories/05-data-ai/prompt-engineer.md",
+    "description": "Use this agent when you need to design, optimize, test, or evaluate prompts for large language models in production systems."
+   },
+   {
+    "role_hint": "nlp-engineer",
+    "path": "categories/05-data-ai/nlp-engineer.md",
+    "description": "Use when building production NLP systems, implementing text processing pipelines, developing language models, or solving domain-specific NLP tasks like named entity recognition, sentiment analysis, or machine translation."
+   }
+  ],
+  "edges": [
+   {
+    "from": "llm-architect",
+    "to": "prompt-engineer",
+    "quote": "Collaborate with ai-engineer on model integration",
+    "kind": "named-counterpart"
+   },
+   {
+    "from": "llm-architect",
+    "to": "nlp-engineer",
+    "quote": "Help data-engineer on data pipelines",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:rails-expert+expo-react-native-expert",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: rails-expert names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "rails-expert",
+    "path": "categories/02-language-specialists/rails-expert.md",
+    "description": "Use when building or modernizing Rails applications requiring API development, Hotwire reactivity, real-time features, background job processing, deployment automation, or Rails-idiomatic patterns for maximum productivity. Version-aware: adapts to Rails 7.x and 8.x projects."
+   },
+   {
+    "role_hint": "expo-react-native-expert",
+    "path": "categories/02-language-specialists/expo-react-native-expert.md",
+    "description": "Use when building mobile applications with Expo and React Native that require native module integration, navigation setup, performant animations, push notifications, OTA updates, or App Store/Play Store deployment."
+   }
+  ],
+  "edges": [
+   {
+    "from": "rails-expert",
+    "to": "expo-react-native-expert",
+    "quote": "Coordinate with expo-react-native-expert on Rails API + mobile app stacks",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:codebase-orchestrator+readme-generator",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: codebase-orchestrator names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "codebase-orchestrator",
+    "path": "categories/09-meta-orchestration/codebase-orchestrator.md",
+    "description": "Use this agent when you need repository-wide refactor governance with explicit approval loops, weighted risk prioritization, diff previews, and deterministic fallback strategies."
+   },
+   {
+    "role_hint": "readme-generator",
+    "path": "categories/06-developer-experience/readme-generator.md",
+    "description": "Use this agent when you need a maintainer-ready README built from exact repository reality, with deep codebase scanning, zero hallucination, and optional git commit/push only when explicitly requested."
+   }
+  ],
+  "edges": [
+   {
+    "from": "codebase-orchestrator",
+    "to": "readme-generator",
+    "quote": "Guide readme-generator on documentation updates after approved refactors",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:project-idea-validator+sales-engineer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: project-idea-validator names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "project-idea-validator",
+    "path": "categories/10-research-analysis/project-idea-validator.md",
+    "description": "Use this agent when you need an idea pressure-tested with brutal honesty, competitor teardown, market validation, and clear go/no-go guidance before building."
+   },
+   {
+    "role_hint": "sales-engineer",
+    "path": "categories/08-business-product/sales-engineer.md",
+    "description": "Use this agent when you need to conduct technical pre-sales activities including solution architecture, proof-of-concept development, and technical demonstrations for complex sales deals."
+   }
+  ],
+  "edges": [
+   {
+    "from": "project-idea-validator",
+    "to": "sales-engineer",
+    "quote": "Assist content-marketer on positioning",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:laravel-specialist+php-pro",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: laravel-specialist names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "laravel-specialist",
+    "path": "categories/02-language-specialists/laravel-specialist.md",
+    "description": "Use when building Laravel 10+ applications, architecting Eloquent models with complex relationships, implementing queue systems for async processing, or optimizing API performance."
+   },
+   {
+    "role_hint": "php-pro",
+    "path": "categories/02-language-specialists/php-pro.md",
+    "description": "Use this agent when working with PHP 8.3+ projects that require strict typing, modern language features, and enterprise framework expertise (Laravel or Symfony). Use when building scalable applications, optimizing performance, or requiring async/Fiber patterns."
+   }
+  ],
+  "edges": [
+   {
+    "from": "laravel-specialist",
+    "to": "php-pro",
+    "quote": "Collaborate with php-pro on PHP optimization",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:elixir-expert+websocket-engineer",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: elixir-expert names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "elixir-expert",
+    "path": "categories/02-language-specialists/elixir-expert.md",
+    "description": "Use this agent when you need to build fault-tolerant, concurrent systems leveraging OTP patterns, GenServer architectures, and Phoenix framework for real-time applications."
+   },
+   {
+    "role_hint": "websocket-engineer",
+    "path": "categories/01-core-development/websocket-engineer.md",
+    "description": "Use this agent when implementing real-time bidirectional communication features using WebSockets, Socket.IO, or similar technologies at scale."
+   }
+  ],
+  "edges": [
+   {
+    "from": "elixir-expert",
+    "to": "websocket-engineer",
+    "quote": "Share real-time patterns with websocket-engineer",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:scientific-literature-researcher+search",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: scientific-literature-researcher names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "scientific-literature-researcher",
+    "path": "categories/10-research-analysis/scientific-literature-researcher.md",
+    "description": "Use when you need to search scientific literature and retrieve structured experimental data from published studies. Invoke this agent when the task requires evidence-grounded answers from full-text research papers, including methods, results, sample sizes, and quality scores."
+   },
+   {
+    "role_hint": "search",
+    "path": "tools/subagent-catalog/search.md",
+    "description": "Search the awesome-claude-code-subagents catalog. Use when user wants to find, discover, or browse available subagents by name, category, or capability."
+   }
+  ],
+  "edges": [
+   {
+    "from": "scientific-literature-researcher",
+    "to": "search",
+    "quote": "Support research-analyst with evidence-grounded data",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:github/awesome-copilot:use-cliche-data-in-docs+README",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: use-cliche-data-in-docs names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "use-cliche-data-in-docs",
+    "path": "instructions/use-cliche-data-in-docs.instructions.md",
+    "description": "Ensure documentation and examples use only generic, cliche placeholder data — never real or sensitive data sourced from local scripts, configuration, task files, or prompt context."
+   },
+   {
+    "role_hint": "README",
+    "path": "docs/README.instructions.md",
+    "description": "Team and project-specific instructions to enhance GitHub Copilot's behavior for specific technologies and coding practices."
+   }
+  ],
+  "edges": [
+   {
+    "from": "use-cliche-data-in-docs",
+    "to": "README",
+    "quote": "provided to build or configure the tool | Yes (in code only) |\n| README",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:github/awesome-copilot:droid+shell",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: droid names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "droid",
+    "path": "agents/droid.agent.md",
+    "description": "Provides installation guidance, usage examples, and automation patterns for the Droid CLI, with emphasis on droid exec for CI/CD and non-interactive automation"
+   },
+   {
+    "role_hint": "shell",
+    "path": "instructions/shell.instructions.md",
+    "description": "Shell scripting best practices and conventions for bash, sh, zsh, and other shells"
+   }
+  ],
+  "edges": [
+   {
+    "from": "droid",
+    "to": "shell",
+    "quote": "guide developers through installation and configuration.\n\n## Shell Access\nThis agent has access t",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:github/awesome-copilot:azure-iac-generator+go",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: azure-iac-generator names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "azure-iac-generator",
+    "path": "agents/azure-iac-generator.agent.md",
+    "description": "Central hub for generating Infrastructure as Code (Bicep, ARM, Terraform, Pulumi) with format-specific validation and best practices. Use this skill when the user asks to generate, create, write, or build infrastructure code, deployment code, or IaC templates in any format (Bicep, ARM Templates, Ter"
+   },
+   {
+    "role_hint": "go",
+    "path": "instructions/go.instructions.md",
+    "description": "Instructions for writing Go code following idiomatic Go practices and community standards"
+   }
+  ],
+  "edges": [
+   {
+    "from": "azure-iac-generator",
+    "to": "go",
+    "quote": "support (TypeScript, Python, Go, C#, Java)\n- Infrastructure as actual code with program",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:github/awesome-copilot:nuxt-expert+vue",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: nuxt-expert names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "nuxt-expert",
+    "path": "agents/nuxt-expert.agent.md",
+    "description": "Expert Nuxt developer specializing in Nuxt 3, Nitro, server routes, data fetching strategies, and performance optimization with Vue 3 and TypeScript"
+   },
+   {
+    "role_hint": "vue",
+    "path": "instructions/vue.instructions.md",
+    "description": "Comprehensive Vue 3 development standards and best practices: Composition API, `<script setup>`, the full reactivity system, compiler macros (defineModel/defineSlots/defineOptions), built-in components (Teleport/Suspense/Transition/KeepAlive), provide/inject, composables, Pinia, Vue Router, TypeScri"
+   }
+  ],
+  "edges": [
+   {
+    "from": "nuxt-expert",
+    "to": "vue",
+    "quote": "Support Nuxt 2/Vue 2 codebases with explicit migration recommendations\n- Preserve behavior firs",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:github/awesome-copilot:memory-bank+instructions",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: memory-bank names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "memory-bank",
+    "path": "instructions/memory-bank.instructions.md",
+    "description": "Memory Bank pattern: persistent project documentation under a memory-bank/ folder so the AI can resume context across sessions."
+   },
+   {
+    "role_hint": "instructions",
+    "path": "instructions/instructions.instructions.md",
+    "description": "Guidelines for creating high-quality custom instruction files for GitHub Copilot"
+   }
+  ],
+  "edges": [
+   {
+    "from": "memory-bank",
+    "to": "instructions",
+    "quote": "help me work more effectively with you and the project. Think of instructions as a living docu",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:github/awesome-copilot:rust-mcp-expert+rust",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: rust-mcp-expert names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "rust-mcp-expert",
+    "path": "agents/rust-mcp-expert.agent.md",
+    "description": "Expert assistant for Rust MCP server development using the rmcp SDK with tokio async runtime"
+   },
+   {
+    "role_hint": "rust",
+    "path": "instructions/rust.instructions.md",
+    "description": "Rust programming language coding conventions and best practices"
+   }
+  ],
+  "edges": [
+   {
+    "from": "rust-mcp-expert",
+    "to": "rust",
+    "quote": "help developers create production-ready, type-safe, and performant MCP servers in Rust.\n\n## Y",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:rohitg00/awesome-claude-code-toolkit:mcp-developer+debug",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: mcp-developer names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "mcp-developer",
+    "path": "agents/developer-experience/mcp-developer.md",
+    "description": "Develops MCP servers and tools following the Model Context Protocol specification for AI agent integration"
+   },
+   {
+    "role_hint": "debug",
+    "path": "plugins/debug-session/commands/debug.md",
+    "description": "Start an interactive debugging session to diagnose and fix a runtime issue."
+   }
+  ],
+  "edges": [
+   {
+    "from": "mcp-developer",
+    "to": "debug",
+    "quote": "help debug integration issues.\n9. Test the server using the MCP Inspector tool, ve",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:rohitg00/awesome-claude-code-toolkit:test-architect+ship",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: test-architect names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "test-architect",
+    "path": "agents/quality-assurance/test-architect.md",
+    "description": "Testing strategy with unit/integration/e2e, TDD, property-based testing, and mutation testing"
+   },
+   {
+    "role_hint": "ship",
+    "path": "plugins/product-shipper/commands/ship.md",
+    "description": "Execute a complete feature shipping workflow from code to production deployment."
+   }
+  ],
+  "edges": [
+   {
+    "from": "test-architect",
+    "to": "ship",
+    "quote": "provide confidence to ship.\n\n## Testing Pyramid\n\n- **Unit tests** (70%): Fast, is",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "named_counterpart:rohitg00/awesome-claude-code-toolkit:mutate+report",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "named-counterpart",
+  "notes": [
+   "star team: mutate names 1 counterpart(s) next to a collaboration verb"
+  ],
+  "roles": [
+   {
+    "role_hint": "mutate",
+    "path": "plugins/mutation-tester/commands/mutate.md",
+    "description": "Run mutation testing to evaluate test suite effectiveness."
+   },
+   {
+    "role_hint": "report",
+    "path": "plugins/analytics-reporter/commands/report.md",
+    "description": "Generate a project analytics report covering code quality, velocity, and health metrics."
+   }
+  ],
+  "edges": [
+   {
+    "from": "mutate",
+    "to": "report",
+    "quote": "report to the reports directory\n\n## Rules\n\n- Start with a single file",
+    "kind": "named-counterpart"
+   }
+  ]
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI:lib/cli/src/crewai_cli/templates/crew",
+  "source_repo": "crewAIInc/crewAI",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in lib/cli/src/crewai_cli/templates/crew/config/agents.yaml (2 agents); task order in lib/cli/src/crewai_cli/templates/crew/config/tasks.yaml is ['research_task', 'reporting_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "researcher",
+    "path": "lib/cli/src/crewai_cli/templates/crew/config/agents.yaml#researcher",
+    "description": "Uncover cutting-edge developments in {topic}"
+   },
+   {
+    "role_hint": "reporting_analyst",
+    "path": "lib/cli/src/crewai_cli/templates/crew/config/agents.yaml#reporting_analyst",
+    "description": "Create detailed reports based on {topic} data analysis and research findings"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI:lib/cli/src/crewai_cli/templates/flow/crews/content_crew",
+  "source_repo": "crewAIInc/crewAI",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in lib/cli/src/crewai_cli/templates/flow/crews/content_crew/config/agents.yaml (3 agents); task order in lib/cli/src/crewai_cli/templates/flow/crews/content_crew/config/tasks.yaml is ['planning_task', 'writing_task', 'editing_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "planner",
+    "path": "lib/cli/src/crewai_cli/templates/flow/crews/content_crew/config/agents.yaml#planner",
+    "description": "Plan a detailed and engaging blog post outline on {topic}"
+   },
+   {
+    "role_hint": "writer",
+    "path": "lib/cli/src/crewai_cli/templates/flow/crews/content_crew/config/agents.yaml#writer",
+    "description": "Write a compelling and well-structured blog post on {topic} based on the provided outline"
+   },
+   {
+    "role_hint": "editor",
+    "path": "lib/cli/src/crewai_cli/templates/flow/crews/content_crew/config/agents.yaml#editor",
+    "description": "Review and polish the blog post on {topic} to ensure it is publication-ready"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI:lib/crewai/tests",
+  "source_repo": "crewAIInc/crewAI",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in lib/crewai/tests/config/agents.yaml (2 agents); task order in lib/crewai/tests/config/tasks.yaml is ['research_task', 'reporting_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "researcher",
+    "path": "lib/crewai/tests/config/agents.yaml#researcher",
+    "description": "Uncover cutting-edge developments in {topic}"
+   },
+   {
+    "role_hint": "reporting_analyst",
+    "path": "lib/crewai/tests/config/agents.yaml#reporting_analyst",
+    "description": "Create detailed reports based on {topic} data analysis and research findings"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/game-builder-crew/src/game_builder_crew",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/game-builder-crew/src/game_builder_crew/config/agents.yaml (3 agents); task order in crews/game-builder-crew/src/game_builder_crew/config/tasks.yaml is ['code_task', 'review_task', 'evaluate_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "senior_engineer_agent",
+    "path": "crews/game-builder-crew/src/game_builder_crew/config/agents.yaml#senior_engineer_agent",
+    "description": "Create software as needed"
+   },
+   {
+    "role_hint": "qa_engineer_agent",
+    "path": "crews/game-builder-crew/src/game_builder_crew/config/agents.yaml#qa_engineer_agent",
+    "description": "Create Perfect code, by analyzing the code that is given for errors"
+   },
+   {
+    "role_hint": "chief_qa_engineer_agent",
+    "path": "crews/game-builder-crew/src/game_builder_crew/config/agents.yaml#chief_qa_engineer_agent",
+    "description": "Ensure that the code does the job that it is supposed to do"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/job-posting/src/job_posting",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/job-posting/src/job_posting/config/agents.yaml (3 agents); task order in crews/job-posting/src/job_posting/config/tasks.yaml is ['research_company_culture_task', 'research_role_requirements_task', 'draft_job_posting_task', 'review_and_edit_job_posting_task', 'industry_analysis_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "research_agent",
+    "path": "crews/job-posting/src/job_posting/config/agents.yaml#research_agent",
+    "description": "Analyze the company website and provided description to extract insights on culture, values, and specific needs."
+   },
+   {
+    "role_hint": "writer_agent",
+    "path": "crews/job-posting/src/job_posting/config/agents.yaml#writer_agent",
+    "description": "Use insights from the Research Analyst to create a detailed, engaging, and enticing job posting."
+   },
+   {
+    "role_hint": "review_agent",
+    "path": "crews/job-posting/src/job_posting/config/agents.yaml#review_agent",
+    "description": "Review the job posting for clarity, engagement, grammatical accuracy, and alignment with company values and refine it to ensure perfection."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/landing_page_generator/src/landing_page_generator",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/landing_page_generator/src/landing_page_generator/config/agents.yaml (4 agents); task order in crews/landing_page_generator/src/landing_page_generator/config/tasks.yaml is ['expand_idea_task', 'refine_idea_task', 'choose_template_task', 'update_page_task', 'component_content_task', 'update_component_task', 'qa_component_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "senior_idea_analyst",
+    "path": "crews/landing_page_generator/src/landing_page_generator/config/agents.yaml#senior_idea_analyst",
+    "description": "\"Understand and expand upon the essence of ideas, make sure they are great and focus on real pain points others could benefit from.\""
+   },
+   {
+    "role_hint": "senior_strategist",
+    "path": "crews/landing_page_generator/src/landing_page_generator/config/agents.yaml#senior_strategist",
+    "description": "\"Craft compelling stories using the Golden Circle method to captivate and engage people around an idea.\""
+   },
+   {
+    "role_hint": "senior_react_engineer",
+    "path": "crews/landing_page_generator/src/landing_page_generator/config/agents.yaml#senior_react_engineer",
+    "description": "\"Build an intuitive, aesthetically pleasing, and high-converting landing page.\""
+   },
+   {
+    "role_hint": "senior_content_editor",
+    "path": "crews/landing_page_generator/src/landing_page_generator/config/agents.yaml#senior_content_editor",
+    "description": "\"Ensure the landing page content is clear, concise, and captivating.\""
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/marketing_strategy/src/marketing_posts",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/marketing_strategy/src/marketing_posts/config/agents.yaml (4 agents); task order in crews/marketing_strategy/src/marketing_posts/config/tasks.yaml is ['research_task', 'project_understanding_task', 'marketing_strategy_task', 'campaign_idea_task', 'copy_creation_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "lead_market_analyst",
+    "path": "crews/marketing_strategy/src/marketing_posts/config/agents.yaml#lead_market_analyst",
+    "description": "Conduct amazing analysis of the products and competitors, providing in-depth insights to guide marketing strategies."
+   },
+   {
+    "role_hint": "chief_marketing_strategist",
+    "path": "crews/marketing_strategy/src/marketing_posts/config/agents.yaml#chief_marketing_strategist",
+    "description": "Synthesize amazing insights from product analysis to formulate incredible marketing strategies."
+   },
+   {
+    "role_hint": "creative_content_creator",
+    "path": "crews/marketing_strategy/src/marketing_posts/config/agents.yaml#creative_content_creator",
+    "description": "Develop compelling and innovative content for social media campaigns, with a focus on creating high-impact ad copies."
+   },
+   {
+    "role_hint": "chief_creative_director",
+    "path": "crews/marketing_strategy/src/marketing_posts/config/agents.yaml#chief_creative_director",
+    "description": "Oversee the work done by your team to make sure it is the best possible and aligned with the product goals, review, approve, ask clarifying questions or delegate follow-up work if necessary."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/match_profile_to_positions/src/match_to_proposal",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/match_profile_to_positions/src/match_to_proposal/config/agents.yaml (3 agents); task order in crews/match_profile_to_positions/src/match_to_proposal/config/tasks.yaml is ['read_cv_task', 'match_cv_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "cv_reader",
+    "path": "crews/match_profile_to_positions/src/match_to_proposal/config/agents.yaml#cv_reader",
+    "description": "Extract relevant information from the CV, such as skills, experience, and education."
+   },
+   {
+    "role_hint": "job_opportunities_parser",
+    "path": "crews/match_profile_to_positions/src/match_to_proposal/config/agents.yaml#job_opportunities_parser",
+    "description": "Extract job descriptions from the CSV file, including job title, required skills, and responsibilities."
+   },
+   {
+    "role_hint": "matcher",
+    "path": "crews/match_profile_to_positions/src/match_to_proposal/config/agents.yaml#matcher",
+    "description": "Match the CV to the job opportunities based on skills and experience."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/recruitment/src/recruitment",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/recruitment/src/recruitment/config/agents.yaml (4 agents); task order in crews/recruitment/src/recruitment/config/tasks.yaml is ['research_candidates_task', 'match_and_score_candidates_task', 'outreach_strategy_task', 'report_candidates_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "researcher",
+    "path": "crews/recruitment/src/recruitment/config/agents.yaml#researcher",
+    "description": "Find potential candidates for the job"
+   },
+   {
+    "role_hint": "matcher",
+    "path": "crews/recruitment/src/recruitment/config/agents.yaml#matcher",
+    "description": "Match the candidates to the best jobs and score them"
+   },
+   {
+    "role_hint": "communicator",
+    "path": "crews/recruitment/src/recruitment/config/agents.yaml#communicator",
+    "description": "Develop outreach strategies for the selected candidates"
+   },
+   {
+    "role_hint": "reporter",
+    "path": "crews/recruitment/src/recruitment/config/agents.yaml#reporter",
+    "description": "Report the best candidates to the recruiters"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/screenplay_writer",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/screenplay_writer/config/agents.yaml (5 agents); task order in crews/screenplay_writer/config/tasks.yaml is ['task0', 'task1', 'task2', 'task3', 'task4'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "spamfilter",
+    "path": "crews/screenplay_writer/config/agents.yaml#spamfilter",
+    "description": "Decide whether a text is spam or not."
+   },
+   {
+    "role_hint": "analyst",
+    "path": "crews/screenplay_writer/config/agents.yaml#analyst",
+    "description": "You will distill all arguments from all discussion members. Identify who said what. You can reword what they said as long as the main discussion points remain."
+   },
+   {
+    "role_hint": "scriptwriter",
+    "path": "crews/screenplay_writer/config/agents.yaml#scriptwriter",
+    "description": "Turn a conversation into a movie script. Only write the dialogue parts. Do not start the sentence with an action. Do not specify situational descriptions. Do not write parentheticals."
+   },
+   {
+    "role_hint": "formatter",
+    "path": "crews/screenplay_writer/config/agents.yaml#formatter",
+    "description": "Format the text as asked. Leave out actions from discussion members that happen between brackets, eg (smiling)."
+   },
+   {
+    "role_hint": "scorer",
+    "path": "crews/screenplay_writer/config/agents.yaml#scorer",
+    "description": "You score a dialogue assessing various aspects of the exchange between the participants using a 1-10 scale, where 1 is the lowest performance and 10 is the highest: Scale: 1-3: Poor - The dialogue has significant issues that prevent effective communication. 4-6: Average - The dialogue has some good "
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/stock_analysis/src/stock_analysis",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/stock_analysis/src/stock_analysis/config/agents.yaml (3 agents); task order in crews/stock_analysis/src/stock_analysis/config/tasks.yaml is ['financial_analysis', 'research', 'filings_analysis', 'recommend'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "financial_analyst",
+    "path": "crews/stock_analysis/src/stock_analysis/config/agents.yaml#financial_analyst",
+    "description": "Impress all customers with your financial data and market trends analysis"
+   },
+   {
+    "role_hint": "research_analyst",
+    "path": "crews/stock_analysis/src/stock_analysis/config/agents.yaml#research_analyst",
+    "description": "Being the best at gathering, interpreting data and amazing your customer with it"
+   },
+   {
+    "role_hint": "investment_advisor",
+    "path": "crews/stock_analysis/src/stock_analysis/config/agents.yaml#investment_advisor",
+    "description": "Impress your customers with full analyses over stocks and complete investment recommendations"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/surprise_trip/src/surprise_travel",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in crews/surprise_trip/src/surprise_travel/config/agents.yaml (3 agents); task order in crews/surprise_trip/src/surprise_travel/config/tasks.yaml is ['personalized_activity_planning_task', 'restaurant_scenic_location_scout_task', 'itinerary_compilation_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "personalized_activity_planner",
+    "path": "crews/surprise_trip/src/surprise_travel/config/agents.yaml#personalized_activity_planner",
+    "description": "Research and find cool things to do at the destination, including activities and events that match the traveler's interests and age group"
+   },
+   {
+    "role_hint": "restaurant_scout",
+    "path": "crews/surprise_trip/src/surprise_travel/config/agents.yaml#restaurant_scout",
+    "description": "Find highly-rated restaurants and dining experiences at the destination, and recommend scenic locations and fun activities"
+   },
+   {
+    "role_hint": "itinerary_compiler",
+    "path": "crews/surprise_trip/src/surprise_travel/config/agents.yaml#itinerary_compiler",
+    "description": "Compile all researched information into a comprehensive day-by-day itinerary, ensuring the integration of flights and hotel information"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/outline_book_crew",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/outline_book_crew/config/agents.yaml (2 agents); task order in flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/outline_book_crew/config/tasks.yaml is ['research_topic', 'generate_outline'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "researcher",
+    "path": "flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/outline_book_crew/config/agents.yaml#researcher",
+    "description": "Gather comprehensive information about {topic} that will be used to create an organized and well-structured book outline. Here is some additional information about the author's desired goal for the book:\\n\\n {goal}"
+   },
+   {
+    "role_hint": "outliner",
+    "path": "flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/outline_book_crew/config/agents.yaml#outliner",
+    "description": "Based on the research, generate a book outline about the following topic: {topic}  The generated outline should include all chapters in sequential order and provide a title and description for each chapter. Here is some additional information about the author's desired goal for the book:\\n\\n {goal}"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/write_book_chapter_crew",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/write_book_chapter_crew/config/agents.yaml (2 agents); task order in flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/write_book_chapter_crew/config/tasks.yaml is ['research_chapter', 'write_chapter'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "researcher",
+    "path": "flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/write_book_chapter_crew/config/agents.yaml#researcher",
+    "description": "Gather comprehensive information about {topic} and {chapter_title} that will be used to enhance the content of the chapter. Here is some additional information about the author's desired goal for the book and the chapter:\\n\\n {goal} Here is the outline description for the chapter:\\n\\n {chapter_descr"
+   },
+   {
+    "role_hint": "writer",
+    "path": "flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/write_book_chapter_crew/config/agents.yaml#writer",
+    "description": "Write a well-structured chapter for the book based on the provided chapter title, goal, and outline. The chapter should be written in markdown format and contain around 3,000 words."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:integrations/nvidia_models/marketing_strategy/src/marketing_posts",
+  "source_repo": "crewAIInc/crewAI-examples",
+  "heuristic": "crewai-config",
+  "notes": [
+   "all agents defined in integrations/nvidia_models/marketing_strategy/src/marketing_posts/config/agents.yaml (4 agents); task order in integrations/nvidia_models/marketing_strategy/src/marketing_posts/config/tasks.yaml is ['research_task', 'project_understanding_task', 'marketing_strategy_task', 'campaign_idea_task', 'copy_creation_task'] (Process.sequential file order is CrewAI's own default execution order; not itself a quoted per-edge claim)"
+  ],
+  "roles": [
+   {
+    "role_hint": "lead_market_analyst",
+    "path": "integrations/nvidia_models/marketing_strategy/src/marketing_posts/config/agents.yaml#lead_market_analyst",
+    "description": "Conduct amazing analysis of the products and competitors, providing in-depth insights to guide marketing strategies."
+   },
+   {
+    "role_hint": "chief_marketing_strategist",
+    "path": "integrations/nvidia_models/marketing_strategy/src/marketing_posts/config/agents.yaml#chief_marketing_strategist",
+    "description": "Synthesize amazing insights from product analysis to formulate incredible marketing strategies."
+   },
+   {
+    "role_hint": "creative_content_creator",
+    "path": "integrations/nvidia_models/marketing_strategy/src/marketing_posts/config/agents.yaml#creative_content_creator",
+    "description": "Develop compelling and innovative content for social media campaigns, with a focus on creating high-impact ad copies."
+   },
+   {
+    "role_hint": "chief_creative_director",
+    "path": "integrations/nvidia_models/marketing_strategy/src/marketing_posts/config/agents.yaml#chief_creative_director",
+    "description": "Oversee the work done by your team to make sure it is the best possible and aligned with the product goals, review, approve, ask clarifying questions or delegate follow-up work if necessary."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/01-core-development",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/01-core-development' (3 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "design-bridge",
+    "path": "categories/01-core-development/design-bridge.md",
+    "description": "Use this agent when you need to translate a DESIGN.md from the VoltAgent/awesome-design-md repository into polished Claude Code instructions for building user interfaces that faithfully match the chosen brand. Invoke this agent whenever a developer or designer asks to replicate the look and feel of "
+   },
+   {
+    "role_hint": "electron-pro",
+    "path": "categories/01-core-development/electron-pro.md",
+    "description": "Use this agent when building Electron desktop applications that require native OS integration, cross-platform distribution, security hardening, and performance optimization. Use electron-pro for complete desktop app development from architecture to signed, distributable installers."
+   },
+   {
+    "role_hint": "graphql-architect",
+    "path": "categories/01-core-development/graphql-architect.md",
+    "description": "Use this agent when designing or evolving GraphQL schemas across microservices, implementing federation architectures, or optimizing query performance in distributed graphs."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/03-infrastructure",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/03-infrastructure' (3 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "azure-infra-engineer",
+    "path": "categories/03-infrastructure/azure-infra-engineer.md",
+    "description": "Use when designing, deploying, or managing Azure infrastructure with focus on network architecture, Entra ID integration, PowerShell automation, and Bicep IaC."
+   },
+   {
+    "role_hint": "terragrunt-expert",
+    "path": "categories/03-infrastructure/terragrunt-expert.md",
+    "description": "Expert Terragrunt specialist mastering infrastructure orchestration, DRY configurations, and multi-environment deployments. Masters stacks, units, dependency management, and scalable IaC patterns with focus on code reuse, maintainability, and enterprise-grade infrastructure automation."
+   },
+   {
+    "role_hint": "windows-infra-admin",
+    "path": "categories/03-infrastructure/windows-infra-admin.md",
+    "description": "Use when managing Windows Server infrastructure, Active Directory, DNS, DHCP, and Group Policy configurations, especially for enterprise-scale deployments requiring safe automation and compliance validation."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/05-data-ai",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/05-data-ai' (3 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "machine-learning-engineer",
+    "path": "categories/05-data-ai/machine-learning-engineer.md",
+    "description": "Use this agent when you need to deploy, optimize, or serve machine learning models at scale in production environments."
+   },
+   {
+    "role_hint": "postgres-pro",
+    "path": "categories/05-data-ai/postgres-pro.md",
+    "description": "Use when you need to optimize PostgreSQL performance, design high-availability replication, or troubleshoot database issues at scale. Invoke this agent for query optimization, configuration tuning, replication setup, backup strategies, and mastering advanced PostgreSQL features for enterprise deploy"
+   },
+   {
+    "role_hint": "reinforcement-learning-engineer",
+    "path": "categories/05-data-ai/reinforcement-learning-engineer.md",
+    "description": "Use when designing RL environments, training agents with reward optimization, implementing policy gradient methods, or deploying decision-making systems for robotics, gaming, and autonomous operations."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/06-developer-experience",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/06-developer-experience' (6 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "legacy-modernizer",
+    "path": "categories/06-developer-experience/legacy-modernizer.md",
+    "description": "Use this agent when modernizing legacy systems that need incremental migration strategies, technical debt reduction, and risk mitigation while maintaining business continuity."
+   },
+   {
+    "role_hint": "mcp-developer",
+    "path": "categories/06-developer-experience/mcp-developer.md",
+    "description": "Use this agent when you need to build, debug, or optimize Model Context Protocol (MCP) servers and clients that connect AI systems to external tools and data sources."
+   },
+   {
+    "role_hint": "powershell-module-architect",
+    "path": "categories/06-developer-experience/powershell-module-architect.md",
+    "description": "Use this agent when architecting and refactoring PowerShell modules, designing profile systems, or creating cross-version compatible automation libraries. Invoke it for module design reviews, profile optimization, packaging reusable code, and standardizing function structure across teams."
+   },
+   {
+    "role_hint": "powershell-ui-architect",
+    "path": "categories/06-developer-experience/powershell-ui-architect.md",
+    "description": "Use when designing or building desktop graphical interfaces (WinForms, WPF, Metro-style dashboards) or terminal user interfaces (TUIs) for PowerShell automation tools that need clean separation between UI and business logic."
+   },
+   {
+    "role_hint": "slack-expert",
+    "path": "categories/06-developer-experience/slack-expert.md",
+    "description": "Use this agent when developing Slack applications, implementing Slack API integrations, or reviewing Slack bot code for security and best practices."
+   },
+   {
+    "role_hint": "visual-asset-generator",
+    "path": "categories/06-developer-experience/visual-asset-generator.md",
+    "description": "Use this agent when you need to generate production-ready visual assets for a project — app icons, favicons, OG images, logos, wordmarks, or social media images. Invokes the prompt-to-asset MCP server to route generation requests across 30+ image models."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/07-specialized-domains",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/07-specialized-domains' (6 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "blockchain-developer",
+    "path": "categories/07-specialized-domains/blockchain-developer.md",
+    "description": "Use this agent when building smart contracts, DApps, and blockchain protocols that require expertise in Solidity, gas optimization, security auditing, and Web3 integration."
+   },
+   {
+    "role_hint": "hipaa-compliance",
+    "path": "categories/07-specialized-domains/hipaa-compliance.md",
+    "description": "Use when the user is building a healthcare product and needs to understand HIPAA compliance. Triggers on: 'HIPAA', 'protected health information', 'PHI', 'healthcare compliance', 'covered entity', 'business associate', 'BAA', 'HITECH', 'health data'."
+   },
+   {
+    "role_hint": "iot-engineer",
+    "path": "categories/07-specialized-domains/iot-engineer.md",
+    "description": "Use when designing and deploying IoT solutions requiring expertise in device management, edge computing, cloud integration, and handling challenges like massive device scale, complex connectivity scenarios, or real-time data pipelines."
+   },
+   {
+    "role_hint": "m365-admin",
+    "path": "categories/07-specialized-domains/m365-admin.md",
+    "description": "Use when automating Microsoft 365 administrative tasks including Exchange Online mailbox provisioning, Teams collaboration management, SharePoint site configuration, license lifecycle management, and Graph API-driven identity automation."
+   },
+   {
+    "role_hint": "mobile-app-developer",
+    "path": "categories/07-specialized-domains/mobile-app-developer.md",
+    "description": "Use this agent when developing iOS and Android mobile applications with focus on native or cross-platform implementation, performance optimization, and platform-specific user experience."
+   },
+   {
+    "role_hint": "quant-analyst",
+    "path": "categories/07-specialized-domains/quant-analyst.md",
+    "description": "Use this agent when you need to develop quantitative trading strategies, build financial models with rigorous mathematical foundations, or conduct advanced risk analytics for derivatives and portfolios. Invoke this agent for statistical arbitrage strategy development, backtesting with historical val"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/08-business-product",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/08-business-product' (4 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "assumption-mapping",
+    "path": "categories/08-business-product/assumption-mapping.md",
+    "description": "Use when the user needs to identify and prioritize risky assumptions in a product idea, feature, or strategy. Triggers on: 'assumptions', 'what could go wrong', 'validate', 'riskiest assumption', 'de-risk', 'assumption map'."
+   },
+   {
+    "role_hint": "backlog-grooming",
+    "path": "categories/08-business-product/backlog-grooming.md",
+    "description": "Use when the user needs to groom, refine, or clean up a product backlog. Triggers on: 'groom backlog', 'backlog refinement', 'backlog grooming', 'clean up backlog', 'refine stories', 'sprint refinement', 'backlog management'."
+   },
+   {
+    "role_hint": "content-quality-editor",
+    "path": "categories/08-business-product/content-quality-editor.md",
+    "description": "Use this agent before publishing any AI-generated content — blog posts, READMEs, release notes, commit messages, PR descriptions, documentation, or social posts. Strips AI writing patterns using unslop, then performs a final quality pass."
+   },
+   {
+    "role_hint": "wordpress-master",
+    "path": "categories/08-business-product/wordpress-master.md",
+    "description": "Use this agent when you need to architect, optimize, or troubleshoot WordPress implementations ranging from custom theme/plugin development to enterprise-scale multisite platforms. Invoke this agent for performance optimization, security hardening, headless WordPress APIs, WooCommerce solutions, and"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/09-meta-orchestration",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/09-meta-orchestration' (3 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "agent-installer",
+    "path": "categories/09-meta-orchestration/agent-installer.md",
+    "description": "Use this agent when the user wants to discover, browse, or install Claude Code agents from the awesome-claude-code-subagents repository."
+   },
+   {
+    "role_hint": "it-ops-orchestrator",
+    "path": "categories/09-meta-orchestration/it-ops-orchestrator.md",
+    "description": "Use for orchestrating complex IT operations tasks that span multiple domains (PowerShell automation, .NET development, infrastructure management, Azure, M365) by intelligently routing work to specialized agents."
+   },
+   {
+    "role_hint": "knowledge-synthesizer",
+    "path": "categories/09-meta-orchestration/knowledge-synthesizer.md",
+    "description": "Use when you need to extract actionable patterns from agent interactions, synthesize insights across multiple workflows, and enable organizational learning from collective experience."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/10-research-analysis",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'categories/10-research-analysis' (3 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "ab-test-analysis",
+    "path": "categories/10-research-analysis/ab-test-analysis.md",
+    "description": "Use when the user wants to analyze A/B test results, interpret p-values, determine statistical significance, or make a ship/no-ship decision. Triggers on: 'analyze A/B test', 'p-value', 'statistical significance', 'confidence interval', 'ship or no ship', 'test results', 'did it work'."
+   },
+   {
+    "role_hint": "cohort-analysis",
+    "path": "categories/10-research-analysis/cohort-analysis.md",
+    "description": "Use when the user wants to analyze retention, cohort behavior, engagement trends, or understand how different user groups perform over time. Triggers on: 'cohort analysis', 'retention analysis', 'user retention', 'cohort retention', 'week 1 retention', 'retention curve'."
+   },
+   {
+    "role_hint": "first-principles-thinking",
+    "path": "categories/10-research-analysis/first-principles-thinking.md",
+    "description": "Use when the user wants to challenge assumptions, break down a complex problem from scratch, or approach something with first principles reasoning. Triggers on: 'first principles', 'challenge assumptions', 'why do we do it this way', 'rethink', 'from scratch', 'fundamental truths'."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:tools/subagent-catalog",
+  "source_repo": "VoltAgent/awesome-claude-code-subagents",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'tools/subagent-catalog' (3 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "fetch",
+    "path": "tools/subagent-catalog/fetch.md",
+    "description": "Fetch full subagent definition from catalog. Use when user wants to get, download, view, or use a specific subagent."
+   },
+   {
+    "role_hint": "invalidate",
+    "path": "tools/subagent-catalog/invalidate.md",
+    "description": "Invalidate the subagent-catalog cache. Use when results seem stale or user explicitly asks to refresh or clear cache."
+   },
+   {
+    "role_hint": "list",
+    "path": "tools/subagent-catalog/list.md",
+    "description": "List all categories and agents in the subagent catalog. Use when user wants to see everything available or browse the full catalog."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:github/awesome-copilot:skills/quality-playbook/agents",
+  "source_repo": "github/awesome-copilot",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'skills/quality-playbook/agents' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "quality-playbook-claude",
+    "path": "skills/quality-playbook/agents/quality-playbook-claude.agent.md",
+    "description": "Run a complete quality engineering audit on any codebase. Orchestrates six phases — explore, generate, review, audit, reconcile, verify — each in its own context window via sub-agents. Then runs iteration strategies to find even more bugs. Finds the 35% of real defects that structural code review al"
+   },
+   {
+    "role_hint": "quality-playbook",
+    "path": "skills/quality-playbook/agents/quality-playbook.agent.md",
+    "description": "Run a complete quality engineering audit on any codebase. Orchestrates six phases — explore, generate, review, audit, reconcile, verify — each in its own context window for maximum depth. Then runs iteration strategies to find even more bugs. Finds the 35% of real defects that structural code review"
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/accessibility-checker/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/accessibility-checker/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "a11y-scan",
+    "path": "plugins/accessibility-checker/commands/a11y-scan.md",
+    "description": "Scan web application components for accessibility violations against WCAG guidelines."
+   },
+   {
+    "role_hint": "aria-fix",
+    "path": "plugins/accessibility-checker/commands/aria-fix.md",
+    "description": "Fix ARIA attributes and accessibility issues in web components."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/ai-prompt-lab/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/ai-prompt-lab/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "improve-prompt",
+    "path": "plugins/ai-prompt-lab/commands/improve-prompt.md",
+    "description": "Analyze and improve an AI prompt for clarity, specificity, and effectiveness."
+   },
+   {
+    "role_hint": "test-prompt",
+    "path": "plugins/ai-prompt-lab/commands/test-prompt.md",
+    "description": "Test an AI prompt against multiple scenarios to verify consistent, quality output."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/azure-helper/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/azure-helper/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "configure-blob",
+    "path": "plugins/azure-helper/commands/configure-blob.md",
+    "description": "Create and configure an Azure Blob Storage account with security best practices."
+   },
+   {
+    "role_hint": "setup-functions",
+    "path": "plugins/azure-helper/commands/setup-functions.md",
+    "description": "Configure and deploy an Azure Functions application."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/bundle-analyzer/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/bundle-analyzer/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "analyze-bundle",
+    "path": "plugins/bundle-analyzer/commands/analyze-bundle.md",
+    "description": "Analyze JavaScript bundle size and identify optimization opportunities."
+   },
+   {
+    "role_hint": "tree-shake",
+    "path": "plugins/bundle-analyzer/commands/tree-shake.md",
+    "description": "Improve tree shaking effectiveness to reduce bundle size."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/ci-debugger/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/ci-debugger/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "analyze-ci-failure",
+    "path": "plugins/ci-debugger/commands/analyze-ci-failure.md",
+    "description": "Analyze and diagnose a CI/CD pipeline failure."
+   },
+   {
+    "role_hint": "fix-pipeline",
+    "path": "plugins/ci-debugger/commands/fix-pipeline.md",
+    "description": "Apply fixes to a broken CI/CD pipeline configuration."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/commit-commands/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/commit-commands/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "amend",
+    "path": "plugins/commit-commands/commands/amend.md",
+    "description": "Amend the most recent commit with additional changes or an updated message."
+   },
+   {
+    "role_hint": "commit-push",
+    "path": "plugins/commit-commands/commands/commit-push.md",
+    "description": "Stage, commit, and push changes with an auto-generated conventional commit message."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/dependency-manager/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/dependency-manager/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "audit-deps",
+    "path": "plugins/dependency-manager/commands/audit-deps.md",
+    "description": "Audit all project dependencies for vulnerabilities, licensing issues, and maintenance status."
+   },
+   {
+    "role_hint": "update-deps",
+    "path": "plugins/dependency-manager/commands/update-deps.md",
+    "description": "Safely update project dependencies with compatibility verification."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/devops-automator/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/devops-automator/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "automate",
+    "path": "plugins/devops-automator/commands/automate.md",
+    "description": "Create DevOps automation scripts for CI/CD pipelines, deployments, and infrastructure tasks."
+   },
+   {
+    "role_hint": "health-check",
+    "path": "plugins/devops-automator/commands/health-check.md",
+    "description": "Create health check scripts to verify service and infrastructure availability."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/docker-helper/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/docker-helper/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "build-image",
+    "path": "plugins/docker-helper/commands/build-image.md",
+    "description": "Build a Docker image with best practices for caching, security, and size optimization."
+   },
+   {
+    "role_hint": "optimize-dockerfile",
+    "path": "plugins/docker-helper/commands/optimize-dockerfile.md",
+    "description": "Optimize an existing Dockerfile for smaller images, faster builds, and better security."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/experiment-tracker/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/experiment-tracker/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "compare",
+    "path": "plugins/experiment-tracker/commands/compare.md",
+    "description": "Compare multiple ML experiment runs side-by-side to identify the best configuration."
+   },
+   {
+    "role_hint": "track",
+    "path": "plugins/experiment-tracker/commands/track.md",
+    "description": "Track an ML experiment by logging parameters, metrics, and artifacts for comparison."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/flutter-mobile/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/flutter-mobile/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "create-widget",
+    "path": "plugins/flutter-mobile/commands/create-widget.md",
+    "description": "Create a Flutter widget with proper state management and Material/Cupertino design."
+   },
+   {
+    "role_hint": "platform-channel",
+    "path": "plugins/flutter-mobile/commands/platform-channel.md",
+    "description": "Create a Flutter platform channel for native iOS and Android communication."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/gcp-helper/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/gcp-helper/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "configure-gcs",
+    "path": "plugins/gcp-helper/commands/configure-gcs.md",
+    "description": "Create and configure a GCS bucket with proper security settings."
+   },
+   {
+    "role_hint": "setup-cloud-run",
+    "path": "plugins/gcp-helper/commands/setup-cloud-run.md",
+    "description": "Configure and deploy a Cloud Run service with best practices."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/github-issue-manager/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/github-issue-manager/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "create-issue",
+    "path": "plugins/github-issue-manager/commands/create-issue.md",
+    "description": "Create a well-structured GitHub issue with proper metadata."
+   },
+   {
+    "role_hint": "triage-issues",
+    "path": "plugins/github-issue-manager/commands/triage-issues.md",
+    "description": "Analyze and triage open GitHub issues for prioritization."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/helm-charts/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/helm-charts/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "create-chart",
+    "path": "plugins/helm-charts/commands/create-chart.md",
+    "description": "Generate a Helm chart for deploying an application to Kubernetes."
+   },
+   {
+    "role_hint": "upgrade-chart",
+    "path": "plugins/helm-charts/commands/upgrade-chart.md",
+    "description": "Upgrade an existing Helm release with new chart version or values."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/infrastructure-maintainer/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/infrastructure-maintainer/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "audit-infra",
+    "path": "plugins/infrastructure-maintainer/commands/audit-infra.md",
+    "description": "Audit infrastructure for security issues, misconfigurations, and optimization opportunities."
+   },
+   {
+    "role_hint": "update-infra",
+    "path": "plugins/infrastructure-maintainer/commands/update-infra.md",
+    "description": "Plan and execute infrastructure updates with safety checks and rollback procedures."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/license-checker/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/license-checker/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "check-licenses",
+    "path": "plugins/license-checker/commands/check-licenses.md",
+    "description": "Check all dependency licenses for compliance with project requirements."
+   },
+   {
+    "role_hint": "generate-notice",
+    "path": "plugins/license-checker/commands/generate-notice.md",
+    "description": "Generate a NOTICE file with all third-party license attributions."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/migrate-tool/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/migrate-tool/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "code-migrate",
+    "path": "plugins/migrate-tool/commands/code-migrate.md",
+    "description": "Migrate code from one framework version, library, or pattern to another."
+   },
+   {
+    "role_hint": "db-migrate",
+    "path": "plugins/migrate-tool/commands/db-migrate.md",
+    "description": "Generate a database migration file for schema changes."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/model-context-protocol/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/model-context-protocol/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "add-tool",
+    "path": "plugins/model-context-protocol/commands/add-tool.md",
+    "description": "Add a new tool to an existing MCP server with proper schema and handler."
+   },
+   {
+    "role_hint": "create-server",
+    "path": "plugins/model-context-protocol/commands/create-server.md",
+    "description": "Scaffold a new MCP (Model Context Protocol) server with tools, resources, and prompts."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/openapi-expert/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/openapi-expert/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "generate-spec",
+    "path": "plugins/openapi-expert/commands/generate-spec.md",
+    "description": "Generate an OpenAPI 3.1 specification from existing API routes and handlers."
+   },
+   {
+    "role_hint": "validate-spec",
+    "path": "plugins/openapi-expert/commands/validate-spec.md",
+    "description": "Validate an existing OpenAPI specification for correctness and completeness."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/performance-monitor/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/performance-monitor/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "benchmark",
+    "path": "plugins/performance-monitor/commands/benchmark.md",
+    "description": "Run benchmarks to measure and compare performance of code implementations."
+   },
+   {
+    "role_hint": "profile-api",
+    "path": "plugins/performance-monitor/commands/profile-api.md",
+    "description": "Profile an API endpoint to identify performance bottlenecks and optimization opportunities."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/pr-reviewer/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/pr-reviewer/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "approve-pr",
+    "path": "plugins/pr-reviewer/commands/approve-pr.md",
+    "description": "Approve a pull request after verifying it meets quality standards."
+   },
+   {
+    "role_hint": "review-pr",
+    "path": "plugins/pr-reviewer/commands/review-pr.md",
+    "description": "Perform a thorough code review of a pull request with actionable feedback."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/python-expert/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/python-expert/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "refactor-py",
+    "path": "plugins/python-expert/commands/refactor-py.md",
+    "description": "Refactor Python code for clarity, performance, and Pythonic idioms."
+   },
+   {
+    "role_hint": "type-hints",
+    "path": "plugins/python-expert/commands/type-hints.md",
+    "description": "Add comprehensive type hints to Python code for better IDE support and type safety."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/rag-builder/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/rag-builder/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "create-retriever",
+    "path": "plugins/rag-builder/commands/create-retriever.md",
+    "description": "Build a retrieval component for RAG pipeline with optimized search."
+   },
+   {
+    "role_hint": "index-docs",
+    "path": "plugins/rag-builder/commands/index-docs.md",
+    "description": "Index documents into a vector store for retrieval-augmented generation."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/react-native-dev/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/react-native-dev/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "create-screen",
+    "path": "plugins/react-native-dev/commands/create-screen.md",
+    "description": "Create a React Native screen with navigation, layout, and platform-specific handling."
+   },
+   {
+    "role_hint": "native-module",
+    "path": "plugins/react-native-dev/commands/native-module.md",
+    "description": "Create a React Native native module to bridge platform-specific functionality."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/release-manager/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/release-manager/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "bump-version",
+    "path": "plugins/release-manager/commands/bump-version.md",
+    "description": "Bump the project version following semantic versioning rules based on changes since last release."
+   },
+   {
+    "role_hint": "release",
+    "path": "plugins/release-manager/commands/release.md",
+    "description": "Create a full release with changelog, GitHub release, and package publishing."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/screen-reader-tester/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/screen-reader-tester/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "fix-aria",
+    "path": "plugins/screen-reader-tester/commands/fix-aria.md",
+    "description": "Fix incorrect or missing ARIA attributes for accessibility compliance."
+   },
+   {
+    "role_hint": "test-sr",
+    "path": "plugins/screen-reader-tester/commands/test-sr.md",
+    "description": "Test application compatibility with screen readers."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/security-guidance/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/security-guidance/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "fix-vulnerability",
+    "path": "plugins/security-guidance/commands/fix-vulnerability.md",
+    "description": "Fix a specific security vulnerability with proper remediation and verification."
+   },
+   {
+    "role_hint": "security-check",
+    "path": "plugins/security-guidance/commands/security-check.md",
+    "description": "Perform a security assessment of the codebase to identify vulnerabilities and risks."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/slack-notifier/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/slack-notifier/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "create-thread",
+    "path": "plugins/slack-notifier/commands/create-thread.md",
+    "description": "Create a Slack thread for ongoing discussion about a topic."
+   },
+   {
+    "role_hint": "send-update",
+    "path": "plugins/slack-notifier/commands/send-update.md",
+    "description": "Send a formatted status update to a Slack channel."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/technical-sales/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/technical-sales/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "create-demo",
+    "path": "plugins/technical-sales/commands/create-demo.md",
+    "description": "Create a technical demo that showcases product capabilities to prospective customers."
+   },
+   {
+    "role_hint": "write-proposal",
+    "path": "plugins/technical-sales/commands/write-proposal.md",
+    "description": "Write a technical proposal or proof-of-concept plan for a prospective customer."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/test-writer/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/test-writer/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "integration-test",
+    "path": "plugins/test-writer/commands/integration-test.md",
+    "description": "Generate integration tests verifying component interactions and real data flows."
+   },
+   {
+    "role_hint": "unit-test",
+    "path": "plugins/test-writer/commands/unit-test.md",
+    "description": "Generate unit tests for a module, covering all public functions and edge cases."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/visual-regression/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/visual-regression/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "capture-baseline",
+    "path": "plugins/visual-regression/commands/capture-baseline.md",
+    "description": "Capture baseline screenshots for visual regression testing."
+   },
+   {
+    "role_hint": "compare",
+    "path": "plugins/visual-regression/commands/compare.md",
+    "description": "Compare current screenshots against baselines to detect visual regressions."
+   }
+  ],
+  "edges": []
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/workflow-optimizer/commands",
+  "source_repo": "rohitg00/awesome-claude-code-toolkit",
+  "heuristic": "same-directory",
+  "notes": [
+   "all files directly under 'plugins/workflow-optimizer/commands' (2 roles)"
+  ],
+  "roles": [
+   {
+    "role_hint": "analyze-workflow",
+    "path": "plugins/workflow-optimizer/commands/analyze-workflow.md",
+    "description": "Analyze the development workflow to identify bottlenecks, friction, and improvement opportunities."
+   },
+   {
+    "role_hint": "suggest-improvements",
+    "path": "plugins/workflow-optimizer/commands/suggest-improvements.md",
+    "description": "Suggest concrete development workflow improvements based on analysis findings."
+   }
+  ],
+  "edges": []
+ }
+]

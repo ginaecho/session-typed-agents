@@ -1,0 +1,234 @@
+[
+  {
+    "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/visual-regression/commands",
+    "source_repo": "rohitg00/awesome-claude-code-toolkit",
+    "heuristic": "same-directory",
+    "n_roles_total": 2,
+    "n_roles_blocked": 0,
+    "coverage": 0.0,
+    "excluded": {
+      "capture-baseline": {
+        "category": "pure-solo-task",
+        "reason": "A generic CLI slash-command; its steps ('Save screenshots to the baselines directory') produce a file artifact, not a message to another named party."
+      },
+      "compare": {
+        "category": "pure-solo-task",
+        "reason": "Step 1 ('Verify that baseline screenshots exist') reads capture-baseline's output FILE, but both commands are run by the SAME single actor (a developer's own sequential CLI invocations) \u2014 that is a data dependency across two steps of one workflow, not two interacting parties."
+      }
+    },
+    "notes": "coordination_filter batch verdict corrected yes->no after reading full command text: a shared file across two sequential single-actor commands is not multi-party coordination (same failure mode W16 found for VoltAgent's fetch/invalidate/list/search cache-file commands).",
+    "corrected_verdict": "no",
+    "stage_reached": "extraction",
+    "ok": false,
+    "pipeline_error": "fewer than 2 roles had evidence-backed blocks; deterministic compaction not attempted.",
+    "via_random_sample": true
+  },
+  {
+    "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/09-meta-orchestration",
+    "source_repo": "VoltAgent/awesome-claude-code-subagents",
+    "heuristic": "same-directory",
+    "n_roles_total": 3,
+    "n_roles_blocked": 0,
+    "coverage": 0.0,
+    "excluded": {
+      "agent-installer": {
+        "category": "pure-solo-task",
+        "reason": "Helps a human user browse/install agents from the repo; its 'Usage Example' addresses the user directly, never another team role."
+      },
+      "it-ops-orchestrator": {
+        "category": "ambiguous",
+        "reason": "Its own task genuinely needs a specialist counterpart ('dispatch the work to the most appropriate specialists\u2014especially PowerShell or .NET agents'), but neither teammate actually present in this specific 3-file grouping (agent-installer, knowledge-synthesizer) is that counterpart \u2014 the real specialists it means are elsewhere in the repo, unclaimed by this heuristic instance."
+      },
+      "knowledge-synthesizer": {
+        "category": "ambiguous",
+        "reason": "Has a real 'Integration with other agents:' section, but every name in it (performance-monitor, error-coordinator, agent-organizer, workflow-orchestrator, context-manager, multi-agent-coordinator) was already claimed by an earlier named-counterpart pass \u2014 none is agent-installer or it-ops-orchestrator, its actual teammates here."
+      }
+    },
+    "notes": "coordination_filter batch verdict corrected yes->unclear: it-ops-orchestrator's task is real and coordination-shaped, but this specific residual 3-file grouping does not represent that dependency \u2014 its true counterparts were claimed by team_builder's earlier heuristic pass.",
+    "corrected_verdict": "unclear",
+    "stage_reached": "extraction",
+    "ok": false,
+    "pipeline_error": "fewer than 2 roles had evidence-backed blocks; deterministic compaction not attempted.",
+    "via_random_sample": true
+  },
+  {
+    "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:incident-responder+devops-incident-responder",
+    "source_repo": "VoltAgent/awesome-claude-code-subagents",
+    "heuristic": "named-counterpart",
+    "n_roles_total": 2,
+    "n_roles_blocked": 0,
+    "coverage": 0.0,
+    "excluded": {
+      "incident-responder": {
+        "category": "no-ordering-stated",
+        "reason": "Its own text ('requires immediate response, evidence preservation, and coordinated recovery') and its collaboration bullet ('Support devops-incident-responder on operational issues') confirm a REAL, correctly-matched need for coordination with this exact teammate \u2014 but neither file names a specific message/artifact exchanged, only a generic supervisory verb ('Support ... on'). No labeled interaction can be written without inventing one."
+      },
+      "devops-incident-responder": {
+        "category": "no-ordering-stated",
+        "reason": "Mirror of incident-responder's finding: 'Support sre-engineer on reliability' etc. are real but generic collaboration bullets with no specific payload to extract."
+      }
+    },
+    "notes": "coordination_filter verdict CONFIRMED yes on reread (this is the control case in the sample: not every 'yes' turned out to be a batch-judging error) \u2014 'Support devops-incident-responder on operational issues' correctly names the actual teammate, unlike the other VoltAgent samples in this batch. Structure genuinely needed, but not extractable: generic 'support/coordinate' verbs carry no message label, unlike CrewAI's 'based on the research findings' phrasing.",
+    "corrected_verdict": null,
+    "stage_reached": "extraction",
+    "ok": false,
+    "pipeline_error": "fewer than 2 roles had evidence-backed blocks; deterministic compaction not attempted.",
+    "via_random_sample": true
+  },
+  {
+    "team_id": "crewai_config:crewAIInc/crewAI-examples:flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/outline_book_crew",
+    "source_repo": "crewAIInc/crewAI-examples",
+    "heuristic": "crewai-config",
+    "n_roles_total": 2,
+    "n_roles_blocked": 2,
+    "coverage": 1.0,
+    "excluded": {},
+    "notes": "LICENSE-BLOCKED: crewAIInc/crewAI-examples has no LICENSE file anywhere in the repo tree (verified 2026-07-12, see ledger.py) \u2014 this team reaches validator_passed (recovered structure, real Scribble-valid protocol) but CANNOT be emitted as a test-real DatasetRecord under this project's license discipline. Recorded as 'recovered, license-blocked'.",
+    "corrected_verdict": null,
+    "stage_reached": "validator_passed",
+    "ok": true,
+    "pipeline_error": "",
+    "synthesis_mode": "deterministic",
+    "protocol_text": "module crewai_config_crewAIInc_crewAI_examples_flows_write_a_book_with_flows_src_write_;\n\ndata <java> \"java.lang.String\" from \"rt.jar\" as String;\n\nglobal protocol CrewaiConfigCrewaiincCrewaiExamplesFlows(role outliner, role researcher) {\n    ResearchFindings(String) from researcher to outliner;\n}\n",
+    "via_random_sample": true,
+    "license_ok": false
+  },
+  {
+    "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/surprise_trip/src/surprise_travel",
+    "source_repo": "crewAIInc/crewAI-examples",
+    "heuristic": "crewai-config",
+    "n_roles_total": 3,
+    "n_roles_blocked": 3,
+    "coverage": 1.0,
+    "excluded": {},
+    "notes": "LICENSE-BLOCKED (same crewAI-examples repo, see above): reaches validator_passed with a genuine fan-in pattern (two producers, one consumer) \u2014 the strongest-structured recovery in this whole sample, still not emittable as test-real.",
+    "corrected_verdict": null,
+    "stage_reached": "validator_passed",
+    "ok": true,
+    "pipeline_error": "",
+    "synthesis_mode": "deterministic",
+    "protocol_text": "module crewai_config_crewAIInc_crewAI_examples_crews_surprise_trip_src_surprise_travel;\n\ndata <java> \"java.lang.String\" from \"rt.jar\" as String;\n\nglobal protocol CrewaiConfigCrewaiincCrewaiExamplesCrews(role itinerary_compiler, role personalized_activity_planner, role restaurant_scout) {\n    ActivityPlan(String) from personalized_activity_planner to itinerary_compiler;\n    DiningPlan(String) from restaurant_scout to itinerary_compiler;\n}\n",
+    "via_random_sample": true,
+    "license_ok": false
+  },
+  {
+    "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/screenplay_writer",
+    "source_repo": "crewAIInc/crewAI-examples",
+    "heuristic": "crewai-config",
+    "n_roles_total": 5,
+    "n_roles_blocked": 0,
+    "coverage": 0.0,
+    "excluded": {
+      "spamfilter": {
+        "category": "pure-solo-task",
+        "reason": "Reads the ORIGINAL input ('the following newsgroup post'), not another role's output."
+      },
+      "analyst": {
+        "category": "no-counterpart-named",
+        "reason": "'Analyse ... the following discussion' operates on the original input; no agent field or named recipient in tasks.yaml for this task."
+      },
+      "scriptwriter": {
+        "category": "ambiguous",
+        "reason": "'Create a dialogue heavy screenplay from the discussion' \u2014 'the discussion' is ambiguous between the raw input and analyst's reworded output; no explicit dependency phrase like CrewAI's other crews ('based on the research findings') is used here."
+      },
+      "formatter": {
+        "category": "ambiguous",
+        "reason": "'Format the script exactly like this' \u2014 'the script' plausibly means scriptwriter's output, but the task text never says so explicitly, and no per-task `agent:`/`context:` field in tasks.yaml states it either."
+      },
+      "scorer": {
+        "category": "ambiguous",
+        "reason": "'Score the following script: {{script}}' \u2014 a templated variable, not a named-role dependency statement."
+      }
+    },
+    "notes": "coordination_filter's 'yes' rests on the GENRE (filter->analyze->script->format->score reads as an obvious pipeline) rather than on any specific quoted dependency \u2014 every task here is connected to 'the discussion'/'the script' as generic template variables, never to a named predecessor role or task, unlike every other crewAI-examples crew sampled. Per the evidence-only discipline, nothing was extractable without inventing which task produces {{script}}.",
+    "corrected_verdict": null,
+    "stage_reached": "extraction",
+    "ok": false,
+    "pipeline_error": "fewer than 2 roles had evidence-backed blocks; deterministic compaction not attempted.",
+    "via_random_sample": true
+  },
+  {
+    "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:codebase-orchestrator+readme-generator",
+    "source_repo": "VoltAgent/awesome-claude-code-subagents",
+    "heuristic": "named-counterpart",
+    "n_roles_total": 2,
+    "n_roles_blocked": 0,
+    "coverage": 0.0,
+    "excluded": {
+      "codebase-orchestrator": {
+        "category": "no-ordering-stated",
+        "reason": "'Guide readme-generator on documentation updates after approved refactors' correctly names the actual teammate \u2014 a real, confirmed edge \u2014 but names no specific message/label, only a generic supervisory verb."
+      },
+      "readme-generator": {
+        "category": "no-counterpart-named",
+        "reason": "Its own 'Integration with other agents:' list names six different roles (documentation-engineer, product-manager, backend-developer, qa-expert, devops-engineer, security-auditor, license-engineer, open-source-maintainers) \u2014 none is codebase-orchestrator, so no reciprocal send/receive action can be attributed to this role for this specific pairing."
+      }
+    },
+    "notes": "coordination_filter verdict CONFIRMED yes (correctly-matched edge, real coordination need) but not extractable \u2014 same generic-verb-no-label pattern as incident-responder/devops-incident-responder.",
+    "corrected_verdict": null,
+    "stage_reached": "extraction",
+    "ok": false,
+    "pipeline_error": "fewer than 2 roles had evidence-backed blocks; deterministic compaction not attempted.",
+    "via_random_sample": true
+  },
+  {
+    "team_id": "same_dir:github/awesome-copilot:skills/quality-playbook/agents",
+    "source_repo": "github/awesome-copilot",
+    "heuristic": "same-directory",
+    "n_roles_total": 2,
+    "n_roles_blocked": 0,
+    "coverage": 0.0,
+    "excluded": {
+      "quality-playbook-claude": {
+        "category": "pure-solo-task",
+        "reason": "Full text read directly (not just the dossier description): 'If you are reading this file, your Claude Code session IS the orchestrator. Do not spawn a separate `quality-playbook` sub-agent from another session' \u2014 this file explicitly forbids treating quality-playbook.md as an invokable counterpart. The two files are mutually-exclusive alternate entry points into the SAME one-role skill (a Claude-Code-specific variant and a generic-tool variant), not two interacting roles."
+      },
+      "quality-playbook": {
+        "category": "pure-solo-task",
+        "reason": "Same skill, generic-tool variant of quality-playbook-claude.agent.md; the 'six phases ... via sub-agents' language describes ONE orchestrator's internal use of ephemeral phase sub-agents in fresh context windows, not a relationship between these two specific harvested files."
+      }
+    },
+    "notes": "coordination_filter batch verdict corrected yes->no after reading the full quality-playbook-claude text: the 'six phases via sub-agents' language the batch judge cited as coordination evidence is explicitly single-orchestrator internal execution, and the file explicitly forbids nesting the OTHER team member as a sub-agent. Exact same failure mode W16 already found for this same quality-playbook pair (then sourced from a different same-directory listing) \u2014 see llm_read/extraction.py team 12.",
+    "corrected_verdict": "no",
+    "stage_reached": "extraction",
+    "ok": false,
+    "pipeline_error": "fewer than 2 roles had evidence-backed blocks; deterministic compaction not attempted.",
+    "via_random_sample": true
+  },
+  {
+    "team_id": "crewai_config:crewAIInc/crewAI:lib/cli/src/crewai_cli/templates/crew",
+    "source_repo": "crewAIInc/crewAI",
+    "heuristic": "crewai-config",
+    "n_roles_total": 2,
+    "n_roles_blocked": 2,
+    "coverage": 1.0,
+    "excluded": {},
+    "notes": "",
+    "corrected_verdict": null,
+    "stage_reached": "validator_passed",
+    "ok": true,
+    "pipeline_error": "",
+    "synthesis_mode": "deterministic",
+    "protocol_text": "module crewai_config_crewAIInc_crewAI_lib_cli_src_crewai_cli_templates_crew;\n\ndata <java> \"java.lang.String\" from \"rt.jar\" as String;\n\nglobal protocol CrewaiConfigCrewaiincCrewaiLibCliSrcCrew(role reporting_analyst, role researcher) {\n    ResearchNotes(String) from researcher to reporting_analyst;\n}\n",
+    "via_random_sample": false,
+    "license_ok": true
+  },
+  {
+    "team_id": "crewai_config:crewAIInc/crewAI:lib/cli/src/crewai_cli/templates/flow/crews/content_crew",
+    "source_repo": "crewAIInc/crewAI",
+    "heuristic": "crewai-config",
+    "n_roles_total": 3,
+    "n_roles_blocked": 3,
+    "coverage": 1.0,
+    "excluded": {},
+    "notes": "",
+    "corrected_verdict": null,
+    "stage_reached": "validator_passed",
+    "ok": true,
+    "pipeline_error": "",
+    "synthesis_mode": "deterministic",
+    "protocol_text": "module crewai_config_crewAIInc_crewAI_lib_cli_src_crewai_cli_templates_flow_crews_conte;\n\ndata <java> \"java.lang.String\" from \"rt.jar\" as String;\n\nglobal protocol CrewaiConfigCrewaiincCrewaiLibCliSrcCrew(role editor, role planner, role writer) {\n    Outline(String) from planner to writer;\n    Draft(String) from writer to editor;\n}\n",
+    "via_random_sample": false,
+    "license_ok": true
+  }
+]

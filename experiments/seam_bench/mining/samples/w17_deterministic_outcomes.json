@@ -1,0 +1,194 @@
+[
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:incident-responder+devops-incident-responder",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "devops-incident-responder.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run with"
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:performance-monitor+agent-organizer+error-coordinator+workflow-orchestrator+context-manager+task-distributor",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "agent-organizer.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-l"
+ },
+ {
+  "team_id": "named_counterpart:VoltAgent/awesome-claude-code-subagents:codebase-orchestrator+readme-generator",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "codebase-orchestrator.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without "
+ },
+ {
+  "team_id": "same_dir:VoltAgent/awesome-claude-code-subagents:categories/09-meta-orchestration",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "agent-installer.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-l"
+ },
+ {
+  "team_id": "same_dir:github/awesome-copilot:skills/quality-playbook/agents",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "quality-playbook-claude.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run withou"
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/visual-regression/commands",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "capture-baseline.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-"
+ },
+ {
+  "team_id": "same_dir:rohitg00/awesome-claude-code-toolkit:plugins/workflow-optimizer/commands",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "analyze-workflow.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-"
+ },
+ {
+  "team_id": "worked_example:pr_merge",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "Author.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "worked_example:content_pipeline",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "Editor.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "worked_example:airline_seat",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "FlightSystem.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "worked_example:booking_saga",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "Hotel.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "worked_example:code_execution",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "Coder.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "worked_example:doc_pipeline",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "BrandReviewer.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "worked_example:pr_merge_upstream",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "address-comments.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-"
+ },
+ {
+  "team_id": "worked_example:doc_pipeline_upstream",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "brand-guidelines.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI:lib/cli/src/crewai_cli/templates/crew",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "reporting_analyst.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI:lib/cli/src/crewai_cli/templates/flow/crews/content_crew",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "editor.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI:lib/crewai/tests",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "reporting_analyst.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/game-builder-crew/src/game_builder_crew",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['595ca2af35b091c3', '5561e2f693e1ab51', '5145c01588fdde06']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/job-posting/src/job_posting",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['c4d051ea30b5386b', '0bad33805353f9a5', 'd456efc68fd0367f']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/landing_page_generator/src/landing_page_generator",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['82a445b1d39531e5', '5bc66e644b02698f', 'df066322619f50ac', '629efecd2fef405c']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/marketing_strategy/src/marketing_posts",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['98448250d054a5c7', 'e987f97ee237e711', '04895bb625ad31b1', '23c5135c8823f9f3']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/match_profile_to_positions/src/match_to_proposal",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['65fb3aa0eb116037', '2d8cc982dd265128', '8fdb7200e6e69d11']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/recruitment/src/recruitment",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['3ea486719161b72d', '19e762e460ba81c6', '9409e8fec5bad732', '365f409a6814501f']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/screenplay_writer",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['2d7d8aecc263feb4', '913f1d192a78204c', '2ed5dfd7ff0ae52c', '62a5088a37770100', 'e804d13288b29bcd']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/stock_analysis/src/stock_analysis",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['23e111889e79633e', '668fd95ae445594f', '935002db24cf3d8f']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:crews/surprise_trip/src/surprise_travel",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['345b17caf05fcee2', '0610db2ff860ca07', '5f6dacf5dd16f78b']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/outline_book_crew",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['6f3184447579b5e8', '7f224c5d06b7672b']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:flows/write_a_book_with_flows/src/write_a_book_with_flows/crews/write_book_chapter_crew",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['c950d6b1909ec8a1', '8b42f018aa41810b']"
+ },
+ {
+  "team_id": "crewai_config:crewAIInc/crewAI-examples:integrations/nvidia_models/marketing_strategy/src/marketing_posts",
+  "stage_reached": "team_license_ok",
+  "ok": false,
+  "error": "quarantined member(s): ['606166062c36885e', 'ef0d94454921981f', 'f26a3479493c5dad', 'dfa40b11a45962f0']"
+ },
+ {
+  "team_id": "explicit_ref:github/awesome-copilot:agent-safety+agents+debug+devbox-image-definition+gem-critic+gem-debugger+gem-documentation-writer+gem-orchestrator+gem-planner+gem-reviewer+gem-skill-creator+plan+planner+prd+prompt",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "agent-safety.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ },
+ {
+  "team_id": "explicit_ref:rohitg00/awesome-claude-code-toolkit:review+workflow-director",
+  "stage_reached": "compactor_survived",
+  "ok": false,
+  "error": "review.md: free-form skill needs an LLM to compact (no ```localtype block, not STJP skills format) \u2014 provide llm_client or run without --no-llm"
+ }
+]

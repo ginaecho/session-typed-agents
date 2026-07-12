@@ -1,0 +1,26 @@
+{
+  "funnel": {
+    "counts": {
+      "compactor_survived": 0,
+      "compatibility_survived": 0,
+      "harvested": 923,
+      "intent_gold": 907,
+      "licensed": 871,
+      "synthesis_survived": 0,
+      "team_license_ok": 98,
+      "teamed": 319,
+      "validator_passed": 0
+    },
+    "drop_reasons": {
+      "compactor_survived: free-form prose has no fenced localtype block or STJP heading format; deterministic (--no-llm) compaction cannot proceed": 98,
+      "licensed: license 'LicenseRef-restrictive-source-available' not on the permissive allowlist": 4,
+      "licensed: no license fact registered for repo 'crewAIInc/crewAI-examples' in ledger.REPO_LICENSES": 48,
+      "team_license_ok: no license fact registered for repo 'crewAIInc/crewAI-examples' in ledger.REPO_LICENSES": 12
+    }
+  },
+  "n_artifacts_harvested": 923,
+  "n_dirs_skipped_too_large": 14,
+  "n_records_emitted": 0,
+  "n_teams": 110,
+  "n_unteamed": 604
+}

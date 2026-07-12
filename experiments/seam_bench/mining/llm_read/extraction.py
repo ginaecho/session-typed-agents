@@ -355,7 +355,44 @@ def main():
     artifacts = harvest_all(args.remote_root)
     by_id = {a.artifact_id: a for a in artifacts}
     team_result = build_teams(artifacts)
-    teams = team_result.teams
+
+    # W17 note (2026-07-12): `harvest_all`/`build_teams` now also pull in
+    # crewAI + rohitg00-toolkit sources and two new team-formation
+    # heuristics (`coordination_filter.py`'s harvest expansion,
+    # `docs/reference/reports/seam/W17_coordination_scale_up.md`) — a fresh
+    # `build_teams(artifacts)` call today returns ~110 teams, not W16's
+    # original 13, and NOT in the same list order (the new
+    # named-counterpart/crewai-config heuristics run before
+    # same-directory, shifting where teams 11/12 land). This script's
+    # EXTRACTIONS dict is keyed by POSITION in the ORIGINAL 13-team list,
+    # so we filter down to exactly those 13 team_ids (order preserved by
+    # this explicit whitelist, not by list position in the larger result)
+    # rather than assert-failing or silently misindexing into the wrong
+    # teams. See W17_coordination_scale_up.md for the fresh, superseding
+    # judgment over the full ~110-team pool (`coordination_filter.py`
+    # verdicts + `w17_extraction.py` for the newly-sampled teams).
+    ORIGINAL_13_TEAM_IDS = [
+        "worked_example:pr_merge", "worked_example:content_pipeline",
+        "worked_example:airline_seat", "worked_example:booking_saga",
+        "worked_example:code_execution", "worked_example:doc_pipeline",
+        "worked_example:pr_merge_upstream", "worked_example:doc_pipeline_upstream",
+        "explicit_ref:github/awesome-copilot:gem-implementer+r",
+        "explicit_ref:github/awesome-copilot:agent-safety+agents+debug+devbox-image-definition+"
+        "gem-critic+gem-debugger+gem-documentation-writer+gem-orchestrator+gem-planner+gem-reviewer+"
+        "gem-skill-creator+plan+planner+prd+prompt",
+        "explicit_ref:github/awesome-copilot:markdown+se-ux-ui-designer",
+        "same_dir:VoltAgent/awesome-claude-code-subagents:tools/subagent-catalog",
+        "same_dir:github/awesome-copilot:skills/quality-playbook/agents",
+    ]
+    by_team_id = {t.team_id: t for t in team_result.teams}
+    if all(tid in by_team_id for tid in ORIGINAL_13_TEAM_IDS):
+        teams = [by_team_id[tid] for tid in ORIGINAL_13_TEAM_IDS]
+    else:
+        # exact historical shape unavailable (e.g. a source repo changed
+        # upstream) — fail loudly rather than silently indexing into the
+        # wrong teams.
+        missing = [tid for tid in ORIGINAL_13_TEAM_IDS if tid not in by_team_id]
+        raise AssertionError(f"expected 13 original W16 team_ids, missing: {missing}")
     assert len(teams) == 13, len(teams)
 
     summary = []

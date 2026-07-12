@@ -5,10 +5,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from harvest import Artifact, adapter_local_vendored       # noqa: E402
+from harvest import Artifact, adapter_local_vendored, adapter_crewai_style  # noqa: E402
 from team_builder import (                                  # noqa: E402
     build_teams, worked_example_teams, explicit_reference_teams,
-    same_directory_teams, MAX_SAME_DIR_TEAM, SKILLS_SAFETY_TEAMS)
+    same_directory_teams, named_counterpart_star_teams, crewai_config_teams,
+    MAX_SAME_DIR_TEAM, MAX_STAR_TEAM, SKILLS_SAFETY_TEAMS)
 
 
 def _art(source_repo, path, role_hint, text="", adapter="copilot_style") -> Artifact:
@@ -64,6 +65,61 @@ def test_build_teams_unteamed_are_singletons_not_claimed_anywhere():
     result = build_teams([lonely])
     assert result.teams == []
     assert result.unteamed == [lonely.artifact_id]
+
+
+def test_named_counterpart_finds_integration_section_bullets():
+    # mirrors the real VoltAgent "Integration with other agents:" convention
+    a = _art("repo/w", "backend.md", "backend-developer", text=(
+        "Backend dev stuff.\n\nIntegration with other agents:\n"
+        "- Receive API specifications from api-designer\n"
+        "- Collaborate with security-auditor on vulnerabilities\n"))
+    b = _art("repo/w", "api.md", "api-designer", text="Designs APIs.")
+    c = _art("repo/w", "sec.md", "security-auditor", text="Audits security.")
+    teams = named_counterpart_star_teams([a, b, c], claimed=set())
+    assert len(teams) == 1
+    t = teams[0]
+    assert t.heuristic == "named-counterpart"
+    assert set(t.role_names) == {"backend-developer", "api-designer", "security-auditor"}
+    quotes = {e["to"]: e["quote"] for e in t.edges}
+    assert "api-designer" in quotes and "Receive API specifications from api-designer" in quotes["api-designer"]
+
+
+def test_named_counterpart_caps_star_team_size():
+    hub = _art("repo/w", "hub.md", "hub", text="Integration with other agents:\n" + "\n".join(
+        f"- Collaborate with peer{i} on things" for i in range(10)))
+    peers = [_art("repo/w", f"p{i}.md", f"peer{i}", text=f"peer {i}") for i in range(10)]
+    teams = named_counterpart_star_teams([hub] + peers, claimed=set())
+    assert len(teams) == 1
+    assert len(teams[0].role_names) == MAX_STAR_TEAM
+
+
+def test_named_counterpart_greedy_claiming_no_double_use():
+    a = _art("repo/w", "a.md", "a", text="Integration with other agents:\n- Collaborate with b on x")
+    b = _art("repo/w", "b.md", "b", text="Integration with other agents:\n- Collaborate with a on x")
+    claimed = set()
+    teams = named_counterpart_star_teams([a, b], claimed)
+    assert len(teams) == 1     # a claims b; b has no unclaimed counterparts left to be its own hub
+    assert claimed == {a.artifact_id, b.artifact_id}
+
+
+def test_crewai_config_teams_group_by_crew_and_capture_context_edges(tmp_path):
+    crew_dir = tmp_path / "crews" / "demo" / "config"
+    crew_dir.mkdir(parents=True)
+    (crew_dir / "agents.yaml").write_text(
+        "researcher:\n  role: R\n  goal: research\n  backstory: b\n"
+        "writer:\n  role: W\n  goal: write\n  backstory: b\n", encoding="utf-8")
+    (crew_dir / "tasks.yaml").write_text(
+        "research_task:\n  description: research it\n  expected_output: notes\n  agent: researcher\n"
+        "writing_task:\n  description: write it\n  expected_output: post\n  agent: writer\n"
+        "  context: [research_task]\n", encoding="utf-8")
+    arts = adapter_crewai_style(tmp_path, "fixture/crewai")
+    teams = crewai_config_teams(arts, claimed=set())
+    assert len(teams) == 1
+    t = teams[0]
+    assert t.heuristic == "crewai-config"
+    assert set(t.role_names) == {"researcher", "writer"}
+    assert len(t.edges) == 1
+    assert t.edges[0]["from"] == "researcher" and t.edges[0]["to"] == "writer"
 
 
 def test_build_teams_priority_worked_example_beats_same_directory():

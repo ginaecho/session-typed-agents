@@ -243,28 +243,113 @@ def adapter_local_vendored(cases_dir: Path,
     return out
 
 
-# ── CrewAI / LangGraph — interface stubs only (R3: supplemental) ─────────
+# ── CrewAI — config-pair adapter (W17 addition) ───────────────────────────
+
+def _yaml_safe_load(path: Path) -> dict:
+    import yaml
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8", errors="replace"))
+    except Exception:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def adapter_crewai_style(checkout_dir: Path, source_repo: str) -> list[Artifact]:
+    """`config/agents.yaml` + `config/tasks.yaml` pairs (CrewAI's own
+    scaffolded project shape — R3 §Task B.2, task card item 2.d). Unlike the
+    markdown adapters above, team membership here is NOT a text-heuristic
+    guess: every agent defined in one `agents.yaml` is, by CrewAI's own
+    `Crew(agents=..., tasks=...)` construction, a member of the SAME crew as
+    every other agent in that file — `team_builder.crewai_config_teams`
+    trusts that structural fact directly instead of re-deriving it from
+    prose cross-references.
+
+    One `Artifact` per agent (`role`/`goal`/`backstory` from `agents.yaml`,
+    rendered as markdown, plus the text of every task in `tasks.yaml` whose
+    literal `agent:` field names this agent — R3's caveat applies unchanged:
+    `Process.sequential` ordering and a task's `context: [other_task]`
+    dependency are the only STATICALLY recoverable ordering signals; a
+    `Process.hierarchical` crew (manager-LLM-decided order, not visible in
+    these two YAML files) has no static protocol to extract, and this
+    adapter does not attempt to read the crew's `crew.py` to distinguish
+    the two — that is left to `coordination_filter`/two-track assessment,
+    which reads the actual crew source when judging a specific team, not to
+    a blanket per-repo adapter decision."""
+    checkout_dir = Path(checkout_dir)
+    out: list[Artifact] = []
+    for agents_path in sorted(checkout_dir.rglob("agents.yaml")):
+        if ".git" in agents_path.parts:
+            continue
+        config_dir = agents_path.parent
+        tasks_path = config_dir / "tasks.yaml"
+        if not tasks_path.is_file():
+            continue
+        agents = _yaml_safe_load(agents_path)
+        tasks = _yaml_safe_load(tasks_path)
+        if not agents:
+            continue
+        crew_dir = config_dir.parent.relative_to(checkout_dir).as_posix()
+        task_order = list(tasks.keys())
+
+        # normalize crewAI's underscore/hyphen-insensitive agent-name match
+        def _norm(s: str) -> str:
+            return re.sub(r"[_\-\s]+", "", s.lower())
+
+        agent_key_by_norm = {_norm(k): k for k in agents}
+
+        for agent_key, spec in agents.items():
+            if not isinstance(spec, dict):
+                continue
+            role = str(spec.get("role", agent_key)).strip()
+            goal = str(spec.get("goal", "")).strip()
+            backstory = str(spec.get("backstory", "")).strip()
+            own_tasks = []
+            for tk in task_order:
+                tspec = tasks.get(tk) or {}
+                if not isinstance(tspec, dict):
+                    continue
+                t_agent = tspec.get("agent")
+                if t_agent is not None and _norm(str(t_agent)) == _norm(agent_key):
+                    own_tasks.append((tk, tspec))
+            lines = [f"# Role: {role}", "", "## Goal", goal, "", "## Backstory", backstory]
+            if own_tasks:
+                lines += ["", "## Assigned tasks"]
+                for tk, tspec in own_tasks:
+                    lines += [f"### {tk}", str(tspec.get("description", "")).strip(),
+                             "", f"Expected output: {str(tspec.get('expected_output', '')).strip()}"]
+                    ctx = tspec.get("context")
+                    if ctx:
+                        lines += [f"Context (depends on prior task output of): {ctx}"]
+            text = "\n".join(lines)
+            rel = f"{crew_dir}/config/agents.yaml#{agent_key}"
+            out.append(Artifact(
+                artifact_id=_artifact_id(source_repo, rel),
+                source_repo=source_repo,
+                path=rel,
+                role_hint=agent_key,
+                text=text,
+                frontmatter={
+                    "description": (goal or role)[:300],
+                    "_crew_dir": crew_dir,
+                    "_task_order": task_order,
+                    "_own_task_keys": [tk for tk, _ in own_tasks],
+                    "_agents_path": agents_path.relative_to(checkout_dir).as_posix(),
+                    "_tasks_path": tasks_path.relative_to(checkout_dir).as_posix(),
+                },
+                adapter="crewai_style",
+                retrieval_route="git clone",
+            ))
+    return out
+
 
 def adapter_crewai_stub(checkout_dir: Path, source_repo: str) -> list[Artifact]:
-    """STUB — not implemented in this task.
-
-    Why: `config/agents.yaml` (`role:`/`goal:`/`backstory:`) gives a clean
-    per-role human intent, but the *ordering* is only statically recoverable
-    for `Process.sequential` crews via a task's `context: [other_task]`
-    dependency edge. `Process.hierarchical` crews delegate ordering to a
-    manager LLM at runtime — there is no static protocol to extract, so a
-    generic adapter would need to branch on `Process` type and parse the
-    task-dependency graph, which R3 grades a "B" (good intent text, ordering
-    needs a code read) rather than the "A" recipe already proven for
-    copilot-style/skill-dir-style sources. Left as an interface stub so a
-    future worker can implement it without redesigning the adapter contract.
-    See `docs/reference/reports/seam/scouts/R3_datasets_mining.md` §Task B.2.
-    """
-    raise NotImplementedError(
-        "adapter_crewai_stub: interface only — see docstring "
-        "(R3: ordering not statically recoverable for Process.hierarchical "
-        "crews; sequential-only extraction needs a task-dependency-graph "
-        "reader that was out of scope for this task)")
+    """Deprecated alias — kept for any external caller of the old stub name.
+    W17 implemented the real adapter as `adapter_crewai_style` above (R3
+    graded CrewAI "B", not "A": ordering is only reliably static for
+    `Process.sequential` crews; `Process.hierarchical` has no static
+    protocol, and this module doesn't attempt to distinguish the two from
+    the YAML alone — see the real adapter's docstring)."""
+    return adapter_crewai_style(checkout_dir, source_repo)
 
 
 def adapter_langgraph_stub(checkout_dir: Path, source_repo: str) -> list[Artifact]:
@@ -293,6 +378,7 @@ ADAPTERS = {
     "copilot_style": adapter_copilot_style,
     "skill_dir_style": adapter_skill_dir_style,
     "local_vendored": adapter_local_vendored,
-    "crewai_stub": adapter_crewai_stub,
+    "crewai_style": adapter_crewai_style,
+    "crewai_stub": adapter_crewai_stub,   # deprecated alias, see docstring
     "langgraph_stub": adapter_langgraph_stub,
 }
