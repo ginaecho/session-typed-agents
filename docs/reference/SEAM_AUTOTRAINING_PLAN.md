@@ -26,7 +26,8 @@ discussion:
 > target side of the seam is already fully mechanized. The Scribble grammar,
 > the well-formedness validator, and the E5 EFSM-bisimulation scorer
 > (validated 300/300) stack into a three-level verifier hierarchy — parses /
-> is safe / is behaviorally equivalent to gold — each level deterministic,
+> is safe / is behaviorally equivalent to gold (a known-correct reference
+> protocol) — each level deterministic,
 > counterexample-producing, and free at training time. That is precisely the
 > setup the ML community is currently converging on (verifier-guided
 > generation; RL from verifiable rewards), with one advantage over the usual
@@ -64,8 +65,9 @@ Both axes therefore have to enter the reward, and only one of them is free.
 
 ## 2. Part A — the validity ladder (verifiable rewards, ascending effort)
 
-The target side is fixed and mechanized (MPST rules, Scribble grammar,
-validator, bisimulation scorer). Everything below is training-side only.
+The target side is fixed and mechanized (MPST — multiparty session types,
+the type-theory rules Scribble is built on — plus Scribble's grammar,
+validator, and bisimulation scorer). Everything below is training-side only.
 
 **A1. Grammar-constrained decoding (zero training).**
 Scribble's surface grammar is small (`compiler/nuscr_syntax.py` already
@@ -82,7 +84,8 @@ rounds, guard co-emission) with measured numbers. **This is the single
 highest-leverage experiment left: it converts a declared limitation into a
 result.** Report validity@1 and validity@k with k ∈ {1, 5, 10, 25}.
 
-**A3. Back-translation for training data (SFT).**
+**A3. Back-translation for training data (SFT — supervised fine-tuning:
+training on labeled correct examples, as opposed to reinforcement learning).**
 We already own the data generator: the protocol corpus (30 skeletons in
 `experiments/cases/_corpus` + 19 named-case protocols) plus the mutation
 operators (`integration_stress.py`, `s2_mutation`) produce unlimited
@@ -103,7 +106,10 @@ validator, not to guess.
 **A5. RLVR (the ceiling).**
 Policy = the translator (with A1 decoding); reward per sample =
 `w_v·validates + w_e·bisim-to-gold (synthetic split) + w_f·faithfulness
-(Part B, real split) − w_t·token-cost`. GRPO-style group sampling reuses the
+(Part B, real split) − w_t·token-cost`. GRPO (Group Relative Policy
+Optimization, a reinforcement-learning method that scores each sample
+against the average of a sampled group instead of a separate value model)
+-style group sampling reuses the
 A2 harness unchanged — best-of-n *is* the rollout collector. A3/A4 checkpoints
 are the initialization. Reward-hacking guards in §5.
 

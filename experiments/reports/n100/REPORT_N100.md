@@ -133,11 +133,12 @@ Confirms the shape: global-text grows ~quadratically, STJP grows ~linearly.
   finishes
 - Gate rejections: 0 (contract-followers never send off-protocol)
 - Monitor violations: 0
-- Critic findings: 0
+- Critic findings: 0 (see below for what the Critic checks)
 
 The STJP infrastructure (EFSM scheduler + structural gate + per-role monitor +
-cross-message Critic) works correctly at scale with zero false positives or
-missed violations.
+the Critic — a checker that looks across several messages in the conversation
+at once, catching violations that no single message reveals on its own) works
+correctly at scale with zero false positives or missed violations.
 
 **Cost in dollars (estimate).** These trials were counted in calls (no token
 metering). Priced at ≈ **$0.00125 per lean haiku call** (~1k in + ~50 out at

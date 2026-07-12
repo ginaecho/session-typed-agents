@@ -1,7 +1,9 @@
 # Result 5 — Subagent validation of the 2026-07 components (no Foundry)
 
-**At a glance (2026-07-04).** The three new STJP components — Critic/Revisor,
-skill compaction, incremental sub-protocol extension — were validated two
+**At a glance (2026-07-04).** The three new STJP components — Critic/Revisor
+(the Critic checks rules that span several messages, e.g. "who may see what";
+the Revisor is the loop that automatically repairs a plan the Critic
+rejects), skill compaction, incremental sub-protocol extension — were validated two
 ways: a deterministic integration stress suite over generated complex
 protocols (**211/211 checks, 10 seeded iterations**), and three
 agent-in-the-loop experiments (n=10 each) where **independent Claude
@@ -24,8 +26,10 @@ improvised an off-vocabulary message, nothing ever completed.
 1. **Bottom-up detection (compaction gauntlet, 10 runs).** A subagent
    compacted the four *prose* trade skills into local types; the
    deterministic pipeline flagged the system UNSAFE **10/10** times, with a
-   pinpoint diagnosis (unreceivable `SettlementComplete`, starving Escrow,
-   the circular wait). A second subagent, given that diagnosis, produced a
+   pinpoint diagnosis (unreceivable `SettlementComplete`, a starving Escrow
+   role — the agent that should hold funds in trust until both sides
+   deliver, but never received its message — and the circular wait). A
+   second subagent, given that diagnosis, produced a
    revision that the deterministic synthesizer + Scribble accepted **10/10
    times on the first attempt** — every one converging on the escrow-first
    design. What runtime discovers in 88 wasted agent calls (the unchecked

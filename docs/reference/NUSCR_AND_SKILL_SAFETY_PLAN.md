@@ -123,7 +123,7 @@ This plan covers two deliverables the user asked for:
   - Record the exact working build + run recipe in
     [docs/1_TECH_SETUP.md](../1_TECH_SETUP.md) and a new
     `/memories/repo/nuscr-build.md`.
-- Smoke test: `docker run … nuscr --help`, then project one bundled example
+- Smoke test (a quick end-to-end check): `docker run … nuscr --help`, then project one bundled example
   (`nuscr examples/… --project Role@Proto`) and one `--fsm` to capture the exact
   CFSM/DOT output format this fork emits (it may differ from mainline).
 
@@ -168,7 +168,7 @@ This plan covers two deliverables the user asked for:
   "new Scribble buys us something" result → short section in
   [docs/reference/SCRIBBLE_EXTENSIONS.md](SCRIBBLE_EXTENSIONS.md) §5 status matrix.
 
-### Phase 1.5 — Wire the backend switch through the harness (thin)
+### Phase 1.5 — Connect the backend switch through the harness (thin)
 
 - `case_runner.py` / compaction / gate read the compiler via `get_compiler()`
   so a single env var flips the whole pipeline. No arm changes required.
@@ -181,7 +181,8 @@ This plan covers two deliverables the user asked for:
 
 - Pull agent skill/prompt sets from **public, permissively-licensed** repos —
   coordination-heavy, multi-agent. Candidate shortlist (confirm in D4):
-  - Escrow / marketplace buyer↔seller↔carrier flows.
+  - Escrow (a neutral third party that holds funds until both sides deliver) /
+    marketplace buyer↔seller↔carrier flows.
   - "Approve-then-file" / "review-then-publish" agent pairs (order-sensitive).
   - Booking/saga flows (reserve → pay → confirm, with compensation).
   - Multi-agent code-review or RAG pipelines (fetch → analyse → report).
@@ -268,9 +269,11 @@ Wiring notes:
     or infinite cost-to-goal, retries.
   - **B (revised skills, compiler-validated + monitor/gate):** expect completion,
     zero disasters, lower tokens/cost.
-- Measure the standard metrics: GCR, disasters (S3/S4), cost-to-goal (tokens),
-  time-to-goal, monitor verdicts. Run n≥10 (n≥100 if cheap enough) for a Wilson
-  CI, consistent with the existing result docs.
+- Measure the standard metrics: GCR (goal-completion rate), disasters
+  (severity levels S3/S4 — never-finished and irreversible-disaster
+  outcomes), cost-to-goal (tokens), time-to-goal, monitor verdicts. Run n≥10
+  (n≥100 if cheap enough) for a Wilson CI, consistent with the existing
+  result docs.
 
 ### Phase 2.5 — Write it up
 

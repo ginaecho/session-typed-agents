@@ -179,6 +179,10 @@ What you'll learn:
 - `reference/GAP_CLOSED.md` — Refinement call-site closure record (referenced by `experiments/README.md` and `stjp_core/README.md`)
 - `reference/NUSCR_CLOUD_INSTALL.md` — **How to run the coinductive nuscr ("nuscribble") backend** in the cloud env: Docker route, CI-artifact native-binary route, building scribble-java from source, the `STJP_COMPILER_BACKEND=nuscr` / `STJP_NUSCR_BIN` env vars, and the 2017-Maven-release pitfall
 - `reference/HOW_TO_USE_TRACES.md` — **Verify the results yourself from the committed raw traces**: what each trace file contains, how to read one message by eye, and how to re-derive every headline metric
+- `reference/SEAM_AUTOTRAINING_PLAN.md` — Strategy proposal for training the intent-to-protocol translation step: the validity ladder, the memoryless faithfulness judge panel, and the corpus-generation design
+- `reference/SEAM_TRAINING_EXECUTION_PLAN.md` — The **executable** version: exact stacks, data formats, hyperparameters, judge-isolation mechanics, worker task cards, and every preregistered go/no-go gate (§8)
+- `reference/GPU_TRAINING_RUNBOOK.md` — How to actually run the GPU fine-tuning (SFT) and reinforcement-learning (GRPO) phases once the data and eval harness are in place
+- `reference/reports/seam/` — Worker reports behind the intent-to-protocol translation step's training numbers (eval harness, grammar / GCD [grammar-constrained decoding, which forces model output to always be syntactically legal], data builders, judge panel, real-skills miner) and the first live faithfulness-panel run (`PANEL_SMOKE_2026-07-11.md`)
 
 ### `results/` — the evidence behind the guides (current, plain English)
 
@@ -229,7 +233,7 @@ Each report follows the same template: at-a-glance summary → the story → how
 Earlier run reports, kept here for history (technical, not rewritten):
 
 - `results/RUN_REPORT_2026-06-11.md` — cost anatomy, severity re-scoring, the banking companion run
-- `results/RUN_REPORT_2026-06-17.md` — drafting prompt A/B, criticality-gate smoke results
+- `results/RUN_REPORT_2026-06-17.md` — drafting prompt A/B, criticality-gate smoke (a quick end-to-end check) results
 - `results/RESULTS.md` — results from the deleted legacy runner (earliest run)
 
 ### `diary/` — the project journal

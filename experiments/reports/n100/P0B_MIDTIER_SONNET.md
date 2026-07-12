@@ -50,7 +50,8 @@ neither racing nor idling.
 - Mid-tier here is **Claude sonnet** (the in-environment stronger tier), not the
   plan's idealised gpt-4o.
 - **Control arm C+min (sonnet, n=10): done** — 10/10 clean, **0 gate rejections,
-  0 disasters, 100% CGC**, identical to haiku C+min. Enforcement is
+  0 disasters, 100% CGC** (critical-goal completion — reached the goal AND had
+  zero critical-safety violations), identical to haiku C+min. Enforcement is
   model-independent, as expected. This closes P0b (B + C+min). The full
   two-tier capability grid is in
   [`E3_CAPABILITY_SWEEP.md`](E3_CAPABILITY_SWEEP.md).

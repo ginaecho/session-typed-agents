@@ -104,3 +104,41 @@ graded by consequence (this answers the fair objection that "different ≠ wrong
   Pipelines): this project. It turns a plain-English intent into a verified
   protocol, splits it into per-agent contracts, and watches/at-will-enforces them
   with runtime monitors.
+
+## The intent-to-protocol training program (docs/8, docs/reference/SEAM_*.md)
+
+These terms are specific to the effort to train a model to do the first
+step of STJP's pipeline (turning a plain-English request into a validated
+protocol) automatically.
+
+- **The intent-to-protocol translation step** *(nickname: "the seam")* — the
+  step where a plain-language request becomes a formal, Scribble-checked
+  protocol. Today an LLM drafts it and a human signs off; the training
+  program's goal is to make a smaller, specialized model do it well.
+- **Bisimulation** — a formal equivalence check between two state machines
+  meaning "these two behave identically no matter what happens" — the
+  strictest practical notion of "these two protocols mean the same thing."
+- **Gold** *(as in "gold pair" or "gold protocol")* — a known-correct
+  reference protocol or answer that a candidate is scored against.
+- **Canary** — a planted check item with a known correct answer, mixed into
+  a batch to verify the checking process itself is working (e.g. a judge
+  that accepts an intentionally mismatched intent/protocol pair has failed
+  the canary).
+- **Escrow** *(as used in the example protocols)* — a neutral third party
+  that holds funds until both sides of a deal deliver.
+- **Geometric median** — a robust way to combine several scores into one so
+  that a single extreme outlier cannot drag the combined result too far.
+- **Smoke test** — a quick end-to-end check: run the whole pipeline once,
+  for real, to confirm it visibly works before trusting it at scale.
+- **SFT** (supervised fine-tuning) — training a model on labeled correct
+  examples (as opposed to reinforcement learning, below).
+- **GRPO** (Group Relative Policy Optimization) — a reinforcement-learning
+  method that scores each sampled output against the average of a sampled
+  group, instead of training a separate value-estimating model.
+- **LoRA** (Low-Rank Adaptation) — a fine-tuning technique that trains a
+  small add-on set of weights instead of the whole model, making training
+  cheap enough to run on a single GPU.
+- **AST re-emission** — regenerating a protocol's text from its parsed
+  structure (its abstract syntax tree) rather than editing the original
+  text, so that comments and any other hidden text are dropped from the
+  output.

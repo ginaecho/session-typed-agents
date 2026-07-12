@@ -120,7 +120,8 @@ rollouts with zero custom decoding code.'
    `root ::= select_statement`, `column ::= "col_1 " | "col_2 "`, etc.),
    not Lark, and do not rely on vLLM's Lark-to-GBNF auto-conversion. W2's
    "round-trip tested against the corpus" step should include a smoke
-   test that the grammar is *not* misclassified (pass it through both
+   test (a quick end-to-end check) that the grammar is *not* misclassified
+   (pass it through both
    backends once and diff outputs) before trusting it in GRPO rollouts.
 
 **The load-bearing question: does guided decoding work inside TRL's GRPO

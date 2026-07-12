@@ -1,6 +1,11 @@
 # Ladder table — revenue_audit (no Foundry, cheap subagents)
 
-Cost unit = **LLM agent-calls** (tokens are not metered without Foundry; calls are the model-independent coordination-cost proxy). Cost-to-goal = total calls / GCR-fraction, the finance table's "true cost per delivered result".
+**GCR** = goal-completion rate (% of trials that reached the goal). **CGC** =
+critical-goal completion (reached the goal AND had zero critical-safety
+violations). Cost unit = **LLM agent-calls** (tokens are not metered without
+Foundry; calls are the model-independent coordination-cost proxy).
+Cost-to-goal = total calls / GCR-fraction, the finance table's "true cost per
+delivered result".
 
 The **$** column is an estimate: cost-to-goal (calls) × ≈ **$0.00125** per lean haiku call (~1k in + ~50 out at $1/$5 per 1M). Method: [`COST_ESTIMATE.md`](../COST_ESTIMATE.md#per-arm-cost-to-goal-in-dollars-the--column-in-the-ladder-tables).
 

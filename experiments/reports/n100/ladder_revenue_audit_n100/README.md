@@ -13,6 +13,10 @@ Part of the combined ladder writeup:
 
 ## The table
 
+**GCR** = goal-completion rate (% of trials that reached the goal). **CGC** =
+critical-goal completion (reached the goal AND had zero critical-safety
+violations).
+
 | arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) | **Cost-to-goal ($, est.)** |
 |---|---|---|---|---|---|---|
 | A: Intent only | 100.0% | 2.0% | 0 | 9.0 | 900.0 | **$1.12** |

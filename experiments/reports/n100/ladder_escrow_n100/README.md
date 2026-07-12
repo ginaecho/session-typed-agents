@@ -12,6 +12,10 @@ Part of the combined ladder writeup:
 
 ## The table
 
+**GCR** = goal-completion rate (% of trials that reached the goal). **CGC** =
+critical-goal completion (reached the goal AND had zero critical-safety
+violations).
+
 | arm | GCR | CGC | Disasters | Calls/trial | Cost-to-goal (calls) | **Cost-to-goal ($, est.)** |
 |---|---|---|---|---|---|---|
 | A: Intent only | 83.0% | 70.0% | 26 | 27.8 | 3349.4 | **$4.19** |
@@ -28,7 +32,8 @@ Foundry, no Azure.
 so the native unit is **calls**. The **$ column converts it**: cost-to-goal
 (calls) × the price of one lean haiku call ≈ **$0.00125/call** (~1,000 input +
 ~50 output tokens at Haiku 4.5's $1.00/$5.00 per 1M — i.e. ~$1.25 per 1,000
-calls). So STJP delivers a clean escrow settlement for **~$0.89**, versus
+calls). So STJP delivers a clean escrow (a neutral third party that holds
+funds until both sides deliver) settlement for **~$0.89**, versus
 **~$3.40–4.40** for every observe/gate arm — the same ~4× cost edge the calls
 column shows, now in money. This is a **lean-deployment** estimate (role prompt
 in, short JSON out); the actual CLI-driver subagents that played these trials
@@ -55,8 +60,10 @@ task-dependent.
 At n=10 (escrow_trade's original result), every arm looked equally safe —
 the task appeared to have "no shortcut to take." At n=100, that picture
 changes: **the observe arms (A/B/C-min) show real disasters (26, 35, 49)** —
-genuine duplicate-message and information-flow issues the Critic
-independently flags (traced and manually verified: e.g. `intent__trial_006`
+genuine duplicate-message and information-flow issues the Critic (a checker
+that looks across several messages in the conversation at once, catching
+violations no single message reveals on its own) independently flags (traced
+and manually verified: e.g. `intent__trial_006`
 sends `PaymentSecured` three times and `ConfirmReceipt` twice before stalling
 without ever settling). This wasn't visible at n=10; it needed the larger
 sample to show up reliably.

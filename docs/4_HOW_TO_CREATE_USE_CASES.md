@@ -331,6 +331,10 @@ Protocol + Gate:
 
 ## 9. Use case design patterns
 
+Each pattern below is labeled with the claim it tests — **D** (deadlock-freedom),
+**I** (interaction correctness), **T** (token savings), or **W** (time savings).
+These four claims are defined in [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md#1-what-are-we-testing-four-separate-claims).
+
 ### Pattern 1: Deadlock-prone (tests Claim D)
 
 **Design:** Create a circular dependency hidden in plausible local rules.

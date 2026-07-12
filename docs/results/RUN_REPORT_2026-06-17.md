@@ -1,6 +1,7 @@
 # Run Report — 2026-06-17
 
-Two smoke tests run this session, both on real infrastructure. Purpose: verify
+Two smoke tests (quick end-to-end checks, not full statistical runs) run this
+session, both on real infrastructure. Purpose: verify
 the new design changes *compute and behave* on real data — not to draw final
 conclusions (those need the larger runs noted as future work).
 
@@ -106,7 +107,11 @@ Reading it (consistent with `STJP_RESEARCH_REPORT.md` §4.8):
 - **The observer arms (C / C-min) are the expensive ones per goal** (332k / 167k)
   — not because they misbehave (0 disasters) but because their **50% stall rate**
   (S3, the liveness problem) doubles the amortized cost. This is exactly the
-  problem the new v3 DeLM-style runtime targets: its EFSM scheduler polls only
+  problem the new v3 DeLM-style runtime targets (DeLM: a decentralized,
+  shared-context execution design from related work, adapted here — not an
+  STJP invention; see `../reference/STJP_V3_PLAN.md`): its EFSM (extended
+  finite-state machine — the step-by-step map of a role's allowed
+  transitions) scheduler polls only
   enabled senders (**−83% agent calls** in the offline smoke) and never stalls a
   role that should act. **C's inflated cost-to-goal is the measured motivation for
   the v3 execution plane built this session.**

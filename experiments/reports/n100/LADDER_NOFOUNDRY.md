@@ -11,7 +11,9 @@ tables (kept at [`ladder_revenue_audit_n10/`](ladder_revenue_audit_n10/README.md
 and [`ladder_escrow_n10/`](ladder_escrow_n10/README.md) for history).
 
 Engine: `experiments/subagent_trials/engine_ladder.py` (6 arms, config-driven,
-reusing the STJP scheduler, runtime monitor and Critic). Every poll is a real
+reusing the STJP scheduler, runtime monitor and the Critic — a checker that
+looks across several messages in the conversation at once, catching
+violations no single message reveals on its own). Every poll is a real
 model decision (no auto shortcut); cost = LLM agent-calls (tokens aren't metered
 without Foundry).
 
@@ -131,8 +133,10 @@ remain safe by construction. Full detail:
 
 ## Use case 2 — `escrow_trade`: the COST axis (n=100)
 
-4 roles (Buyer, Seller, Carrier, Escrow). At n=10 this case looked uniformly
-safe; at n=100 a real safety signal on the observe arms emerges too.
+4 roles (Buyer, Seller, Carrier, Escrow — the Escrow role is escrow in the
+usual sense: a neutral third party that holds funds until both sides deliver).
+At n=10 this case looked uniformly safe; at n=100 a real safety signal on the
+observe arms emerges too.
 
 | arm | GCR | CGC | Disasters | Calls/trial | $/goal (est.) |
 |---|---|---|---|---|---|

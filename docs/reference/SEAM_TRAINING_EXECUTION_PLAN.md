@@ -10,6 +10,16 @@ commodity tool.
 Status: preregistered plan. Numbers in §8 are go/no-go commitments written
 before any run, matching the house preregistration style (E9/E10 grading).
 
+Four terms recur throughout and are defined here once: **SFT**
+(supervised fine-tuning — training on labeled correct examples), **GRPO**
+(Group Relative Policy Optimization — a reinforcement-learning method that
+scores each sampled output against the average of a sampled group instead
+of training a separate value model), **LoRA** (Low-Rank Adaptation — a
+fine-tuning technique that trains a small add-on set of weights instead of
+the whole model, so it is cheap enough to run on a single GPU), and
+**gold** (a known-correct reference protocol or answer to score a
+candidate against).
+
 ---
 
 ## 1. Operating model — who does what
@@ -17,7 +27,7 @@ before any run, matching the house preregistration style (E9/E10 grading).
 | role | actor | does | does NOT |
 |---|---|---|---|
 | **Planner/advisor** | Fable 5 (main session) | owns this plan; reviews phase-gate reports; unblocks escalations; adjudicates design forks | write training code; run experiments; judge cases |
-| **Architect worker** | Opus subagent | reward harness, GRPO wiring, grammar file, anything where a wrong abstraction is expensive | bulk data generation |
+| **Architect worker** | Opus subagent | reward harness, connecting up GRPO training, grammar file, anything where a wrong abstraction is expensive | bulk data generation |
 | **Implementation workers** | Sonnet subagents | data pipeline, eval harness, mining, report writing, experiment babysitting | architecture decisions (escalate) |
 | **Judges** | stateless API calls (Sonnet default; Haiku where §6 calibration proves parity; one non-Anthropic family if available for decorrelation) | single-shot (payload → JSON verdict) | tools, files, conversation, memory of any kind |
 | **Scouts** | Sonnet (judgment-heavy scouting: literature, stack verification, dataset/mining survey), Opus (adversarial plan red-team), Haiku (mechanical fact-sheets: versions, pricing, id verification) | read-only research; one report file each under `docs/reference/reports/seam/scouts/`; findings adjudicated by the planner in §11 | git operations; code edits; design decisions |
@@ -64,7 +74,8 @@ v2 ladder (R2-verified — Qwen3-Coder ships only as MoE, no dense 3–14B
 successor exists): `-7B` primary → `Qwen2.5-Coder-14B-Instruct` if H3
 misses → `Qwen3.6-27B` dense (Apache-2.0) if the 14B also misses.
 License caveat (R5): the `-3B` twin is **Qwen-Research, not Apache** —
-iteration/smoke only, never in a released artifact. Fallback family:
+iteration/smoke only (smoke here and below means a quick end-to-end check,
+not a full run), never in a released artifact. Fallback family:
 `Llama-3.1-8B-Instruct` (only if Qwen shows tokenizer pathologies on
 Scribble syntax — decide at T1 gate, not before).
 

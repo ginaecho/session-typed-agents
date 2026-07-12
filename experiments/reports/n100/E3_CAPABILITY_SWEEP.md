@@ -23,8 +23,9 @@ scripts; the opus tier and escrow sweep were added 2026-07-05, n=10/arm).*
 | C+min: local+gate | disasters | 0 | 0 | **0** |
 | C+min: local+gate | **CGC (clean)** | **100%** | **100%** | **100%** |
 
-(GCR is ~100% everywhere; the signal is in **CGC** = reached goal *and* zero
-violations, and in **disasters**.) The opus column (n=10/arm, opus roles,
+(GCR — goal-completion rate, % of trials that reached the goal — is ~100%
+everywhere; the signal is in **CGC** (critical-goal completion) = reached goal
+*and* zero violations, and in **disasters**.) The opus column (n=10/arm, opus roles,
 one-mind-per-trial, every trial verified from `state.json`, `malformed=0`) is
 the third tier: it **confirms the strong-model plateau** — B stays at 0
 disasters, A stays at 100% CGC with 0 duplicate sends, every B trial serialises
@@ -33,7 +34,7 @@ disasters, A stays at 100% CGC with 0 duplicate sends, every B trial serialises
 
 ## The curve (escrow_trade) — capability mirrors revenue (NEW)
 
-The escrow capability curve was previously "expected to mirror" revenue but
+The escrow (a neutral third party that holds funds until both sides deliver) capability curve was previously "expected to mirror" revenue but
 unrun. Now measured: haiku n=100 (the main ladder) vs **sonnet n=10** (A, B,
 C+min, STJP; sonnet roles, verified from `state.json`, `malformed=0`).
 

@@ -30,7 +30,7 @@ Why this is worse for AI agents than for traditional software:
 1. **It is invisible to normal testing.** The bug is in no single agent — every agent passes its own tests and its own review. It only appears when the agents are put together, which no single owner reviews.
 2. **A stuck agent keeps spending.** Unlike a frozen program, an agent loop keeps *working* while deadlocked: rereading, replanning, polling. In our run: 24,800 tokens per trial, zero output.
 
-The classic fix in payment systems is an **escrow** (a neutral holder of funds that breaks the mutual wait) — and that is exactly the fix the checker points to.
+The classic fix in payment systems is an **escrow** (a neutral third party that holds funds until both sides deliver) — and that is exactly the fix the checker points to.
 
 ---
 

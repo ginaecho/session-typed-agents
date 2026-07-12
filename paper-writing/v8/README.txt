@@ -22,14 +22,16 @@ counterexample inline; also Li-Stutz-Wies-Zufferey (CAV'23 / OOPSLA'25 /
 ITP'25), Paduraru et al. (arXiv:2603.18096), Kaptein et al. "Policies on Paths"
 + EU AI Act motivation (arXiv:2603.16586). (3) New content -- Sec.3.2
 merge-as-lint flip (why STJP keeps the merge check MSC codegen compiles away);
-Sec.7 "The seam is trainable, not merely open" (grammar-constrained decoding,
-best-of-n validated sampling, corpus back-translation, mutant repair curriculum);
-Limitations translation-seam paragraph updated to verifier-in-the-loop framing.
+Sec.7 "Training the intent-to-protocol translation step is possible, not merely
+a stated goal" (grammar-constrained decoding, best-of-n validated sampling,
+corpus back-translation, mutant repair curriculum); Limitations
+translation-step paragraph updated to verifier-in-the-loop framing.
 STATUS: build verified -- pdflatex clean (0 undefined control sequences,
 0 LaTeX errors, 0 citation warnings, 0 "??" in pdftotext); pandoc 0 warnings.
 PENDING: E5 LLM-dependent cells (first-draft validity, repair rounds, guard
 co-emission) -- cheapest win is best-of-n validated sampling, which fills the
-table and lets the Sec.7 "trainable seam" paragraph point at measured numbers;
+table and lets the Sec.7 training-the-translation-step paragraph point at
+measured numbers;
 E3 still lacks a non-Claude frontier point (declared access limitation).
 For ICLR 2027: swap the geometry/times/fancyhdr preamble for
 \usepackage{iclr2027_conference,times}; drop the explicit natbib line (kit loads it).

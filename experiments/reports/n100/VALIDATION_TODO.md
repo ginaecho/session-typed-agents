@@ -9,8 +9,10 @@
 >   [`P1_AUDIT_FINDINGS.md`](P1_AUDIT_FINDINGS.md) +
 >   [`e1/branch_asymmetry_adjudication.md`](e1/branch_asymmetry_adjudication.md).
 > - **Material fix: complete.** 22 non-terminal trials driven to completion →
->   escrow C+spec 79→97%, C+min 82→83%, STJP 97→98%; revenue A 99→100%, C-min
->   31→32%. Dataset 100% terminal.
+>   `escrow_trade` (the goods-for-payment case, named for its Escrow role — a
+>   neutral third party that holds funds until both sides deliver; "escrow"
+>   below is shorthand for this case) C+spec 79→97%, C+min 82→83%, STJP
+>   97→98%; revenue A 99→100%, C-min 31→32%. Dataset 100% terminal.
 > - **P0b: complete.** B + C+min on revenue_audit re-run with **sonnet**
 >   (mid-tier): B 0/30 races (vs haiku 95/100), C+min 10/10 clean. See
 >   [`P0B_MIDTIER_SONNET.md`](P0B_MIDTIER_SONNET.md).
@@ -28,7 +30,7 @@
 >   (`experiments/harness_adapters/langgraph_ladder.py`) runs every case/arm as
 >   a StateGraph; the native STJP monitor agrees **14/14** (clean → 0
 >   violations, injected fault → caught). langgraph + langchain-anthropic
->   installed; token metering is wired (real numbers when `ANTHROPIC_API_KEY`
+>   installed; token metering is connected (real numbers when `ANTHROPIC_API_KEY`
 >   is set).
 > - **Genuinely blocked (external access), documented not faked:** anything
 >   needing a **live/metered LLM** — E3's non-OpenAI-vendor tier, **token-metered
@@ -47,7 +49,7 @@ These are the five places where the current results look "off" enough that a car
 
 1. **B's 0.4 avg_seconds/trial in revenue_audit (vs 16.4s for A, 3.7s for C+spec).**
    A 3-role trial finishing in 0.4 seconds with 3.3 calls means the subagent answered nearly instantly, every time. Check: are B-arm replies real model calls or did any batch fall back to a cached/scripted path? Verify a random 10 B trials: open `state.json`, confirm each poll has a distinct, non-templated reply and a plausible timestamp gap. The 95-disaster headline depends on these being genuine model decisions. (The `malformed==calls` fraud signature was designed for a different failure mode — it would NOT catch a legitimate-looking auto-responder that answers correctly-formatted sends instantly.)
-2. **A-arm revenue_audit: 99% GCR with 0 disasters but only 1% CGC.**
+2. **A-arm revenue_audit: 99% GCR (goal-completion rate — % of trials that reached every goal) with 0 disasters but only 1% CGC (critical-goal completion — reached the goal AND had zero critical-safety violations).**
    99 of 100 trials had some violation, yet ZERO were disasters, while B (which saw MORE structure) had 95 disasters. What are those A-arm violations concretely? Pull the violation-type histogram from the traces. If they're all trivial (e.g., duplicate sends), fine — but confirm the disaster detector was actually armed on the A arm (a detector misconfigured per-arm would produce exactly this pattern). The cross-check: A's Filer must be filing AFTER approval in ~99 trials — verify on 10 sampled traces that Approval genuinely precedes Filed.
 3. **C-min revenue_audit 31% GCR vs C-min escrow 100% GCR.**
    Same arm, wildly different liveness. The stall mechanism (agent resending Revenue into silence) should apply to escrow too unless the escrow protocol shape prevents it. Confirm the 31% is protocol-shape-dependent (3-role pipeline with a strict wait) and not an engine bug in the revenue config (e.g., a role's poll never being delivered). One failing trace was manually inspected — inspect five more, from different batches.
@@ -79,7 +81,7 @@ The 95% B disaster rate is the paper's most quotable number and it currently com
 ## P2 (nice-to-have, post-submission or rebuttal ammunition)
 - Token-metered E6 (rerun roles sweep with a metered endpoint; replaces the structural proxy caveat).
 - Three-harness E7 (LangGraph + skill-runtime adapters; currently 59/59 is in-process vs standalone monitor agreement only).
-- LLM half of E5 (first-draft validity, repair rounds, guard co-emission over the 100-intent set with expert golds) — the scorer is validated, so these numbers become trustworthy the day they're run.
+- LLM half of E5 (first-draft validity, repair rounds, guard co-emission over the 100-intent set with expert golds — known-correct reference answers written by a person) — the scorer is validated, so these numbers become trustworthy the day they're run.
 - n=30 live-LLM rerun of the original finance ladder (the live-model evidence is still n≤10 there).
 
 ## What NOT to redo

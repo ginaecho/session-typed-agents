@@ -64,7 +64,7 @@ Reproduce: `python experiments/subagent_trials/e8_budget_bench.py --n 50`
 The Requester is tasked to procure **$12,000** of items against the **$10,000**
 budget; three haiku subagents (one per arm) drove 15 trials each, reasoning each
 poll as the role (no scripts). Every trial verified from `state.json`
-(`malformed=0`, 15/15 reached goal). The ledger is wired into `engine_ladder`
+(`malformed=0`, 15/15 reached goal). The ledger is connected into `engine_ladder`
 (`--ledger off|observe|gate`); post-budget deliveries are counted as ground-truth
 disasters regardless of whether the arm's ledger was armed to *see* them.
 
@@ -94,6 +94,6 @@ the prose — the same verify-from-state.json rule used throughout the suite.
 
 New paragraph in §7 after E2 — "E8 — Stateful invariants: the violation class
 per-message guards cannot see" — with a grouped-bar panel (detection / FP by
-arm). Cite `\citep{chen12}` in the design paragraph and §3.4 (already wired).
+arm). Cite `\citep{chen12}` in the design paragraph and §3.4 (already connected).
 The single quotable number: **0/50 → 50/50** on a violation class the shipped
 system cannot see.

@@ -13,20 +13,24 @@ version of exactly this problem.*
 
 - **`.fail` sidecar + parser** — `stjp_core/compiler/crash_handling.py`:
   `region … covers …`, `on crash <Role> : <msgs> ; goal := <Terminal>` (or
-  `ESCALATE`), `timeout <Role|*> = k polls`. The escrow spec is
+  `ESCALATE`), `timeout <Role|*> = k polls`. The `escrow_trade` spec (the
+  goods-for-payment case, named for its Escrow role — a neutral third party
+  that holds funds until both sides deliver) is
   `experiments/cases/escrow_trade.fail`.
 - **Four STATIC validator checks** (`validate_fail`): **coverage** (every
   crashable role has a handler or ESCALATE), **projectability** (each handler is
   a well-formed mini protocol over the *live* roles), **recoverability** (every
   handler reaches a typed terminal — "no crash leaves the session in limbo"),
-  and **no-authorization-bypass** (a handler whose trace would trip a Critic
-  safety policy is rejected — this is what stops a recovery path from shortcutting
-  authorization).
+  and **no-authorization-bypass** (a handler whose trace would trip a check from
+  the Critic — a checker that looks across several messages in the conversation
+  at once, catching violations no single message reveals on its own — is
+  rejected; this is what stops a recovery path from shortcutting authorization).
 - **Runtime** — `detect_crashes` (a role idle past its `timeout` budget is
   declared crashed, with a deterministic lexicographic tie-break) and
-  `resolve_crash` (→ `typed_degraded` / `typed_abort` / `limbo`). CGC accounting
-  gains a third outcome, **typed-degraded** (`goal := Refunded`), distinct from
-  both success and limbo.
+  `resolve_crash` (→ `typed_degraded` / `typed_abort` / `limbo`). CGC
+  (critical-goal completion — reached the goal AND had zero critical-safety
+  violations) accounting gains a third outcome, **typed-degraded**
+  (`goal := Refunded`), distinct from both success and limbo.
 - **Verdict corpus — 12/12** (`experiments/tests/verdict_corpus/crash/`): crash
   at region boundaries, coordinator crash → ESCALATE, timeout that resolves one
   poll before the limit (no false crash), two roles timing out in one round

@@ -3,7 +3,7 @@
 **At a glance (2026-07-04).** Seven experiments plus a verdict corpus, each
 testing ONE component of STJP so a number is attributable. Everything that can
 be measured deterministically was run for real with the Scribble compiler;
-everything needing multiple model families or a live LLM loop is a wired
+everything needing multiple model families or a live LLM loop is a connected
 harness with real anchors and clearly-tagged synthetic placeholders.
 
 | What we now know (real numbers) | Result |
@@ -12,7 +12,7 @@ harness with real anchors and clearly-tagged synthetic placeholders.
 | The checker catches malformed protocols | **95.6%** of well-formedness defects, **0%** false positives |
 | The gate stops a hostile agent | none **0%** → keyword rules **41.7%** → structural gate **91.7%** → gate+value-guard **100%** blocked |
 | n=10 is genuinely too few | a 10/10 arm has a 95% CI of **[72%, 100%]**; pass¹⁰ at the floor is **0.039** |
-| We can compare two protocols by MEANING | equivalence scorer **100%** over 90 real (gold,draft) pairs |
+| We can compare two protocols by MEANING | equivalence scorer **100%** over 90 real (gold, draft) pairs — "gold" meaning a known-correct reference protocol |
 | It scales | global-text coordination cost is **9×→17×** STJP's from 2→10 roles |
 | Enforcement is portable | the standalone monitor matches the in-process one **100%** |
 

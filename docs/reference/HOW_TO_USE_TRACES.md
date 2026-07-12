@@ -107,7 +107,8 @@ Each event in `trace`:
 ## 4. Read a trace by eye
 
 You can see the actual failure without running anything. Example — the
-`booking_saga_bare` livelock (why that row is 0% GCR / 100 disasters):
+`booking_saga_bare` livelock (why that row is 0% GCR — goal-completion rate,
+defined in §6 — / 100 disasters):
 
 ```bash
 python3 - <<'PY'
@@ -203,4 +204,4 @@ the harness (`engine.py init` → the `iso_*` round loop) with live agents.
 - [`6_RUN_REPORTS_EXPLAINED.md`](../6_RUN_REPORTS_EXPLAINED.md) — the plain-English results.
 - [`results/RESULT_8_SKILL_SAFETY.md`](../results/RESULT_8_SKILL_SAFETY.md) — the full report + caveats.
 - [`NUSCR_CLOUD_INSTALL.md`](NUSCR_CLOUD_INSTALL.md) — installing the compiler backend `report` uses.
-- `experiments/CLAUDE.md` — how the benchmark harness is wired.
+- `experiments/CLAUDE.md` — how the benchmark harness is connected.

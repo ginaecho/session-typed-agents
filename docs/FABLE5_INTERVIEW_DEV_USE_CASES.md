@@ -240,7 +240,7 @@ That is exactly the kind of structure STJP is built to handle, in three layers:
    this project's `report_pipeline` case. STJP would prove it can't dead-end
    (two steps waiting on each other forever) in milliseconds *before* running,
    and hand each step a written slice of the plan. Google's version encodes that
-   ordering in ordinary program code; if it's wired wrong, you find out only at
+   ordering in ordinary program code; if it's connected wrong, you find out only at
    run time — after paying for web crawling.
 
 2. **The per-company mini-pipeline is a reusable sub-plan** — and STJP already

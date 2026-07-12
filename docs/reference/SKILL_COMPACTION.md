@@ -117,7 +117,8 @@ contracts, monitors, benchmark arms).
 
 `stjp_core/tests/test_skill_compactor.py` — offline: fenced-block parsing
 (with choice), compatibility mismatch detection, deterministic synthesis of
-the 4-role escrow trade (Scribble-valid, escrow-first ordering
+the 4-role escrow trade (escrow: a neutral third party that holds funds
+until both sides deliver; Scribble-valid, escrow-first ordering
 reconstructed), internal choice with common-suffix factoring
 (Scribble-valid), the circular-wait diagnosis, the LLM path via an injected
 fake client, and STJP-format extraction.

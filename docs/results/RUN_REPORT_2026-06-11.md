@@ -78,7 +78,9 @@ Two facts that answer the question:
 
 Ordered by payoff; the first three need zero change to the contracts themselves.
 
-1. **EFSM-driven scheduling (biggest lever, est. 2–4×).** The projection tells
+1. **EFSM-driven scheduling (biggest lever, est. 2–4×).** (EFSM = extended
+   finite-state machine, the step-by-step map of a role's allowed
+   transitions.) The projection tells
    the harness *exactly* which roles can act in the current state — that's what
    a local type is. Poll only roles with an enabled SEND (or a pending RECV
    driving a SEND). Idle-role WAIT calls (~75% of calls) disappear. The
@@ -191,7 +193,8 @@ branchy shapes."
 
 ## 2.3 What's still open
 
-- n=2 is a smoke run: repeat banking at n≥10 (large/small balanced) before
+- n=2 is a smoke run (a quick end-to-end check, not a statistically sized
+  sample): repeat banking at n≥10 (large/small balanced) before
   quoting percentages.
 - Approval-payload check: the grader treats `Approval(False)` as the
   `authorized` milestone (no payload predicates yet) — a denied-but-debited
@@ -219,7 +222,8 @@ The agent's actual contract at the decision point
 - SEND to TaxVerifier: StandardRevenueNotification(String) -> state 34
 ```
 
-Both branches, equal standing, **no condition**. Classic MPST (and stock
+Both branches, equal standing, **no condition**. Classic MPST (multiparty
+session types, the theory behind Scribble; and stock
 Scribble) has no value-dependent choice: an internal choice belongs to the
 role, and *which* branch to take given the data is not expressible in the
 type. Taking the standard branch on $75k revenue is **protocol-legal** — the

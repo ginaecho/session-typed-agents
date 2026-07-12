@@ -33,6 +33,10 @@ left out — see `traces/VERIFY.md` for exactly what and why.
 
 ## Headline (arm-level, n=400 each)
 
+**GCR** = goal-completion rate (% of trials that reached the goal). **CGC** =
+critical-goal completion (reached the goal AND had zero critical-safety
+violations).
+
 | arm | GCR (Wilson 95%) | CGC | Disasters | Cost-to-goal | Agent calls/trial |
 |---|---|---|---|---|---|
 | unchecked | 75% [70.5–79.0] | 50% | 100 | 3,941 | 10.8 |

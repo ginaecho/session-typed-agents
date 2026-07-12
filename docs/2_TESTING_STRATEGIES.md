@@ -67,7 +67,7 @@ This let us ask cleaner questions:
 Added a new variable: the **scheduler** (the protocol's state machine decides who acts next).
 
 Now we can test:
-- Local contract alone vs local contract + enforcement gate vs local contract + gate + scheduler
+- Local contract alone vs local contract + enforcement gate (a monitor that blocks a wrong message before it is delivered — defined in §4) vs local contract + gate + scheduler
 - Each step isolates whether that piece adds value
 
 **Result (2026-07-02):** Local contract + gate + scheduler was simultaneously the safest and cheapest option.

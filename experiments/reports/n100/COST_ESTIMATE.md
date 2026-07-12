@@ -48,7 +48,8 @@ would be **~10–20× cheaper per trial**; see the lower bound below.
 ## Per-arm cost-to-goal, in dollars (the `$` column in the ladder tables)
 
 The ladder tables report **cost-to-goal in calls** (`total calls ÷
-GCR-fraction`) because the no-Foundry runs weren't token-metered. To put that in
+GCR-fraction`, where GCR is the goal-completion rate — % of trials that
+reached the goal) because the no-Foundry runs weren't token-metered. To put that in
 money, price **one lean call**: a production agent call is ~1,000 input tokens
 (role prompt + short view) + ~50 output tokens. At Haiku 4.5's $1.00 / $5.00 per
 1M:
@@ -109,7 +110,7 @@ experiment drivers cost.
 - Prices: `claude-api` skill pricing table, cached 2026-06-24.
 - These are **estimates**, not metered invoices. Real metered numbers need an
   LLM API key; the LangGraph harness
-  (`experiments/harness_adapters/langgraph_ladder.py`) is wired to capture exact
+  (`experiments/harness_adapters/langgraph_ladder.py`) is connected to capture exact
   input/output token usage the moment one is provided — at which point the "lean
   lower bound" above becomes a measured figure.
 

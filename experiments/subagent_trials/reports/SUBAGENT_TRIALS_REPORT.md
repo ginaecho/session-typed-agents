@@ -1,7 +1,10 @@
 # STJP validation report — subagent trials + integration stress (2026-07-04)
 
 **Scope.** Full-system validation of the three components added 2026-07-04 —
-Critic/Revisor, skill compaction (bottom-up local→global), and incremental
+the Critic (a checker that looks across several messages in the conversation
+at once, catching violations no single message reveals on its own) and its
+companion Revisor (which repairs a protocol the Critic flags), skill
+compaction (bottom-up local→global), and incremental
 sub-protocol extension — going beyond unit tests: (1) an integration stress
 suite over *generated* complex protocols, run 10×; (2) three agent-in-the-loop
 experiments, n=10 each, in which **independent Claude subagents** (no Azure
@@ -50,7 +53,7 @@ again.
 | stage | result |
 |---|---|
 | raw skills flagged UNSAFE | **10/10** (all at the compatibility stage: `SettlementComplete` has no receiver; Escrow starves waiting for `Payment`; the Buyer/Seller/Carrier circular wait sits behind those) |
-| revised skills SAFE (deterministic synthesis + Scribble VALID) | **10/10, first attempt** — every revision converged on the escrow-first design (Deposit → PaymentSecured → ShipGoods → DeliverGoods → Confirm → Settlement×2) |
+| revised skills SAFE (deterministic synthesis + Scribble VALID) | **10/10, first attempt** — every revision converged on the escrow-first design (escrow: a neutral third party that holds funds until both sides deliver; Deposit → PaymentSecured → ShipGoods → DeliverGoods → Confirm → Settlement×2) |
 
 Takeaway: the bottom-up pipeline turns "plausible prose skills that quietly
 deadlock" into a **mechanically-refutable claim** in milliseconds, and its

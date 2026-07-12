@@ -102,7 +102,9 @@ and pre-empting the comparison is cheaper than being asked for it later.
 - **"RoPoLL: Robust Panel of LLM Judges." arXiv:2606.30931 (2026-06).** Formalizes PoLL
   under a Huber contamination model and proves arithmetic-mean vote share (the plan's
   current §5.5 aggregator) has *unbounded* bias whenever any one judge fails in a biased
-  way, regardless of panel size. Proposes swapping in a geometric-median robust mean
+  way, regardless of panel size. Proposes swapping in a geometric-median (a
+robust way to combine scores so one extreme judge cannot drag the result)
+robust mean
   estimator (tuning-free, optimal 1/2 breakdown point) as a drop-in aggregator fix.
 - **"Quantifying and Mitigating Self-Preference Bias of LLM Judges." arXiv:2604.22891
   (2026-05)** and **"Judging the Judges: A Systematic Evaluation of Bias Mitigation
