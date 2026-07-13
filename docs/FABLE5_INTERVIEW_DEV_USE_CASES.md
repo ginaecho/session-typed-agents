@@ -50,9 +50,22 @@ polling of idle agents, and runtime discovery of statically-refutable design bug
 
 For *development* the question is: **how do developers use agents and
 subagents, and where does the blueprint cut their token bill?** Five patterns
-cover it, and each one already exists as a runnable case in this repo:
+cover it, and each one already exists as a runnable case in this repo.
 
-**1. Coordinating subagents** — [`trade_deadlock`](../experiments/cases/trade_deadlock/) + [`experiments/subagent_trials/`](../experiments/subagent_trials/).
+**Jump to a use case:**
+
+1. [Coordinating subagents (deadlock-free)](#uc1-coordinating-subagents) — incl. the real-repo-grounded [`agenticpay_settlement`](#uc1-coordinating-subagents) benchmark
+2. [Agent pipelines with review/approval gates](#uc2-agent-pipelines-with-reviewapproval-gates)
+3. [Loops with budgets](#uc3-loops-with-budgets)
+4. [Skill/prompt authoring itself](#uc4-skillprompt-authoring-itself)
+5. [Growing the system without re-verifying everything](#uc5-growing-the-system-without-re-verifying-everything)
+
+---
+
+#### UC1. Coordinating subagents
+
+[`agenticpay_settlement`](../experiments/cases/agenticpay_settlement/) (real-repo-grounded) · [`trade_deadlock`](../experiments/cases/trade_deadlock/) (authored) · [`experiments/subagent_trials/`](../experiments/subagent_trials/)
+
 The developer writes plausible per-agent skills; a hidden circular wait makes
 the fleet starve. The static check refutes it in milliseconds instead of after
 ~88 wasted agent calls; under the contract+gate+scheduler, real Claude
@@ -61,7 +74,26 @@ STJP 100/100 ([`RESULT_1`](results/RESULT_1_DEADLOCK.md),
 [`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md),
 [`RESULT_7`](results/RESULT_7_N100_SCALE.md)).
 
-**2. Agent pipelines with review/approval gates** — [`code_review`](../experiments/cases/code_review/),
+**Grounded in real agents.** The deadlock demonstration is no longer only
+hand-authored. [`agenticpay_settlement`](../experiments/cases/agenticpay_settlement/)
+adapts the real buyer and seller negotiation agents from the MIT-licensed
+[AgenticPay benchmark](https://github.com/SafeRL-Lab/AgenticPay) and adds the
+escrow settlement layer that benchmark does not model. Left to each agent's own
+reasonable rule ("don't pay before the goods arrive" / "don't ship before you're
+paid"), the two form a circular wait. A bounded live run playing all four roles
+(Buyer, Seller, Escrow, Carrier) with subagents across **three model tiers
+(Opus 4.8, Sonnet 5, Haiku 4.5)** shows the deadlock is *capability-invariant* —
+every tier stalls identically (0 progress) — while the Scribble-validated
+escrow-first protocol completes in 7 steps at every tier. Full write-up:
+[`RESULTS_LIVE_SUBAGENTS.md`](../experiments/cases/agenticpay_settlement/RESULTS_LIVE_SUBAGENTS.md);
+provenance (which lines are real vs. authored):
+[`SOURCES.md`](../experiments/cases/agenticpay_settlement/SOURCES.md); the precise
+per-model token/completion table is produced by the Azure AI Foundry run
+([`foundry_run.md`](../experiments/cases/agenticpay_settlement/foundry_run.md)).
+
+#### UC2. Agent pipelines with review/approval gates
+
+[`code_review`](../experiments/cases/code_review/),
 [`report_pipeline`](../experiments/cases/report_pipeline/),
 [`finance`](../experiments/cases/finance/).
 The everyday dev shape: produce → review → approve → merge/publish, with a
@@ -72,7 +104,9 @@ tokens** for the same report ([`RESULT_2`](results/RESULT_2_TOKEN_EFFICIENCY.md)
 ([`RESULT_4`](results/RESULT_4_FULL_STACK.md)). Scale test:
 [`report_pipeline_large`](../experiments/cases/report_pipeline_large/).
 
-**3. Loops with budgets** — [`rag`](../experiments/cases/rag/),
+#### UC3. Loops with budgets
+
+[`rag`](../experiments/cases/rag/),
 [`retry_loop`](../experiments/cases/retry_loop/),
 [`iterative_polling`](../experiments/cases/iterative_polling/),
 [`nested_retry`](../experiments/cases/nested_retry/).
@@ -80,13 +114,16 @@ Retrieve-verify-retry, poll-until-done, revise-until-accepted — the loop
 budget lives in the type, the loop can't run away, and only the enabled agent
 is called each iteration.
 
-**4. Skill/prompt authoring itself** — [`skills_safety`](../experiments/cases/skills_safety/).
+#### UC4. Skill/prompt authoring itself
+
+[`skills_safety`](../experiments/cases/skills_safety/).
 Compact a developer's prose skills into local types and check them *before*
 deployment: UNSAFE flagged 10/10 with an actionable diagnosis, repaired
 first-try 10/10 (E1 in [`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md)).
 One static refutation at authoring time is the cheapest token saving there is.
 
-**5. Growing the system without re-verifying everything** —
+#### UC5. Growing the system without re-verifying everything
+
 [`composition`](../experiments/cases/composition/) + the incremental-extension
 pipeline (E3 in [`RESULT_5`](results/RESULT_5_SUBAGENT_VALIDATION.md)).
 Add a sub-protocol or a new role; only the touched roles get re-verified and
