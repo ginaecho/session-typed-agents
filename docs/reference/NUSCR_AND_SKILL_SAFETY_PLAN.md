@@ -133,7 +133,9 @@ This plan covers two deliverables the user asked for:
 
 ### Phase 1.1 — Vendor + build the toolchain
 
-- Clone `https://github.com/phou/nuscr_coinduction.git` (branch
+- Clone `https://github.com/phou/nuscr_coinduction.git` (a private
+  repository — 404 without access; use a fork you can reach, see
+  `NUSCR_CLOUD_INSTALL.md`) (branch
   `coinductive_projection`) into `nuscr-coinduction/` at repo root (sibling of
   `scribble-java/`). Add to `.gitignore` like `scribble-java/` (do **not** mirror
   the OCaml build tree into the eag-innovation monorepo).

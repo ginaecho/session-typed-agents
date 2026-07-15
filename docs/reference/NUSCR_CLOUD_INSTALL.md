@@ -1,9 +1,12 @@
 # Installing and running the new Scribble (nuscr coinductive fork)
 
 How to install the **latest Scribble** — the coinductive nuscr fork at
-[phou/nuscr_coinduction](https://github.com/phou/nuscr_coinduction), branch
-`coinductive_projection` (HEAD `cc7c72e`) — and drive it as an STJP compiler
-backend. Two routes are documented: the **Docker route** (the fork's own
+[phou/nuscr_coinduction](https://github.com/phou/nuscr_coinduction) (a
+**private repository**: the link works only for accounts with access; for
+everyone else it shows GitHub's 404 page — use your own fork, e.g.
+`ginaecho/nuscr_coinduction`, as described in the CI-artifact route below),
+branch `coinductive_projection` (HEAD `cc7c72e`) — and drive it as an STJP
+compiler backend. Two routes are documented: the **Docker route** (the fork's own
 recipe, for machines with normal egress) and the **CI-artifact route**
 (verified 2026-07-06 inside the Claude Code cloud execution environment,
 whose network policy blocks Docker Hub blobs, opam.ocaml.org, and
