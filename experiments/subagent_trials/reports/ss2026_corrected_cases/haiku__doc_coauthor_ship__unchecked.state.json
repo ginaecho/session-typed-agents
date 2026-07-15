@@ -1,0 +1,1552 @@
+{
+  "case": "skills_doc_coauthor_ship",
+  "arm": "unchecked",
+  "stjp_prompts": {},
+  "roles": [
+    "BrandStyler",
+    "DocLead",
+    "Requester",
+    "Writer"
+  ],
+  "max_rounds": 8,
+  "round": 8,
+  "efsms": {
+    "BrandStyler": {
+      "initial": "31",
+      "accepting": [
+        "32"
+      ],
+      "transitions": [
+        [
+          "31",
+          "receive",
+          "DocLead",
+          "ReaderTestFeedback",
+          "String",
+          "31"
+        ],
+        [
+          "31",
+          "receive",
+          "DocLead",
+          "StyleRequest",
+          "String",
+          "33"
+        ],
+        [
+          "33",
+          "send",
+          "DocLead",
+          "StyledDoc",
+          "String",
+          "32"
+        ]
+      ]
+    },
+    "DocLead": {
+      "initial": "48",
+      "accepting": [
+        "49"
+      ],
+      "transitions": [
+        [
+          "48",
+          "receive",
+          "Requester",
+          "DocRequest",
+          "String",
+          "50"
+        ],
+        [
+          "51",
+          "send",
+          "Writer",
+          "ReaderTestFeedback",
+          "String",
+          "52"
+        ],
+        [
+          "51",
+          "send",
+          "BrandStyler",
+          "StyleRequest",
+          "String",
+          "55"
+        ],
+        [
+          "52",
+          "send",
+          "Requester",
+          "ReaderTestFeedback",
+          "String",
+          "53"
+        ],
+        [
+          "53",
+          "send",
+          "BrandStyler",
+          "ReaderTestFeedback",
+          "String",
+          "54"
+        ],
+        [
+          "54",
+          "receive",
+          "Writer",
+          "RevisedDraft",
+          "String",
+          "51"
+        ],
+        [
+          "55",
+          "send",
+          "Writer",
+          "StyleRequest",
+          "String",
+          "56"
+        ],
+        [
+          "56",
+          "send",
+          "Requester",
+          "StyleRequest",
+          "String",
+          "57"
+        ],
+        [
+          "57",
+          "receive",
+          "BrandStyler",
+          "StyledDoc",
+          "String",
+          "58"
+        ],
+        [
+          "58",
+          "send",
+          "Requester",
+          "DocShipped",
+          "String",
+          "49"
+        ],
+        [
+          "50",
+          "receive",
+          "Writer",
+          "Draft",
+          "String",
+          "51"
+        ]
+      ]
+    },
+    "Requester": {
+      "initial": "7",
+      "accepting": [
+        "8"
+      ],
+      "transitions": [
+        [
+          "7",
+          "send",
+          "Writer",
+          "DocRequest",
+          "String",
+          "9"
+        ],
+        [
+          "9",
+          "send",
+          "DocLead",
+          "DocRequest",
+          "String",
+          "10"
+        ],
+        [
+          "10",
+          "receive",
+          "DocLead",
+          "ReaderTestFeedback",
+          "String",
+          "10"
+        ],
+        [
+          "10",
+          "receive",
+          "DocLead",
+          "StyleRequest",
+          "String",
+          "11"
+        ],
+        [
+          "11",
+          "receive",
+          "DocLead",
+          "DocShipped",
+          "String",
+          "8"
+        ]
+      ]
+    },
+    "Writer": {
+      "initial": "20",
+      "accepting": [
+        "21"
+      ],
+      "transitions": [
+        [
+          "20",
+          "receive",
+          "Requester",
+          "DocRequest",
+          "String",
+          "22"
+        ],
+        [
+          "22",
+          "send",
+          "DocLead",
+          "Draft",
+          "String",
+          "23"
+        ],
+        [
+          "23",
+          "receive",
+          "DocLead",
+          "ReaderTestFeedback",
+          "String",
+          "24"
+        ],
+        [
+          "23",
+          "receive",
+          "DocLead",
+          "StyleRequest",
+          "String",
+          "21"
+        ],
+        [
+          "24",
+          "send",
+          "DocLead",
+          "RevisedDraft",
+          "String",
+          "23"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 2,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 3,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 4,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 5,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 6,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 7,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 8,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 9,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    },
+    {
+      "trial": 10,
+      "status": "max_rounds",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Please prepare an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement about launching our new AI research initia",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement for new feature launch",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "We are excited to announce the launch of our new AI Research Initiative, a strat",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement explaining a new company policy update. Ke",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "RequestClarification",
+          "payload": "Received two different announcement briefs - please clarify which to draft first",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBriefRequest",
+          "payload": "Use the primary brief for the initial draft",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncements",
+          "payload": "ANNOUNCEMENT 1: Launching Our New AI Research Initiative\n\nWe're excited to annou",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Describe both briefs you received - I'll clarify which announcement to draft fir",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Internal announcement: New AI research initiative launching. We are excited to a",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "ClarifyBrief",
+          "payload": "Please draft the first brief",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "Requester",
+          "label": "BriefSummary",
+          "payload": "Received three briefs: (1) internal announcement about launching new AI research",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "BriefDecision",
+          "payload": "Draft the new AI research announcement first",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "DraftAnnouncement",
+          "payload": "Subject: Introducing Our New AI Research Initiative\n\nTeam,\n\nWe are excited to an",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 5,
+      "prompt_chars": 86026,
+      "reply_chars": 7375,
+      "pending_recv": []
+    }
+  ],
+  "agent_seconds": 910.8428728580475
+}

@@ -1,0 +1,2032 @@
+{
+  "case": "skills_doc_coauthor_ship",
+  "arm": "bare",
+  "stjp_prompts": {},
+  "roles": [
+    "BrandStyler",
+    "DocLead",
+    "Requester",
+    "Writer"
+  ],
+  "max_rounds": 16,
+  "round": 8,
+  "efsms": {
+    "BrandStyler": {
+      "initial": "31",
+      "accepting": [
+        "32"
+      ],
+      "transitions": [
+        [
+          "31",
+          "receive",
+          "DocLead",
+          "ReaderTestFeedback",
+          "String",
+          "31"
+        ],
+        [
+          "31",
+          "receive",
+          "DocLead",
+          "StyleRequest",
+          "String",
+          "33"
+        ],
+        [
+          "33",
+          "send",
+          "DocLead",
+          "StyledDoc",
+          "String",
+          "32"
+        ]
+      ]
+    },
+    "DocLead": {
+      "initial": "48",
+      "accepting": [
+        "49"
+      ],
+      "transitions": [
+        [
+          "48",
+          "receive",
+          "Requester",
+          "DocRequest",
+          "String",
+          "50"
+        ],
+        [
+          "51",
+          "send",
+          "Writer",
+          "ReaderTestFeedback",
+          "String",
+          "52"
+        ],
+        [
+          "51",
+          "send",
+          "BrandStyler",
+          "StyleRequest",
+          "String",
+          "55"
+        ],
+        [
+          "52",
+          "send",
+          "Requester",
+          "ReaderTestFeedback",
+          "String",
+          "53"
+        ],
+        [
+          "53",
+          "send",
+          "BrandStyler",
+          "ReaderTestFeedback",
+          "String",
+          "54"
+        ],
+        [
+          "54",
+          "receive",
+          "Writer",
+          "RevisedDraft",
+          "String",
+          "51"
+        ],
+        [
+          "55",
+          "send",
+          "Writer",
+          "StyleRequest",
+          "String",
+          "56"
+        ],
+        [
+          "56",
+          "send",
+          "Requester",
+          "StyleRequest",
+          "String",
+          "57"
+        ],
+        [
+          "57",
+          "receive",
+          "BrandStyler",
+          "StyledDoc",
+          "String",
+          "58"
+        ],
+        [
+          "58",
+          "send",
+          "Requester",
+          "DocShipped",
+          "String",
+          "49"
+        ],
+        [
+          "50",
+          "receive",
+          "Writer",
+          "Draft",
+          "String",
+          "51"
+        ]
+      ]
+    },
+    "Requester": {
+      "initial": "7",
+      "accepting": [
+        "8"
+      ],
+      "transitions": [
+        [
+          "7",
+          "send",
+          "Writer",
+          "DocRequest",
+          "String",
+          "9"
+        ],
+        [
+          "9",
+          "send",
+          "DocLead",
+          "DocRequest",
+          "String",
+          "10"
+        ],
+        [
+          "10",
+          "receive",
+          "DocLead",
+          "ReaderTestFeedback",
+          "String",
+          "10"
+        ],
+        [
+          "10",
+          "receive",
+          "DocLead",
+          "StyleRequest",
+          "String",
+          "11"
+        ],
+        [
+          "11",
+          "receive",
+          "DocLead",
+          "DocShipped",
+          "String",
+          "8"
+        ]
+      ]
+    },
+    "Writer": {
+      "initial": "20",
+      "accepting": [
+        "21"
+      ],
+      "transitions": [
+        [
+          "20",
+          "receive",
+          "Requester",
+          "DocRequest",
+          "String",
+          "22"
+        ],
+        [
+          "22",
+          "send",
+          "DocLead",
+          "Draft",
+          "String",
+          "23"
+        ],
+        [
+          "23",
+          "receive",
+          "DocLead",
+          "ReaderTestFeedback",
+          "String",
+          "24"
+        ],
+        [
+          "23",
+          "receive",
+          "DocLead",
+          "StyleRequest",
+          "String",
+          "21"
+        ],
+        [
+          "24",
+          "send",
+          "DocLead",
+          "RevisedDraft",
+          "String",
+          "23"
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 2,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 3,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 4,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 5,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 6,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 7,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 8,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 9,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    },
+    {
+      "trial": 10,
+      "status": "success",
+      "trace": [
+        {
+          "round": 1,
+          "sender": "Requester",
+          "receiver": "DocLead",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 2,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 3,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Announcement: We are pleased to inform the team of an important update to our in",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Draft incomplete - message cuts off mid-sentence. Please complete the announceme",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 4,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "We're excited to announce a new initiative launching next quarter to streamline ",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "DocLead",
+          "receiver": "Writer",
+          "label": "ReaderTestFeedback",
+          "payload": "Drafts incomplete. Complete announcement with clear statement, impact, and timel",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Draft an internal announcement about our new initiative. Ensure it is clear, eng",
+          "delivered": true
+        },
+        {
+          "round": 5,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We are excited to announce a new internal initiative launching next week. This a",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Document approved for styling. Apply brand colors, typography, and formatting.",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 6,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "We're launching our new initiative to streamline internal communications across ",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "BrandStyler",
+          "receiver": "DocLead",
+          "label": "StyledDoc",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "DocLead",
+          "receiver": "BrandStyler",
+          "label": "StyleRequest",
+          "payload": "Announcement ready for styling",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement for our team.",
+          "delivered": true
+        },
+        {
+          "round": 7,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "Draft",
+          "payload": "Subject: New Initiative Launch Announcement\n\nTeam,\n\nWe are excited to announce t",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "DocLead",
+          "receiver": "Requester",
+          "label": "DocShipped",
+          "payload": "Styled document with brand colors, typography, and formatting applied.",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Requester",
+          "receiver": "Writer",
+          "label": "DocRequest",
+          "payload": "Please draft an internal announcement",
+          "delivered": true
+        },
+        {
+          "round": 8,
+          "sender": "Writer",
+          "receiver": "DocLead",
+          "label": "RevisedDraft",
+          "payload": "INTERNAL ANNOUNCEMENT: New Team Initiative Launch\n\nWe are pleased to announce th",
+          "delivered": true
+        }
+      ],
+      "role_states": {
+        "BrandStyler": "31",
+        "DocLead": "48",
+        "Requester": "7",
+        "Writer": "20"
+      },
+      "rejections": [],
+      "no_progress_rounds": 0,
+      "agent_calls": 32,
+      "malformed": 1,
+      "prompt_chars": 80124,
+      "reply_chars": 6279,
+      "pending_recv": []
+    }
+  ],
+  "agent_seconds": 912.4692287445068
+}
