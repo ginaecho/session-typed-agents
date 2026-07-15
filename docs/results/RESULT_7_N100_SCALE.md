@@ -15,13 +15,14 @@ n=100, the Wilson 95% CI for the STJP arm narrows from [72%, 100%] to
 | Equivalence scorer accuracy | **300/300 = 100%** (3.3× wider validation) |
 | Coordination cost ratio | **9.2→17.1×** confirmed (structural) |
 | Boundary portability | **59/59 = 100%** (standalone == in-process monitor) |
-| Interaction trials (unchecked) | **0/100 success, 100/100 deadlock** |
+| Interaction trials (unchecked) | **0/100 finished — all 100 deadlocked** |
 | Interaction trials (STJP) | **100/100 success, 0 violations** |
 
 <!-- MENU:START (auto-generated — edit headings, then regenerate) -->
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [The three findings that matter most](#the-three-findings-that-matter-most)
 - [Method](#method)
 - [Where everything lives](#where-everything-lives)
@@ -33,7 +34,17 @@ n=100, the Wilson 95% CI for the STJP arm narrows from [72%, 100%] to
 - **Situation** — Result 6's deterministic benchmarks were run at n=10/30, which leaves wide statistical uncertainty even when every trial passes.
 - **Task** — Rescale every benchmark that can run without a live LLM loop or Azure from n=10/30 to n=100, and measure how much deployment confidence improves.
 - **Action** — Same codebase, same Scribble compiler, same deterministic seeds as Result 6, scaled to n=100 across the integration stress suite, mutation testing, gate defense, equivalence scorer, coordination cost, monitor portability, and subagent interaction trials.
-- **Result** — Wilson 95% CI for the STJP arm narrows from **[72%, 100%]** to **[96.3%, 100%]**, pass^10 at the CI floor jumps from **0.039** to **0.686** (a **17.6x improvement**); interaction trials read **100/100 success, 0 violations** (STJP) vs **0/100 success, 100/100 deadlock** (unchecked).
+- **Result** — Wilson 95% CI for the STJP arm narrows from **[72%, 100%]** to **[96.3%, 100%]**, pass^10 at the CI floor jumps from **0.039** to **0.686** (a **17.6x improvement**); interaction trials read **100/100 finished, 0 violations** (STJP) vs **0/100 finished — all 100 deadlocked** (unchecked).
+
+## How this experiment is set
+
+- **Case(s):** same deterministic benchmarks as Result 6, rescaled, plus the subagent interaction trials (`escrow_trade`-shaped, contract-following strategy, no live model)
+- **Arms/settings:** integration stress; checker soundness (mutation testing); gate + layered defense; equivalence scorer; coordination cost; boundary portability; interaction trials (unchecked vs. STJP)
+- **Trials:** n=100 per benchmark (up from n=10/30 in Result 6); 1,200 trials for the gate/layered-defense ladder
+- **Who plays the roles:** no live LLM — the interaction trials use a "contract-following" strategy (each agent picks its first enabled send transition) to test the STJP machinery itself, not model compliance; the live-LLM evidence for model compliance is in Result 5 (n=10, real subagents)
+- **Isolation:** not applicable (scripted strategy, no independent agents to isolate)
+- **Harness & budgets:** `experiments/subagent_trials/run_n100.py`; same deterministic seeds and Scribble compiler as Result 6
+- **Where the raw data is:** [`experiments/reports/n100/`](../../experiments/reports/n100/)
 
 ## The three findings that matter most
 

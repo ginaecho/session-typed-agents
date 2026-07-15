@@ -10,6 +10,7 @@
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [1. What this result proves](#1-what-this-result-proves)
 - [2. The story — why this happens in real companies](#2-the-story--why-this-happens-in-real-companies)
 - [3. How the test was set up (one variable only)](#3-how-the-test-was-set-up-one-variable-only)
@@ -29,6 +30,16 @@
 - **Task** — Show that this deadlock is invisible to runtime monitoring and can only be caught, before any agent runs, by a static checker (Scribble) — and measure what the unchecked version actually costs.
 - **Action** — 3 settings x 6 trials on the `trade_deadlock` case, gpt-5.4: unchecked hand-written rules vs. a Scribble-validated escrow-first protocol delivered as a full per-agent contract (`spec`) and a lean one (`min`); plus a separate check asking gpt-5.4 to author the protocol itself 10 independent times.
 - **Result** — Unchecked rules completed **0 / 6** trades (0 messages ever sent, 24,800 tokens burned per trial for nothing); both validated settings completed **6 / 6**, with the lean contract finishing at **12,000 tokens** per completed trade vs 24,800 for the full contract. The checker also caught **7 of 10** unsafe AI-authored drafts before any agent ran.
+
+## How this experiment is set
+
+- **Case(s):** [`trade_deadlock`](../../experiments/cases/trade_deadlock/)
+- **Arms/settings:** unchecked hand-written rules; Scribble-validated escrow protocol delivered as a full per-agent contract (`spec`); the same protocol as a lean per-agent contract (`min`)
+- **Trials:** 6 per arm (18 total), plus a separate 10-draft AI-authoring risk check (no live agents in that check)
+- **Who plays the roles:** gpt-5.4, one Azure AI Foundry hosted agent per role per arm (`experiments/scripts/case_runner.py` / `FoundryRunner`)
+- **Isolation:** each role is a separate Foundry agent with its own thread; a role sees only its own thread's message history and its own contract/rule file, never another role's prompt
+- **Harness & budgets:** `case_runner.py`; up to 3 attempts per trial (`MAX_ATTEMPTS = 3`), each attempt capped at `max_steps: 24` (`case.yaml`); "deadlock" here is the two-agent circular wait itself (Payments/Fulfilment), not a harness round-count rule
+- **Where the raw data is:** `experiments/cases/trade_deadlock/runs/20260617T183345-n6-dual/` (run directory — not committed; per-trial numbers preserved in the report tables and `summary*.json` copies referenced in this document)
 
 ## 1. What this result proves
 

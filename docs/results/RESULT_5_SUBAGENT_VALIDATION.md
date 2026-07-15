@@ -25,6 +25,7 @@ improvised an off-vocabulary message, nothing ever completed.
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [The story](#the-story)
 - [Where everything lives](#where-everything-lives)
 - [Honest caveats](#honest-caveats)
@@ -36,7 +37,17 @@ improvised an off-vocabulary message, nothing ever completed.
 - **Situation** — Three new 2026-07 STJP components (Critic/Revisor, skill compaction, incremental sub-protocol extension) needed validation without depending on Azure AI Foundry.
 - **Task** — Confirm the components work both in a deterministic stress suite and with live agents playing roles, and show the classic unchecked-vs-STJP ladder reproduces end-to-end with no Foundry anywhere in the loop.
 - **Action** — A deterministic integration stress suite over generated complex protocols (10 seeded iterations), plus three n=10 agent-in-the-loop experiments where independent Claude subagents played the roles against the deterministic STJP machinery.
-- **Result** — Unchecked prose skills: **0/10** success, **10/10** deadlock; STJP contract + gate + scheduler: **10/10** success, **0** violations, at the protocol-minimum **7.0** agent calls/trial; the incrementally extended protocol also reached **10/10**; the stress suite passed **211/211** checks.
+- **Result** — Unchecked prose skills: **0/10 finished — all 10 deadlocked**; STJP contract + gate + scheduler: **10/10 finished**, **0** violations, at the protocol-minimum **7.0** agent calls/trial; the incrementally extended protocol also reached **10/10 finished**; the stress suite passed **211/211** checks.
+
+## How this experiment is set
+
+- **Case(s):** `escrow_trade` and its incrementally extended sibling `escrow_trade_ext` (defined in [`experiments/subagent_trials/cases.py`](../../experiments/subagent_trials/cases.py)); the compaction gauntlet reuses the `trade_deadlock` unchecked prose skills, [`experiments/cases/trade_deadlock/unchecked_skills/`](../../experiments/cases/trade_deadlock/unchecked_skills/)
+- **Arms/settings:** unchecked prose skills; STJP contract + gate + scheduler; STJP on the incrementally extended protocol (+ `SettlementAudit` child, new `Auditor` role)
+- **Trials:** 10 per arm (interaction trials); 10 seeded iterations (integration stress suite)
+- **Who plays the roles:** independent Claude subagents, one freshly spawned subagent per (arm, role, round) decision, played against the deterministic STJP engine (`experiments/subagent_trials/engine.py`) — no Azure AI Foundry
+- **Isolation:** each subagent sees only its own role's accumulated inbox, never another role's prompt or the global protocol
+- **Harness & budgets:** `engine.py`'s built-in deadlock rule (2 consecutive zero-delivery rounds → `status: deadlock`); round budget per the case's own registry entry
+- **Where the raw data is:** [`experiments/subagent_trials/reports/SUBAGENT_TRIALS_REPORT.md`](../../experiments/subagent_trials/reports/SUBAGENT_TRIALS_REPORT.md) (full report + raw per-trial JSON)
 
 ## The story
 

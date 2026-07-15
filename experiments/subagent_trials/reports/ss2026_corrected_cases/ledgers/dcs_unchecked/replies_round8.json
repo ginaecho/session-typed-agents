@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead styling request\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"TestDocument\", \"payload\": \"Test announcement for clarity\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"BriefDecision\", \"payload\": \"Draft the new AI research announcement first\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Subject: Introducing Our New AI Research Initiative\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new AI research initiative, a strategic effort to advance our capabilities in artificial intelligence and machine learning.\\n\\nThis initiative brings together cross-functional teams to explore emerging AI applications, develop novel research approaches, and strengthen our technical foundation in this critical area. Our focus will be on high-impact research that translates directly to product and business value.\\n\\nKey objectives include accelerating innovation cycles, building deeper expertise across the organization, and establishing thought leadership in AI research.\\n\\nMore details on structure, team assignments, and next steps will follow shortly. We look forward to the progress we'll make together.\\n\\nThank you,\\nThe Leadership Team\"}"
+    }
+  ]
+}

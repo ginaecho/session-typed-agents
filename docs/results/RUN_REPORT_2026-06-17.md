@@ -9,6 +9,7 @@ conclusions (those need the larger runs noted as future work).
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [1. Drafting prompt — v1 vs v2 A/B (real gpt-5.4)](#1-drafting-prompt--v1-vs-v2-ab-real-gpt-54)
 - [2. Criticality gates — smoke on the grand n=10 traces](#2-criticality-gates--smoke-on-the-grand-n10-traces)
 - [3. Fresh n=10 stability run + cost/time-to-goal](#3-fresh-n10-stability-run--costtime-to-goal)
@@ -23,6 +24,16 @@ conclusions (those need the larger runs noted as future work).
 - **Task** — Run quick smoke tests (not full statistical runs) to verify each change actually computes and behaves correctly on real data, not to draw final conclusions.
 - **Action** — A 3-trial-per-arm A/B of the drafting prompt (v1 vs v2) on real gpt-5.4; a post-hoc criticality-gate smoke over existing n=10 finance traces (no new LLM calls); a fresh n=10 stability run across 5 arms; four v3 roadmap steps built and offline-smoke-tested.
 - **Result** — v2 cut re-draft loops **2.33 → 1.00** and reached **3/3** eventual validity vs. v1's 2/3; the fresh n=10 run found B (global text) and C+ (gate) tie on outcome — both **100%** complete, 0 disasters — but B cheaper (**27k** vs **79k** cost-to-goal); the offline v3 EFSM scheduler cut **−83% agent calls** vs. round-robin.
+
+## How this experiment is set
+
+- **Case(s):** [`finance`](../../experiments/cases/finance/) (fresh n=10 stability run and the criticality-gate smoke over an earlier finance run); a fresh, unseen 5-role Incident-Response scenario, not a committed case folder, used only for the drafting-prompt A/B
+- **Arms/settings:** drafting-prompt v1 vs. v2 (3 trials/arm); criticality-gate smoke over 5 existing finance arms (A/B/C/C-min/C+ gate, post-hoc, no new calls); fresh n=10 stability run over the same 5 arms
+- **Trials:** 3 per arm (drafting A/B); 10 per arm (fresh stability run); the criticality smoke re-uses the existing `runs/20260612T162803-n10-dual` traces — no new trials
+- **Who plays the roles:** gpt-5.4, real Azure AI Foundry hosted agents for the drafting-prompt and stability-run trials; the criticality-gate smoke runs no new LLM calls at all
+- **Isolation:** each role is a separate Foundry agent with its own thread; sees only its own thread's history and its own contract
+- **Harness & budgets:** `experiments/scripts/smoke_draft_prompt.py` (drafting A/B, up to 4 Scribble fix-rounds per draft); `experiments/scripts/criticality_gate.py` (post-hoc, no budget — reads existing traces); `case_runner.py` / `FoundryRunner` (fresh stability run, up to 3 attempts per trial, each capped at `max_steps: 24`, `finance/case.yaml`)
+- **Where the raw data is:** `experiments/cases/finance/runs/20260617T081755-n10-dual/` (fresh stability run), `experiments/cases/finance/runs/20260612T162803-n10-dual/` (criticality-smoke source)
 
 ## 1. Drafting prompt — v1 vs v2 A/B (real gpt-5.4)
 

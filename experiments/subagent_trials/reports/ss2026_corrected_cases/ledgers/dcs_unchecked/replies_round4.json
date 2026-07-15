@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Q1: What is the AI Research Initiative? Q2: Who launched it? Q3: What are its main goals or focus areas?\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement explaining a new company policy update. Keep it clear and professional.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"RequestClarification\", \"payload\": \"Received two different announcement briefs - please clarify which to draft first\"}"
+    }
+  ]
+}

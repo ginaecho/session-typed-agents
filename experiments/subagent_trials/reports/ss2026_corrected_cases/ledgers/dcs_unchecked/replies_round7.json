@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting brand styling request from DocLead\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test: What is the AI Research Initiative, when does it launch, and who can participate?\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Please draft the first brief\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"BriefSummary\", \"payload\": \"Received three briefs: (1) internal announcement about launching new AI research initiative, (2) internal announcement for new feature launch, (3) internal announcement explaining new company policy update. Please clarify which announcement to draft.\"}"
+    }
+  ]
+}

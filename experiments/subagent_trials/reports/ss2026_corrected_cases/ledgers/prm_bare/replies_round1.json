@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"PR ready for review\"}"
+    },
+    {
+      "trial": 1,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 2,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 3,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 4,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 5,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 6,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 7,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 8,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 9,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 10,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for Author to send ReadyForReview\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Merger",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for CodeReviewer to judge the change\"}"
+    },
+    {
+      "trial": 1,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 2,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 3,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 4,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 5,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 6,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 7,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 8,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 9,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    },
+    {
+      "trial": 10,
+      "role": "SecurityReviewer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for CodeReviewer QualityClean\"}"
+    }
+  ]
+}

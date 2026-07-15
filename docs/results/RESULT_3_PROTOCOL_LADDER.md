@@ -12,6 +12,7 @@
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [1. The result](#1-the-result)
 - [2. What was held constant (why the comparison is fair)](#2-what-was-held-constant-why-the-comparison-is-fair)
 - [3. How we scored "did they follow the rules?" (with real traces)](#3-how-we-scored-did-they-follow-the-rules-with-real-traces)
@@ -28,6 +29,16 @@
 - **Task** — Show that each added piece of STJP (validation, then projection) moves the success rate, and back that up with real message-level examples of violations and goal passes/fails, not just aggregate numbers.
 - **Action** — 8 settings x 10 trials on `finance`, gpt-5.4 (Azure AI Foundry agents plus 3 other frameworks for the no-protocol baselines): nothing, a checker-rejected protocol, a validated protocol pasted as text, and validated projected per-agent contracts (full and lean).
 - **Result** — No protocol → **0%** trials succeed; checker-rejected protocol → **10%**; validated protocol as text → **40%**; validated projected per-agent contract + monitor → **60–100%**.
+
+## How this experiment is set
+
+- **Case(s):** [`finance`](../../experiments/cases/finance/)
+- **Arms/settings:** 8 total — nothing via Foundry (`bare`); nothing via 3 other agent frameworks (`maf_*`); a checker-rejected protocol; a validated protocol pasted as text; validated + projected per-agent contract (full); validated + projected per-agent contract (lean); plus the additional rungs shown in the full 8-row table
+- **Trials:** 10 per arm
+- **Who plays the roles:** gpt-5.4; STJP arms use Azure AI Foundry hosted agents (`case_runner.py` / `FoundryRunner`); `maf_*` baseline arms use 3 other agent frameworks (`experiments/baselines/`)
+- **Isolation:** Foundry arms — each role is a separate Foundry agent/thread, seeing only its own history and its own protocol material; `maf_*` arms — isolation follows each framework's own group-chat/orchestrator convention (see `experiments/baselines/README.md`)
+- **Harness & budgets:** `case_runner.py` for STJP arms (up to 3 attempts per trial, each capped at `max_steps: 24`, `case.yaml`); `experiments/baselines/*` runners for `maf_*` arms
+- **Where the raw data is:** `experiments/cases/finance/runs/20260521T111637-n10-dual/` (run directory — not committed; per-trial numbers preserved in the report tables and `summary*.json` copies referenced in this document)
 
 ## 1. The result
 

@@ -1,0 +1,54 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete; provide full text before proceeding to styling phase.\"}"
+    }
+  ]
+}

@@ -12,6 +12,7 @@ Run directory: `experiments/cases/finance/runs/20260702T093703-n10-dual`.
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [1. The headline table](#1-the-headline-table)
 - [2. What each setting adds (reading the table top to bottom)](#2-what-each-setting-adds-reading-the-table-top-to-bottom)
 - [3. Grading the pre-registered predictions (the honest part)](#3-grading-the-pre-registered-predictions-the-honest-part)
@@ -29,6 +30,16 @@ Run directory: `experiments/cases/finance/runs/20260702T093703-n10-dual`.
 - **Task** — Determine whether the full STJP stack — projected per-agent contract + enforcement gate + protocol-driven scheduler — is simultaneously the safest and the cheapest way to run the case, against 6 other settings including intent-only and validated-text baselines.
 - **Action** — 7 settings x 10 trials, gpt-5.4, real Azure AI Foundry hosted agents, pre-registered predictions graded against the resulting data.
 - **Result** — Full STJP stack: **100%** completion, **0** disasters, **13,300 tokens**, **11.4** model calls, **32 seconds** per delivered report — **9x cheaper** than the same validated protocol pasted as text on the same runtime, with the same perfect outcome.
+
+## How this experiment is set
+
+- **Case(s):** [`finance`](../../experiments/cases/finance/)
+- **Arms/settings:** 7 — intent only; validated text + central orchestrator; validated text, decentralized; lean contract, monitor only; full contract + gate; lean contract + gate; lean contract + gate + scheduler (full STJP)
+- **Trials:** 10 per arm
+- **Who plays the roles:** gpt-5.4, real Azure AI Foundry hosted agents, one per role per arm (`case_runner.py` / `FoundryRunner`; the scheduler arm uses `FoundryRunner(schedule="efsm")`)
+- **Isolation:** each role is a separate Foundry agent with its own thread; sees only its own thread's history and its own contract, never another role's prompt
+- **Harness & budgets:** `case_runner.py`; up to 3 attempts per trial, each capped at `max_steps: 24` (`case.yaml`); predictions were pre-registered before the run (`../archive/EXPERIMENT_DESIGN_V3_EXECUTION.md`)
+- **Where the raw data is:** `experiments/cases/finance/runs/20260702T093703-n10-dual/` (run directory — not committed; per-trial numbers preserved in the report tables and `summary*.json` copies referenced in this document)
 
 ## 1. The headline table
 

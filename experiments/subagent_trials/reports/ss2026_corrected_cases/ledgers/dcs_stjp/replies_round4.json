@@ -1,0 +1,104 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft opening is clear but incomplete. Please provide the full announcement so I can complete the reader-test review.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"Team Announcement: New Initiative Launch\\n\\nWe are excited to announce the launch of our new initiative designed to enhance our operations and deliver greater value to our stakeholders. This initiative focuses on streamlining processes, improving efficiency, and fostering innovation across all departments. We believe this will position us for continued success and growth. All team members will receive detailed guidance on implementation in the coming weeks. Thank you for your commitment and support.\"}"
+    }
+  ]
+}

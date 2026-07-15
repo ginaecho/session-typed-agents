@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send StyleRequest or feedback\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting Writer draft\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Announcement: We are pleased to inform the team of an important update to our internal processes. This initiative aims to improve collaboration and streamline our workflows. More details will be shared as we move forward with the implementation.\"}"
+    }
+  ]
+}

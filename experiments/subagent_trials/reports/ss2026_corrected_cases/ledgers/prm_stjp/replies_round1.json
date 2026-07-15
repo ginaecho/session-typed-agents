@@ -1,0 +1,54 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"CodeReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"pull_request_ready_for_review\"}"
+    }
+  ]
+}

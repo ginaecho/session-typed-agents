@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "wait"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"DocShipped\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"INTERNAL ANNOUNCEMENT: New Team Initiative Launch\\n\\nWe are pleased to announce the official launch of our new team initiative designed to enhance collaboration, streamline workflows, and drive measurable results across all departments.\\n\\nInitiative Overview:\\nThis initiative introduces new communication protocols, project tracking capabilities, and cross-functional coordination frameworks to support our team's growth and success.\\n\\nKey Impact:\\n- Improved project visibility and tracking across teams\\n- Faster task completion and decision-making cycles\\n- Enhanced collaboration between departments\\n- Better alignment on organizational goals and priorities\\n\\nTimeline:\\n- Launch Date: Next Monday\\n- Training and onboarding: Week 1-2\\n- Full rollout to all departments: End of month\\n- Ongoing support and optimization: Following weeks\\n\\nNext Steps:\\nAll team members will receive training materials and access to new tools beginning next week. We encourage your active participation and welcome feedback throughout this implementation.\\n\\nThank you for your commitment to this important initiative.\"}"
+    }
+  ]
+}

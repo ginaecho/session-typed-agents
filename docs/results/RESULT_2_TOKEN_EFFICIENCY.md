@@ -12,6 +12,7 @@ Companion to [`RESULT_1_DEADLOCK.md`](RESULT_1_DEADLOCK.md): that result showed 
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [1. The story — where the money actually goes in multi-agent systems](#1-the-story--where-the-money-actually-goes-in-multi-agent-systems)
 - [2. How the test was set up (a fair efficiency test)](#2-how-the-test-was-set-up-a-fair-efficiency-test)
 - [3. The numbers](#3-the-numbers)
@@ -28,6 +29,16 @@ Companion to [`RESULT_1_DEADLOCK.md`](RESULT_1_DEADLOCK.md): that result showed 
 - **Task** — On a task where every setting completes 100% of the time (so it is a pure cost test), measure how much a per-agent contract actually saves versus giving agents only the task description.
 - **Action** — 3 settings x 6 trials on the `report_pipeline` case (a six-role linear pipeline), gpt-5.4, same runner: no contract, full contract (`spec`), and lean contract (`min`).
 - **Result** — No-contract cost **24,100 tokens/trial**; the lean contract reaches the same finished report at **8,800 tokens — a 63% reduction** — driven by thinking tokens per call dropping from **1,534 to 552**.
+
+## How this experiment is set
+
+- **Case(s):** [`report_pipeline`](../../experiments/cases/report_pipeline/)
+- **Arms/settings:** no contract (intent only); full per-agent contract (`spec`); lean per-agent contract (`min`)
+- **Trials:** 6 per arm
+- **Who plays the roles:** gpt-5.4, one Azure AI Foundry hosted agent per role per arm (`case_runner.py` / `FoundryRunner`)
+- **Isolation:** each role is a separate Foundry agent with its own thread; sees only its own thread's history and its own contract, never another role's prompt
+- **Harness & budgets:** `case_runner.py`, round-robin polling (every role asked every round — this run isolates cost, not scheduling, so the scheduler is deliberately not in play here); up to 3 attempts per trial, each capped at `max_steps: 30` (`case.yaml`)
+- **Where the raw data is:** `experiments/cases/report_pipeline/runs/` (run directory — not committed; per-trial numbers preserved in the report tables and `summary*.json` copies referenced in this document)
 
 ## 1. The story — where the money actually goes in multi-agent systems
 

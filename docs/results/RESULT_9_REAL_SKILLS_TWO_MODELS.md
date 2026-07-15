@@ -13,6 +13,7 @@ project. Every technical word is explained where it first appears.
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [1. What question does this experiment answer?](#1-what-question-does-this-experiment-answer)
 - [2. The two teams we built (from real public files)](#2-the-two-teams-we-built-from-real-public-files)
 - [3. How one test run works](#3-how-one-test-run-works)
@@ -30,6 +31,16 @@ project. Every technical word is explained where it first appears.
 - **Task** — Find out whether a team built from real, well-written public skill files but no coordination plan actually works, whether adding an STJP contract fixes it, and whether the answer changes when the model playing each role is swapped for a smarter one.
 - **Action** — 2 teams x 3 settings x 2 models x 10 trials (120 trials), run entirely on `experiments/subagent_trials/engine.py` (deterministic code, no cloud services), each role played by a freshly spawned independent Claude Haiku 4.5 or Sonnet subagent.
 - **Result** — Without a plan, success is a coin flip that a smarter model does not fix, it just moves the failure: Haiku shipped the announcement **10/10** but the code change **0/10**; Sonnet flipped to **0/10** / **10/10**. Full STJP was flawless and identical on both models: **10/10** for both teams at **4.0** AI calls/trial and ~1,800 tokens — **3x cheaper** than no-plan and **2.4x cheaper** than plan-as-text.
+
+## How this experiment is set
+
+- **Case(s):** [`doc_pipeline`](../../experiments/cases/skills_safety/doc_pipeline/) (announcement team) and [`pr_merge`](../../experiments/cases/skills_safety/pr_merge/) (code-change team)
+- **Arms/settings:** original skills, no coordination plan (4-round budget); corrected skills, plan as text only (8-round budget); full STJP — gate + scheduler (12-round budget)
+- **Trials:** 10 per (team, setting, model) — 120 trials total
+- **Who plays the roles:** Claude Haiku 4.5 and Claude Sonnet, one freshly started, independent AI assistant per role per round, 149 independently spawned assistants total
+- **Isolation:** each role sees only its own instructions and its own inbox, never another member's
+- **Harness & budgets:** `experiments/subagent_trials/engine.py` (deterministic turn engine) + `dispatch_helper.py` (round batching); round budgets 4/8/12 as above
+- **Where the raw data is:** [`experiments/subagent_trials/reports/ss2026_new_skills/`](../../experiments/subagent_trials/reports/ss2026_new_skills/)
 
 ## 1. What question does this experiment answer?
 

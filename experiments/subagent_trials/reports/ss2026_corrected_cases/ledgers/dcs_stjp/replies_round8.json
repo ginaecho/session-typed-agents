@@ -1,0 +1,54 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Requester\", \"label\": \"StyleRequest\", \"payload\": \"Please apply brand styling to the announcement document\"}"
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document for styling\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Test comprehension: What is this announcement about? When does the initiative launch? Which teams should prioritize this?\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBrief\", \"payload\": \"Describe both briefs you received - I'll clarify which announcement to draft first\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"Internal announcement: New AI research initiative launching. We are excited to announce the establishment of a new AI research initiative. This project marks a significant step forward in our commitment to advancing artificial intelligence capabilities and exploring innovative applications. The initiative will focus on collaborative research efforts across teams. Implementation will begin immediately with key milestones established for the coming quarters. All team members are encouraged to engage with project leads for more details.\"}"
+    }
+  ]
+}

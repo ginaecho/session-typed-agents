@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead styling request\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Reader\", \"label\": \"ReaderTest\", \"payload\": \"Verify announcement clarity and key details\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ClarifyBriefRequest\", \"payload\": \"Use the primary brief for the initial draft\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncements\", \"payload\": \"ANNOUNCEMENT 1: Launching Our New AI Research Initiative\\n\\nWe're excited to announce the launch of our new AI Research Initiative, a strategic focus on advancing artificial intelligence capabilities across our organization.\\n\\nWhat: This initiative brings together cross-functional teams to explore cutting-edge AI technologies and develop innovative applications.\\n\\nWhy: As AI continues to transform our industry, this initiative positions us at the forefront of innovation.\\n\\nHow to Participate: All interested team members are encouraged to get involved. Dedicated kick-off sessions will be held next week.\\n\\n---\\n\\nANNOUNCEMENT 2: Introducing Our Latest Feature\\n\\nWe're thrilled to launch our newest feature, a major capability that will enhance how our customers experience our platform.\\n\\nKey Benefits:\\n- Increased productivity and efficiency\\n- Seamless integration with existing workflows\\n- Developed based on customer feedback\\n\\nAvailable Now: The feature is accessible to all users today.\\n\\nSupport: Our team is ready to assist. Visit our help documentation or contact support with questions.\\n\\n---\\n\\nANNOUNCEMENT 3: Important Company Policy Update\\n\\nWe're announcing an important update to our company policies, effective immediately.\\n\\nThe Update: We have refined our policies to better support our team and maintain our operational standards.\\n\\nResources: Complete policy documentation and FAQs are available on the company intranet. Managers will host Q&A sessions this week.\\n\\nQuestions: Please contact People Operations or your manager for clarification.\"}"
+    }
+  ]
+}

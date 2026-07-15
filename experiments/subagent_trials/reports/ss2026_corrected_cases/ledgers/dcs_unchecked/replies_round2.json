@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to send document to style\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting draft from Writer\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about launching our new AI research initiative next quarter.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Requester brief on communication type\"}"
+    }
+  ]
+}

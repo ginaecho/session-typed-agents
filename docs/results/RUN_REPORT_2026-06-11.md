@@ -13,6 +13,7 @@ Runs covered:
 ## Menu
 
   - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+  - [How this experiment is set](#how-this-experiment-is-set)
   - [1 · Live run (n=1, 2026-06-11, Azure AI Foundry, gpt-4o)](#1--live-run-n1-2026-06-11-azure-ai-foundry-gpt-4o)
     - [n=10 benchmark for context (2026-05-21)](#n10-benchmark-for-context-2026-05-21)
   - [2 · Anatomy of the 63k — it is NOT the contract that's long](#2--anatomy-of-the-63k--it-is-not-the-contract-thats-long)
@@ -36,6 +37,16 @@ Runs covered:
 - **Task** — Diagnose where the 63k tokens actually go and identify concrete levers to cut it, then re-grade violations by real-world consequence (severity) on both finance and a new banking case, and trace why typed agents still committed a disaster.
 - **Action** — An n=1 live Azure AI Foundry gpt-4o run plus the existing n=10 finance benchmark for context; a new `severity_grader.py` re-scoring pass over existing events (no new LLM calls); a new n=2 live banking run with an LLM-drafted, Scribble-validated protocol.
 - **Result** — The live projected-local (`C`) arm cost **63,031 tokens/trial** vs. intent-only's 14,517, with 75% of that call volume just re-reading static text and polling; severity re-grading found the real damning number for intent-only is **"the report was filed before approval/audit 4 times in 30 attempts"**; the banking run found intent-only agents **moved money before authorization, twice in 6 attempts**.
+
+## How this experiment is set
+
+- **Case(s):** [`finance`](../../experiments/cases/finance/) and [`banking`](../../experiments/cases/banking/)
+- **Arms/settings:** A intent only; B global protocol as text; C projected local contract (full); C-min projected local contract (slim)
+- **Trials:** n=1 live finance run (plus the existing n=10 finance benchmark for context); n=2 live banking run
+- **Who plays the roles:** gpt-4o (live finance run) / gpt-5.4 (n=10 context benchmark), one Azure AI Foundry hosted agent per role per arm
+- **Isolation:** each role is a separate Foundry agent with its own thread; sees only its own thread's history and its own contract, never another role's prompt
+- **Harness & budgets:** `case_runner.py` / `FoundryRunner`; up to 3 attempts per trial, each capped at `max_steps: 24` (both `finance/case.yaml` and `banking/case.yaml`)
+- **Where the raw data is:** `experiments/cases/finance/runs/20260611T175113-n1-dual/` (run directory — not committed; per-trial numbers preserved in the report tables and `summary*.json` copies referenced in this document), `experiments/cases/finance/runs/20260521T111637-n10-dual/` (run directory — not committed; per-trial numbers preserved in the report tables and `summary*.json` copies referenced in this document), `experiments/cases/banking/runs/20260611T183251-n2-dual/` (run directory — not committed; per-trial numbers preserved in the report tables and `summary*.json` copies referenced in this document)
 
 ## 1 · Live run (n=1, 2026-06-11, Azure AI Foundry, gpt-4o)
 

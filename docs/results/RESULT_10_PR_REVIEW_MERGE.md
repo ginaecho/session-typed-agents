@@ -13,10 +13,12 @@ project. Every technical word is explained where it first appears.
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [S — Situation](#s--situation)
 - [T — Task](#t--task)
 - [A — Action (what we actually did)](#a--action-what-we-actually-did)
 - [R — Result (the benchmark)](#r--result-the-benchmark)
+  - [Can you trust the 0%? (verified from the raw replies)](#can-you-trust-the-0-verified-from-the-raw-replies)
 - [Token usage estimation](#token-usage-estimation)
 - [Run it on Azure AI Foundry (later)](#run-it-on-azure-ai-foundry-later)
 - [Where everything is](#where-everything-is)
@@ -48,6 +50,16 @@ project. Every technical word is explained where it first appears.
   plus scheduler) is 10/10, zero rule-breaking messages, zero safety
   violations, merging in 7 rounds — **and ~3.6× cheaper than the failed
   plan-as-text attempt**, at 5.3× fewer AI calls per trial.
+
+## How this experiment is set
+
+- **Case(s):** [`pr_review_merge`](../../experiments/cases/skills_safety/pr_review_merge/)
+- **Arms/settings:** `unchecked` (real skills, no plan); `bare` (corrected skills, plan as text); `stjp` (corrected skills + gate + scheduler)
+- **Trials:** 10 per arm (30 total)
+- **Who plays the roles:** one independently spawned `claude-haiku-4.5` subagent per (arm, role, round) batch — 80 batches over 16 rounds total
+- **Isolation:** each subagent sees only its own role's accumulated inbox, never another role's; but within a round-batch, one subagent answers all 10 trials of that one role, so those 10 trials share a single model context for that role that round and are not fully statistically independent — no role ever shares memory with another role, and every round is answered by a fresh subagent call
+- **Harness & budgets:** `experiments/subagent_trials/engine.py` + `dispatch_helper.py`; round budgets `unchecked`=8, `bare`=16, `stjp`=24 (`_MAX_ROUNDS_OVERRIDES` in `skills_cases.py`); deadlock rule = 2 consecutive zero-delivery rounds
+- **Where the raw data is:** [`experiments/subagent_trials/reports/ss2026_corrected_cases/`](../../experiments/subagent_trials/reports/ss2026_corrected_cases/)
 
 ## S — Situation
 
@@ -215,6 +227,27 @@ honest caveats in the Result section).
 
 ## R — Result (the benchmark)
 
+| Setting | GCR | CGC | Disasters | Cost-to-goal | Seconds/trial |
+|---|---|---|---|---|---|
+| unchecked | 0% | 0% | 0 | ∞ | 20.0s |
+| bare | 0% | 0% | 0 | ∞ | 144.8s |
+| **stjp** | **100%** | **100%** | **0** | **11,753 tokens** | **64.3s** |
+
+**GCR** (Goal-Completion Rate) = percent of trials that reached the terminal
+event (0% = never finished, 100% = all 10 trials finished). **CGC**
+(Critical-Goal Completion) = percent that finished it AND never broke the
+verified plan along the way. **Cost-to-goal** = total tokens ÷ GCR (∞ when
+GCR is 0%) — the true cost of one delivered merge, charging the setting for
+its failures. (Column meanings follow
+[`6_RUN_REPORTS_EXPLAINED.md` §2](../6_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table).)
+
+Note: seconds/trial above and in the detail table below is **batched
+wall-clock** (all trials of a round were answered in one subagent call), so
+it under-counts single-trial latency — do not compare it to a Foundry run's
+per-trial wall-clock.
+
+**Detail table** (per-role AI-call and rule-breaking-message counts):
+
 **Glossary, first use:** **GCR** ("goal-completion rate") is the percent of
 trials that actually reached the terminal event (here, `MergeDone`).
 **CGC** ("clean-goal-completion") is the percent that reached it *and*
@@ -317,6 +350,49 @@ have something real to flag, forcing the loop branch to fire live.
   tuning choice — see the commit text quoted in Action step 2 and in
   RESULT_11's Action step 2; without it this run could not have happened
   at all (3/3 scripted deadlocks in the pre-fix ablation).
+
+### Can you trust the 0%? (verified from the raw replies)
+
+- **`unchecked` really delivered zero messages, not a scoring artifact.**
+  Confirmed directly from the committed
+  `haiku__pr_review_merge__unchecked.state.json`: all 10 trials show
+  `trace: []` (zero messages ever delivered), `malformed: 1` (one malformed
+  reply), and `no_progress_rounds: 2` — the engine's deadlock rule fires
+  after 2 consecutive zero-delivery rounds, and it fired identically in
+  every one of the 10 trials. The round-1 replies (committed verbatim in
+  [`ledgers/prm_unchecked/replies_round1.json`](../../experiments/subagent_trials/reports/ss2026_corrected_cases/ledgers/prm_unchecked/replies_round1.json)):
+  Author *"Waiting for code
+  reviewer feedback"*, CodeReviewer *"Waiting for Author to send
+  revision"*, Merger *"Waiting for CodeReviewer and SecurityReviewer
+  approvals"*, and SecurityReviewer replied the bare string `"wait"` — not
+  valid reply-JSON, the one malformed reply per trial, functionally
+  identical to waiting. Round 2: all four roles replied wait again, and the
+  deadlock rule fired. The circular wait is the real files' own content:
+  every one of the four `awesome-copilot` files describes a **reactive**
+  job — none of them initiates.
+- **Role prompts are actually disjoint.** Checked directly against
+  `skills_original/*.md`: the Author's prompt contains none of `"OWASP"`
+  (the SecurityReviewer's term), `"line-by-line"` (the CodeReviewer's
+  term), or `"principal"` (the Merger's term) — each term appears only in
+  its own role's file. No role could have inferred another's plan by
+  peeking at shared text.
+- **This is not an engine artifact — it depends on the files' content.**
+  RESULT_9's `pr_merge` (the earlier, linear sibling of this case) shows
+  unchecked teams *do* send messages: confirmed from
+  `haiku__pr_merge__unchecked.report.json` (`gcr_pct: 0.0`, budget-crawl
+  with messages flowing, not deadlock) versus
+  `sonnet__pr_merge__unchecked.report.json` (`gcr_pct: 100.0` — the smarter
+  model's unchecked team finished 10 of 10). And RESULT_8's `airline_seat`
+  unchecked run deadlocked all 10 of 10 trials with **zero** malformed
+  replies (confirmed: `airline_seat_unchecked.state.json`, `malformed: 0`
+  on every trial) — whether an unchecked team deadlocks depends on what its
+  files actually say, not on this harness.
+- **The one malformed reply per trial is honest noise, not a thumb on the
+  scale.** One subagent answers all 10 trials of a given role within a
+  round batch, so a single formatting slip (SecurityReviewer's bare
+  `"wait"` instead of JSON) repeats identically across all 10 trials — it
+  did not change the outcome: a malformed reply is treated exactly like "no
+  message sent," which is what every other role was already doing.
 
 ## Token usage estimation
 

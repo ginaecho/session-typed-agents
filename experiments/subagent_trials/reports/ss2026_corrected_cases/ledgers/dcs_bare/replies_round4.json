@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting DocLead message\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Draft incomplete - message cuts off mid-sentence. Please complete the announcement.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"We're excited to announce a new initiative launching next quarter to streamline our internal processes and improve team collaboration across departments. This effort builds on feedback from recent surveys and aims to enhance communication, reduce operational overhead, and create a better work environment for everyone. More details will follow as we move through the planning phase.\"}"
+    }
+  ]
+}

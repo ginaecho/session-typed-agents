@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting StyleRequest or ReaderTestFeedback from DocLead\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting DocRequest and Draft messages\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"waiting for DocRequest from Requester\"}"
+    }
+  ]
+}

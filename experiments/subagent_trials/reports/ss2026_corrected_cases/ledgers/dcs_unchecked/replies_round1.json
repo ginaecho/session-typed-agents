@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for DocLead to request styling\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting Writer's drafted announcement content\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DocRequest\", \"payload\": \"Please prepare an internal announcement\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"wait\", \"reason\": \"awaiting announcement brief from Requester\"}"
+    }
+  ]
+}

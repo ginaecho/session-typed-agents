@@ -13,10 +13,12 @@ project. Every technical word is explained where it first appears.
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [S — Situation](#s--situation)
 - [T — Task](#t--task)
 - [A — Action (what we actually did)](#a--action-what-we-actually-did)
 - [R — Result (the benchmark)](#r--result-the-benchmark)
+  - [Can you trust the 0%? (verified from the raw replies)](#can-you-trust-the-0-verified-from-the-raw-replies)
 - [Token usage estimation](#token-usage-estimation)
 - [Run it on Azure AI Foundry (later)](#run-it-on-azure-ai-foundry-later)
 - [Where everything is](#where-everything-is)
@@ -48,6 +50,16 @@ project. Every technical word is explained where it first appears.
   zero safety violations, **and ~40% cheaper than plan-as-text** at 2.6×
   fewer AI calls per trial — while actually running the reader-test loop
   more than once before shipping.
+
+## How this experiment is set
+
+- **Case(s):** [`doc_coauthor_ship`](../../experiments/cases/skills_safety/doc_coauthor_ship/)
+- **Arms/settings:** `unchecked` (real skills, no plan); `bare` (corrected skills, plan as text); `stjp` (corrected skills + gate + scheduler)
+- **Trials:** 10 per arm (30 total)
+- **Who plays the roles:** one independently spawned `claude-haiku-4.5` subagent per (arm, role, round) batch — 46 batches over 9 rounds total
+- **Isolation:** each subagent sees only its own role's accumulated inbox, never another role's; but within a round-batch, one subagent answers all 10 trials of that one role, so those 10 trials share a single model context for that role that round and are not fully statistically independent — no role ever shares memory with another role, and every round is answered by a fresh subagent call
+- **Harness & budgets:** `experiments/subagent_trials/engine.py` + `dispatch_helper.py`; round budgets `unchecked`=8, `bare`=16, `stjp`=24 (`_MAX_ROUNDS_OVERRIDES` in `skills_cases.py`); deadlock rule = 2 consecutive zero-delivery rounds
+- **Where the raw data is:** [`experiments/subagent_trials/reports/ss2026_corrected_cases/`](../../experiments/subagent_trials/reports/ss2026_corrected_cases/)
 
 ## S — Situation
 
@@ -213,6 +225,27 @@ caveats in the Result section).
 
 ## R — Result (the benchmark)
 
+| Setting | GCR | CGC | Disasters | Cost-to-goal | Seconds/trial |
+|---|---|---|---|---|---|
+| unchecked | 0% | 0% | 0 | ∞ | 91.1s |
+| bare | 100% | 100% | 0 | 21,601 tokens | 91.2s |
+| **stjp** | **100%** | **100%** | **0** | **12,880 tokens** | **97.8s** |
+
+**GCR** (Goal-Completion Rate) = percent of trials that reached the terminal
+event (0% = never finished, 100% = all 10 trials finished). **CGC**
+(Critical-Goal Completion) = percent that finished it AND never broke the
+verified plan along the way. **Cost-to-goal** = total tokens ÷ GCR (∞ when
+GCR is 0%) — the true cost of one delivered, shipped document, charging the
+setting for its failures. (Column meanings follow
+[`6_RUN_REPORTS_EXPLAINED.md` §2](../6_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table).)
+
+Note: seconds/trial above and in the detail table below is **batched
+wall-clock** (all trials of a round were answered in one subagent call), so
+it under-counts single-trial latency — do not compare it to a Foundry run's
+per-trial wall-clock.
+
+**Detail table** (per-role AI-call and rule-breaking-message counts):
+
 **Glossary, first use:** **GCR** ("goal-completion rate") is the percent of
 trials that actually reached the terminal event (here, `DocShipped`).
 **CGC** ("clean-goal-completion") is the percent that reached it *and*
@@ -305,6 +338,42 @@ Source: `.report.json` files in
   it does mean this run's "0/10" reads as "did not finish inside a
   deliberately tight budget," not "could never finish given unlimited
   retries."
+
+### Can you trust the 0%? (verified from the raw replies)
+
+- **`unchecked` did not deadlock — it talked, at length, and never
+  converged.** Confirmed directly from the committed
+  `haiku__doc_coauthor_ship__unchecked.state.json`: all 10 trials end with
+  `status: max_rounds` (not `deadlock`), `no_progress_rounds: 0` (the team
+  never went two rounds without a delivered message — it was busy every
+  round), a **non-empty 14-message trace in every trial**, and `malformed:
+  5` per trial. Reading trial 1's actual trace: `DocRequest` sent three
+  times, then `DraftAnnouncement`, then a `RequestClarification` /
+  `ClarifyBriefRequest` / `ClarifyBrief` / `BriefSummary` / `BriefDecision`
+  loop, with `DraftAnnouncement` and the differently-labelled
+  `DraftAnnouncements` both appearing — real messages, going nowhere,
+  exactly as finding 1 above describes. Unlike `pr_review_merge`'s
+  `unchecked` arm (RESULT_10), this is a **stall/talk-past-each-other**
+  failure, not an empty-trace deadlock — the two sibling cases fail
+  differently for the same underlying reason (no named partner, no shared
+  plan).
+- **This is not an engine artifact — it depends on the files' content.**
+  RESULT_9's `pr_merge` case shows unchecked teams can also *succeed*
+  purely on real files' own prose (confirmed:
+  `sonnet__pr_merge__unchecked.report.json` `gcr_pct: 100.0`), and RESULT_8's
+  `airline_seat` unchecked run shows the opposite extreme — a true
+  zero-message deadlock, 10 of 10, with **zero** malformed replies
+  (confirmed: `airline_seat_unchecked.state.json`, `malformed: 0` on every
+  trial). Whether an unchecked team deadlocks, stalls, or succeeds depends
+  on what its files actually say, not on this harness — this run's own
+  `unchecked` arm sits at the "stalls, busily" end of that range.
+- **The 5 malformed replies per trial are honest noise, not a hidden
+  thumb on the scale.** One subagent answers all 10 trials of a given role
+  within a round batch, so a formatting slip in one role's reply repeats
+  identically across all 10 trials; a malformed reply is treated the same
+  as "no usable message this round," which does not change the qualitative
+  outcome — the team was already failing to converge for content reasons
+  (no named partner, no exit signal), not because of a parsing hiccup.
 
 ## Token usage estimation
 

@@ -7,6 +7,16 @@
 - **Action** — One bounded run per tier (Opus 4.8, Sonnet 5, Haiku 4.5) comparing unchecked skills (capped at 4 polling rounds) vs. the Scribble-validated escrow-first protocol, using subscription subagents playing Buyer/Seller/Escrow/Carrier.
 - **Result** — Every tier deadlocked unchecked (**"no — deadlock"**, 0 progress messages, 8 role-turns all "WAIT"); every tier completed the STJP protocol (**"yes"**, 7 steps to `SettlementComplete`).
 
+## How this experiment is set
+
+- **Case(s):** [`agenticpay_settlement`](.) (this file's own folder, `experiments/cases/agenticpay_settlement/`)
+- **Arms/settings:** unchecked skills (each role's own hand-written rule); STJP protocol (Scribble-validated escrow-first protocol driving each role's turn)
+- **Trials:** 1 bounded run per (model tier, arm) — not a statistical n=10; the unchecked setting is additionally capped at 4 polling rounds
+- **Who plays the roles:** Opus 4.8, Sonnet 5, and Haiku 4.5 subscription subagents (one full run per tier) playing Buyer, Seller, Escrow, Carrier
+- **Isolation:** not recorded in this report beyond "each role answers its own turn each round"; the orchestration script is `agenticpay_bench.js`, kept with the session artifacts — not `experiments/subagent_trials/engine.py`, so its isolation model is not the same one documented for the engine-based reports
+- **Harness & budgets:** `agenticpay_bench.js`; unchecked capped at 4 polling rounds (uncapped in a real deployment); the specific no-progress/deadlock detection rule used by this script is not documented in this report
+- **Where the raw data is:** session artifacts referenced in this file; the metered, per-model Azure AI Foundry equivalent is documented step by step in [`foundry_run.md`](foundry_run.md)
+
 A first, bounded run of this case using **subscription subagents** playing the
 four roles (Buyer, Seller, Escrow, Carrier). Not the Azure AI Foundry run — that
 is the precise, per-model-metered version (see `foundry_run.md`). This run

@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting ReaderTestFeedback or StyleRequest from DocLead\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"ReaderTestFeedback\", \"payload\": \"Drafts incomplete. Complete announcement with clear statement, impact, and timeline.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Draft an internal announcement about our new initiative. Ensure it is clear, engaging, and professional.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"RevisedDraft\", \"payload\": \"We are excited to announce a new internal initiative launching next week. This announcement completes the message with full details about the announcement, next steps, and how teams can get involved.\"}"
+    }
+  ]
+}

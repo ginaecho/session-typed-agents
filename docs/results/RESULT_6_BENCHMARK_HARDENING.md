@@ -20,6 +20,7 @@ harness with real anchors and clearly-tagged synthetic placeholders.
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [The three findings that matter most](#the-three-findings-that-matter-most)
 - [What is still pending (honestly)](#what-is-still-pending-honestly)
 - [Where everything lives](#where-everything-lives)
@@ -32,6 +33,16 @@ harness with real anchors and clearly-tagged synthetic placeholders.
 - **Task** — Run seven experiments plus a verdict corpus, each isolating ONE component of STJP, using real deterministic computation wherever possible and clearly tagging anything still synthetic.
 - **Action** — Deterministic runs against the Scribble compiler: a 40-trace hand-derived verdict corpus, mutation-tested checker soundness, a layered adversarial gate test (12 exfiltration attempts), Wilson-interval reliability analysis at n=10, a 90-pair equivalence scorer, and a 2-to-10-role coordination-cost scaling check.
 - **Result** — Monitor + severity grader correct on **40/40** traces; checker catches **95.6%** of malformed protocols at **0%** false positives; gate blocks rise **0% → 41.7% → 91.7% → 100%** across layered defenses; a 10/10 arm's real 95% CI is **[72%, 100%]**; equivalence scorer **100%** over 90 pairs; global-text coordination cost is **9x→17x** STJP's from 2→10 roles.
+
+## How this experiment is set
+
+- **Case(s):** not a single live-agent case — deterministic scripts and a hand-derived verdict corpus over generated protocols and traces (see [`docs/reference/BENCHMARK_PLAN_V2.md`](../reference/BENCHMARK_PLAN_V2.md))
+- **Arms/settings:** seven experiments (E1–E7, each isolating one STJP component) plus the verdict corpus; E1 (checker soundness), the verdict corpus, the gate-defense ladder, the Wilson-CI analysis, the equivalence scorer, and the coordination-cost scaling check are reported here as real numbers — E3/E5/E6/E7's live-run percentages are still pending (see "What is still pending")
+- **Trials:** varies by experiment — see [`docs/reference/BENCHMARK_PLAN_V2.md`](../reference/BENCHMARK_PLAN_V2.md) for each experiment's n
+- **Who plays the roles:** no LLM in the reported deterministic experiments — real Scribble-compiler runs and scripted mutation/adversarial tests; not applicable to the still-pending live-run experiments
+- **Isolation:** not applicable (deterministic, no agents)
+- **Harness & budgets:** `experiments/scripts/{mutation_bench,adversarial_bench,stats,translation_fidelity,efsm_equiv,roles_sweep,capability_sweep,cross_runtime,make_figs_v2}.py`; not applicable
+- **Where the raw data is:** [`experiments/reports/`](../../experiments/reports/); verdict corpus in [`experiments/tests/verdict_corpus/`](../../experiments/tests/verdict_corpus/)
 
 ## The three findings that matter most
 

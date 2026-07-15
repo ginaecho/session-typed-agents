@@ -1,0 +1,54 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement about our new initiative. Make it clear, concise, and suitable for company-wide distribution.\"}"
+    }
+  ]
+}

@@ -12,6 +12,7 @@ binary, `STJP_NUSCR_BIN`) — see
 ## Menu
 
 - [The story at a glance (STAR)](#the-story-at-a-glance-star)
+- [How this experiment is set](#how-this-experiment-is-set)
 - [At a glance](#at-a-glance)
 - [The story](#the-story)
 - [Setup (reproducible in this repo)](#setup-reproducible-in-this-repo)
@@ -23,6 +24,16 @@ binary, `STJP_NUSCR_BIN`) — see
 - **Task** — Measure, in a cloud sandbox with cheap Haiku-class subagents, whether unvalidated real skills, the same skills corrected and pasted as text, and full STJP differ on goal completion, safety, and cost — then check whether the answer holds on a stronger model at 10x the sample size.
 - **Action** — 3 arms (R-orig unchecked, R-C-min local contract as text, R-STJP contract + gate + scheduler) x 4 cases x n=10 trials, Claude Haiku 4.5 subagents, Scribble + nuscr compilers; an addendum reran all 4 cases at n=100 per arm with Claude Sonnet in strict per-role isolation.
 - **Result** — R-orig: **0%** GCR (all 4 protocols rejected at design time); R-C-min: **100%** GCR but only **50%** CGC with **20** disasters; R-STJP: **100%** GCR, **100%** CGC, **0** disasters at **1.52k** cost-to-goal. The n=100 Sonnet addendum confirmed it: STJP **100% [99.0–100]** vs. unchecked/bare both **75%**.
+
+## How this experiment is set
+
+- **Case(s):** [`airline_seat`, `booking_saga`, `code_execution`, `content_pipeline`](../../experiments/cases/skills_safety/) (real public skills from OpenAI Agents SDK, LangGraph, AutoGen, CrewAI)
+- **Arms/settings:** R-orig (original skills, no validation); R-C-min (revised skills + local contract as text, no gate); R-STJP (local contract + gate + EFSM scheduler)
+- **Trials:** n=10 per (case, arm) in the original 2026-07-06 run (120 trials total); n=100 per (case, arm) in the 2026-07-07 addendum (1,200 trials)
+- **Who plays the roles:** Claude Haiku 4.5 subagents in the original run; Claude Sonnet subagents in the addendum
+- **Isolation:** original run — one Haiku-class Claude subagent per (run, role) per round answered all 10 trials' prompts for that role in one call, batched across trials only, so no subagent ever saw two roles of the same trial; addendum — each role decided in strict per-role isolation, one subagent per role seeing only that role's own skill/contract and inbox (a first attempt used a single subagent per whole run and was discarded for leaking cross-role knowledge)
+- **Harness & budgets:** `experiments/subagent_trials/engine.py` + `skills_cases.py` (arms: `unchecked`, `bare`, `stjp`) + `dispatch_helper.py` (round batching); engine's deadlock rule (2 consecutive zero-delivery rounds)
+- **Where the raw data is:** [`experiments/subagent_trials/reports/ss2026_skill_safety/`](../../experiments/subagent_trials/reports/ss2026_skill_safety/) (original); [`experiments/subagent_trials/reports/ss2026_n100_sonnet/`](../../experiments/subagent_trials/reports/ss2026_n100_sonnet/) (addendum, includes full per-trial traces)
 
 ## At a glance
 
@@ -70,7 +81,7 @@ read:
 | C+spec: Local + gate | 90% | 70% | 0 | 91k | 127s |
 | C+min: Local + gate | 100% | 100% | 0 | 38k | 96s |
 | STJP: Local + gate + scheduler | 100% | 100% | 0 | 13.3k | 32s |
-| **R-orig: Real public skills, unvalidated** | **0%** | **0%** | **40/40 stall·deadlock** | **∞** | ~73s† |
+| **R-orig: Real public skills, unvalidated** | **0%** | **0%** | **all 40 stalled or deadlocked (20 each)** | **∞** | ~73s† |
 | **R-STJP: Same skills, Scribble-validated + gate + scheduler** | **100%** | **100%** | **0** | **1.52k** | ~81s† |
 
 † Wall-clock with batched subagent dispatch (all concurrent trials share each
@@ -156,16 +167,16 @@ compare within this block, not across model tiers.
 
 | case | arm | GCR | CGC | disasters | tokens/trial | cost-to-goal |
 |---|---|---:|---:|---:|---:|---:|
-| airline_seat (openai-agents) | unchecked | 0% (10 deadlock) | 0% | 0 | 1,883 | ∞ |
+| airline_seat (openai-agents) | unchecked | 0% (all 10 deadlocked) | 0% | 0 | 1,883 | ∞ |
 | | bare | 100% | 0% | 10 (double seat-write) | 2,263 | 2,263 |
 | | stjp | 100% | 100% | 0 | 1,286 | 1,286 |
-| booking_saga (langgraph) | unchecked | 0% (10 stall) | 0% | 0 | 3,465 | ∞ |
+| booking_saga (langgraph) | unchecked | 0% (all 10 stalled) | 0% | 0 | 3,465 | ∞ |
 | | bare | 100% | 0% | 10 (double charge) | 3,115 | 3,115 |
 | | stjp | 100% | 100% | 0 | 1,830 | 1,830 |
-| code_execution (autogen) | unchecked | 0% (10 deadlock) | 0% | 0 | 1,407 | ∞ |
+| code_execution (autogen) | unchecked | 0% (all 10 deadlocked) | 0% | 0 | 1,407 | ∞ |
 | | bare | 100% | 100% | 0 | 2,000 | 2,000 |
 | | stjp | 100% | 100% | 0 | 1,167 | 1,167 |
-| content_pipeline (crewAI) | unchecked | 0% (10 stall) | 0% | 0 | 3,870 | ∞ |
+| content_pipeline (crewAI) | unchecked | 0% (all 10 stalled) | 0% | 0 | 3,870 | ∞ |
 | | bare | 100% | 100% | 0 | 3,634 | 3,634 |
 | | stjp | 100% | 100% | 0 | 1,791 | 1,791 |
 

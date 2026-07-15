@@ -1,0 +1,104 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Author",
+      "reply": "{\"action\": \"send\", \"to\": \"SecurityReviewer\", \"label\": \"ReadyForReview\", \"payload\": \"ready\"}"
+    },
+    {
+      "trial": 1,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 2,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 3,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 4,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 5,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 6,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 7,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 8,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 9,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    },
+    {
+      "trial": 10,
+      "role": "CodeReviewer",
+      "reply": "{\"action\": \"send\", \"to\": \"Author\", \"label\": \"QualityClean\", \"payload\": \"code_quality_review_passed\"}"
+    }
+  ]
+}

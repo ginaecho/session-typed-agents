@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Awaiting document from DocLead\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"wait\", \"reason\": \"Waiting for Writer to send drafted announcement\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Internal announcement for new feature launch\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"DraftAnnouncement\", \"payload\": \"We are excited to announce the launch of our new AI Research Initiative, a strategic effort to advance cutting-edge research in artificial intelligence across our organization.\\n\\nThis initiative brings together cross-functional teams to explore emerging applications, develop novel approaches, and strengthen our position in AI innovation. Our researchers will focus on both foundational work and practical applications that deliver value to our business and customers.\\n\\nKey highlights:\\n- Dedicated research teams launching immediately\\n- Focus on emerging AI techniques and applications\\n- Cross-functional collaboration across engineering and product\\n- Regular progress updates and demonstrations\\n\\nAll team members are encouraged to stay tuned for upcoming sessions and opportunities to participate in this important work.\"}"
+    }
+  ]
+}

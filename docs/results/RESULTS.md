@@ -11,6 +11,7 @@ Run dates: 2026-05-07. Total: 20 trials / scenario × 2 scenarios = 80 trials.
 <!-- MENU:START (auto-generated — edit headings, then regenerate) -->
 ## Menu
 
+- [How this experiment is set](#how-this-experiment-is-set)
 - [Setup](#setup)
 - [Side-by-side aggregate (combined 20 trials per scenario)](#side-by-side-aggregate-combined-20-trials-per-scenario)
 - [Per-trial detail (run 1)](#per-trial-detail-run-1)
@@ -24,6 +25,17 @@ Run dates: 2026-05-07. Total: 20 trials / scenario × 2 scenarios = 80 trials.
 - [Files](#files)
 - [Caveats and honest scope](#caveats-and-honest-scope)
 <!-- MENU:END -->
+
+## How this experiment is set
+
+- **Case(s):** the Quarterly Finance Report protocol (`P1_v2.scr`) — a pre-`experiments/cases/` convention setup; the driver script (`experiment_4_scenarios.py`) and protocol file referenced in this report are not present in the current repository checkout (this is the project's earliest committed result, 2026-05-07, superseded in structure by the later `experiments/cases/finance/` case)
+- **Arms/settings:** WITH spec markdown; WITHOUT spec markdown
+- **Trials:** 10 per arm per run, 2 independent runs (20 trials/arm total), × 2 scenarios (high / standard revenue) = 80 trials
+- **Who plays the roles:** gpt-5.4 via Azure OpenAI Chat Completions, 6 PromptAgent definitions registered in Azure AI Foundry (one per protocol role)
+- **Isolation:** each role is a separate Foundry PromptAgent; isolation details beyond "one agent per role" are not recorded in this report
+- **Harness & budgets:** `experiment_4_scenarios.py`; round-robin orchestration asking every role at every step; no documented step cap beyond the scenario's own message count
+- **Where the raw data is:** `generated_agents/experiment_results.json`, `_run1.json`, `_run2.json`, `experiment_run.log` (paths as listed in "Files" below; not confirmed present in the current repository checkout)
+
 
 ## Setup
 

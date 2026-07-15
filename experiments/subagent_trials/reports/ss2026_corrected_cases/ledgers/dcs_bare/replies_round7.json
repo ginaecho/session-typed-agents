@@ -1,0 +1,204 @@
+{
+  "replies": [
+    {
+      "trial": 1,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "BrandStyler",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"StyledDoc\", \"payload\": \"Styled document with brand colors, typography, and formatting applied.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 2,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 3,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 4,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 5,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 6,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 7,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 8,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 9,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 10,
+      "role": "DocLead",
+      "reply": "{\"action\": \"send\", \"to\": \"BrandStyler\", \"label\": \"StyleRequest\", \"payload\": \"Announcement ready for styling\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Requester",
+      "reply": "{\"action\": \"send\", \"to\": \"Writer\", \"label\": \"DocRequest\", \"payload\": \"Please draft an internal announcement for our team.\"}"
+    },
+    {
+      "trial": 1,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 2,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 3,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 4,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 5,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 6,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 7,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 8,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 9,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    },
+    {
+      "trial": 10,
+      "role": "Writer",
+      "reply": "{\"action\": \"send\", \"to\": \"DocLead\", \"label\": \"Draft\", \"payload\": \"Subject: New Initiative Launch Announcement\\n\\nTeam,\\n\\nWe are excited to announce the launch of our new strategic initiative, designed to streamline operations and enhance collaboration across all departments.\\n\\nKey Details:\\n- Initiative Name: Integrated Operations Framework\\n- Launch Date: Effective immediately\\n- Primary Objective: Improve cross-functional communication and reduce process redundancy\\n\\nWhat This Means for You:\\n- Enhanced tools and resources will be available in your department portal\\n- Team leads will receive detailed implementation guides this week\\n- Training sessions will be scheduled throughout the month\\n\\nExpected Impact:\\n- 30% reduction in workflow cycles\\n- Improved transparency across teams\\n- Better resource allocation\\n\\nNext Steps:\\n- Department heads should review the implementation guide\\n- Teams will participate in scheduled training sessions\\n- Feedback sessions will be held in two weeks\\n\\nWe look forward to working together to make this transition smooth and successful. Please reach out to your manager with any questions.\\n\\nBest regards,\\nLeadership Team\"}"
+    }
+  ]
+}
