@@ -14,6 +14,20 @@ coordinate → what (if anything) enforces the rules.**
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The building blocks (read once, then every diagram below makes sense)](#the-building-blocks-read-once-then-every-diagram-below-makes-sense)
+- [Group 1 — no plan at all (the baselines)](#group-1--no-plan-at-all-the-baselines)
+- [Group 2 — the plan exists, but only as pasted text](#group-2--the-plan-exists-but-only-as-pasted-text)
+- [Group 3 — human-written skills, never checked](#group-3--human-written-skills-never-checked)
+- [Group 4 — each agent gets its own slice of the plan (contracts)](#group-4--each-agent-gets-its-own-slice-of-the-plan-contracts)
+- [Group 5 — contracts, now enforced](#group-5--contracts-now-enforced)
+- [Group 6 — the full STJP execution stack](#group-6--the-full-stjp-execution-stack)
+- [How to read any results table with this page](#how-to-read-any-results-table-with-this-page)
+- [Which test cases fit STJP (and how well)](#which-test-cases-fit-stjp-and-how-well)
+<!-- MENU:END -->
+
 ## The building blocks (read once, then every diagram below makes sense)
 
 | Block | Plain meaning |

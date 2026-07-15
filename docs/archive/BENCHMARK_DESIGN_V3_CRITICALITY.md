@@ -5,6 +5,22 @@ its frozen snapshot `BENCHMARK_DESIGN_V2_FROZEN.md`. v3 is **additive**: new
 post-hoc metrics + optional per-case annotations; no arm or existing metric is
 removed.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The problem v3 fixes](#1-the-problem-v3-fixes)
+- [2. Criticality classes (the properties that actually matter)](#2-criticality-classes-the-properties-that-actually-matter)
+  - [C1 — Data provenance ("no guessing")](#c1--data-provenance-no-guessing)
+  - [C2 — Context completeness ("read everything first")](#c2--context-completeness-read-everything-first)
+  - [C3 — Authorization before irreversible action](#c3--authorization-before-irreversible-action)
+- [3. The fairness design: two variants per case](#3-the-fairness-design-two-variants-per-case)
+- [4. The arm matrix (unchanged set, sharper question)](#4-the-arm-matrix-unchanged-set-sharper-question)
+- [5. New metrics (Layer 1b: Critical-Property Achievement)](#5-new-metrics-layer-1b-critical-property-achievement)
+- [6. Why this is the right shape (and its limits)](#6-why-this-is-the-right-shape-and-its-limits)
+- [7. Smoke test (this session)](#7-smoke-test-this-session)
+- [8. Future work to fully realize v3](#8-future-work-to-fully-realize-v3)
+<!-- MENU:END -->
+
 ## 1. The problem v3 fixes
 
 The v2 headline metric (GCR + monitor acceptance) credits agents for **following

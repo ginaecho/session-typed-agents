@@ -15,6 +15,25 @@ and worker task cards — is `SEAM_TRAINING_EXECUTION_PLAN.md`.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [0. The improved paragraph (drop-in)](#0-the-improved-paragraph-drop-in)
+- [1. Problem statement: two axes, only one currently instrumented](#1-problem-statement-two-axes-only-one-currently-instrumented)
+- [2. Part A — the validity ladder (verifiable rewards, ascending effort)](#2-part-a--the-validity-ladder-verifiable-rewards-ascending-effort)
+- [3. Part B — faithfulness: memoryless judge panels, voting](#3-part-b--faithfulness-memoryless-judge-panels-voting)
+  - [3.1 Design principle: independence is the whole point](#31-design-principle-independence-is-the-whole-point)
+  - [3.2 Three judge classes (vote in one panel)](#32-three-judge-classes-vote-in-one-panel)
+  - [3.3 Aggregation and thresholds](#33-aggregation-and-thresholds)
+  - [3.4 Calibrating the panel itself (meta-eval, fully automatic)](#34-calibrating-the-panel-itself-meta-eval-fully-automatic)
+- [4. Part C — corpus generation](#4-part-c--corpus-generation)
+  - [4.1 Synthetic split (generator-owned; training)](#41-synthetic-split-generator-owned-training)
+  - [4.2 Real-world split (mined; evaluation-first)](#42-real-world-split-mined-evaluation-first)
+- [5. The auto-training loop, assembled](#5-the-auto-training-loop-assembled)
+- [6. Phasing](#6-phasing)
+- [7. Risks / open questions](#7-risks--open-questions)
+<!-- MENU:END -->
+
 ## 0. The improved paragraph (drop-in)
 
 Replacement for the "missing on-ramp" sentence in the review notes / §7

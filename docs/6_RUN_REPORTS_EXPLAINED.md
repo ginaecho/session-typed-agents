@@ -33,7 +33,7 @@ This document has two parts:
   the whole reproduction (**under $100**).
 - **Part 3 — the real-skills two-model run (2026-07-08), reported separately.**
   Two agent teams built from *real, publicly shared skill files* (Anthropic's
-  `anthropics/skills` and GitHub's `awesome-copilot`), each run in three
+  [`anthropics/skills`](https://github.com/anthropics/skills) and GitHub's [`awesome-copilot`](https://github.com/github/awesome-copilot)), each run in three
   settings, once with a small model (Haiku) and once with a mid-tier model
   (Sonnet) playing the team members — 120 trials. Which team fails without a
   coordination plan turns out to depend on the model; with full STJP both
@@ -42,6 +42,65 @@ This document has two parts:
   [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md).
 
 ---
+
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+  - [Words this document uses (plain-English glossary)](#words-this-document-uses-plain-english-glossary)
+- [Part 1 — the finance run (2026-07-02)](#part-1--the-finance-run-2026-07-02)
+  - [1. The headline result (2026-07-02 finance run)](#1-the-headline-result-2026-07-02-finance-run)
+  - [2. Reading the results table](#2-reading-the-results-table)
+    - [Column meanings](#column-meanings)
+    - [The same ladder on REAL skills (2026-07-06 cloud run)](#the-same-ladder-on-real-skills-2026-07-06-cloud-run)
+    - [The same real-skills ladder at n=100 with a STRONGER model (Sonnet, 2026-07-07)](#the-same-real-skills-ladder-at-n100-with-a-stronger-model-sonnet-2026-07-07)
+  - [3. Understanding the arms (what changed between columns)](#3-understanding-the-arms-what-changed-between-columns)
+    - [Arm A: Intent only (baseline)](#arm-a-intent-only-baseline)
+    - [Arm B: Global protocol as text (reference)](#arm-b-global-protocol-as-text-reference)
+    - [Arm C-min: Local contract (observer)](#arm-c-min-local-contract-observer)
+    - [Arm C+spec: Local + gate (with enforcement)](#arm-cspec-local--gate-with-enforcement)
+    - [Arm C+min: Local lean + gate (compressed + enforced)](#arm-cmin-local-lean--gate-compressed--enforced)
+    - [Arm STJP: Full stack (scheduler + gate + protocol)](#arm-stjp-full-stack-scheduler--gate--protocol)
+  - [4. The five grades (predictions vs reality)](#4-the-five-grades-predictions-vs-reality)
+    - [Prediction 1: Correctness (unconfounded)](#prediction-1-correctness-unconfounded)
+    - [Prediction 2: Token savings](#prediction-2-token-savings)
+    - [Prediction 3: Lean contract vs global text (same execution plane)](#prediction-3-lean-contract-vs-global-text-same-execution-plane)
+    - [Prediction 4: Orchestrator cost](#prediction-4-orchestrator-cost)
+    - [Prediction 5: Token-per-call analysis](#prediction-5-token-per-call-analysis)
+  - [5. Safety grading: Severity levels](#5-safety-grading-severity-levels)
+    - [S0 (Benign) — not counted](#s0-benign--not-counted)
+    - [S1 (Waste) — noted, not fatal](#s1-waste--noted-not-fatal)
+    - [S2 (Skipped obligation) — protocol violation](#s2-skipped-obligation--protocol-violation)
+    - [S3 (Never finished) — task failure](#s3-never-finished--task-failure)
+    - [S4 (Disaster) — irreversible, critical](#s4-disaster--irreversible-critical)
+  - [6. Critical properties audit](#6-critical-properties-audit)
+    - [C1: Data provenance (no guessing)](#c1-data-provenance-no-guessing)
+    - [C2: Context completeness (read everything first)](#c2-context-completeness-read-everything-first)
+    - [C3: Authorization before irreversible acts](#c3-authorization-before-irreversible-acts)
+  - [7. Common questions answered](#7-common-questions-answered)
+    - [Q: Why did C-min only get 60%?](#q-why-did-c-min-only-get-60)
+    - [Q: Why is B (global text) so expensive?](#q-why-is-b-global-text-so-expensive)
+    - [Q: Can STJP get cheaper? Is 13.3k the floor?](#q-can-stjp-get-cheaper-is-133k-the-floor)
+    - [Q: Did GPT-5.4's strength hide STJP's value?](#q-did-gpt-54s-strength-hide-stjps-value)
+    - [Q: How do we know the monitor is correct?](#q-how-do-we-know-the-monitor-is-correct)
+- [Part 2 — the n=100 reliability run (2026-07-04)](#part-2--the-n100-reliability-run-2026-07-04)
+  - [8. Why a second run at all?](#8-why-a-second-run-at-all)
+  - [9. The seven experiments, in plain English](#9-the-seven-experiments-in-plain-english)
+    - [The instruments check — "are our measuring tools correct?" (do this first)](#the-instruments-check--are-our-measuring-tools-correct-do-this-first)
+    - [E1 — "does the safety checker catch broken rulebooks?"](#e1--does-the-safety-checker-catch-broken-rulebooks)
+    - [E2 — "can a hostile agent sneak secrets past the gate?"](#e2--can-a-hostile-agent-sneak-secrets-past-the-gate)
+    - [E3 — "does the benefit hold for weak and strong models?" (measured across 3 Claude tiers)](#e3--does-the-benefit-hold-for-weak-and-strong-models-measured-across-3-claude-tiers)
+    - [E4 — "how many runs-in-a-row will it survive?" (the reason we did n=100)](#e4--how-many-runs-in-a-row-will-it-survive-the-reason-we-did-n100)
+    - [E5 — "does English→rulebook translation keep the meaning?"](#e5--does-englishrulebook-translation-keep-the-meaning)
+    - [E6 — "does it stay cheap as the team grows?"](#e6--does-it-stay-cheap-as-the-team-grows)
+    - [E7 — "does it work outside our own framework?"](#e7--does-it-work-outside-our-own-framework)
+    - [The interaction trials — cooperative task, 100 runs each](#the-interaction-trials--cooperative-task-100-runs-each)
+  - [10. The full arm-ladder at n=100, reproduced without Foundry](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry)
+    - [Why this is *not* laid out in the exact same format as §2](#why-this-is-not-laid-out-in-the-exact-same-format-as-§2)
+    - [What this reproduction actually cost (in dollars)](#what-this-reproduction-actually-cost-in-dollars)
+  - [11. What Part 2 proves, in one paragraph](#11-what-part-2-proves-in-one-paragraph)
+  - [12. Where the supporting data lives](#12-where-the-supporting-data-lives)
+  - [13. What to read next](#13-what-to-read-next)
+<!-- MENU:END -->
 
 ## Words this document uses (plain-English glossary)
 
@@ -69,7 +128,7 @@ is used later; none is assumed.
 
 ---
 
-## Part 1 — the finance run (2026-07-02)
+# Part 1 — the finance run (2026-07-02)
 
 ## 1. The headline result (2026-07-02 finance run)
 

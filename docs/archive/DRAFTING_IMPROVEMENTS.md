@@ -4,6 +4,18 @@
 push first-pass validity up / re-draft loops down, and answer "should we train a
 small model to write Scribble?"
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Why drafts still failed — precise diagnosis](#1-why-drafts-still-failed--precise-diagnosis)
+- [2. The fixes (two, layered)](#2-the-fixes-two-layered)
+  - [Fix A — deterministic fan-out normalizer (the durable one)](#fix-a--deterministic-fan-out-normalizer-the-durable-one)
+  - [Fix B — prompt hardening (cheap, complementary)](#fix-b--prompt-hardening-cheap-complementary)
+- [3. Measured effect (A/B, real gpt-5.4, fresh intent)](#3-measured-effect-ab-real-gpt-54-fresh-intent)
+- [4. Should we train a small model (SLM) to write Scribble?](#4-should-we-train-a-small-model-slm-to-write-scribble)
+- [5. Files](#5-files)
+<!-- MENU:END -->
+
 ## 1. Why drafts still failed — precise diagnosis
 
 I captured real v2 first-drafts of a fresh, hard intent (5-role Incident-Response

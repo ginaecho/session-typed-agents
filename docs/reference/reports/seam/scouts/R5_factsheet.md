@@ -3,6 +3,19 @@
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Anthropic Claude API Pricing (per Million Tokens)](#1-anthropic-claude-api-pricing-per-million-tokens)
+- [2. Stable Package Versions (as of 2026-07-11)](#2-stable-package-versions-as-of-2026-07-11)
+- [3. GPU Rental Pricing (per hour, as of 2026-07-11)](#3-gpu-rental-pricing-per-hour-as-of-2026-07-11)
+  - [H100 Pricing](#h100-pricing)
+  - [A100-80GB Pricing](#a100-80gb-pricing)
+- [4. Qwen2.5-Coder-Instruct Model Family](#4-qwen25-coder-instruct-model-family)
+- [5. arXiv Paper Verification](#5-arxiv-paper-verification)
+- [Summary Notes](#summary-notes)
+<!-- MENU:END -->
+
 ## 1. Anthropic Claude API Pricing (per Million Tokens)
 
 | Model | Base Input | Base Output | 5m Cache Write | 1h Cache Write | Cache Hit (0.1x) | Batch Input (50% off) | Batch Output (50% off) | Source |
@@ -69,7 +82,7 @@ Sources: [RunPod](https://www.runpod.io/pricing), [Lambda Labs](https://lambda.a
 |-----------------|----------------------|---------|-----------|--------|
 | 0.5B | Qwen/Qwen2.5-Coder-0.5B-Instruct | Apache 2.0 | Yes | [HF Model Card](https://huggingface.co/Qwen/Qwen2.5-Coder-0.5B-Instruct) |
 | 1.5B | Qwen/Qwen2.5-Coder-1.5B-Instruct | Apache 2.0 | Yes | [HF Model Card](https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct) |
-| 3B | Qwen/Qwen2.5-Coder-3B-Instruct | Qwen Research | Yes | [GitHub](https://github.com/huggingface/Qwen2.5-Coder) |
+| 3B | Qwen/Qwen2.5-Coder-3B-Instruct | Qwen Research | Yes | [HF Model Card](https://huggingface.co/Qwen/Qwen2.5-Coder-3B-Instruct) |
 | 7B | Qwen/Qwen2.5-Coder-7B-Instruct | Apache 2.0 | Yes | [HF Model Card](https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct) |
 | 14B | Qwen/Qwen2.5-Coder-14B-Instruct | Apache 2.0 | Yes | [HF Model Card](https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct) |
 | 32B | Qwen/Qwen2.5-Coder-32B-Instruct | Apache 2.0 | Yes | [HF Model Card](https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct) |

@@ -9,6 +9,30 @@ Run: `experiments/cases/finance/runs/20260521T111637-n10-dual/`
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The result](#1-the-result)
+- [2. How the 8 arms are set up](#2-how-the-8-arms-are-set-up)
+- [3. Set A — global-type conformance (the local typed monitor)](#3-set-a--global-type-conformance-the-local-typed-monitor)
+  - [What it is](#what-it-is)
+  - [What counts as an error (a "violation")](#what-counts-as-an-error-a-violation)
+  - [Concrete example — an `off_protocol` error (`bare`, real trace)](#concrete-example--an-off_protocol-error-bare-real-trace)
+  - [Concrete example — an `off_protocol` error of *sequencing* (`min_llmvalid`, real trace)](#concrete-example--an-off_protocol-error-of-sequencing-min_llmvalid-real-trace)
+  - [Concrete example — conformant (`spec_llmvalid`, real trace)](#concrete-example--conformant-spec_llmvalid-real-trace)
+  - [Two honest caveats on Set A](#two-honest-caveats-on-set-a)
+- [4. Set B — goal achievement](#4-set-b--goal-achievement)
+  - [What goals are](#what-goals-are)
+  - [How a goal is tested — three lenses](#how-a-goal-is-tested--three-lenses)
+  - [What counts as success](#what-counts-as-success)
+  - [Concrete example — a goal that PASSES](#concrete-example--a-goal-that-passes)
+  - [Concrete example — a goal that FAILS, two ways](#concrete-example--a-goal-that-fails-two-ways)
+  - [Concrete example — a whole trial succeeding](#concrete-example--a-whole-trial-succeeding)
+- [5. Exact definitions — "error", "wrong", "success"](#5-exact-definitions--error-wrong-success)
+- [6. Reading the ladder](#6-reading-the-ladder)
+- [7. Re-scored under the v2.1 consequence grading (2026-06-12)](#7-re-scored-under-the-v21-consequence-grading-2026-06-12)
+<!-- MENU:END -->
+
 ## 1. The result
 
 ```

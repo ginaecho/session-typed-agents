@@ -11,6 +11,25 @@ execution) into a concrete next-version architecture. The thesis in one line:
 > runtime.** The formal contract stays the core; we plug it into two ecosystems
 > instead of running it only in our own round-robin harness.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Where v3 sits](#1-where-v3-sits)
+- [2. Plane A — Governance (reuse the toolkit)](#2-plane-a--governance-reuse-the-toolkit)
+  - [A1. Policy export (`stjp_core/governance/policy_export.py`) — ✅ DONE 2026-06-17](#a1-policy-export-stjp_coregovernancepolicy_exportpy---done-2026-06-17)
+  - [A2. Audit-compatible verdicts — ✅ DONE 2026-06-17 (`stjp_core/governance/audit_export.py`)](#a2-audit-compatible-verdicts---done-2026-06-17-stjp_coregovernanceaudit_exportpy)
+  - [A3. Identity binding (reuse SPIFFE/DID)](#a3-identity-binding-reuse-spiffedid)
+  - [A4. Contribute upstream (enhance their engine)](#a4-contribute-upstream-enhance-their-engine)
+- [3. Plane B — Decentralized execution (compose with DeLM)](#3-plane-b--decentralized-execution-compose-with-delm)
+  - [B1. STJP monitor as the shared-context write-verifier — ✅ (`STJPRuntime._probe/_commit`)](#b1-stjp-monitor-as-the-shared-context-write-verifier---stjpruntime_probe_commit)
+  - [B2. EFSM enabled-set = claim predicate — ✅ (`STJPRuntime.enabled_senders`)](#b2-efsm-enabled-set--claim-predicate---stjpruntimeenabled_senders)
+  - [B3. Type-directed context splitting — ✅ (`SharedContext.view_for`)](#b3-type-directed-context-splitting---sharedcontextview_for)
+  - [B4. Provenance on the substrate](#b4-provenance-on-the-substrate)
+- [4. The v3 benchmark (ties to criticality redesign)](#4-the-v3-benchmark-ties-to-criticality-redesign)
+- [5. Sequenced roadmap (smallest valuable first)](#5-sequenced-roadmap-smallest-valuable-first)
+- [6. What does NOT change (guard rails)](#6-what-does-not-change-guard-rails)
+<!-- MENU:END -->
+
 ## 1. Where v3 sits
 
 ```

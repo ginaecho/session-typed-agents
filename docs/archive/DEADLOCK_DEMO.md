@@ -3,6 +3,20 @@
 **2026-06-17.** This is the centerpiece result: a clean demonstration of the two
 claims that matter, after stripping away the muddy multi-variable comparisons.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The two things being proved](#the-two-things-being-proved)
+- [Why this happens in the real world (the story)](#why-this-happens-in-the-real-world-the-story)
+- [What counts as a "violation" / a forbidden interaction (the semantics)](#what-counts-as-a-violation--a-forbidden-interaction-the-semantics)
+- [What was wrong with the earlier comparisons (why they were muddy)](#what-was-wrong-with-the-earlier-comparisons-why-they-were-muddy)
+- [The clean design — `experiments/cases/trade_deadlock`](#the-clean-design--experimentscasestrade_deadlock)
+- [Probe (2 agents, real gpt-5.4) — the assumption holds](#probe-2-agents-real-gpt-54--the-assumption-holds)
+- [Authoring risk — it's not rigged: unchecked authoring deadlocks at a real rate](#authoring-risk--its-not-rigged-unchecked-authoring-deadlocks-at-a-real-rate)
+- [Benchmark result (trade_deadlock, n=6, gpt-5.4)](#benchmark-result-trade_deadlock-n6-gpt-54)
+- [Takeaway](#takeaway)
+<!-- MENU:END -->
+
 ## The two things being proved
 
 1. **Guardrails / specs / skills / agent-markdowns written by a human OR an LLM

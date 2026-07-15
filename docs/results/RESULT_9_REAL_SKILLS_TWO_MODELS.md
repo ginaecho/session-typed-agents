@@ -9,6 +9,19 @@ project. Every technical word is explained where it first appears.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What question does this experiment answer?](#1-what-question-does-this-experiment-answer)
+- [2. The two teams we built (from real public files)](#2-the-two-teams-we-built-from-real-public-files)
+- [3. How one test run works](#3-how-one-test-run-works)
+- [4. What we measured (in plain words)](#4-what-we-measured-in-plain-words)
+- [5. Results](#5-results)
+- [6. What this means](#6-what-this-means)
+- [7. Honest limits](#7-honest-limits)
+- [8. Where everything is](#8-where-everything-is)
+<!-- MENU:END -->
+
 ## 1. What question does this experiment answer?
 
 Teams of AI assistants are usually built by giving each assistant a "skill" —
@@ -35,7 +48,7 @@ were sent out to fetch them from public repositories, record where each file
 came from, and check its license permits reuse.
 
 **Team 1 — the "announcement team"** (folder name `doc_pipeline`), built
-from Anthropic's public skills repository (github.com/anthropics/skills,
+from Anthropic's public skills repository ([github.com/anthropics/skills](https://github.com/anthropics/skills),
 each skill individually Apache-2.0 licensed):
 
 - a **Writer** using the `internal-comms` skill (writes company
@@ -51,7 +64,7 @@ out before the brand review has approved it, and must not go out twice.**
 
 **Team 2 — the "code-change team"** (folder name `pr_merge`), built from
 GitHub's public Copilot customization collection
-(github.com/github/awesome-copilot, MIT licensed):
+([github.com/github/awesome-copilot](https://github.com/github/awesome-copilot), MIT licensed):
 
 - an **Author** using the `address-comments` agent file (prepares a code
   change and works the review loop),

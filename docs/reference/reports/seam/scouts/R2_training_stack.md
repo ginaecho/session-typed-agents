@@ -10,6 +10,17 @@ primary doc, that is flagged explicitly.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. TRL GRPOTrainer](#1-trl-grpotrainer)
+- [2. vLLM guided decoding — the load-bearing check](#2-vllm-guided-decoding--the-load-bearing-check)
+- [3. Qwen2.5-Coder-7B-Instruct — still the right small coder?](#3-qwen25-coder-7b-instruct--still-the-right-small-coder)
+- [4. Serving/GPU — Modal vs RunPod vs Lambda](#4-servinggpu--modal-vs-runpod-vs-lambda)
+- [5. Version pin block](#5-version-pin-block)
+- [Summary of concrete plan edits (§2/§4 of the execution plan)](#summary-of-concrete-plan-edits-§2§4-of-the-execution-plan)
+<!-- MENU:END -->
+
 ## 1. TRL GRPOTrainer
 
 **Plan assumes (§2):** "TRL (`SFTTrainer`, `GRPOTrainer`) + PEFT LoRA + vLLM
@@ -317,7 +328,7 @@ Evidence per pin:
   ["peft>=0.8.0"]`, core deps `"transformers>=4.56.2"`,
   `"transformers!=5.1.0"`) and `trl/import_utils.py`
   (`is_vllm_available` version-range assertion), both pulled live from
-  `github.com/huggingface/trl` `main` on 2026-07-11.
+  [`github.com/huggingface/trl`](https://github.com/huggingface/trl) `main` on 2026-07-11.
 - `torch==2.11.0` / `torchvision==0.26.0` / `torchaudio==2.11.0` and
   `xgrammar<1.0.0,>=0.2.0` and the transformers exclusion list
   (`!=5.0.*,!=5.1.*,!=5.2.*,!=5.3.*,!=5.4.*,!=5.5.0`): read directly from

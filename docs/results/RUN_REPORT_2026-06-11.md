@@ -9,6 +9,25 @@ Runs covered:
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+  - [1 · Live run (n=1, 2026-06-11, Azure AI Foundry, gpt-4o)](#1-·-live-run-n1-2026-06-11-azure-ai-foundry-gpt-4o)
+    - [n=10 benchmark for context (2026-05-21)](#n10-benchmark-for-context-2026-05-21)
+  - [2 · Anatomy of the 63k — it is NOT the contract that's long](#2-·-anatomy-of-the-63k--it-is-not-the-contract-thats-long)
+  - [3 · How to slim further — keep the contract meaning, cut the waste](#3-·-how-to-slim-further--keep-the-contract-meaning-cut-the-waste)
+- [Part 2 — same evening: results under the v2.1 consequence-graded design](#part-2--same-evening-results-under-the-v21-consequence-graded-design)
+  - [2.1 Finance re-scored: raw violations → severity histogram (n=10 run)](#21-finance-re-scored-raw-violations--severity-histogram-n10-run)
+  - [2.2 Banking — the case where S4 is denominated in dollars (n=2, live)](#22-banking--the-case-where-s4-is-denominated-in-dollars-n2-live)
+  - [2.3 What's still open](#23-whats-still-open)
+- [Part 3 — why typed agents still committed S4, and what closes the gap](#part-3--why-typed-agents-still-committed-s4-and-what-closes-the-gap)
+  - [3.1 The type cannot say it (theory gap)](#31-the-type-cannot-say-it-theory-gap)
+  - [3.2 The guards were not even there (toolchain gap)](#32-the-guards-were-not-even-there-toolchain-gap)
+  - [3.3 Prose is not enforcement (LLM gap)](#33-prose-is-not-enforcement-llm-gap)
+  - [The fix, layer by layer](#the-fix-layer-by-layer)
+  - [So: do we really need the local monitor?](#so-do-we-really-need-the-local-monitor)
+<!-- MENU:END -->
+
 ## 1 · Live run (n=1, 2026-06-11, Azure AI Foundry, gpt-4o)
 
 | metric | A · intent only | B · + global type | C · projected local | C-min · slim local |

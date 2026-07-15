@@ -8,6 +8,23 @@ step-by-step map of that role's allowed messages) against the captured trace.
 
 Run dates: 2026-05-07. Total: 20 trials / scenario × 2 scenarios = 80 trials.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Setup](#setup)
+- [Side-by-side aggregate (combined 20 trials per scenario)](#side-by-side-aggregate-combined-20-trials-per-scenario)
+- [Per-trial detail (run 1)](#per-trial-detail-run-1)
+- [What the monitor caught](#what-the-monitor-caught)
+  - [WITH spec — agents use real labels but mis-order them](#with-spec--agents-use-real-labels-but-mis-order-them)
+  - [WITHOUT spec — agents invent entirely new labels](#without-spec--agents-invent-entirely-new-labels)
+  - [Violations by role (run 1, WITHOUT spec)](#violations-by-role-run-1-without-spec)
+  - [Violations by step (run 1, WITHOUT spec)](#violations-by-step-run-1-without-spec)
+- [How the monitor detects it](#how-the-monitor-detects-it)
+- [Goal verification (post-execution)](#goal-verification-post-execution)
+- [Files](#files)
+- [Caveats and honest scope](#caveats-and-honest-scope)
+<!-- MENU:END -->
+
 ## Setup
 
 - **Agents in Azure AI Foundry portal** — six PromptAgent definitions registered

@@ -16,6 +16,19 @@ the Critic re-judging every draft.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Why a Critic at all](#1-why-a-critic-at-all)
+- [2. The `.policy` sidecar](#2-the-policy-sidecar)
+- [3. Static mode — before any agent runs](#3-static-mode--before-any-agent-runs)
+- [4. Runtime mode — over the trace](#4-runtime-mode--over-the-trace)
+- [5. The Revisor — closing the loop](#5-the-revisor--closing-the-loop)
+- [6. Connected into the authoring loop](#6-connected-into-the-authoring-loop)
+- [7. Tests](#7-tests)
+- [8. Research basis](#8-research-basis)
+<!-- MENU:END -->
+
 ## 1. Why a Critic at all
 
 The Monitor is deliberately local: it holds one role's projected EFSM and

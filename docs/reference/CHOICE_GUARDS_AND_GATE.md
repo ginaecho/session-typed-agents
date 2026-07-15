@@ -5,6 +5,22 @@ this extends), `GAP_CLOSED.md` (the 2026-05-13 payload-guard closure this
 parallels), `docs/results/RUN_REPORT_2026-06-11.md` Part 3 (the failure analysis
 that motivated it).*
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The problem this closes](#1-the-problem-this-closes)
+- [2. The chain, script by script](#2-the-chain-script-by-script)
+  - [Stage 0 — DEFINE: the `.refn` sidecar (data, not code)](#stage-0--define-the-refn-sidecar-data-not-code)
+  - [Stage 1 — PARSE: `stjp_core/compiler/refinement_checker.py`](#stage-1--parse-stjp_corecompilerrefinement_checkerpy)
+  - [Stage 2 — STATE: compile the rule into the agent's contract](#stage-2--state-compile-the-rule-into-the-agents-contract)
+  - [Stage 3 — CHECK: `stjp_core/monitor/monitor.py` (observer)](#stage-3--check-stjp_coremonitormonitorpy-observer)
+  - [Stage 4 — ENFORCE: `experiments/baselines/foundry_runner.py` gate mode](#stage-4--enforce-experimentsbaselinesfoundry_runnerpy-gate-mode)
+- [3. Verified behaviour (offline replay, no LLM)](#3-verified-behaviour-offline-replay-no-llm)
+- [3b. First production run (2026-06-12, `runs/20260612T151309-n2-dual`)](#3b-first-production-run-2026-06-12-runs20260612t151309-n2-dual)
+- [4. What this does NOT change](#4-what-this-does-not-change)
+- [5. How to add a guard to a new case](#5-how-to-add-a-guard-to-a-new-case)
+<!-- MENU:END -->
+
 ## 1. The problem this closes
 
 The finance n=10 run had 2/18 typed-arm attempts take the **standard branch

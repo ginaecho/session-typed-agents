@@ -4,6 +4,18 @@
 run it describes was executed. Predictions in §5 are falsifiable; the run
 report will grade them honestly, whichever way they land.*
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What this experiment is for](#1-what-this-experiment-is-for)
+- [2. Arms](#2-arms)
+- [3. What is measured](#3-what-is-measured)
+- [4. Fairness rules (unchanged from TESTING_STRATEGY.md, restated)](#4-fairness-rules-unchanged-from-testing_strategymd-restated)
+- [5. Pre-registered predictions](#5-pre-registered-predictions)
+- [6. Run plan](#6-run-plan)
+- [7. What this experiment still does not show](#7-what-this-experiment-still-does-not-show)
+<!-- MENU:END -->
+
 ## 1. What this experiment is for
 
 The claim under test: **a session-type toolchain (STJP) statically generates,

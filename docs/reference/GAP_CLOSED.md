@@ -5,6 +5,19 @@
 `testing_ideas/STJP_discussion_13May2025.md` §"Monitor design"
 and the figure in `testing_ideas/monitoring_tool_from_intent.png`.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The gap (before)](#the-gap-before)
+- [What was implemented](#what-was-implemented)
+  - [Edit 1 — `refinement_checker.py`](#edit-1--refinement_checkerpy)
+  - [Edit 2 — `agent_generator.py`](#edit-2--agent_generatorpy)
+  - [Edit 3 — call-site enforcement test](#edit-3--call-site-enforcement-test)
+- [Before / after](#before--after)
+- [What remains open](#what-remains-open)
+- [Files changed](#files-changed)
+<!-- MENU:END -->
+
 ## The gap (before)
 
 Refinement contracts existed in two places that did not talk to each other:

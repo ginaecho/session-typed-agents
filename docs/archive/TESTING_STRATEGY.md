@@ -7,6 +7,20 @@ point that matters most: **every comparison must change exactly one variable.**
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What STJP actually claims (be precise, or the test is meaningless)](#1-what-stjp-actually-claims-be-precise-or-the-test-is-meaningless)
+- [2. The fairness rules (lessons paid for in muddy runs)](#2-the-fairness-rules-lessons-paid-for-in-muddy-runs)
+- [3. The design: two axes, four task shapes](#3-the-design-two-axes-four-task-shapes)
+  - [Two axes (never cross them in one comparison)](#two-axes-never-cross-them-in-one-comparison)
+  - [Four task shapes (each isolates one claim)](#four-task-shapes-each-isolates-one-claim)
+- [4. Audit of the current arms — which comparisons are fair](#4-audit-of-the-current-arms--which-comparisons-are-fair)
+- [5. How to make the two current demos stronger](#5-how-to-make-the-two-current-demos-stronger)
+- [6. The headline table this strategy produces (per claim, per model)](#6-the-headline-table-this-strategy-produces-per-claim-per-model)
+- [7. Priority to execute (smallest fair win first)](#7-priority-to-execute-smallest-fair-win-first)
+<!-- MENU:END -->
+
 ## 1. What STJP actually claims (be precise, or the test is meaningless)
 
 STJP takes a natural-language intent → an LLM drafts a global interaction protocol

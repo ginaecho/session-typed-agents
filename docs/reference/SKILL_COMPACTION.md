@@ -38,6 +38,17 @@ python -m stjp_core.generation.skill_compactor <skills_dir> -o Trade.scr \
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Compaction — skill markdown → LocalType](#1-compaction--skill-markdown--localtype)
+- [2. Compatibility — the cheap cross-check](#2-compatibility--the-cheap-cross-check)
+- [3. Synthesis — local types → global type, deterministically](#3-synthesis--local-types--global-type-deterministically)
+- [4. Scribble — the final oracle](#4-scribble--the-final-oracle)
+- [5. Tests](#5-tests)
+- [6. Research basis](#6-research-basis)
+<!-- MENU:END -->
+
 ## 1. Compaction — skill markdown → LocalType
 
 Per file, three sources are tried in order:

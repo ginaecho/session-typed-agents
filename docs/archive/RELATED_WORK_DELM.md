@@ -3,6 +3,17 @@
 **Reviewed 2026-06-17.** *DeLM: Decentralized Language Models* (Yuzhen Mao,
 Azalia Mirhoseini). Code: github.com/yuzhenmao/DeLM.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What DeLM is](#1-what-delm-is)
+- [2. Is it a threat to STJP? No — different layer (you are right)](#2-is-it-a-threat-to-stjp-no--different-layer-you-are-right)
+- [3. How to reuse DeLM — four concrete integrations](#3-how-to-reuse-delm--four-concrete-integrations)
+- [4. What STJP can borrow from DeLM (the other direction)](#4-what-stjp-can-borrow-from-delm-the-other-direction)
+- [5. One-paragraph positioning (for papers/talks)](#5-one-paragraph-positioning-for-paperstalks)
+- [6. To-do if pursued](#6-to-do-if-pursued)
+<!-- MENU:END -->
+
 ## 1. What DeLM is
 
 A **runtime execution model** for multi-agent LLM systems that removes the

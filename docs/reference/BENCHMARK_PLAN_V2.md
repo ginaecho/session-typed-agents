@@ -11,6 +11,21 @@ runtime adapters is a connected harness marked **MEASUREMENT PENDING** with real
 anchor points and clearly-tagged synthetic placeholders (so the paper renders
 now and real numbers swap in per §10).
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Status at a glance](#status-at-a-glance)
+- [§9 Verdict corpus — testing the testers (do first, cheapest)](#§9-verdict-corpus--testing-the-testers-do-first-cheapest)
+- [E1 — does the checker catch bad protocols? (mutation testing)](#e1--does-the-checker-catch-bad-protocols-mutation-testing)
+- [E2 — does the gate stop a hostile agent? (adversarial exfiltration)](#e2--does-the-gate-stop-a-hostile-agent-adversarial-exfiltration)
+- [E4 — reliability operators actually need (pass^k)](#e4--reliability-operators-actually-need-passk)
+- [E5 — how good is English→protocol? (translation fidelity)](#e5--how-good-is-englishprotocol-translation-fidelity)
+- [E6 — does it scale? (roles sweep)](#e6--does-it-scale-roles-sweep)
+- [E7 — is it portable? (cross-runtime)](#e7--is-it-portable-cross-runtime)
+- [E3 — story vs model strength (capability sweep)](#e3--story-vs-model-strength-capability-sweep)
+- [§10 — swapping real numbers in](#§10--swapping-real-numbers-in)
+<!-- MENU:END -->
+
 ## Status at a glance
 
 | # | Experiment | Component tested | Status | Headline (real) |

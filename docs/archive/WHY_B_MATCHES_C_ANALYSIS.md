@@ -6,6 +6,17 @@ the projected-local-types settings? I checked the traces. **It is not a bug, but
 there are two real problems with the comparison, and one clean signal that did
 survive.** Plain-language throughout (see `GLOSSARY.md`).
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Problem 1 — the comparison is confounded by the orchestration layer](#problem-1--the-comparison-is-confounded-by-the-orchestration-layer)
+- [Problem 2 — the task is too small to need local types](#problem-2--the-task-is-too-small-to-need-local-types)
+- [Problem 3 — the monitor is stricter than session-type theory requires (and that, not the skills, is what fails C on the standard branch)](#problem-3--the-monitor-is-stricter-than-session-type-theory-requires-and-that-not-the-skills-is-what-fails-c-on-the-standard-branch)
+- [The one clean signal that DID survive](#the-one-clean-signal-that-did-survive)
+- [Honest bottom line](#honest-bottom-line)
+- [What would actually show local types' usefulness (proposed next test)](#what-would-actually-show-local-types-usefulness-proposed-next-test)
+<!-- MENU:END -->
+
 ## Problem 1 — the comparison is confounded by the orchestration layer
 
 The settings do not differ *only* in "global text vs local contract." They also

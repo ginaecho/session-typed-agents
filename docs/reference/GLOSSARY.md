@@ -3,6 +3,18 @@
 Written 2026-06-17 because the reports had grown acronym-heavy. Each entry gives
 the plain meaning first; the short form (if any) is in brackets.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The benchmark measurements](#the-benchmark-measurements)
+- [The severity ladder (how harmful a deviation is)](#the-severity-ladder-how-harmful-a-deviation-is)
+- [The three "critical property" checks (when following the protocol truly matters)](#the-three-critical-property-checks-when-following-the-protocol-truly-matters)
+- [The settings being compared (the "arms")](#the-settings-being-compared-the-arms)
+- [The machinery](#the-machinery)
+- [STJP itself](#stjp-itself)
+- [The intent-to-protocol training program (docs/8, docs/reference/SEAM_*.md)](#the-intent-to-protocol-training-program-docs8-docsreferenceseam_md)
+<!-- MENU:END -->
+
 ## The benchmark measurements
 
 - **Goal-Completion Rate** *(was "GCR")* — the percentage of trials in which the

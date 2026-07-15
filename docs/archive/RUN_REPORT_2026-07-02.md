@@ -6,6 +6,17 @@ AI Foundry agents, n = 10 trials/arm, 7 arms, run dir
 `cases/finance/runs/20260702T093703-n10-dual`. Graded with the built-in Set A/B
 evaluators plus `severity_grader.py` and `criticality_gate.py` (all 7 arms).
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Headline table](#1-headline-table)
+- [2. Grading the pre-registered predictions](#2-grading-the-pre-registered-predictions)
+- [3. What changed mechanically vs prior runs](#3-what-changed-mechanically-vs-prior-runs)
+- [4. Where to see the traces](#4-where-to-see-the-traces)
+- [5. Infrastructure incidents (for reproducibility)](#5-infrastructure-incidents-for-reproducibility)
+- [6. Honest limits, unchanged](#6-honest-limits-unchanged)
+<!-- MENU:END -->
+
 ## 1. Headline table
 
 GCR = strict goal-completion rate. Disasters = severity S4 (irreversible act

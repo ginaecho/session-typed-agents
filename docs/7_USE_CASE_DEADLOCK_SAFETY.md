@@ -10,6 +10,45 @@ Concrete examples where protocols catch real problems that would crash unreliabl
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The deadlock nightmare: Trade execution](#1-the-deadlock-nightmare-trade-execution)
+  - [The scenario](#the-scenario)
+  - [The deadlock](#the-deadlock)
+  - [Without STJP](#without-stjp)
+  - [With STJP](#with-stjp)
+- [2. Wrong branch, wrong path: Revenue audit failure](#2-wrong-branch-wrong-path-revenue-audit-failure)
+  - [The scenario](#the-scenario-1)
+  - [Without STJP (and how things go wrong)](#without-stjp-and-how-things-go-wrong)
+  - [Result without guards](#result-without-guards)
+  - [With STJP (guards prevent every path)](#with-stjp-guards-prevent-every-path)
+  - [Result with guards](#result-with-guards)
+- [3. Authorization bypass: "We approve after filing"](#3-authorization-bypass-we-approve-after-filing)
+  - [The scenario](#the-scenario-2)
+  - [Without STJP](#without-stjp-1)
+  - [The disaster](#the-disaster)
+  - [With STJP (enforcement gate)](#with-stjp-enforcement-gate)
+  - [Result](#result)
+- [4. Data provenance failure: "I'll guess"](#4-data-provenance-failure-ill-guess)
+  - [The scenario](#the-scenario-3)
+  - [Without STJP](#without-stjp-2)
+  - [With STJP](#with-stjp-1)
+- [5. Concurrency confusion: Two agents, two messages](#5-concurrency-confusion-two-agents-two-messages)
+  - [The scenario](#the-scenario-4)
+  - [With STJP (theory-faithful monitor)](#with-stjp-theory-faithful-monitor)
+- [6. Why these cases matter in the real world](#6-why-these-cases-matter-in-the-real-world)
+  - [Deadlock (trade execution)](#deadlock-trade-execution)
+  - [Wrong branch (audit bypass)](#wrong-branch-audit-bypass)
+  - [Authorization bypass (loan filing)](#authorization-bypass-loan-filing)
+  - [Data provenance (compliance reporting)](#data-provenance-compliance-reporting)
+  - [Concurrency (scalability)](#concurrency-scalability)
+- [7. How to design your own safety case](#7-how-to-design-your-own-safety-case)
+  - [Example: Salary adjustment in HR](#example-salary-adjustment-in-hr)
+- [8. Summary: Why this matters](#8-summary-why-this-matters)
+- [9. What to read next](#9-what-to-read-next)
+<!-- MENU:END -->
+
 ## 1. The deadlock nightmare: Trade execution
 
 ### The scenario

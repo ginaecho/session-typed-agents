@@ -5,6 +5,16 @@ is live**. The claim to demonstrate: with intent-only agents, absorbing the
 change is statistical hope; with STJP, it is a small reviewed diff that is
 re-proven before any agent runs, and the change's blast radius is *provable*.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Use case — banking, new compliance demand](#use-case--banking-new-compliance-demand)
+- [Act 1 — intent-only team absorbs the change](#act-1--intent-only-team-absorbs-the-change)
+- [Act 2 — STJP absorbs the change](#act-2--stjp-absorbs-the-change)
+- [What the demo page shows (extends `STJP_Benchmark_Demo.html`)](#what-the-demo-page-shows-extends-stjp_benchmark_demohtml)
+- [Build plan (when greenlit)](#build-plan-when-greenlit)
+<!-- MENU:END -->
+
 ## Use case — banking, new compliance demand
 
 Base: the existing `experiments/cases/banking/` case

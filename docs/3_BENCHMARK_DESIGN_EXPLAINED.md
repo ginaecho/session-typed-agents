@@ -6,6 +6,45 @@ How we measure STJP's impact, why the measurements matter, and what makes a fair
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What is a benchmark?](#1-what-is-a-benchmark)
+- [2. The measurements: what we count](#2-the-measurements-what-we-count)
+  - [A. Correctness (did it work?)](#a-correctness-did-it-work)
+    - [Goal-Completion Rate (GCR)](#goal-completion-rate-gcr)
+    - [Critical-Goal Completion (CGC)](#critical-goal-completion-cgc)
+    - [Disaster count](#disaster-count)
+  - [B. Efficiency (what did it cost?)](#b-efficiency-what-did-it-cost)
+    - [Tokens per trial](#tokens-per-trial)
+    - [Cost-to-goal](#cost-to-goal)
+    - [Time per trial and Time-to-goal](#time-per-trial-and-time-to-goal)
+  - [C. Protocol adherence (did they follow the rules?)](#c-protocol-adherence-did-they-follow-the-rules)
+    - [Monitor acceptance vs delivered violations](#monitor-acceptance-vs-delivered-violations)
+- [3. The benchmark structure: Gated layers](#3-the-benchmark-structure-gated-layers)
+  - [Gate 1: Goal Completion](#gate-1-goal-completion)
+  - [Gate 2: Safety & Adherence](#gate-2-safety--adherence)
+  - [Gate 3: Cost Comparison](#gate-3-cost-comparison)
+- [4. The severity grading system](#4-the-severity-grading-system)
+  - [Severity levels (S0 to S4)](#severity-levels-s0-to-s4)
+- [5. The critical properties (when protocol matters most)](#5-the-critical-properties-when-protocol-matters-most)
+  - [C1: Data Provenance ("no guessing")](#c1-data-provenance-no-guessing)
+  - [C2: Context Completeness ("read everything first")](#c2-context-completeness-read-everything-first)
+  - [C3: Authorization Before Irreversible Acts](#c3-authorization-before-irreversible-acts)
+- [6. A concrete example: The finance benchmark](#6-a-concrete-example-the-finance-benchmark)
+  - [The task](#the-task)
+  - [The protocol (simplified)](#the-protocol-simplified)
+  - [What gets measured](#what-gets-measured)
+  - [Real results (2026-07-02, gpt-5.4)](#real-results-2026-07-02-gpt-54)
+- [7. Common mistakes in benchmarking](#7-common-mistakes-in-benchmarking)
+  - [Mistake 1: Comparing arms with different models](#mistake-1-comparing-arms-with-different-models)
+  - [Mistake 2: Using tasks that are too easy](#mistake-2-using-tasks-that-are-too-easy)
+  - [Mistake 3: Mixing spec and runtime](#mistake-3-mixing-spec-and-runtime)
+  - [Mistake 4: Counting tokens from failed trials](#mistake-4-counting-tokens-from-failed-trials)
+  - [Mistake 5: No ground truth for goals](#mistake-5-no-ground-truth-for-goals)
+- [8. What to read next](#8-what-to-read-next)
+<!-- MENU:END -->
+
 ## 1. What is a benchmark?
 
 A benchmark is a **fair comparison** that answers a specific question. For STJP:

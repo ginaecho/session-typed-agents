@@ -6,6 +6,35 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [🚀 Quick navigation](#-quick-navigation)
+- [📚 The Guides (read in order)](#-the-guides-read-in-order)
+  - [Section 1: Tech Setup — `1_TECH_SETUP.md`](#section-1-tech-setup--1_tech_setupmd)
+  - [Section 2: Testing Strategies — `2_TESTING_STRATEGIES.md`](#section-2-testing-strategies--2_testing_strategiesmd)
+  - [Section 3: Benchmark Design Explained — `3_BENCHMARK_DESIGN_EXPLAINED.md`](#section-3-benchmark-design-explained--3_benchmark_design_explainedmd)
+  - [Section 4: How to Create Use Cases — `4_HOW_TO_CREATE_USE_CASES.md`](#section-4-how-to-create-use-cases--4_how_to_create_use_casesmd)
+  - [Section 5: The Settings ("Arms") Explained — `5_ARMS_EXPLAINED.md`](#section-5-the-settings-arms-explained--5_arms_explainedmd)
+  - [Section 6: Run Reports Explained — `6_RUN_REPORTS_EXPLAINED.md`](#section-6-run-reports-explained--6_run_reports_explainedmd)
+  - [Section 7: Use Cases — Why Interaction Safety Matters — `7_USE_CASE_DEADLOCK_SAFETY.md`](#section-7-use-cases--why-interaction-safety-matters--7_use_case_deadlock_safetymd)
+- [📁 File reference](#-file-reference)
+  - [Main documents (read these)](#main-documents-read-these)
+  - [`reference/` — technical deep-dives (current, for researchers)](#reference--technical-deep-dives-current-for-researchers)
+  - [`results/` — the evidence behind the guides (current, plain English)](#results--the-evidence-behind-the-guides-current-plain-english)
+  - [`diary/` — the project journal](#diary--the-project-journal)
+  - [Archived documents (`archive/` — kept for reference, nothing deleted)](#archived-documents-archive--kept-for-reference-nothing-deleted)
+- [🎯 Reading paths by role](#-reading-paths-by-role)
+  - ["I'm new to STJP"](#im-new-to-stjp)
+  - ["I want to run STJP"](#i-want-to-run-stjp)
+  - ["I want to create a new use case"](#i-want-to-create-a-new-use-case)
+  - ["I'm reviewing the results"](#im-reviewing-the-results)
+  - ["I'm a researcher"](#im-a-researcher)
+- [🏗️ Document organization philosophy](#-document-organization-philosophy)
+- [🔄 Where to get the latest](#-where-to-get-the-latest)
+- [❓ Didn't find what you're looking for?](#-didnt-find-what-youre-looking-for)
+<!-- MENU:END -->
+
 ## 🚀 Quick navigation
 
 - **New to STJP?** → Start with `1_TECH_SETUP.md`
@@ -228,7 +257,7 @@ Each report follows the same template: at-a-glance summary → the story → how
 - `results/RESULT_6_BENCHMARK_HARDENING.md` — **Benchmark Plan v2** (test the testers + mutation testing + adversarial gate + pass^k + translation fidelity + roles/portability): verdict corpus 40/40, checker 95.6% detection/0% FP, gate exfiltration ladder 0→41.7→91.7→100%, pass^10 CI story, equivalence scorer 100%. Design in `reference/BENCHMARK_PLAN_V2.md`.
 - `results/RESULT_7_N100_SCALE.md` — **n=100 scale run** (all deterministic benchmarks): Wilson CI narrows from [72,100]% to [96.3,100]%; pass^10@floor jumps 0.039→0.686 (17.6×); integration stress 2105/2110; 100-protocol mutation corpus 95.1%/0% FP; subagent trials 0/100 unchecked vs 100/100 STJP; equivalence scorer 300/300.
 - [`results/RESULT_8_SKILL_SAFETY.md`](results/RESULT_8_SKILL_SAFETY.md) — **Real public skills, unvalidated vs STJP** (4 teams built from real OpenAI Agents SDK / CrewAI / AutoGen / LangGraph example skills — benign, MIT-licensed, provenance in each case's `SOURCES.md`). The compiler rejected all 4 combined plans at design time, and at runtime every unvalidated trial failed (40/40 stall or deadlock). Writing the contract in as text fixed completion but produced 20 double-charge/double-write disasters; full STJP: 100% success, 0 disasters, cheapest. An n=100 re-run with a stronger model (Sonnet) confirmed all of it — the weak settings fail *differently* under a different model, but the design-time rejection is model-independent.
-- [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md) — **Real Anthropic + GitHub Copilot skills, the same experiment run on two models** (2 teams built from anthropics/skills and github/awesome-copilot files × 3 settings × n=10, once with Haiku subagents and once with Sonnet subagents; written fully jargon-free, every term explained in place). Headline: with no coordination plan, *which* team fails is model-dependent — Haiku failed the code-change team 0/10, Sonnet failed the announcement team 0/10, on identical skills; with full STJP both models were flawless and indistinguishable (40/40, 0 rule-breaking messages, exactly 4 AI calls/trial, ~1.8k tokens = 3× cheaper than no-plan, 2.4× cheaper than plan-as-text). Evidence: `experiments/subagent_trials/reports/ss2026_new_skills/`.
+- [`results/RESULT_9_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_9_REAL_SKILLS_TWO_MODELS.md) — **Real Anthropic + GitHub Copilot skills, the same experiment run on two models** (2 teams built from [anthropics/skills](https://github.com/anthropics/skills) and [github/awesome-copilot](https://github.com/github/awesome-copilot) files × 3 settings × n=10, once with Haiku subagents and once with Sonnet subagents; written fully jargon-free, every term explained in place). Headline: with no coordination plan, *which* team fails is model-dependent — Haiku failed the code-change team 0/10, Sonnet failed the announcement team 0/10, on identical skills; with full STJP both models were flawless and indistinguishable (40/40, 0 rule-breaking messages, exactly 4 AI calls/trial, ~1.8k tokens = 3× cheaper than no-plan, 2.4× cheaper than plan-as-text). Evidence: `experiments/subagent_trials/reports/ss2026_new_skills/`.
 
 Earlier run reports, kept here for history (technical, not rewritten):
 

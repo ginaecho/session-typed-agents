@@ -8,6 +8,19 @@ Run directory: `experiments/cases/finance/runs/20260702T093703-n10-dual`.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The headline table](#1-the-headline-table)
+- [2. What each setting adds (reading the table top to bottom)](#2-what-each-setting-adds-reading-the-table-top-to-bottom)
+- [3. Grading the pre-registered predictions (the honest part)](#3-grading-the-pre-registered-predictions-the-honest-part)
+- [4. What changed mechanically vs earlier runs](#4-what-changed-mechanically-vs-earlier-runs)
+- [5. Where to see the traces](#5-where-to-see-the-traces)
+- [6. Infrastructure incidents (recorded for reproducibility)](#6-infrastructure-incidents-recorded-for-reproducibility)
+- [7. Honest limits, unchanged](#7-honest-limits-unchanged)
+- [8. Where the raw data is](#8-where-the-raw-data-is)
+<!-- MENU:END -->
+
 ## 1. The headline table
 
 Terms used in the table:

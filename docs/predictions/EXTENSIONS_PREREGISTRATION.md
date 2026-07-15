@@ -13,6 +13,15 @@ CONCUR'12)** → **lawful slack (Chen–Dezani–Scalas–Yoshida LMCS'17 / PPDP
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [P1 / E8 — Stateful session invariants ("the session ledger")](#p1--e8--stateful-session-invariants-the-session-ledger)
+- [P2 / E9 — Precise-subtyping gate ("lawful slack")](#p2--e9--precise-subtyping-gate-lawful-slack)
+- [P3 / E10 — Typed crash-failure handling ("no session left in limbo")](#p3--e10--typed-crash-failure-handling-no-session-left-in-limbo)
+- [Integrity rules (all three)](#integrity-rules-all-three)
+<!-- MENU:END -->
+
 ## P1 / E8 — Stateful session invariants ("the session ledger")
 
 **Licensing theory:** Chen & Honda, CONCUR'12.

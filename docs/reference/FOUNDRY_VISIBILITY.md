@@ -12,6 +12,20 @@ the underlying data is in the project.
 
 Below: the exact code for each, all connected in this repo.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Deep links for this project (verified 2026-06-11)](#deep-links-for-this-project-verified-2026-06-11)
+- [1. Agents — visible in My agents](#1-agents--visible-in-my-agents)
+- [2. Threads — visible in My threads (after successful runs)](#2-threads--visible-in-my-threads-after-successful-runs)
+- [3. Traces — visible in Tracing tab](#3-traces--visible-in-tracing-tab)
+  - [Required packages](#required-packages)
+  - [Required project resource](#required-project-resource)
+- [4. Connected Agents — visible in agent detail's "Connected agents" panel](#4-connected-agents--visible-in-agent-details-connected-agents-panel)
+- [One-shot setup](#one-shot-setup)
+- [Verifying without the portal](#verifying-without-the-portal)
+<!-- MENU:END -->
+
 ## Deep links for this project (verified 2026-06-11)
 
 Project `firstProject` on resource `foundary-tzuc06` (rg `rg-tzuc06`). The

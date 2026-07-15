@@ -3,6 +3,20 @@
 *Design proposal. Drafted 2026-06-08. No code yet — this doc decides the shape
 before anything is built.*
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The problem](#1-the-problem)
+- [2. The goal](#2-the-goal)
+- [3. What we borrow from ZipperChat — and what we deliberately drop](#3-what-we-borrow-from-zipperchat--and-what-we-deliberately-drop)
+- [4. Where the "concreteness" comes from — the scene mapping](#4-where-the-concreteness-comes-from--the-scene-mapping)
+- [5. A flagship relatable case](#5-a-flagship-relatable-case)
+- [6. Integration with the existing demo](#6-integration-with-the-existing-demo)
+- [7. Worked mapping (abstract → concrete)](#7-worked-mapping-abstract--concrete)
+- [8. Scope & phases](#8-scope--phases)
+- [9. Open questions (for you)](#9-open-questions-for-you)
+<!-- MENU:END -->
+
 ## 1. The problem
 
 The live demo (`experiments/apps/live_demo/`) currently shows the system the way

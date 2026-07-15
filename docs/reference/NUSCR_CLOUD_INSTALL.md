@@ -11,6 +11,14 @@ unscoped GitHub).
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Route A — Docker (normal egress; the fork's own recipe)](#route-a--docker-normal-egress-the-forks-own-recipe)
+- [Route B — CI-built native binary (restricted networks / cloud sandboxes)](#route-b--ci-built-native-binary-restricted-networks--cloud-sandboxes)
+- [Running the fork by hand](#running-the-fork-by-hand)
+<!-- MENU:END -->
+
 ## Route A — Docker (normal egress; the fork's own recipe)
 
 The latest commit of the fork ships a `Dockerfile`, but its `opam install`

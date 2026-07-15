@@ -5,6 +5,22 @@ how often the runtime monitor catches deviations from the projected MPST local
 type. Compares **spec-driven** (skills.md given to each agent) vs. **spec-free**
 (only intent + goals given) under identical orchestration.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Wiring](#wiring)
+- [What plays the user's role](#what-plays-the-users-role)
+- [The 4 scenarios](#the-4-scenarios)
+  - [Scenario 1 -- generate skills/agents markdown](#scenario-1----generate-skillsagents-markdown)
+  - [Scenario 2 -- single illustrative trial WITH spec markdown](#scenario-2----single-illustrative-trial-with-spec-markdown)
+  - [Scenario 3 -- 10 trials WITH spec markdown](#scenario-3----10-trials-with-spec-markdown)
+  - [Scenario 4 -- 10 trials WITHOUT spec markdown](#scenario-4----10-trials-without-spec-markdown)
+- [Coordinator (the agent driver)](#coordinator-the-agent-driver)
+- [What the monitor catches](#what-the-monitor-catches)
+- [Why this is the right experiment](#why-this-is-the-right-experiment)
+- [Files written](#files-written)
+<!-- MENU:END -->
+
 ## Wiring
 
 ```

@@ -6,6 +6,32 @@ A step-by-step guide to building your own benchmark task and running STJP on it.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What is a use case?](#1-what-is-a-use-case)
+- [2. Anatomy of a use case](#2-anatomy-of-a-use-case)
+- [3. Step 1: Write the protocol (`.scr` file)](#3-step-1-write-the-protocol-scr-file)
+  - [Scribble syntax basics](#scribble-syntax-basics)
+  - [Key rules](#key-rules)
+- [4. Step 2: Add refinements (`.refn` file)](#4-step-2-add-refinements-refn-file)
+  - [Allowed predicates](#allowed-predicates)
+- [5. Step 3: Implement the agents](#5-step-3-implement-the-agents)
+  - [Key points](#key-points)
+- [6. Step 4: Write the test harness](#6-step-4-write-the-test-harness)
+- [7. Step 5: Define success criteria](#7-step-5-define-success-criteria)
+- [8. Step 6: Run and analyze](#8-step-6-run-and-analyze)
+  - [Output to expect](#output-to-expect)
+- [9. Use case design patterns](#9-use-case-design-patterns)
+  - [Pattern 1: Deadlock-prone (tests Claim D)](#pattern-1-deadlock-prone-tests-claim-d)
+  - [Pattern 2: Coordination-heavy (tests Claim T/W)](#pattern-2-coordination-heavy-tests-claim-tw)
+  - [Pattern 3: Safety-critical (tests Claim I)](#pattern-3-safety-critical-tests-claim-i)
+  - [Pattern 4: Many roles (tests Claim T at scale)](#pattern-4-many-roles-tests-claim-t-at-scale)
+- [10. Checklist: Before running a benchmark](#10-checklist-before-running-a-benchmark)
+- [11. Real example: Finance case](#11-real-example-finance-case)
+- [12. What to read next](#12-what-to-read-next)
+<!-- MENU:END -->
+
 ## 1. What is a use case?
 
 A use case is a **concrete multi-agent task** that demonstrates STJP's value. It should:

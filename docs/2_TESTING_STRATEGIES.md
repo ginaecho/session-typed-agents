@@ -6,6 +6,34 @@ How we test STJP fairly, and why it took multiple tries to get it right.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What are we testing? (Four separate claims)](#1-what-are-we-testing-four-separate-claims)
+- [2. The evolution: what we learned the hard way](#2-the-evolution-what-we-learned-the-hard-way)
+  - [**Version 1 (naive, confounded)**](#version-1-naive-confounded)
+  - [**Version 2 (fairness rules established)**](#version-2-fairness-rules-established)
+  - [**Version 3 (projection-aware, execution plane)**](#version-3-projection-aware-execution-plane)
+  - [An honest finding we always report (do not oversell the gate)](#an-honest-finding-we-always-report-do-not-oversell-the-gate)
+- [3. The fairness rules (lessons paid for in muddy runs)](#3-the-fairness-rules-lessons-paid-for-in-muddy-runs)
+  - [Rule 1: One variable per comparison](#rule-1-one-variable-per-comparison)
+  - [Rule 2: Separate "did it work" from "what did it cost"](#rule-2-separate-did-it-work-from-what-did-it-cost)
+  - [Rule 3: Robust, structural goals (no magic strings)](#rule-3-robust-structural-goals-no-magic-strings)
+  - [Rule 4: Correct, theory-faithful monitor](#rule-4-correct-theory-faithful-monitor)
+  - [Rule 5: Report every model in scope](#rule-5-report-every-model-in-scope)
+  - [Rule 6: Don't rig the failure (for deadlock claim)](#rule-6-dont-rig-the-failure-for-deadlock-claim)
+  - [Rule 7: State the control explicitly](#rule-7-state-the-control-explicitly)
+- [4. The design: Two axes, four task shapes](#4-the-design-two-axes-four-task-shapes)
+  - [Axis 1: SPEC (what each agent is given)](#axis-1-spec-what-each-agent-is-given)
+  - [Axis 2: RUNTIME (how agents are coordinated)](#axis-2-runtime-how-agents-are-coordinated)
+  - [Four task shapes (each tests one claim)](#four-task-shapes-each-tests-one-claim)
+- [5. How we grade results](#5-how-we-grade-results)
+  - [Grading criteria](#grading-criteria)
+  - [Example: The finance case results (2026-07-02)](#example-the-finance-case-results-2026-07-02)
+- [6. The current arms (2026-07-02 run)](#6-the-current-arms-2026-07-02-run)
+- [7. What to read next](#7-what-to-read-next)
+<!-- MENU:END -->
+
 ## 1. What are we testing? (Four separate claims)
 
 STJP makes four distinct promises. Each one is testable only in isolation:

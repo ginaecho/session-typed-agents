@@ -5,6 +5,16 @@ session, both on real infrastructure. Purpose: verify
 the new design changes *compute and behave* on real data — not to draw final
 conclusions (those need the larger runs noted as future work).
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Drafting prompt — v1 vs v2 A/B (real gpt-5.4)](#1-drafting-prompt--v1-vs-v2-ab-real-gpt-54)
+- [2. Criticality gates — smoke on the grand n=10 traces](#2-criticality-gates--smoke-on-the-grand-n10-traces)
+- [3. Fresh n=10 stability run + cost/time-to-goal](#3-fresh-n10-stability-run--costtime-to-goal)
+- [4. v3 roadmap built this session (steps 1, 2, 4, 5)](#4-v3-roadmap-built-this-session-steps-1-2-4-5)
+- [5. Artifacts written this session](#5-artifacts-written-this-session)
+<!-- MENU:END -->
+
 ## 1. Drafting prompt — v1 vs v2 A/B (real gpt-5.4)
 
 Harness: `experiments/scripts/smoke_draft_prompt.py`. A fresh, unseen scenario

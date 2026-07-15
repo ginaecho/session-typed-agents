@@ -21,6 +21,24 @@ branch seeds. The only variable is *what protocol information sits on top*.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+  - [Layer 0 — Liveness (gate)](#layer-0--liveness-gate)
+  - [Layer 1 — Goal achievement (outcome lens)](#layer-1--goal-achievement-outcome-lens)
+  - [Layer 2 — Path adherence (process lens)](#layer-2--path-adherence-process-lens)
+  - [Layer 3 — Cost (efficiency lens)](#layer-3--cost-efficiency-lens)
+  - [Headline reporting — three dials + one frontier](#headline-reporting--three-dials--one-frontier)
+  - [Experimental hygiene (changes to the harness)](#experimental-hygiene-changes-to-the-harness)
+  - [What the current harness already gives vs. what to add](#what-the-current-harness-already-gives-vs-what-to-add)
+- [v2.1 addendum — consequence-graded violations (answering the circularity objection)](#v21-addendum--consequence-graded-violations-answering-the-circularity-objection)
+  - [The objection, stated honestly](#the-objection-stated-honestly)
+  - [Move 1 — Translate before judging](#move-1--translate-before-judging)
+  - [Move 2 — Grade deviations by consequence, not by letter](#move-2--grade-deviations-by-consequence-not-by-letter)
+  - [Move 3 — Validate the metric empirically, not by fiat](#move-3--validate-the-metric-empirically-not-by-fiat)
+  - [Case selection — finance is the efficiency story, not the safety story](#case-selection--finance-is-the-efficiency-story-not-the-safety-story)
+<!-- MENU:END -->
+
 ## Layer 0 — Liveness (gate)
 
 The MPST claim is freedom from deadlock and livelock. Measure it directly:

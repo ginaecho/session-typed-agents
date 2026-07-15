@@ -13,6 +13,19 @@ this page is the plain-language version with the metric definitions spelled out.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Where the traces live](#1-where-the-traces-live)
+- [2. Quick start — re-derive every metric](#2-quick-start--re-derive-every-metric)
+- [3. What's inside `state.json`](#3-whats-inside-statejson)
+- [4. Read a trace by eye](#4-read-a-trace-by-eye)
+- [5. The decision ledger (`replies_round*.json`)](#5-the-decision-ledger-replies_roundjson)
+- [6. How each headline metric is computed](#6-how-each-headline-metric-is-computed)
+- [7. What is deliberately *not* committed](#7-what-is-deliberately-not-committed)
+- [8. See also](#8-see-also)
+<!-- MENU:END -->
+
 ## 1. Where the traces live
 
 ```

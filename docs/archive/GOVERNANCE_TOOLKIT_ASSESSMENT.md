@@ -6,6 +6,17 @@
 STJP can *reuse* from the toolkit, and what STJP can *contribute back* that the
 toolkit's policy model does not currently express.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What the toolkit is](#1-what-the-toolkit-is)
+  - [The Policy Engine, precisely](#the-policy-engine-precisely)
+- [2. The exact correspondence to STJP](#2-the-exact-correspondence-to-stjp)
+- [3. What STJP should REUSE (adopt their conventions)](#3-what-stjp-should-reuse-adopt-their-conventions)
+- [4. What STJP CONTRIBUTES (enhance their engine)](#4-what-stjp-contributes-enhance-their-engine)
+- [5. Recommended next steps (small, high-leverage)](#5-recommended-next-steps-small-high-leverage)
+<!-- MENU:END -->
+
 ## 1. What the toolkit is
 
 A governance layer for autonomous agents: **policy enforcement**, cryptographic

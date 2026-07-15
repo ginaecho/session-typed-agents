@@ -8,6 +8,18 @@
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The result](#1-the-result)
+- [2. What was held constant (why the comparison is fair)](#2-what-was-held-constant-why-the-comparison-is-fair)
+- [3. How we scored "did they follow the rules?" (with real traces)](#3-how-we-scored-did-they-follow-the-rules-with-real-traces)
+- [4. How we scored "did they achieve the outcome?" (with real traces)](#4-how-we-scored-did-they-achieve-the-outcome-with-real-traces)
+- [5. Reading the ladder](#5-reading-the-ladder)
+- [6. The honest correction: grading by consequence, not by letter](#6-the-honest-correction-grading-by-consequence-not-by-letter)
+- [7. Where the raw data is](#7-where-the-raw-data-is)
+<!-- MENU:END -->
+
 ## 1. The result
 
 | Setting (what the agents were given) | Trials succeeded | Rule violations / total messages | Tokens per trial |

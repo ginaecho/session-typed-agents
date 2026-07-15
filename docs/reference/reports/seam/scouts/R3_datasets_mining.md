@@ -9,6 +9,17 @@ Task B's methodology note.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Task A — Comparable NL→formal-spec datasets](#task-a--comparable-nlformal-spec-datasets)
+- [Task B — D5 mining targets, sized](#task-b--d5-mining-targets-sized)
+  - [1. Claude/agent skills — the proven recipe, scaled](#1-claudeagent-skills--the-proven-recipe-scaled)
+  - [2. Multi-agent framework configs](#2-multi-agent-framework-configs)
+  - [3. CI/release/review pipelines as protocols — mostly a bad target, say so](#3-cireleasereview-pipelines-as-protocols--mostly-a-bad-target-say-so)
+  - [Ranked mining shortlist (top 5, with expected item counts)](#ranked-mining-shortlist-top-5-with-expected-item-counts)
+<!-- MENU:END -->
+
 ## Task A — Comparable NL→formal-spec datasets
 
 No public NL→MPST/Scribble (choreography/session-type) benchmark exists.
@@ -79,7 +90,7 @@ compactor (`stjp_core/generation/skill_compactor.py`) takes it from there
 
 | framework | where the human-written intent lives | how it maps to roles/messages/ordering | estimated yield | license posture | harvest difficulty |
 |---|---|---|---|---|---|
-| **CrewAI** | `config/agents.yaml`: `role:`, `goal:`, `backstory:` fields (prose, human-authored) per agent; `config/tasks.yaml`: `description:`/`expected_output:` per task | **Mechanical for WHAT, manual for WHO-SENDS-WHAT-TO-WHOM.** `role`/`goal`/`backstory` give a clean per-role intent (≈ our `role_descriptions`). Ordering is only *partially* explicit: `Process.sequential` + a task's `context: [other_task]` field gives a real dependency edge; `Process.hierarchical` delegates ordering to a manager LLM at runtime — no static protocol exists for those crews | ~2,980 repos import `crewai.Agent` directly; a stricter `config/agents.yaml`-shaped scan returns dozens (23 in a `path:config`+`crewai` combo query, almost certainly undercounting due to the same path-qualifier API limitation noted above) — realistic per-repo yield is **one team per repo**, so this is a long-tail many-small-repos target, not a few-large-repos one | Per-repo, must check each (no central permissive umbrella like awesome-copilot) | **B** — good intent text, ordering needs a code read (task `context:` graph + `Process` type), and sequential-process crews are the only cleanly-static subset |
+| **[CrewAI](https://github.com/crewAIInc/crewAI)** | `config/agents.yaml`: `role:`, `goal:`, `backstory:` fields (prose, human-authored) per agent; `config/tasks.yaml`: `description:`/`expected_output:` per task | **Mechanical for WHAT, manual for WHO-SENDS-WHAT-TO-WHOM.** `role`/`goal`/`backstory` give a clean per-role intent (≈ our `role_descriptions`). Ordering is only *partially* explicit: `Process.sequential` + a task's `context: [other_task]` field gives a real dependency edge; `Process.hierarchical` delegates ordering to a manager LLM at runtime — no static protocol exists for those crews | ~2,980 repos import `crewai.Agent` directly; a stricter `config/agents.yaml`-shaped scan returns dozens (23 in a `path:config`+`crewai` combo query, almost certainly undercounting due to the same path-qualifier API limitation noted above) — realistic per-repo yield is **one team per repo**, so this is a long-tail many-small-repos target, not a few-large-repos one | Per-repo, must check each (no central permissive umbrella like awesome-copilot) | **B** — good intent text, ordering needs a code read (task `context:` graph + `Process` type), and sequential-process crews are the only cleanly-static subset |
 | **AutoGen / AG2** | `system_message=` string literals embedded in Python (`ConversableAgent`/`AssistantAgent` constructors) — prose, human-authored, but requires source parsing (not a separate config file) | Only mechanical when `GroupChat(..., speaker_selection_method="round_robin")` or a custom deterministic selector is used — a fixed order is then directly readable. When `speaker_selection_method="auto"` (LLM-managed, the common default), there is **no static protocol to extract** — the ordering is decided live by an LLM manager at runtime, not authored anywhere | ~2,936 repos hit `GroupChat` + `import autogen`/`ag2` — most are tutorial-shaped (the sampled hits include several toy/course examples) | Per-repo | **B/C** — must filter for the deterministic-selector subset first; the LLM-managed-order majority is not a usable mining target for a *protocol* (no fixed choreography exists to recover) |
 | **LangGraph** | Sparse — node names and occasional per-node docstrings are the closest thing to intent text; task-specific "why" prose is often thin or absent, especially in tutorial repos | **Best mechanical fit of the three.** `add_node`/`add_edge`/`add_conditional_edges` calls already *are* an explicit graph (nodes ≈ roles/states, edges ≈ ordering, conditional edges ≈ branches) — structurally close to an EFSM/global-protocol skeleton, translation is closer to a parser than an inference task | ~6,424 repos hit `from langgraph.graph import StateGraph` | Per-repo | **B** — structurally the easiest of the three to convert mechanically (graph→protocol is nearly 1:1), but the *intent* half of the (intent, protocol) pair is often weak or tutorial-boilerplate rather than a genuine human ask, which is exactly what D5 needs to be "gold" — this is the framework where protocol-extraction is easy but intent-quality needs the most scrutiny per repo |
 
@@ -110,13 +121,13 @@ compactor (`stjp_core/generation/skill_compactor.py`) takes it from there
 
 ### Ranked mining shortlist (top 5, with expected item counts)
 
-1. **`github/awesome-copilot`** (MIT) — 243 `*.agent.md` + 209
+1. **[`github/awesome-copilot`](https://github.com/github/awesome-copilot)** (MIT) — 243 `*.agent.md` + 209
    `*.instructions.md` files, 5 already used. Same proven recipe as `pr_merge`.
    Expected yield: **15–25 more team compositions** (3–6 roles each) →
    roughly **60–130 candidate (intent, skills-team) items** before the
    compactor/validator filter (which is expected to reject a nontrivial
    fraction, per the plan's "low yield is itself a finding" framing).
-2. **`VoltAgent/awesome-claude-code-subagents`** (MIT, confirmed) — 100+
+2. **[`VoltAgent/awesome-claude-code-subagents`](https://github.com/VoltAgent/awesome-claude-code-subagents)** (MIT, confirmed) — 100+
    subagent files in one unmined repo. Expected yield, pending one
    file-format verification pass: **similar order of magnitude to #1,
    roughly 50–100 candidate items** across dev-workflow-shaped teams

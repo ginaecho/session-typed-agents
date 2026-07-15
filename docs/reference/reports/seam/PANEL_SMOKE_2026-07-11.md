@@ -11,6 +11,14 @@ ordering/prohibitions rubric) + J-back (Sonnet 5, protocol-only blind
 reconstruction) + comparator (Haiku 4.5). Runtime ~3.5 min, ~360k
 subagent tokens end to end.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Verdicts](#verdicts)
+- [What the run demonstrated](#what-the-run-demonstrated)
+- [Operational notes](#operational-notes)
+<!-- MENU:END -->
+
 ## Verdicts
 
 | case | fwd Opus | fwd Sonnet | back score | outcome |

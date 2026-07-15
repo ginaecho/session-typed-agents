@@ -6,6 +6,21 @@
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What this result proves](#1-what-this-result-proves)
+- [2. The story — why this happens in real companies](#2-the-story--why-this-happens-in-real-companies)
+- [3. How the test was set up (one variable only)](#3-how-the-test-was-set-up-one-variable-only)
+  - [Is it rigged? No — we also measured how often unchecked authoring goes wrong](#is-it-rigged-no--we-also-measured-how-often-unchecked-authoring-goes-wrong)
+- [4. The numbers](#4-the-numbers)
+- [5. What the numbers mean](#5-what-the-numbers-mean)
+  - [Before the full run: a 2-agent sanity check](#before-the-full-run-a-2-agent-sanity-check)
+- [6. What counts as "breaking the rules" here (the fine print)](#6-what-counts-as-breaking-the-rules-here-the-fine-print)
+- [7. Honest caveats](#7-honest-caveats)
+- [8. Where the raw data is](#8-where-the-raw-data-is)
+<!-- MENU:END -->
+
 ## 1. What this result proves
 
 Two claims:

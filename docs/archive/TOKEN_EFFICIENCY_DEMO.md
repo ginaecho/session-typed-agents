@@ -6,6 +6,17 @@ cost-of-success). This demo proves the *steady-state* claim: even when the task
 finishes fine, a validated + projected per-agent contract reaches the goal with
 far fewer tokens than no contract — and a lean contract is best of all.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Why this happens in the real world (the story)](#why-this-happens-in-the-real-world-the-story)
+- [Design — a fair efficiency test](#design--a-fair-efficiency-test)
+- [Result (n=6, gpt-5.4)](#result-n6-gpt-54)
+- [Why — the mechanism (this is the "wasted tokens" you predicted)](#why--the-mechanism-this-is-the-wasted-tokens-you-predicted)
+- [The two efficiency levers, and the bigger one still on the table](#the-two-efficiency-levers-and-the-bigger-one-still-on-the-table)
+- [Together with the deadlock demo](#together-with-the-deadlock-demo)
+<!-- MENU:END -->
+
 ## Why this happens in the real world (the story)
 
 Anyone who has run a multi-agent framework (AutoGen / CrewAI / a group-chat

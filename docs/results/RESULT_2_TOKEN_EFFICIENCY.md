@@ -8,6 +8,18 @@ Companion to [`RESULT_1_DEADLOCK.md`](RESULT_1_DEADLOCK.md): that result showed 
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The story — where the money actually goes in multi-agent systems](#1-the-story--where-the-money-actually-goes-in-multi-agent-systems)
+- [2. How the test was set up (a fair efficiency test)](#2-how-the-test-was-set-up-a-fair-efficiency-test)
+- [3. The numbers](#3-the-numbers)
+- [4. Why — the mechanism, in two parts](#4-why--the-mechanism-in-two-parts)
+- [5. The second lever: scheduling (measured later, in Result 4)](#5-the-second-lever-scheduling-measured-later-in-result-4)
+- [6. Honest caveats](#6-honest-caveats)
+- [7. Where the raw data is](#7-where-the-raw-data-is)
+<!-- MENU:END -->
+
 ## 1. The story — where the money actually goes in multi-agent systems
 
 Anyone who has run a multi-agent framework (AutoGen, CrewAI, a group-chat orchestrator) has watched this: you give each agent a role and a shared goal, and a large share of the spend goes not to *doing the work* but to *figuring out the coordination*. Every turn, each agent re-reads the whole conversation and reasons out loud:

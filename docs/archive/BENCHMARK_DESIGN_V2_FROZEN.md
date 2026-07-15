@@ -14,6 +14,16 @@ metrics below.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The arms (registry: `experiments/baselines/registry.py`)](#1-the-arms-registry-experimentsbaselinesregistrypy)
+- [2. The metrics (4 gated layers + severity)](#2-the-metrics-4-gated-layers--severity)
+- [3. The guarantees layer (v2.1, also frozen here)](#3-the-guarantees-layer-v21-also-frozen-here)
+- [4. The headline result this design produced (the thing to preserve)](#4-the-headline-result-this-design-produced-the-thing-to-preserve)
+- [5. The known weakness v3 is meant to fix](#5-the-known-weakness-v3-is-meant-to-fix)
+<!-- MENU:END -->
+
 ## 1. The arms (registry: `experiments/baselines/registry.py`)
 
 | key | what agents receive | monitor | demo name |

@@ -16,6 +16,14 @@ harness with real anchors and clearly-tagged synthetic placeholders.
 | It scales | global-text coordination cost is **9×→17×** STJP's from 2→10 roles |
 | Enforcement is portable | the standalone monitor matches the in-process one **100%** |
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The three findings that matter most](#the-three-findings-that-matter-most)
+- [What is still pending (honestly)](#what-is-still-pending-honestly)
+- [Where everything lives](#where-everything-lives)
+<!-- MENU:END -->
+
 ## The three findings that matter most
 
 1. **We stopped grading our own homework.** The verdict corpus (§9) tests the

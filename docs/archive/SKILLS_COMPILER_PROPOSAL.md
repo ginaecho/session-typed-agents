@@ -1,5 +1,23 @@
 # Skills Compiler — Action-Flow Type-Checking + Security Validation
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The Core Insight](#the-core-insight)
+- [Architecture: Two-Layer System](#architecture-two-layer-system)
+- [What the Skills Compiler Checks](#what-the-skills-compiler-checks)
+  - [Pass 1: Structural Type-Checking (Skills vs. Protocol)](#pass-1-structural-type-checking-skills-vs-protocol)
+  - [Pass 2: Security Scanning](#pass-2-security-scanning)
+    - [Category A: Markdown Injection / Hidden Instructions](#category-a-markdown-injection--hidden-instructions)
+    - [Category B: Dangerous Action Patterns](#category-b-dangerous-action-patterns)
+    - [Category C: Prompt Injection Patterns](#category-c-prompt-injection-patterns)
+  - [Pass 3: Completeness Verification](#pass-3-completeness-verification)
+- [Pipeline Integration](#pipeline-integration)
+- [Why This is Novel](#why-this-is-novel)
+- [Implementation Plan](#implementation-plan)
+- [References](#references)
+<!-- MENU:END -->
+
 ## The Core Insight
 
 We already have Scribble — a proven, formally verified protocol description language with a real compiler. The key insight is: **reuse Scribble itself** as the "type system" for actions, not just conversations.

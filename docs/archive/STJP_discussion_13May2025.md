@@ -1,5 +1,18 @@
 # Summary: STJP Discussion from the DELEGATE-52 Paper Onward
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The paper in question](#the-paper-in-question)
+- [What DELEGATE-52 means for STJP](#what-delegate-52-means-for-stjp)
+- [Your empirical finding](#your-empirical-finding)
+- [Terminology clarified](#terminology-clarified)
+- [Monitor design](#monitor-design)
+- [The authorship disclosure](#the-authorship-disclosure)
+- [Benchmarking strategy](#benchmarking-strategy)
+- [Net position after today's conversation](#net-position-after-todays-conversation)
+<!-- MENU:END -->
+
 ## The paper in question
 
 Microsoft Research's DELEGATE-52 benchmark tests how LLMs corrupt documents during long delegated workflows across 52 professional domains. Headline findings: frontier models (Gemini 3.1 Pro, Claude 4.6 Opus, GPT 5.4) lose ~25% of document content over 20 interactions; weaker models lose 50%+. Agentic tool use made things worse, not better. Failures are sparse-but-severe critical errors (10+ point drops in single rounds) accounting for ~80% of total degradation, not gradual drift.

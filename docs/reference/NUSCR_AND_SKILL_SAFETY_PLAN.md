@@ -40,6 +40,28 @@ This plan covers two deliverables the user asked for:
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [0. Findings that shape the plan (read first)](#0-findings-that-shape-the-plan-read-first)
+- [Decisions (confirmed 2026-07-06)](#decisions-confirmed-2026-07-06)
+- [Part 1 — Integrate nuscr (coinductive fork)](#part-1--integrate-nuscr-coinductive-fork)
+  - [Phase 1.1 — Vendor + build the toolchain](#phase-11--vendor--build-the-toolchain)
+  - [Phase 1.2 — `.scr` → `.nuscr` syntax adapter](#phase-12--scr--nuscr-syntax-adapter)
+  - [Phase 1.3 — `NuscrCompiler` backend behind a common interface](#phase-13--nuscrcompiler-backend-behind-a-common-interface)
+  - [Phase 1.4 — Prove parity + the coinductive win](#phase-14--prove-parity--the-coinductive-win)
+  - [Phase 1.5 — Connect the backend switch through the harness (thin)](#phase-15--connect-the-backend-switch-through-the-harness-thin)
+- [Part 2 — "Unsafe skills" demo (real skills → deadlock/disaster → revised → safe + cheaper)](#part-2--unsafe-skills-demo-real-skills--deadlockdisaster--revised--safe--cheaper)
+  - [Phase 2.1 — Select real, non-malicious skills](#phase-21--select-real-non-malicious-skills)
+  - [Phase 2.2 — Show they are unsafe (bottom-up, via the compiler)](#phase-22--show-they-are-unsafe-bottom-up-via-the-compiler)
+  - [Phase 2.3 — Author revised skills that validate](#phase-23--author-revised-skills-that-validate)
+  - [Phase 2.4 — Run the A/B trials with a cheap LLM](#phase-24--run-the-ab-trials-with-a-cheap-llm)
+  - [Phase 2.4b — Hosted agents so traces show in Foundry](#phase-24b--hosted-agents-so-traces-show-in-foundry)
+  - [Phase 2.5 — Write it up](#phase-25--write-it-up)
+- [Risks / watch-items](#risks--watch-items)
+- [Suggested order of execution](#suggested-order-of-execution)
+<!-- MENU:END -->
+
 ## 0. Findings that shape the plan (read first)
 
 - **nuscr is NOT Scribble-compatible.** The nuscr project itself says so:

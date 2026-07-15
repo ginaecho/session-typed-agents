@@ -8,6 +8,14 @@ coinductive nuscr fork — nuscr is an alternate protocol-checking compiler;
 binary, `STJP_NUSCR_BIN`) — see
 [reference/NUSCR_CLOUD_INSTALL.md](../reference/NUSCR_CLOUD_INSTALL.md).
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [At a glance](#at-a-glance)
+- [The story](#the-story)
+- [Setup (reproducible in this repo)](#setup-reproducible-in-this-repo)
+<!-- MENU:END -->
+
 ## At a glance
 
 Four cases of **real agent skills from trusted public repos** (OpenAI Agents

@@ -16,6 +16,24 @@ are unfounded.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [BLOCKERS](#blockers)
+  - [B1 — "5k diverse families" is 5k non-bisimilar clones of ~5 topologies, deduped by a signature that isn't implemented](#b1--5k-diverse-families-is-5k-non-bisimilar-clones-of-5-topologies-deduped-by-a-signature-that-isnt-implemented)
+  - [B2 — Post-SFT the GRPO reward has near-zero within-group variance; the brevity term becomes the objective → mode-collapse to shortest-valid, drifting off gold](#b2--post-sft-the-grpo-reward-has-near-zero-within-group-variance-the-brevity-term-becomes-the-objective--mode-collapse-to-shortest-valid-drifting-off-gold)
+- [MAJORS](#majors)
+  - [M1 — The T2 divergence guard is defanged exactly when it is most needed](#m1--the-t2-divergence-guard-is-defanged-exactly-when-it-is-most-needed)
+  - [M2 — Judge calibration is circular; the AUC/agreement gates are optimistically biased](#m2--judge-calibration-is-circular-the-aucagreement-gates-are-optimistically-biased)
+  - [M3 — 100-item human audit is underpowered to *certify* the ≥85% agreement gate](#m3--100-item-human-audit-is-underpowered-to-certify-the-≥85-agreement-gate)
+  - [M4 — JVM-per-validation throughput will bottleneck GRPO on-policy rollouts](#m4--jvm-per-validation-throughput-will-bottleneck-grpo-on-policy-rollouts)
+  - [M5 — Ephemeral container loses the expensive, non-git-reconstructible state](#m5--ephemeral-container-loses-the-expensive-non-git-reconstructible-state)
+  - [M6 — `test-real` (150–300) is underpowered for the H6 transfer-gap claim, and its yield is admitted-unknown](#m6--test-real-150300-is-underpowered-for-the-h6-transfer-gap-claim-and-its-yield-is-admitted-unknown)
+  - [M7 — "No public NL→MPST benchmark" is asserted, not verified, and concurrent-work collision is already demonstrated](#m7--no-public-nlmpst-benchmark-is-asserted-not-verified-and-concurrent-work-collision-is-already-demonstrated)
+- [MINORS](#minors)
+- [Findings the planner can fairly rebut (noted for completeness)](#findings-the-planner-can-fairly-rebut-noted-for-completeness)
+<!-- MENU:END -->
+
 ## BLOCKERS
 
 ### B1 — "5k diverse families" is 5k non-bisimilar clones of ~5 topologies, deduped by a signature that isn't implemented

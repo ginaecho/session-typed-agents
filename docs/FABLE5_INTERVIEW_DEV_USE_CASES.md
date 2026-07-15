@@ -27,6 +27,34 @@
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Part 1 — Initial interview (2026-07-08)](#part-1--initial-interview-2026-07-08)
+  - [Q1 — Which development use cases can adopt the STJP blueprint to cut token cost?](#q1--which-development-use-cases-can-adopt-the-stjp-blueprint-to-cut-token-cost)
+    - [Where the tokens are saved (measured in this repo's reports)](#where-the-tokens-are-saved-measured-in-this-repos-reports)
+    - [The developer use cases we already have — hyperlinked](#the-developer-use-cases-we-already-have--hyperlinked)
+      - [UC1. Coordinating subagents](#uc1-coordinating-subagents)
+      - [UC2. Agent pipelines with review/approval gates](#uc2-agent-pipelines-with-reviewapproval-gates)
+      - [UC3. Loops with budgets](#uc3-loops-with-budgets)
+      - [UC4. Skill/prompt authoring itself](#uc4-skillprompt-authoring-itself)
+      - [UC5. Growing the system without re-verifying everything](#uc5-growing-the-system-without-re-verifying-everything)
+  - [Q2 — When you organize a group of subagents, how would the STJP blueprint help you?](#q2--when-you-organize-a-group-of-subagents-how-would-the-stjp-blueprint-help-you)
+  - [Q3 — Would you want to use this tool?](#q3--would-you-want-to-use-this-tool)
+  - [Q4 — Could STJP help Google's "dynamic subagent" deep-research agent?](#q4--could-stjp-help-googles-dynamic-subagent-deep-research-agent)
+- [Part 2 — Follow-up interview (2026-07-12): after a week of doing it myself](#part-2--follow-up-interview-2026-07-12-after-a-week-of-doing-it-myself)
+  - [Q5 — With the real cases in hand and a week of experience, do you still find STJP helpful for you? And why are the real-world cases so few?](#q5--with-the-real-cases-in-hand-and-a-week-of-experience-do-you-still-find-stjp-helpful-for-you-and-why-are-the-real-world-cases-so-few)
+    - [What I actually did, and how I coordinated](#what-i-actually-did-and-how-i-coordinated)
+    - [The four failures, and what would have prevented each](#the-four-failures-and-what-would-have-prevented-each)
+    - [The observation that changed my mind about the central claim](#the-observation-that-changed-my-mind-about-the-central-claim)
+    - [Why the real-world cases are few: not low need — low visibility, early days, and a price problem](#why-the-real-world-cases-are-few-not-low-need--low-visibility-early-days-and-a-price-problem)
+    - [The honest boundary](#the-honest-boundary)
+    - [So: would I use it?](#so-would-i-use-it)
+  - [Appendix — the sources this interview drew on](#appendix--the-sources-this-interview-drew-on)
+<!-- MENU:END -->
+
+# Part 1 — Initial interview (2026-07-08)
+
 ## Q1 — Which development use cases can adopt the STJP blueprint to cut token cost?
 
 **Fable 5:** Your own repo already demonstrates the pattern on 17 cases under
@@ -131,7 +159,7 @@ re-prompted — the multi-agent analogue of an incremental build.
 
 > **Update (2026-07-08):** patterns 1 and 2 were subsequently reproduced on
 > *real skills fetched from Anthropic's and GitHub Copilot's own public
-> collections* (anthropics/skills, github/awesome-copilot), run twice — once
+> collections* ([anthropics/skills](https://github.com/anthropics/skills), [github/awesome-copilot](https://github.com/github/awesome-copilot)), run twice — once
 > with Haiku-class subagents and once with Sonnet-class subagents. Without a
 > coordination plan each model failed a different team 0/10; under full STJP
 > both models delivered 40/40 at the 4-call protocol minimum, 3× cheaper.

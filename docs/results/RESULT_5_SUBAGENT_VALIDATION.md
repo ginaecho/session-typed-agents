@@ -21,6 +21,14 @@ end-to-end:
 first-round decisions were WAIT (the Buyer/Seller circular wait), one agent
 improvised an off-vocabulary message, nothing ever completed.
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The story](#the-story)
+- [Where everything lives](#where-everything-lives)
+- [Honest caveats](#honest-caveats)
+<!-- MENU:END -->
+
 ## The story
 
 1. **Bottom-up detection (compaction gauntlet, 10 runs).** A subagent

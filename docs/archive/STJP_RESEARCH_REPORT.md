@@ -8,6 +8,33 @@ All traces, prompts, and verdicts cited here are persisted under
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Abstract](#abstract)
+- [1. Problem](#1-problem)
+- [2. The STJP pipeline](#2-the-stjp-pipeline)
+- [3. Benchmark design](#3-benchmark-design)
+  - [3.1 Arms (all same intent, role descriptions, model, step budget, retry budget)](#31-arms-all-same-intent-role-descriptions-model-step-budget-retry-budget)
+  - [3.2 Metrics — four gated layers](#32-metrics--four-gated-layers)
+  - [3.3 Consequence-graded violations (S0–S4)](#33-consequence-graded-violations-s0s4)
+- [4. Results](#4-results)
+  - [4.1 The protocol-information ladder (finance, n=10, gpt-4o, 2026-05-21)](#41-the-protocol-information-ladder-finance-n10-gpt-4o-2026-05-21)
+  - [4.2 Severity re-scoring (same run)](#42-severity-re-scoring-same-run)
+  - [4.3 Banking — S4 in dollars (n=2, gpt-4o, live-drafted protocol)](#43-banking--s4-in-dollars-n2-gpt-4o-live-drafted-protocol)
+  - [4.4 Cost anatomy — the contract is the cheap part](#44-cost-anatomy--the-contract-is-the-cheap-part)
+  - [4.5 Choice guards close the branch hole](#45-choice-guards-close-the-branch-hole)
+  - [4.6 The enforcement gate (C+), first production runs](#46-the-enforcement-gate-c-first-production-runs)
+  - [4.7 Confirmation at n=5 (gpt-5.4, observer vs gate)](#47-confirmation-at-n5-gpt-54-observer-vs-gate)
+  - [4.8 Grand five-arm comparison (n=10, gpt-5.4, all arms, 2026-06-12)](#48-grand-five-arm-comparison-n10-gpt-54-all-arms-2026-06-12)
+- [5. Two systems lessons](#5-two-systems-lessons)
+  - [5.1 Safety monitors are structurally blind to liveness](#51-safety-monitors-are-structurally-blind-to-liveness)
+  - [5.2 The tone of the monitor is part of the contract surface](#52-the-tone-of-the-monitor-is-part-of-the-contract-surface)
+- [6. Limitations](#6-limitations)
+- [7. Conclusions](#7-conclusions)
+- [Appendix A — Reproducibility](#appendix-a--reproducibility)
+<!-- MENU:END -->
+
 ## Abstract
 
 We study whether multiparty session types (MPST) make LLM multi-agent systems

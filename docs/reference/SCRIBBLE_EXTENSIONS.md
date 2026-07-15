@@ -6,6 +6,28 @@ Companion docs: `SCRIBBLE.md` (why Scribble, what was installed, the fork-vs-ext
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [0. TL;DR — Scribble is *not* forked](#0-tldr--scribble-is-not-forked)
+- [1. The stock Scribble surface the layers build on](#1-the-stock-scribble-surface-the-layers-build-on)
+- [2. Conditional — refinement / asserted MPST (`.refn` sidecar)](#2-conditional--refinement--asserted-mpst-refn-sidecar)
+  - [What it adds](#what-it-adds)
+  - [How it is layered — the `.refn` file](#how-it-is-layered--the-refn-file)
+  - [The predicate language (sandboxed)](#the-predicate-language-sandboxed)
+  - [Where the check actually runs — the call site](#where-the-check-actually-runs--the-call-site)
+  - [Status](#status)
+- [3. Sub-protocols / children protocols — composition](#3-sub-protocols--children-protocols--composition)
+  - [3a. Native: `aux global protocol` + `do` (within one file)](#3a-native-aux-global-protocol--do-within-one-file)
+  - [3b. Layered: cross-file `// @use` composition (`composer.py`)](#3b-layered-cross-file--use-composition-composerpy)
+  - [What composition proves — and what it does not](#what-composition-proves--and-what-it-does-not)
+  - [Status](#status-1)
+- [4. Higher-order — session delegation](#4-higher-order--session-delegation)
+- [5. Full extension matrix — implemented vs. roadmap](#5-full-extension-matrix--implemented-vs-roadmap)
+- [6. Why a grammar fork is still off the table](#6-why-a-grammar-fork-is-still-off-the-table)
+- [7. One-paragraph summary for a new contributor](#7-one-paragraph-summary-for-a-new-contributor)
+<!-- MENU:END -->
+
 ## 0. TL;DR — Scribble is *not* forked
 
 **The vendored compiler in `scribble-java/` is stock upstream, unmodified.** Verified: `git -C scribble-java diff HEAD` is empty; the tree sits on upstream `master` (`723660a81`). There is **no grammar change, no new AST node, no new well-formedness rule** inside Scribble.

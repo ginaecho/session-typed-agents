@@ -22,6 +22,22 @@ candidate against).
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Operating model — who does what](#1-operating-model--who-does-what)
+- [2. System under training](#2-system-under-training)
+- [3. Data pipeline](#3-data-pipeline)
+- [4. Training phases](#4-training-phases)
+- [5. Judge panel — the no-shared-memory mechanism, concretely](#5-judge-panel--the-no-shared-memory-mechanism-concretely)
+- [6. Judge calibration gate (before the panel may reward or gate anything)](#6-judge-calibration-gate-before-the-panel-may-reward-or-gate-anything)
+- [7. Evaluation design — benchmarks, baselines, statistics](#7-evaluation-design--benchmarks-baselines-statistics)
+- [8. Preregistered go/no-go (written before any run)](#8-preregistered-gono-go-written-before-any-run)
+- [9. Worker task cards (dispatch order)](#9-worker-task-cards-dispatch-order)
+- [10. Grounding — design choice → precedent (why this shape, not another)](#10-grounding--design-choice--precedent-why-this-shape-not-another)
+- [11. v2 revision log — scout & red-team adjudication (2026-07-11)](#11-v2-revision-log--scout--red-team-adjudication-2026-07-11)
+<!-- MENU:END -->
+
 ## 1. Operating model — who does what
 
 | role | actor | does | does NOT |
@@ -232,7 +248,7 @@ one side of the line. A paraphrase straddling the split is silent leakage;
 the signature makes it mechanically impossible.
 
 **D5 — Mined real-world set.** Precedent already in-repo: the
-`skills_safety/pr_merge` case adapted from `github/awesome-copilot` (MIT),
+`skills_safety/pr_merge` case adapted from [`github/awesome-copilot`](https://github.com/github/awesome-copilot) (MIT),
 RESULT_9 ran real Anthropic+Copilot skills. Scale that recipe:
 harvest `.claude/skills/**`, `SKILL.md`, agent-role sections of
 CLAUDE.md/AGENTS.md, CrewAI/AutoGen/LangGraph role+handoff configs from

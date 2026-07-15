@@ -18,6 +18,14 @@ n=100, the Wilson 95% CI for the STJP arm narrows from [72%, 100%] to
 | Interaction trials (unchecked) | **0/100 success, 100/100 deadlock** |
 | Interaction trials (STJP) | **100/100 success, 0 violations** |
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [The three findings that matter most](#the-three-findings-that-matter-most)
+- [Method](#method)
+- [Where everything lives](#where-everything-lives)
+<!-- MENU:END -->
+
 ## The three findings that matter most
 
 1. **n=100 resolves the statistical weakness.** The Wilson CI width for a 100%

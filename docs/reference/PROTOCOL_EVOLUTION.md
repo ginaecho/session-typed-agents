@@ -17,6 +17,25 @@ Drafted 2026-05-21. Companion: `SCRIBBLE_EXTENSIONS.md` (the layering),
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The challenge (`zim_example.png`)](#1-the-challenge-zim_examplepng)
+- [2. The capability](#2-the-capability)
+- [3. Why sub-sessions — the theory](#3-why-sub-sessions--the-theory)
+- [4. The mechanism](#4-the-mechanism)
+  - [4.1 Classify — the change request → a `ChangeSet`](#41-classify--the-change-request--a-changeset)
+  - [4.2 The `add` items → a child sub-protocol](#42-the-add-items--a-child-sub-protocol)
+  - [4.3 Compose — retain + insert](#43-compose--retain--insert)
+  - [4.4 Re-project, re-generate](#44-re-project-re-generate)
+- [5. What is tractable now vs. Phase 3](#5-what-is-tractable-now-vs-phase-3)
+  - [Built — the tractable slice (`stjp_core/authoring/change_request.py`)](#built--the-tractable-slice-stjp_coreauthoringchange_requestpy)
+  - [Built 2026-07-04 — the incremental slice (`stjp_core/compiler/incremental.py`)](#built-2026-07-04--the-incremental-slice-stjp_corecompilerincrementalpy)
+  - [Phase 3 — designed, not built](#phase-3--designed-not-built)
+- [6. Worked example — the encoding corrector](#6-worked-example--the-encoding-corrector)
+- [7. Honest scope](#7-honest-scope)
+<!-- MENU:END -->
+
 ## 1. The challenge (`zim_example.png`)
 
 The figure shows an **Agentic Corrector**: a two-phase system.

@@ -8,6 +8,34 @@ adjective describes the agents, while STJP names the system that governs them.)
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. What is Scribble?](#1-what-is-scribble)
+  - [Two compiler backends: scribble-java and nuscr ("nuscribble")](#two-compiler-backends-scribble-java-and-nuscr-nuscribble)
+- [2. What does STJP add to Scribble?](#2-what-does-stjp-add-to-scribble)
+  - [A. Conditional / "Value-dependent" rules](#a-conditional--value-dependent-rules)
+  - [B. Cross-file composition (building bigger protocols from smaller pieces)](#b-cross-file-composition-building-bigger-protocols-from-smaller-pieces)
+  - [C. Higher-order (passing protocols like arguments)](#c-higher-order-passing-protocols-like-arguments)
+- [3. How STJP works end-to-end](#3-how-stjp-works-end-to-end)
+- [4. The glossary — every term explained](#4-the-glossary--every-term-explained)
+  - [Messages and protocols](#messages-and-protocols)
+  - [Checking and safety](#checking-and-safety)
+  - [Enforcement](#enforcement)
+  - [Measurements](#measurements)
+  - [Other terms](#other-terms)
+- [5. Running STJP with Azure AI Foundry (Hosted Agents)](#5-running-stjp-with-azure-ai-foundry-hosted-agents)
+  - [Prerequisites](#prerequisites)
+  - [Setup steps](#setup-steps)
+  - [Viewing traces and executions in Foundry](#viewing-traces-and-executions-in-foundry)
+  - [Key files in a hosted agent project](#key-files-in-a-hosted-agent-project)
+- [6. The execution plane — how STJP optimizes token usage](#6-the-execution-plane--how-stjp-optimizes-token-usage)
+- [7. STJP's latest plan (version 3)](#7-stjps-latest-plan-version-3)
+  - [Plane A — Governance ("is this allowed, and prove it for audit")](#plane-a--governance-is-this-allowed-and-prove-it-for-audit)
+  - [Plane B — Decentralized execution ("run it fast without a central boss, safely")](#plane-b--decentralized-execution-run-it-fast-without-a-central-boss-safely)
+- [8. What to read next](#8-what-to-read-next)
+<!-- MENU:END -->
+
 ## 1. What is Scribble?
 
 Scribble is an off-the-shelf tool that takes a description of how multiple agents should talk to each other (called a "global protocol") and checks it for problems:
