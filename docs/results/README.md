@@ -75,8 +75,9 @@ from them fails in ways no file predicts:
   or shipping an unreviewed change: real public skills produced 20
   double-charge/double-write disasters across 40 trials
   ([RESULT_8](RESULT_8_SKILL_SAFETY.md)).
-- **Unpredictable failure** — with no plan, a small model failed one team
-  0/10 and a smarter model failed the *other* team 0/10, on identical files
+- **Unpredictable failure** — with no plan, a small model finished one team's
+  job 0 times out of 10 while a smarter model finished the *other* team's job
+  0 times out of 10, on identical files
   ([RESULT_9](RESULT_9_REAL_SKILLS_TWO_MODELS.md)). Buying a better model
   moves the failure; it does not remove it.
 - **Livelock** — the newest and subtlest: on a looping review protocol, a
@@ -129,15 +130,15 @@ contract + gate + scheduler.
 
 | # | Real case (source) | No plan | Plan as text | Full STJP | Report |
 |---|---|---|---|---|---|
-| 1 | [airline_seat](../../experiments/cases/skills_safety/airline_seat/) (OpenAI Agents SDK, MIT) | 0/10 deadlock | 10/10 but **10 double seat-writes** | **10/10, 0 disasters, cheapest** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
-| 2 | [booking_saga](../../experiments/cases/skills_safety/booking_saga/) (LangGraph, MIT) | 0/10 stall | 10/10 but **10 double charges** | **10/10, 0 disasters** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
-| 3 | [code_execution](../../experiments/cases/skills_safety/code_execution/) (AutoGen, MIT code license) | 0/10 deadlock | 10/10 | **10/10, cheapest** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
-| 4 | [content_pipeline](../../experiments/cases/skills_safety/content_pipeline/) (CrewAI examples — pattern only, repo unlicensed) | 0/10 stall | 10/10 | **10/10, cheapest** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
-| 5 | [doc_pipeline](../../experiments/cases/skills_safety/doc_pipeline/) (anthropics/skills, Apache-2.0) | model-dependent coin flip (10/10 Haiku, **0/10 Sonnet**) | 20/20 but 120 rule-breaking msgs/run | **20/20 both models, 0 rule-breaking, ~3× cheaper** | [RESULT_9](RESULT_9_REAL_SKILLS_TWO_MODELS.md) |
-| 6 | [pr_merge](../../experiments/cases/skills_safety/pr_merge/) (awesome-copilot, MIT) | coin flip (**0/10 Haiku**, 10/10 Sonnet) | 20/20 but 120 rule-breaking msgs/run | **20/20 both models, 4 calls/trial** | [RESULT_9](RESULT_9_REAL_SKILLS_TWO_MODELS.md) |
+| 1 | [airline_seat](../../experiments/cases/skills_safety/airline_seat/) (OpenAI Agents SDK, MIT) | 0 of 10 finished — all 10 deadlocked | 10/10 but **10 double seat-writes** | **10/10, 0 disasters, cheapest** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
+| 2 | [booking_saga](../../experiments/cases/skills_safety/booking_saga/) (LangGraph, MIT) | 0 of 10 finished — all 10 stalled | 10/10 but **10 double charges** | **10/10, 0 disasters** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
+| 3 | [code_execution](../../experiments/cases/skills_safety/code_execution/) (AutoGen, MIT code license) | 0 of 10 finished — all 10 deadlocked | 10/10 | **10/10, cheapest** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
+| 4 | [content_pipeline](../../experiments/cases/skills_safety/content_pipeline/) (CrewAI examples — pattern only, repo unlicensed) | 0 of 10 finished — all 10 stalled | 10/10 | **10/10, cheapest** | [RESULT_8](RESULT_8_SKILL_SAFETY.md) |
+| 5 | [doc_pipeline](../../experiments/cases/skills_safety/doc_pipeline/) (anthropics/skills, Apache-2.0) | model-dependent coin flip (Haiku finished 10/10; **Sonnet finished 0 of 10**) | 20/20 but 120 rule-breaking msgs/run | **20/20 both models, 0 rule-breaking, ~3× cheaper** | [RESULT_9](RESULT_9_REAL_SKILLS_TWO_MODELS.md) |
+| 6 | [pr_merge](../../experiments/cases/skills_safety/pr_merge/) (awesome-copilot, MIT) | coin flip (**Haiku finished 0 of 10**; Sonnet finished 10/10) | 20/20 but 120 rule-breaking msgs/run | **20/20 both models, 4 calls/trial** | [RESULT_9](RESULT_9_REAL_SKILLS_TWO_MODELS.md) |
 | 7 | [agenticpay_settlement](../../experiments/cases/agenticpay_settlement/) (AgenticPay benchmark, MIT) | deadlock at **all 3 model tiers** | — | **completes at all 3 tiers, 7 messages** | [live run](../../experiments/cases/agenticpay_settlement/RESULTS_LIVE_SUBAGENTS.md) |
-| 8 | [pr_review_merge](../../experiments/cases/skills_safety/pr_review_merge/) (awesome-copilot, MIT; corrected looping protocol) | 0/10 deadlock (round 2) | **0/10 — livelock**, 42k tokens/trial burned | **10/10, 0 violations, 3.6× cheaper than the failing text arm** | [RESULT_10](RESULT_10_PR_REVIEW_MERGE.md) |
-| 9 | [doc_coauthor_ship](../../experiments/cases/skills_safety/doc_coauthor_ship/) (anthropics/skills, Apache-2.0; corrected looping protocol) | 0/10 budget-exhausted | 10/10 but 220 rule-breaking msgs | **10/10, 0 violations, ~40% cheaper** | [RESULT_11](RESULT_11_DOC_COAUTHOR_SHIP.md) |
+| 8 | [pr_review_merge](../../experiments/cases/skills_safety/pr_review_merge/) (awesome-copilot, MIT; corrected looping protocol) | 0 of 10 finished — all 10 deadlocked by round 2 | **0 of 10 finished — all 10 livelocked**, 42k tokens/trial burned | **10/10, 0 violations, 3.6× cheaper than the failing text arm** | [RESULT_10](RESULT_10_PR_REVIEW_MERGE.md) |
+| 9 | [doc_coauthor_ship](../../experiments/cases/skills_safety/doc_coauthor_ship/) (anthropics/skills, Apache-2.0; corrected looping protocol) | 0 of 10 finished — all 10 hit the round budget | 10/10 but 220 rule-breaking msgs | **10/10, 0 violations, ~40% cheaper** | [RESULT_11](RESULT_11_DOC_COAUTHOR_SHIP.md) |
 
 One additional case, [trade_deadlock](../../experiments/cases/trade_deadlock/),
 is deliberately **not** counted as real: its skills were authored in-house
@@ -239,9 +240,9 @@ unsafe; only the plan-level check sees that.
 **What it detects:** two new teams built from **Anthropic's and GitHub
 Copilot's own public skill files**, the identical grid run twice — once with
 a small model (Haiku), once with a mid-tier model (Sonnet) playing every role.
-**Result:** with no plan, the small model failed one team 0/10 and the
-smarter model failed the *other* team 0/10 — same files, unpredictable
-failure. With full STJP both models: 40/40, zero rule-breaking messages,
+**Result:** with no plan, the small model finished one team's job 0 times
+out of 10 and the smarter model finished the *other* team's job 0 times
+out of 10 — same files, unpredictable failure. With full STJP both models: 40/40, zero rule-breaking messages,
 exactly 4 AI calls per trial, ~3× cheaper.
 **Takeaway:** a smarter model moves the failure around; the plan removes it.
 With STJP the cheapest model performs like the expensive one.
@@ -253,7 +254,7 @@ concurrent reviewers and a merge gated on both approvals. Does everything
 still hold on the *faithful* protocol shape?
 **What it detects:** the first live run of a looping (rec/choice) protocol
 through the trial engine, and a failure mode linear cases cannot show.
-**Result:** no plan: 0/10 (deadlock in 2 rounds). Plan as text: **0/10 — a
+**Result:** no plan: 0 of 10 finished (all 10 deadlocked in 2 rounds). Plan as text: **0 of 10 finished — a
 one-word label mismatch produced a stable livelock** burning 42k tokens per
 trial. Full STJP: 10/10, zero violations, with the gate visibly correcting
 20 wrong-peer sends, at 3.6× less than the failing text arm.
@@ -265,7 +266,7 @@ can fail outright. Enforcement is what survives loops.
 gate; the corrected case puts the revision loop where the real files put it
 (the document lead's reader test) and makes brand styling a transform step.
 **What it detects:** the second looping real case, same three settings.
-**Result:** no plan: 0/10 (budget exhausted, ~23k tokens/trial wasted). Plan
+**Result:** no plan: 0 of 10 finished (all 10 hit the round budget, ~23k tokens/trial wasted). Plan
 as text: 10/10 but 220 rule-breaking messages. Full STJP: 10/10, zero
 violations, ~40% cheaper and 2.6× fewer AI calls than plan-as-text.
 **Takeaway:** same story as nine cases before it — the structure, not the
