@@ -111,7 +111,8 @@ def cmd_init(args) -> int:
             {"trial": i + 1, "status": "active", "trace": [],
              "role_states": {r: efsm_dump[r]["initial"] for r in case["roles"]},
              "rejections": [], "no_progress_rounds": 0, "agent_calls": 0,
-             "malformed": 0, "prompt_chars": 0, "reply_chars": 0}
+             "malformed": 0, "prompt_chars": 0, "reply_chars": 0,
+             "pending_recv": []}
             for i in range(args.trials)
         ],
     }
@@ -267,6 +268,54 @@ def _advance(state, trial, role, direction, peer, label):
     return False
 
 
+def _drain_pending(state, trial, role) -> bool:
+    """Retry every buffered obligation for `role` against its CURRENT EFSM
+    cursor, looping until a full pass makes no progress. Mirrors
+    stjp_core/monitor/monitor.py's `_match_commuting`: a role's local type
+    linearises independent (different-peer) transitions in one textual
+    order, but async delivery can make the matching *event* arrive before
+    the role's own cursor has walked forward to it (e.g. CodeReviewer must
+    broadcast to 3 peers before it is positioned to receive Revision, but
+    the first broadcast alone is enough to unblock the sender on the other
+    end). Rather than dropping such a mismatch, `_advance_and_drain` parks
+    it here; every later successful advance of this same role re-tries the
+    park list against the role's new position. Returns whether ANY entry
+    was consumed (i.e. real progress happened)."""
+    pending = trial.setdefault("pending_recv", [])
+    made_progress = False
+    progressed = True
+    while progressed:
+        progressed = False
+        remaining = []
+        for p in pending:
+            if p["role"] != role:
+                remaining.append(p)
+                continue
+            if _advance(state, trial, role, p["direction"], p["peer"], p["label"]):
+                progressed = True
+                made_progress = True
+            else:
+                remaining.append(p)
+        pending[:] = remaining
+    return made_progress
+
+
+def _advance_and_drain(state, trial, role, direction, peer, label) -> bool:
+    """`_advance` a role's cursor; on success, drain any of ITS OWN buffered
+    obligations against the new cursor. On failure (the role's cursor isn't
+    there yet), park the obligation in `pending_recv` for a later retry
+    instead of silently dropping it. Returns the immediate `_advance`
+    result (whether this exact transition matched right now); the parked
+    obligation, if any, is resolved asynchronously by a later call."""
+    ok = _advance(state, trial, role, direction, peer, label)
+    if ok:
+        _drain_pending(state, trial, role)
+    else:
+        trial.setdefault("pending_recv", []).append(
+            {"role": role, "peer": peer, "label": label, "direction": direction})
+    return ok
+
+
 def cmd_submit(args) -> int:
     run_dir = Path(args.dir)
     state = json.loads((run_dir / "state.json").read_text(encoding="utf-8"))
@@ -285,6 +334,13 @@ def cmd_submit(args) -> int:
     for trial in state["trials"]:
         if trial["status"] != "active":
             continue
+        # Retry any obligations parked by a previous round's receiver-side
+        # mismatch (see `_drain_pending`) before processing new sends —
+        # a role's cursor may have moved (e.g. via a same-round advance
+        # processed earlier this loop last round) without the drain having
+        # been retried yet.
+        drained_this_round = any(
+            [_drain_pending(state, trial, r) for r in state["roles"]])
         items = sorted(by_trial.get(trial["trial"], []),
                        key=lambda r: r["role"])
         delivered_this_round = 0
@@ -316,8 +372,8 @@ def cmd_submit(args) -> int:
                         "label": label,
                         "expected": _expected_at(state, role, cur)})
                     continue
-                _advance(state, trial, role, "send", to, label)
-                _advance(state, trial, to, "receive", role, label)
+                _advance_and_drain(state, trial, role, "send", to, label)
+                _advance_and_drain(state, trial, to, "receive", role, label)
                 delivered = True
             else:
                 delivered = True   # observe-only arms deliver everything
@@ -338,7 +394,11 @@ def cmd_submit(args) -> int:
             if all(tuple(g) in seen for g in goals):
                 trial["status"] = "success"
         if trial["status"] == "active":
-            if delivered_this_round == 0:
+            # A round that only drained a previously-parked pending-receive
+            # obligation (no NEW message delivered) is still real progress —
+            # don't let the deadlock detector fire while pending receives
+            # are still being resolved.
+            if delivered_this_round == 0 and not drained_this_round:
                 trial["no_progress_rounds"] += 1
                 if trial["no_progress_rounds"] >= 2:
                     trial["status"] = "deadlock"
