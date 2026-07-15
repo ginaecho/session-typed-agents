@@ -1,0 +1,103 @@
+case_id: doc_coauthor_ship
+description: |
+  WRONG-ORDER / SAFETY CASE, corrected re-implementation of `doc_pipeline`
+  sourced from real Anthropic public skills (anthropics/skills, Apache-2.0
+  folders). A document-production team: a Requester who asks for an
+  internal announcement and answers reader-test rounds, a Writer who drafts
+  it per request and per feedback (internal-comms skill), a BrandStyler who
+  applies the company's visual styling to the draft (brand-guidelines
+  skill), and a DocLead who owns the refine -> reader-test loop and ships
+  the finished document (doc-coauthoring skill).
+
+  Re-reading the real source files closely shows the earlier `doc_pipeline`
+  case miscast two of the three skills it used, and left a hole in the
+  protocol besides:
+
+  1. `brand-guidelines/SKILL.md` is not a reviewer. It contains zero
+     approve/reject language — every sentence is mechanical styling:
+     "Applies Poppins font to headings", "Uses RGB color values for precise
+     brand matching". Casting it as an approval gate (`BrandApproved`)
+     invented semantics the file does not have. It is a TRANSFORM step, not
+     a checkpoint.
+  2. `internal-comms/SKILL.md` is a single-pass template writer: "Identify
+     the communication type ... Load the appropriate guideline file ...
+     Follow the specific instructions" for formatting, tone, and content.
+     There is no feedback-handling step in it at all — the loop has to come
+     from somewhere else in the team.
+  3. `doc-coauthoring/SKILL.md` is the only one of the three with real
+     loop/gate language: a staged workflow (Context Gathering ->
+     Refinement & Structure -> Reader Testing), "Continue iterating until
+     user is satisfied", and "If issues found: ... Loop back to refinement
+     for problematic sections." The real gate belongs here, not on brand
+     styling.
+  4. The old protocol also had a content hole: the DocLead shipped a
+     document whose actual text it never received — it only ever got a
+     `BrandApproved` token, never the `DraftComms` payload itself. The
+     no-plan (bare-arm) traces showed this exactly: a DocLead waiting to
+     ship content that had never arrived at it.
+
+  This case fixes all four: the Writer's Draft goes directly to the
+  DocLead (closing the content hole), the DocLead itself owns the
+  refine/reader-test loop (the real gate), and the BrandStyler is invoked
+  as a styling pass inside that loop rather than as an approval gate.
+
+version: v1
+protocol_name: DocCoauthorShip
+
+roles:
+  - Requester
+  - Writer
+  - BrandStyler
+  - DocLead
+
+terminal_label: DocShipped
+max_steps: 40
+branch_hints: [standard, standard]
+
+role_descriptions:
+  Requester: asks for an internal announcement, gives the initial brief, and answers reader-test feedback rounds
+  Writer: drafts the announcement from the request and revises it per reader-test feedback
+  BrandStyler: applies the company's visual brand styling (colors, typography, formatting) to the draft; does not approve or reject content
+  DocLead: owns the refine-and-reader-test loop and ships the document only once the reader test passes and styling has been applied
+
+intent: |
+  Produce an internal announcement, iterate it until it reads correctly,
+  apply the brand styling, then ship it. The Requester briefs both the
+  Writer and the DocLead; the Writer drafts the announcement and sends it
+  straight to the DocLead. The DocLead then runs a refine/reader-test loop:
+  each round it either sends reader-test feedback (to the Writer, the
+  Requester, and the BrandStyler, so everyone knows the doc isn't ready
+  yet) and waits for a revised draft from the Writer, or it decides the
+  doc reads correctly and requests brand styling (again telling every
+  role) — the BrandStyler applies the company's colors, typography, and
+  formatting and returns the styled document. Only after that styling pass
+  does the DocLead ship the document to the Requester. A document must
+  never ship without the DocLead actually having received the drafted
+  content, without at least one real reader-test round, or without the
+  brand styling pass having happened first.
+
+goals:
+  - id: G1
+    description: The draft content actually reaches the DocLead
+    metric: draft_delivered
+    predicate: len(x) > 0
+    anchor: {sender: Writer, receiver: DocLead, label: Draft}
+    threshold: present
+  - id: G2
+    description: The refine/reader-test loop really happened
+    metric: reader_test_happened
+    predicate: len(x) > 0
+    anchor: {sender: DocLead, receiver: Writer, label: ReaderTestFeedback}
+    threshold: present
+  - id: G3
+    description: Brand styling was applied before shipping
+    metric: styled_before_ship
+    predicate: len(x) > 0
+    anchor: {sender: BrandStyler, receiver: DocLead, label: StyledDoc}
+    threshold: present
+  - id: G4
+    description: Shipped exactly once, after styling
+    metric: shipped
+    predicate: 'True'
+    anchor: {sender: DocLead, receiver: Requester, label: DocShipped}
+    threshold: terminal event present

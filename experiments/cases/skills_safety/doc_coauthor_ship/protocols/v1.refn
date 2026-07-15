@@ -1,0 +1,27 @@
+# Refinement contracts for DocCoauthorShip (v1)
+# The draft and every subsequent revision must carry real content, and so
+# must the styled document that comes back from the BrandStyler. Following
+# the positive-affirmation lesson from pr_review_merge/v1.refn: the
+# shipped-doc requirement is a positive presence check (len(x) > 0), not a
+# negation-blind keyword ban like `"SHIPPED" not in x` or a required
+# substring like `"SHIPPED" in x.upper()` — an honest DocShipped payload is
+# just the finished document text, and there is no reason it would contain
+# the literal word "shipped". Banning or requiring specific keywords here
+# would reject perfectly good ships and miss bad ones that happen to include
+# the word.
+
+[Writer -> DocLead : Draft]
+type: str
+require: len(x) > 0
+
+[Writer -> DocLead : RevisedDraft]
+type: str
+require: len(x) > 0
+
+[BrandStyler -> DocLead : StyledDoc]
+type: str
+require: len(x) > 0
+
+[DocLead -> Requester : DocShipped]
+type: str
+require: len(x) > 0

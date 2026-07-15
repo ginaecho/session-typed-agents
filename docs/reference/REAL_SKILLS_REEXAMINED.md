@@ -124,6 +124,13 @@ lives. The content itself must flow to the DocLead (in the old protocol
 the DocLead shipped a document it never received — the exact failure the
 RESULT_9 traces showed when the no-plan team stalled).
 
+The corrected case is implemented and validated (same real toolchain,
+all four projections clean) at
+[`experiments/cases/skills_safety/doc_coauthor_ship/`](../../experiments/cases/skills_safety/doc_coauthor_ship/):
+a `rec` refine loop decided by the DocLead's reader test, the brand
+styling as an explicit transform step inside the exit branch, and goal
+G1 pinning that the draft content actually reaches the DocLead.
+
 ## The pivot insight: collections have agents, not teams
 
 What this re-examination demonstrates is the product gap STJP fills:

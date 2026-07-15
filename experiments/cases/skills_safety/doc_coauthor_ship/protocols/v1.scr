@@ -1,0 +1,26 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol DocCoauthorShip(role Requester, role Writer, role BrandStyler, role DocLead) {
+    DocRequest(String) from Requester to Writer;
+    DocRequest(String) from Requester to DocLead;
+    Draft(String) from Writer to DocLead;
+
+    rec REFINE {
+        choice at DocLead {
+            ReaderTestFeedback(String) from DocLead to Writer;
+            ReaderTestFeedback(String) from DocLead to Requester;
+            ReaderTestFeedback(String) from DocLead to BrandStyler;
+            RevisedDraft(String) from Writer to DocLead;
+            continue REFINE;
+        } or {
+            StyleRequest(String) from DocLead to BrandStyler;
+            StyleRequest(String) from DocLead to Writer;
+            StyleRequest(String) from DocLead to Requester;
+            StyledDoc(String) from BrandStyler to DocLead;
+        }
+    }
+
+    DocShipped(String) from DocLead to Requester;
+}
