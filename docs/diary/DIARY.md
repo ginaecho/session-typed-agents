@@ -113,7 +113,7 @@ history reads as it was.
   - [End-of-day wrap-up (added evening 2026-05-18)](#end-of-day-wrap-up-added-evening-2026-05-18)
 - [2026-05-15](#2026-05-15)
   - [What we did](#what-we-did)
-    - [1. Workspace reorganization (∼20 files touched)](#1-workspace-reorganization-∼20-files-touched)
+    - [1. Workspace reorganization (∼20 files touched)](#1-workspace-reorganization-20-files-touched)
     - [2. Logs cleanup](#2-logs-cleanup)
     - [3. Authored cases for shapes D / E / F (with Scribble validation)](#3-authored-cases-for-shapes-d--e--f-with-scribble-validation)
     - [4. Live mirror to `stjp_core/` for the HTML](#4-live-mirror-to-stjp_core-for-the-html)

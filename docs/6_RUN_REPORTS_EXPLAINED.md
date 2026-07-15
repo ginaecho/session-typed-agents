@@ -95,7 +95,7 @@ This document has two parts:
     - [E7 — "does it work outside our own framework?"](#e7--does-it-work-outside-our-own-framework)
     - [The interaction trials — cooperative task, 100 runs each](#the-interaction-trials--cooperative-task-100-runs-each)
   - [10. The full arm-ladder at n=100, reproduced without Foundry](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry)
-    - [Why this is *not* laid out in the exact same format as §2](#why-this-is-not-laid-out-in-the-exact-same-format-as-§2)
+    - [Why this is *not* laid out in the exact same format as §2](#why-this-is-not-laid-out-in-the-exact-same-format-as-2)
     - [What this reproduction actually cost (in dollars)](#what-this-reproduction-actually-cost-in-dollars)
   - [11. What Part 2 proves, in one paragraph](#11-what-part-2-proves-in-one-paragraph)
   - [12. Where the supporting data lives](#12-where-the-supporting-data-lives)

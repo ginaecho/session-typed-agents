@@ -30,7 +30,7 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
   - ["I want to create a new use case"](#i-want-to-create-a-new-use-case)
   - ["I'm reviewing the results"](#im-reviewing-the-results)
   - ["I'm a researcher"](#im-a-researcher)
-- [🏗️ Document organization philosophy](#-document-organization-philosophy)
+- [🏗️ Document organization philosophy](#️-document-organization-philosophy)
 - [🔄 Where to get the latest](#-where-to-get-the-latest)
 - [❓ Didn't find what you're looking for?](#-didnt-find-what-youre-looking-for)
 <!-- MENU:END -->

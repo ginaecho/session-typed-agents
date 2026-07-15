@@ -25,7 +25,7 @@ are unfounded.
 - [MAJORS](#majors)
   - [M1 — The T2 divergence guard is defanged exactly when it is most needed](#m1--the-t2-divergence-guard-is-defanged-exactly-when-it-is-most-needed)
   - [M2 — Judge calibration is circular; the AUC/agreement gates are optimistically biased](#m2--judge-calibration-is-circular-the-aucagreement-gates-are-optimistically-biased)
-  - [M3 — 100-item human audit is underpowered to *certify* the ≥85% agreement gate](#m3--100-item-human-audit-is-underpowered-to-certify-the-≥85-agreement-gate)
+  - [M3 — 100-item human audit is underpowered to *certify* the ≥85% agreement gate](#m3--100-item-human-audit-is-underpowered-to-certify-the-85-agreement-gate)
   - [M4 — JVM-per-validation throughput will bottleneck GRPO on-policy rollouts](#m4--jvm-per-validation-throughput-will-bottleneck-grpo-on-policy-rollouts)
   - [M5 — Ephemeral container loses the expensive, non-git-reconstructible state](#m5--ephemeral-container-loses-the-expensive-non-git-reconstructible-state)
   - [M6 — `test-real` (150–300) is underpowered for the H6 transfer-gap claim, and its yield is admitted-unknown](#m6--test-real-150300-is-underpowered-for-the-h6-transfer-gap-claim-and-its-yield-is-admitted-unknown)

@@ -18,7 +18,7 @@ primary doc, that is flagged explicitly.
 - [3. Qwen2.5-Coder-7B-Instruct — still the right small coder?](#3-qwen25-coder-7b-instruct--still-the-right-small-coder)
 - [4. Serving/GPU — Modal vs RunPod vs Lambda](#4-servinggpu--modal-vs-runpod-vs-lambda)
 - [5. Version pin block](#5-version-pin-block)
-- [Summary of concrete plan edits (§2/§4 of the execution plan)](#summary-of-concrete-plan-edits-§2§4-of-the-execution-plan)
+- [Summary of concrete plan edits (§2/§4 of the execution plan)](#summary-of-concrete-plan-edits-24-of-the-execution-plan)
 <!-- MENU:END -->
 
 ## 1. TRL GRPOTrainer

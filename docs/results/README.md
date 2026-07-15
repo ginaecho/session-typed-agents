@@ -17,7 +17,7 @@ other — read them in order the first time.
   - [RESULT_4 — Is the full STJP stack the safest AND the cheapest?](#result_4--is-the-full-stjp-stack-the-safest-and-the-cheapest)
   - [RESULT_5 — Does it all work without Azure, with independent Claude agents?](#result_5--does-it-all-work-without-azure-with-independent-claude-agents)
   - [RESULT_6 — Can we trust our own measuring instruments?](#result_6--can-we-trust-our-own-measuring-instruments)
-  - [RESULT_7 — Does everything hold at 100× the trials?](#result_7--does-everything-hold-at-100×-the-trials)
+  - [RESULT_7 — Does everything hold at 100× the trials?](#result_7--does-everything-hold-at-100-the-trials)
   - [RESULT_8 — What happens with REAL skills from public repositories?](#result_8--what-happens-with-real-skills-from-public-repositories)
   - [RESULT_9 — Same real-skills test, run on two different models](#result_9--same-real-skills-test-run-on-two-different-models)
 - [Older files kept for history](#older-files-kept-for-history)
