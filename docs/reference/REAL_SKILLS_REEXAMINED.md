@@ -72,18 +72,27 @@ The corrected case lives at
 [`experiments/cases/skills_safety/pr_review_merge/`](../../experiments/cases/skills_safety/pr_review_merge/)
 (the old case is kept untouched because published results reference it).
 Shape, in words: the Author announces the existing PR to **both**
-reviewers at once (after this fan-out, both reviewers are *enabled at the
-same time* — the protocol fixes no order between them); a `rec` loop
-carries comment→revision rounds, with every revision going to both
-reviewers; the exit branch is a **join**: `SecurityApproved` and
+reviewers at once (after this fan-out, both reviewers examine the same
+revision *at the same time* — the protocol fixes no order between them); a
+`rec` loop carries comment→revision rounds, with every revision going to
+both reviewers; the exit branch is a **join**: `SecurityApproved` and
 `QualityApproved` must both reach the Merger (the runtime monitor accepts
-them in either arrival order) before `MergeDone` can exist. The Merger is
-silent — and therefore never even polled — until that join.
+them in either arrival order) before `MergeDone` can exist.
 
-This uses only constructs the stack already runs today (`rec` +
-`choice at`, proven in
-[`experiments/cases/retry_loop/`](../../experiments/cases/retry_loop/);
-the monitor's out-of-order tolerance covers the either-order approvals).
+Two details came from the machine checker itself, and they are worth
+reading as lessons rather than fine print. First, the checker rejected a
+leaner draft twice — once because the Author could not always tell which
+branch the team had taken, once because the Merger was silent through
+loop rounds (a role that might wait forever). The fix in both cases was
+to **broadcast each decision to every role**: that is what makes the
+protocol provably unambiguous. Second, even with those broadcasts the
+Merger only *receives* during the loop — it never has to act, and the
+scheduler never calls it, until both approvals have arrived. This uses
+only constructs the stack already runs today (`rec` + `choice at`, proven
+in [`experiments/cases/retry_loop/`](../../experiments/cases/retry_loop/);
+the monitor's out-of-order tolerance covers the either-order approvals),
+and the final protocol was validated end-to-end with the repo's real
+scribble-java toolchain, including all four per-role projections.
 
 ## Case 2: the announcement team (anthropics/skills)
 
