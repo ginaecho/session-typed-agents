@@ -74,7 +74,8 @@ The corrected case lives at
 Shape, in words: the Author announces the existing PR to **both**
 reviewers at once (after this fan-out, both reviewers examine the same
 revision *at the same time* — the protocol fixes no order between them); a
-`rec` loop carries comment→revision rounds, with every revision going to
+`rec` loop (`rec` is the protocol language's "this block may repeat"
+construct) carries comment→revision rounds, with every revision going to
 both reviewers; the exit branch is a **join**: `SecurityApproved` and
 `QualityApproved` must both reach the Merger (the runtime monitor accepts
 them in either arrival order) before `MergeDone` can exist.
@@ -88,11 +89,14 @@ to **broadcast each decision to every role**: that is what makes the
 protocol provably unambiguous. Second, even with those broadcasts the
 Merger only *receives* during the loop — it never has to act, and the
 scheduler never calls it, until both approvals have arrived. This uses
-only constructs the stack already runs today (`rec` + `choice at`, proven
+only constructs the stack already runs today (`rec`, and `choice at R` —
+the point where role R picks which branch the team takes — both proven
 in [`experiments/cases/retry_loop/`](../../experiments/cases/retry_loop/);
 the monitor's out-of-order tolerance covers the either-order approvals),
 and the final protocol was validated end-to-end with the repo's real
-scribble-java toolchain, including all four per-role projections.
+scribble-java toolchain, including all four per-role projections (a
+"projection" is the private slice of the global protocol that one role
+sees — its personal contract).
 
 ## Case 2: the announcement team (anthropics/skills)
 
