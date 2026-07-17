@@ -90,10 +90,24 @@ a round share a model context (also added to Limitations).
   are cited via deep links in the repo's docs, consistent with how the
   ladders cite their data map), and every v9 number.
 
-## Sanity pass (no texlive in this sandbox; same discipline as v9)
+## Compile status
 
-- `\begin`/`\end`: 41/41, per-environment balanced.
-- Braces (verbatim/comments stripped): 1172/1172.
-- Citations: 49 used, 49 defined, 0 undefined; `\ref`/`\label`: 0 undefined.
-- All `\seam*` macros used are defined in seam_results.tex.
-- New `tab:realcases`: 10 rows × 5 columns, consistent.
+texlive-latex-base/-extra/-recommended, texlive-fonts-recommended, and
+texlive-bibtex-extra were installed and both v9 and v10 were compiled with
+two `pdflatex` passes each (no `bibtex` needed; the bibliography is
+inline via `\begin{thebibliography}`).
+
+- **v9/main.pdf**: 21 pages, 0 undefined references, 0 undefined
+  citations (previously verified only by static grep/brace-balance; now
+  confirmed by an actual compile).
+- **v10/main.pdf**: 23 pages, 0 undefined references, 0 undefined
+  citations. The new `tab:realcases` table initially overflowed its
+  column width by 28pt; tightened to `\footnotesize` with three cells
+  shortened (``double writes''→``dbl.\ writes'', etc.) and re-verified
+  clean — the remaining overfull hboxes (5--12pt, five instances) are
+  pre-existing in v9 and unrelated to this table.
+
+Static sanity pass (superseded by the compile above, kept for the record):
+`\begin`/`\end` 41/41 balanced; braces 1172/1172; citations 49 used/49
+defined/0 undefined; all `\seam*` macros defined; `tab:realcases` 10
+rows × 5 columns.
