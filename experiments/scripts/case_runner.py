@@ -86,7 +86,7 @@ PROMPT_INSTALL_LIMIT_FOUNDRY = 8000
 # Per-arm install behaviour: Foundry-stack arms truncate at the limit above;
 # MAF arms install the full string. Used only for the `truncated` flag in
 # prompts/<arm>/index.json — does not affect runtime behaviour.
-_FOUNDRY_INSTALL_KEYS = {"bare", "spec_llmvalid", "min_llmvalid", "spec_llmvalid_gate", "min_llmvalid_gate", "min_llmvalid_sched", "global_decentralized", "unchecked_skills"}
+_FOUNDRY_INSTALL_KEYS = {"bare", "spec_llmvalid", "min_llmvalid", "spec_llmvalid_gate", "min_llmvalid_gate", "min_llmvalid_gate_nohint", "min_llmvalid_gate_lastrecv", "min_llmvalid_sched", "global_decentralized", "unchecked_skills"}
 
 
 def _persist_prompts(runner: "BaselineRunner", run_dir: Path) -> None:
@@ -432,7 +432,22 @@ def summarize_run(run_dir: Path) -> dict:
     def avg(num, den):
         return round(num / den, 1) if den else 0.0
 
-    summary = {"run_dir": str(run_dir), "scenarios": {}}
+    # "sequential" = arms ran one at a time (wall-clock trustworthy);
+    # "parallel" = arms shared one rate-limited deployment (seconds include
+    # contention — do not base speed claims on them); "unknown" for run dirs
+    # from before this stamp existed.
+    execution_mode = "unknown"
+    mode_path = run_dir / "execution_mode.json"
+    if mode_path.exists():
+        try:
+            execution_mode = json.loads(
+                mode_path.read_text(encoding="utf-8")).get(
+                    "execution_mode", "unknown")
+        except Exception:
+            pass
+
+    summary = {"run_dir": str(run_dir), "execution_mode": execution_mode,
+               "scenarios": {}}
     for key, name, _factory in SCENARIOS:
         agg = _aggregate(run_dir / f"events_{key}.jsonl")
         n = agg["n_trials"]
@@ -518,6 +533,12 @@ def print_summary(case: Case, summary: dict) -> None:
     row("total events",          "{:>20d}",    "events")
     row("total violations",      "{:>20d}",    "violations")
 
+    mode = summary.get("execution_mode", "unknown")
+    if mode != "sequential":
+        print(f"  NOTE: execution_mode={mode} — arms shared one rate-limited "
+              f"deployment, so seconds/trial include queueing contention. "
+              f"Use --sequential for trustworthy wall-clock comparisons.")
+
     # Loud warning for any arm whose installed prompt was clipped at the
     # Foundry 8000-char limit — its numbers are not comparable.
     for k, n in cols:
@@ -578,7 +599,8 @@ def _completed_arm_keys(run_dir: Path, n_trials: int) -> set[str]:
 
 def run_case(case_id: str, n_trials: int,
              resume_dir: Optional[Path] = None,
-             semantic: bool = False) -> dict:
+             semantic: bool = False,
+             sequential: bool = False) -> dict:
     case_dir = CASES_DIR / case_id
     case = Case.load(case_dir)
     print("=" * 72)
@@ -615,7 +637,7 @@ def run_case(case_id: str, n_trials: int,
     #           (MAF's OpenAIChatCompletionClient surfaces 429s as errors
     #            that count as no-progress — so any concurrency among MAF
     #            arms causes spurious "deadlock" signals)
-    FOUNDRY_KEYS = {"bare", "spec_llmvalid", "min_llmvalid", "spec_llmvalid_gate", "min_llmvalid_gate", "min_llmvalid_sched", "global_decentralized", "unchecked_skills"}
+    FOUNDRY_KEYS = {"bare", "spec_llmvalid", "min_llmvalid", "spec_llmvalid_gate", "min_llmvalid_gate", "min_llmvalid_gate_nohint", "min_llmvalid_gate_lastrecv", "min_llmvalid_sched", "global_decentralized", "unchecked_skills"}
 
     def _run_one(idx: int, runner_):
         print(f"\n[experiment {idx+1}] {runner_.scenario_name} "
@@ -633,25 +655,48 @@ def run_case(case_id: str, n_trials: int,
     maf_arms     = [(i, k, n) for i, (k, n, _) in enumerate(SCENARIOS)
                     if k not in FOUNDRY_KEYS and k not in completed]
 
-    # Wave 1 — Foundry arms in parallel
-    print(f"\n{'='*72}\n  WAVE 1: Foundry arms (parallel) — "
-          f"{[k for _, k, _ in foundry_arms]}\n{'='*72}", flush=True)
-    threads = []
-    for idx, key, _ in foundry_arms:
-        runner = make_runner(case, key)
-        t = threading.Thread(target=_run_one, args=(idx, runner),
-                             name=f"{case.case_id}-{key}")
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
+    if sequential:
+        # UNCONTENDED timing mode: every arm runs alone, one at a time.
+        # Why: in the default parallel mode all Foundry arms share one Azure
+        # deployment's rate limit, so each arm's wall-clock includes waiting
+        # out a traffic jam the benchmark itself created — and the arm that
+        # makes the fewest calls waits least. Any seconds-based claim
+        # ("4x faster") must come from a --sequential run; summary.json
+        # records which mode produced it (execution_mode).
+        print(f"\n{'='*72}\n  SEQUENTIAL mode: all arms one at a time "
+              f"(trustworthy wall-clock) — "
+              f"{[k for _, k, _ in foundry_arms + maf_arms]}\n{'='*72}",
+              flush=True)
+        for idx, key, _ in foundry_arms + maf_arms:
+            runner = make_runner(case, key)
+            _run_one(idx, runner)
+    else:
+        # Wave 1 — Foundry arms in parallel
+        print(f"\n{'='*72}\n  WAVE 1: Foundry arms (parallel) — "
+              f"{[k for _, k, _ in foundry_arms]}\n{'='*72}", flush=True)
+        threads = []
+        for idx, key, _ in foundry_arms:
+            runner = make_runner(case, key)
+            t = threading.Thread(target=_run_one, args=(idx, runner),
+                                 name=f"{case.case_id}-{key}")
+            threads.append(t)
+            t.start()
+        for t in threads:
+            t.join()
 
-    # Wave 2 — MAF arms sequentially
-    print(f"\n{'='*72}\n  WAVE 2: MAF arms (sequential) — "
-          f"{[k for _, k, _ in maf_arms]}\n{'='*72}", flush=True)
-    for idx, key, _ in maf_arms:
-        runner = make_runner(case, key)
-        _run_one(idx, runner)
+        # Wave 2 — MAF arms sequentially
+        print(f"\n{'='*72}\n  WAVE 2: MAF arms (sequential) — "
+              f"{[k for _, k, _ in maf_arms]}\n{'='*72}", flush=True)
+        for idx, key, _ in maf_arms:
+            runner = make_runner(case, key)
+            _run_one(idx, runner)
+
+    # Stamp the mode into the run dir so summarize_run (including later
+    # --summarize-only reruns) can mark whether seconds are contended.
+    (run_dir / "execution_mode.json").write_text(
+        json.dumps({"execution_mode":
+                    "sequential" if sequential else "parallel"}),
+        encoding="utf-8")
 
     summary = summarize_run(run_dir)
     print_summary(case, summary)
@@ -686,6 +731,9 @@ def main():
         print("  --semantic: also compute the LLM-judged semantic goal metric "
               "(~5 LLM calls per trial per arm). Off by default — the strict "
               "and role-pair goal metrics always run.")
+        print("  --sequential: run every arm one at a time (no shared "
+              "rate-limit contention). Required for any wall-clock/speed "
+              "claim; the default parallel mode is fine for token metrics.")
         print("  --arms: comma-separated scenario keys to run (default: all "
               f"registered arms: {[k for k, _, _ in SCENARIOS]})")
         sys.exit(2)
@@ -693,6 +741,10 @@ def main():
     # --semantic: opt into the LLM-judged Set B metric (costs LLM calls).
     semantic = "--semantic" in args
     args = [a for a in args if a != "--semantic"]
+
+    # --sequential: uncontended one-arm-at-a-time execution (fair timing).
+    sequential = "--sequential" in args
+    args = [a for a in args if a != "--sequential"]
 
     # --arms: restrict the run to a subset of registered scenario keys.
     if "--arms" in args:
@@ -751,11 +803,12 @@ def main():
                     if p.is_dir() and (p / "case.yaml").exists()]
         print(f"running all cases at n={n}: {case_ids}")
         for cid in case_ids:
-            run_case(cid, n, semantic=semantic)
+            run_case(cid, n, semantic=semantic, sequential=sequential)
     else:
         case_id = args[0]
         n = int(args[1]) if len(args) > 1 and args[1].isdigit() else 10
-        run_case(case_id, n, resume_dir=resume_dir, semantic=semantic)
+        run_case(case_id, n, resume_dir=resume_dir, semantic=semantic,
+                 sequential=sequential)
 
 
 if __name__ == "__main__":

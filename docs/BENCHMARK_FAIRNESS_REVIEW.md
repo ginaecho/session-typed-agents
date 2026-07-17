@@ -271,9 +271,46 @@ hints switched off, so we know how much each part contributes.
 
 ## Status: fixes implemented on 2026-07-17
 
-The four measurement fixes are now in the code (the rest remain future
-work — the new baseline arm, the sequential-timing mode, and the
-convincing-evidence items in the previous section):
+All four measurement fixes are in the code, and so are the three
+experiment-design additions (Problems 3–5). What remains future work is
+running the new experiments live and the remaining convincing-evidence
+items (weak-model sweep, blocked-message severity grading, drafting-risk
+rate, external-framework baselines).
+
+**Experiment-design additions (need a live run to produce numbers):**
+
+- **The cheap-scheduler control** (Problem 4): a new arm
+  `min_llmvalid_gate_lastrecv` — identical prompt and gate to the full
+  STJP arm, but the next speaker is chosen by the protocol-free rule "ask
+  whoever just received a message" (falling back to the fixed circle). In
+  an offline simulation of a 3-step linear flow it produced 3 sends in 3
+  polls with zero idle asks — confirming the review's point that a
+  trivial heuristic removes idle polling on linear pipelines. The EFSM
+  scheduler must now show its worth against *this* arm on branching /
+  fan-in cases, not against the fixed circle.
+- **The hints ablation** (Problem 5): a new arm `min_llmvalid_gate_nohint`
+  — same gate, but the per-turn "you are at state N; the available action
+  is SEND X to Y" line is switched off (rejection feedback stays, because
+  an enforcement system must say what it rejected and why). Comparing it
+  with `min_llmvalid_gate` separates "blocks wrong messages" from
+  "whispers the next move".
+- **Trustworthy stopwatch** (Problem 3): `case_runner.py --sequential`
+  runs every arm alone, one at a time. The run directory and
+  `summary.json` now carry `execution_mode` ("sequential" vs "parallel"),
+  and the printed table warns when seconds came from a contended parallel
+  run. Rule going forward: token claims may come from either mode; speed
+  claims only from `--sequential`.
+- **The scaling chart** (convincing-evidence item 2):
+  `scripts/scaling_chart.py`. `run` drives the benchmark sequentially over
+  cases of growing team size (6-role `report_pipeline`, 10-role
+  `report_pipeline_large`); `plot` needs no cloud access and turns the
+  latest summaries into `scaling_chart.json` + `scaling_chart.png` —
+  tokens-per-delivered-result against team size, one line per arm, with
+  the no-LLM structural proxy from `roles_sweep.py` embedded for
+  comparison. The chart to look for: sliced-plan lines staying flat while
+  the whole-plan-as-text line climbs.
+
+**Measurement fixes:**
 
 1. **Fair headline success rule** (`case_runner.py`, `goal_elicitor.py`).
    Arms that were shown the protocol are still judged strictly on exact

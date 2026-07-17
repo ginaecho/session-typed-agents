@@ -78,6 +78,8 @@ VOCABULARY_ARMS = {
     "min_llmvalid",           # projected local types given
     "spec_llmvalid_gate",     # projected local types given + enforcement gate
     "min_llmvalid_gate",      # lean projected local types + enforcement gate
+    "min_llmvalid_gate_nohint",   # gate WITHOUT the per-turn liveness nudge
+    "min_llmvalid_gate_lastrecv", # gate + last-receiver heuristic scheduling
     "min_llmvalid_sched",     # lean projected + gate + EFSM scheduler
     "global_decentralized",   # global type text, decentralized runner
 }

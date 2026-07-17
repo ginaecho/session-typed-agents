@@ -20,6 +20,8 @@ that calls one of four instruction builders in `baselines/instructions.py`:
 | `spec_llmvalid` | `build_spec_instructions(override=valid)` | projected **local** type (verbose markdown) | LLM-drafted valid |
 | `min_llmvalid` | `build_spec_minimal_instructions(override=valid)` | projected **local** type (SEND/RECV table) | LLM-drafted valid |
 | `min_llmvalid_gate` | `build_spec_minimal_instructions(override=valid)` | lean projected local type + gate enforcement | LLM-drafted valid |
+| `min_llmvalid_gate_nohint` | `build_spec_minimal_instructions(override=valid)` | same as `min_llmvalid_gate` but WITHOUT the per-turn liveness nudge (hints=False) — isolates pure enforcement from per-turn guidance | LLM-drafted valid |
+| `min_llmvalid_gate_lastrecv` | `build_spec_minimal_instructions(override=valid)` | same prompt + gate, scheduled by the protocol-free "ask whoever just received a message" heuristic (round-robin fallback) — the cheap-heuristic control for the EFSM scheduler | LLM-drafted valid |
 | `min_llmvalid_sched` | `build_spec_minimal_instructions(override=valid)` | lean projected local type + gate + **EFSM enabled-sender scheduler** | LLM-drafted valid |
 
 Added 2026-07-02 (`docs/archive/EXPERIMENT_DESIGN_V3_EXECUTION.md`, pre-registered):

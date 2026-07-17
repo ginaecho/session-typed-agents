@@ -103,7 +103,8 @@ class FoundryRunner(BaselineRunner):
                  builder: Callable[["Case", str], str], *,
                  protocol_path_override: Optional[Path] = None,
                  goals_path_override: Optional[Path] = None,
-                 gate: bool = False, schedule: str = "roundrobin"):
+                 gate: bool = False, schedule: str = "roundrobin",
+                 hints: bool = True):
         super().__init__(case, scenario_key, scenario_name)
         self._builder = builder
         self._role_to_id: dict[str, str] = {}
@@ -128,12 +129,32 @@ class FoundryRunner(BaselineRunner):
         # Requires gate=True: the scheduler reads the gate monitor's state,
         # which only stays in sync with reality because off-contract sends
         # are rejected before commit.
-        if schedule not in ("roundrobin", "efsm"):
+        # Schedule "lastreceiver" (the CHEAP-HEURISTIC control for the EFSM
+        # scheduler): poll the receiver of the last committed message next;
+        # when that yields nothing (a WAIT, a gate rejection, or no messages
+        # yet), fall back to taking turns in a fixed circle (round-robin).
+        # It needs NO protocol — only the observed message history — so
+        # comparing min_llmvalid_gate_lastrecv vs min_llmvalid_sched
+        # (identical prompt + gate) isolates what the protocol-derived
+        # scheduler adds BEYOND this heuristic. See
+        # docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 4: in a mostly-linear
+        # pipeline "ask whoever just got a message" removes most idle polls
+        # without session types; the EFSM scheduler must earn its keep on
+        # branching / fan-in / concurrency, not on beating a fixed circle.
+        if schedule not in ("roundrobin", "efsm", "lastreceiver"):
             raise ValueError(f"unknown schedule: {schedule!r}")
         if schedule == "efsm" and not gate:
             raise ValueError("schedule='efsm' requires gate=True (the "
                              "scheduler tracks the gate monitor's state)")
         self._schedule = schedule
+        # hints=False ablates the per-turn "liveness nudge" (the injected
+        # "you are at state N; the available action is SEND X to Y" line).
+        # The nudge is ground-truth guidance beyond enforcement, so
+        # min_llmvalid_gate vs min_llmvalid_gate_nohint separates "gate
+        # blocks wrong messages" from "gate also whispers the next move".
+        # Gate REJECTION feedback is kept in both — an enforcement system
+        # must say what it rejected and why, or retries are blind.
+        self._hints = hints
 
     def active_protocol_path(self) -> Path:
         return self._protocol_override or self.case.protocol_path
@@ -242,8 +263,24 @@ class FoundryRunner(BaselineRunner):
             from stjp_core.monitor.monitor import SessionMonitor
             gate_sm = SessionMonitor(self._gate_efsms, self._gate_refn)
 
+        # lastreceiver schedule: who to ask next because they just received
+        # a message. None = no fresh lead; fall back to the fixed circle.
+        last_recv_hint: Optional[str] = None
+
         while step < case.max_steps:
-            if self._schedule == "efsm" and gate_sm is not None:
+            if self._schedule == "lastreceiver":
+                if last_recv_hint is not None and last_recv_hint in actor_queue:
+                    actor = last_recv_hint
+                    actor_queue.remove(actor)
+                    actor_queue.append(actor)
+                else:
+                    actor = actor_queue.pop(0)
+                    actor_queue.append(actor)
+                # One shot per lead: if this poll doesn't commit a send, the
+                # next poll goes round-robin instead of re-asking the same
+                # role forever (which would just burn the wait budget).
+                last_recv_hint = None
+            elif self._schedule == "efsm" and gate_sm is not None:
                 # EFSM claim predicate: poll only roles with an enabled SEND
                 # at their current projected state. Rotation among enabled
                 # roles preserved via actor_queue order (fairness at
@@ -270,7 +307,7 @@ class FoundryRunner(BaselineRunner):
 
             hint = (branch_hint if step == 0 and actor == case.roles[0] else None)
             view = ex._build_view(actor, history, hint)
-            if self._gate and gate_sm is not None:
+            if self._gate and self._hints and gate_sm is not None:
                 # Liveness nudge: safety monitoring can never flag a WAIT
                 # (no event, nothing to judge), so a role parked at a
                 # SEND-only contract state can stall the whole session
@@ -378,6 +415,8 @@ class FoundryRunner(BaselineRunner):
 
             consec_wait = 0
             step += 1
+            if self._schedule == "lastreceiver":
+                last_recv_hint = send_to
             ev = TraceEvent(sender=actor, receiver=send_to, label=label,
                             payload=payload, payload_type="", step=step)
             events.append(ev)
@@ -407,4 +446,5 @@ class FoundryRunner(BaselineRunner):
         extra = {"threads": role_to_thread, "schedule": self._schedule}
         if self._gate:
             extra["gated"] = gated
+            extra["hints"] = self._hints
         return AttemptResult(events=events, usage=usage, extra=extra)

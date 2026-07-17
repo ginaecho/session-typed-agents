@@ -115,7 +115,8 @@ def _make_maf_llm_drafted_factory(kind: str, scenario_key: str, scenario_name: s
 def _make_foundry_llm_drafted_factory(kind: str, scenario_key: str,
                                        scenario_name: str, spec_builder,
                                        gate: bool = False,
-                                       schedule: str = "roundrobin"):
+                                       schedule: str = "roundrobin",
+                                       hints: bool = True):
     """Foundry spec/min factory: projects from the LLM-drafted global type,
     monitor + verifier use that same protocol (and its re-anchored goals).
 
@@ -140,6 +141,7 @@ def _make_foundry_llm_drafted_factory(kind: str, scenario_key: str,
             goals_path_override=goals_path,
             gate=gate,
             schedule=schedule,
+            hints=hints,
         )
     return factory
 
@@ -170,6 +172,24 @@ _min_llmvalid_gate_factory = _make_foundry_llm_drafted_factory(
 _min_llmvalid_sched_factory = _make_foundry_llm_drafted_factory(
     "valid", "min_llmvalid_sched", "WITH-min-llmvalid-SCHED",
     build_spec_minimal_instructions, gate=True, schedule="efsm")
+# CHEAP-HEURISTIC scheduling control: same prompt + gate as
+# min_llmvalid_sched, but the next actor is chosen by "ask whoever just
+# received a message" (round-robin fallback) — a rule that needs NO
+# protocol. min_llmvalid_gate_lastrecv vs min_llmvalid_sched isolates what
+# the protocol-derived EFSM scheduler adds beyond this trivial heuristic
+# (expected: little on linear pipelines, a real gap on branching / fan-in /
+# concurrent cases). See docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 4.
+_min_llmvalid_gate_lastrecv_factory = _make_foundry_llm_drafted_factory(
+    "valid", "min_llmvalid_gate_lastrecv", "WITH-min-GATE-LASTRECV",
+    build_spec_minimal_instructions, gate=True, schedule="lastreceiver")
+# HINTS ablation: same prompt + gate as min_llmvalid_gate, but WITHOUT the
+# per-turn liveness nudge ("you are at state N; the available action is
+# SEND X to Y"). min_llmvalid_gate vs min_llmvalid_gate_nohint separates
+# pure enforcement (block + explain rejections) from per-turn ground-truth
+# guidance. See docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 5.
+_min_llmvalid_gate_nohint_factory = _make_foundry_llm_drafted_factory(
+    "valid", "min_llmvalid_gate_nohint", "WITH-min-GATE-NOHINT",
+    build_spec_minimal_instructions, gate=True, hints=False)
 # Global protocol text, but on the DECENTRALIZED round-robin runner (no central
 # orchestrator) — the "B with autonomous local agents" control. Isolates
 # "global text vs projected local contract" from "orchestrated vs decentralized":
@@ -219,6 +239,8 @@ SCENARIOS: list[tuple[str, str, Callable[..., "BaselineRunner"]]] = [
     ("min_llmvalid",           "WITH-min-llmvalid",       _min_llmvalid_factory),
     ("spec_llmvalid_gate",     "WITH-spec-llmvalid-GATE", _spec_llmvalid_gate_factory),
     ("min_llmvalid_gate",      "WITH-min-llmvalid-GATE",  _min_llmvalid_gate_factory),
+    ("min_llmvalid_gate_nohint", "WITH-min-GATE-NOHINT",  _min_llmvalid_gate_nohint_factory),
+    ("min_llmvalid_gate_lastrecv", "WITH-min-GATE-LASTRECV", _min_llmvalid_gate_lastrecv_factory),
     ("min_llmvalid_sched",     "WITH-min-llmvalid-SCHED", _min_llmvalid_sched_factory),
 ]
 
