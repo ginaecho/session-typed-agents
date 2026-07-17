@@ -345,6 +345,31 @@ def load_case(case_id: str) -> Case:
 
 Applies to prose in docs, reports, READMEs, changelogs, and chat replies — not to code, identifiers, function names, JSON fields, or test names.
 
+**Global style rules (always, for every piece of prose):**
+
+1. **Always use a small example to show *why* a design is the way it is.**
+   Don't just state "the strict metric is unfair to bare arms" — show it:
+   "the bare team is told *'the audit must be approved'* but scored on
+   *'did TaxVerifier send a message labelled exactly `RevenueAuditApproval`
+   to RevenueAnalyst'* — a label it was never shown." A reader who sees one
+   concrete case understands the rule; a reader who sees only the rule has
+   to trust you.
+2. **Plain English.** Prefer the everyday phrase over the insider one:
+   "takes turns in a fixed circle" over "round-robin polling" (then name the
+   term in parentheses once, so the reader can find it in the code).
+3. **Smooth reading flow.** Each paragraph should follow from the previous
+   one; a section should read top-to-bottom without the reader jumping
+   around or holding five labels in their head. Prefer prose that carries
+   the argument; use tables only for genuinely tabular facts.
+4. **No jargon, and no terminology without explanation.** Every term of art
+   gets a one-clause plain-English gloss at first use ("an **arm** is one
+   configuration being compared — like the treatment and control groups of
+   a medical trial"). This includes project-internal nicknames.
+5. **No playing smart.** Never compress a point into dense shorthand to
+   sound expert. If a sentence needs the reader to already be an expert to
+   parse it, rewrite it. Clarity is the skill being demonstrated — not
+   vocabulary.
+
 **Do:**
 - Define every term of art on first use in a doc, in one plain clause, right where the term first appears.
 - Write for a capable developer who is **not** a compiler/PL researcher. If a plain phrase says the same thing, use it instead of insider shorthand.
