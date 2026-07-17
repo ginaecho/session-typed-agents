@@ -60,6 +60,8 @@ from baselines import SCENARIOS, make_runner
 from baselines.base import BaselineRunner
 
 import evaluate_run  # Set B (goal-achievement) metrics, run at end of each run
+from evaluate_run import VOCABULARY_ARMS  # arms whose prompt contained the protocol's message labels
+from stats import wilson  # 95% confidence interval for a success proportion
 
 
 # Retry-to-success: a trial keeps re-running with fresh threads until all
@@ -175,6 +177,20 @@ def run_scenario(runner: BaselineRunner, n_trials: int, run_dir: Path) -> dict:
     active_protocol = runner.active_protocol_path()
     goal_set = runner.goal_set()
 
+    # Fair success rule. Goals are anchored to exact (sender, receiver,
+    # label) message triples taken from the protocol. Arms that were shown
+    # the protocol (VOCABULARY_ARMS) are judged strictly against those
+    # triples. Arms that were NOT shown the protocol (bare, maf_*) never saw
+    # the labels, so for them a goal passes if the right sender delivered a
+    # predicate-satisfying payload to the right receiver under ANY label.
+    # Example of why: the bare prompt says "the tax verifier must approve
+    # the audit" but the strict rule demands the exact label
+    # `RevenueAuditApproval` — a word the bare agents were never given.
+    # Judging them on it measures vocabulary, not coordination (this is the
+    # same reasoning evaluate_run.py already applies to its strict_pct).
+    strict_labels = key in VOCABULARY_ARMS
+    success_rule = "strict" if strict_labels else "role_pair"
+
     # Observational fallback: an unsafe protocol fails Scribble projection
     # (Scribble's own refusal IS the validator catching the unsafety). For
     # those arms we still want to run the agents and observe behaviour —
@@ -251,21 +267,33 @@ def run_scenario(runner: BaselineRunner, n_trials: int, run_dir: Path) -> dict:
             cum_completion += usage["completion_tokens"]
             cum_calls += usage["calls"]
 
-            goal_results = verify_goals_against_trace(goal_set, events, branch)
+            # The arm's own success rule decides retry + trial success; the
+            # strict result is always recorded alongside so both numbers are
+            # available post-hoc for every arm.
+            strict_results = verify_goals_against_trace(goal_set, events, branch)
+            if strict_labels:
+                goal_results = strict_results
+            else:
+                goal_results = verify_goals_against_trace(
+                    goal_set, events, branch, match_labels=False)
             all_goals_pass = bool(goal_results) and all(
                 ok for ok, _ in goal_results.values())
             n_goals_ok = sum(1 for ok, _ in goal_results.values() if ok)
             n_goals_total = len(goal_results)
+            n_goals_ok_strict = sum(1 for ok, _ in strict_results.values() if ok)
 
             emitter.emit_marker("attempt_end", trial=trial, attempt=attempt,
                                 events=len(events),
                                 goals_pass=n_goals_ok,
                                 goals_total=n_goals_total,
+                                goals_pass_strict=n_goals_ok_strict,
+                                success_rule=success_rule,
                                 all_goals_pass=all_goals_pass,
                                 tokens=usage,
                                 extra=result.extra)
             print(f"    attempt {attempt}/{MAX_ATTEMPTS}: "
-                  f"events={len(events)}  goals={n_goals_ok}/{n_goals_total}  "
+                  f"events={len(events)}  goals={n_goals_ok}/{n_goals_total} "
+                  f"({success_rule}; strict={n_goals_ok_strict})  "
                   f"tokens={usage['prompt_tokens']+usage['completion_tokens']}  "
                   f"{'OK' if all_goals_pass else 'retry'}",
                   flush=True)
@@ -278,6 +306,7 @@ def run_scenario(runner: BaselineRunner, n_trials: int, run_dir: Path) -> dict:
         cum_total = cum_prompt + cum_completion
         emitter.emit_marker("trial_end", trial=trial,
                             succeeded=succeeded,
+                            success_rule=success_rule,
                             attempts=attempts_used,
                             events=len(final_events),
                             tokens={"prompt_tokens": cum_prompt,
@@ -322,6 +351,7 @@ def summarize_run(run_dir: Path) -> dict:
                     "total_seconds": 0.0, "successful_seconds_sum": 0.0}
 
         succeeded_n = 0
+        success_rule = None   # "strict" or "role_pair", from trial_end markers
         total_attempts = 0
         successful_attempts_sum = 0
         total_prompt = total_completion = total_calls = 0
@@ -346,6 +376,7 @@ def summarize_run(run_dir: Path) -> dict:
             elif m == "trial_end":
                 if cur:
                     cur["succeeded"] = bool(ev.get("succeeded"))
+                    success_rule = ev.get("success_rule") or success_rule
                     cur["attempts"] = ev.get("attempts", 0)
                     tk = ev.get("tokens") or {}
                     cur["prompt_tokens"] = tk.get("prompt_tokens", 0)
@@ -383,6 +414,7 @@ def summarize_run(run_dir: Path) -> dict:
         return {"trials": trials, "events": total_events, "violations": total_viol,
                 "violation_types": dict(types),
                 "succeeded": succeeded_n,
+                "success_rule": success_rule,
                 "n_trials": len(trials),
                 "total_attempts": total_attempts,
                 "successful_attempts_sum": successful_attempts_sum,
@@ -409,10 +441,30 @@ def summarize_run(run_dir: Path) -> dict:
         # A useful single-number speed-vs-cost summary.
         tk_per_sec = (agg["total_tokens"] / agg["total_seconds"]
                       if agg["total_seconds"] > 0 else 0.0)
+        # 95% Wilson interval on the success proportion. At n=10, "100% vs
+        # 60%" reads decisive but the intervals ([72,100] vs [31,83]) overlap
+        # — publish the range, not just the point.
+        ci_lo, ci_hi = wilson(succ, n)
+        # Surface silently clipped prompts: the Foundry service truncates
+        # installed instructions at 8000 chars. A clipped arm underperforms
+        # for the wrong reason, so the summary must say so out loud rather
+        # than leave it buried in prompts/<arm>/index.json.
+        truncated_roles: list[str] = []
+        idx_path = run_dir / "prompts" / key / "index.json"
+        if idx_path.exists():
+            try:
+                idx = json.loads(idx_path.read_text(encoding="utf-8"))
+                truncated_roles = [r["role"] for r in idx.get("roles", [])
+                                   if r.get("truncated_on_install")]
+            except Exception:
+                pass
         summary["scenarios"][key] = {
             "scenario_name": name,
             **agg,
             "success_rate_pct": pct(succ, n),
+            "success_rate_ci95_pct": [round(ci_lo * 100, 1),
+                                      round(ci_hi * 100, 1)],
+            "prompt_truncated_roles": truncated_roles,
             "avg_attempts_all": avg(agg["total_attempts"], n),
             "avg_attempts_success": avg(agg["successful_attempts_sum"], succ),
             "avg_tokens_per_trial": avg(agg["total_tokens"], n),
@@ -445,6 +497,14 @@ def print_summary(case: Case, summary: dict) -> None:
         print(f"  {label:28s}  {vals}")
 
     row("success rate",          "{:>19.1f}%", "success_rate_pct")
+    # CI + rule rows are strings, not floats — format by hand.
+    ci_vals = "  ".join(
+        f"{'[{:.0f},{:.0f}]%'.format(*scs[k]['success_rate_ci95_pct']):>20s}"
+        for k, _ in cols)
+    print(f"  {'success 95% CI (Wilson)':28s}  {ci_vals}")
+    rule_vals = "  ".join(
+        f"{(scs[k].get('success_rule') or '-'):>20s}" for k, _ in cols)
+    print(f"  {'success rule':28s}  {rule_vals}")
     row("avg attempts (all)",    "{:>20.2f}",  "avg_attempts_all")
     row("avg attempts (success)","{:>20.2f}",  "avg_attempts_success")
     row("avg seconds/trial",     "{:>20.1f}",  "avg_seconds_per_trial")
@@ -457,6 +517,15 @@ def print_summary(case: Case, summary: dict) -> None:
     row("tokens/second",         "{:>20.1f}",  "tokens_per_second")
     row("total events",          "{:>20d}",    "events")
     row("total violations",      "{:>20d}",    "violations")
+
+    # Loud warning for any arm whose installed prompt was clipped at the
+    # Foundry 8000-char limit — its numbers are not comparable.
+    for k, n in cols:
+        clipped = scs[k].get("prompt_truncated_roles") or []
+        if clipped:
+            print(f"  WARNING: arm '{k}' had prompts TRUNCATED on install "
+                  f"for roles {clipped} — treat this arm's results as "
+                  f"invalid for comparison.")
 
     # Token savings vs bare, for the non-bare arms
     if "bare" in scs and scs["bare"]["avg_tokens_per_trial"]:

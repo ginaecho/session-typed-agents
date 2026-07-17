@@ -40,7 +40,8 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from stjp_core.foundry.llm_client import LLMClient
+# NOTE: LLMClient is imported lazily inside re_anchor() so that the
+# no-LLM `--check` mode works without the Azure/OpenAI stack installed.
 from case_loader import Case
 from stjp_core.compiler.protocol_parser import parse_protocol_file
 
@@ -60,6 +61,80 @@ def _valid_edges(scr_path: Path) -> set[tuple[str, str, str]]:
 def _edges_summary(edges: set[tuple[str, str, str]]) -> str:
     """Bulleted list of valid edges, for showing the LLM on retry."""
     return "\n".join(f"  - {s} -> {r} : {l}" for s, r, l in sorted(edges))
+
+
+def _edge_types(scr_path: Path) -> dict[tuple[str, str, str], str]:
+    """Map each (sender, receiver, label) edge to its payload type name."""
+    parsed = parse_protocol_file(scr_path)
+    return {(m.sender, m.receiver, m.message_name): (m.payload_type or "")
+            for m in parsed.messages}
+
+
+def check_invariance(case: Case, goals_data: dict,
+                     scr_path: Path) -> tuple[list[str], list[str]]:
+    """Verify a re-anchored goal set only re-points anchors — never
+    changes what it takes to pass.
+
+    Why this exists: re-anchoring must not make the exam easier for the
+    protocol arms. A real example of the drift this catches — the finance
+    goal "tax verifier must approve explicitly" was once re-anchored with
+    an extra accepted answer ('"true" in x') that the canonical goal set
+    (used to grade the bare arm) did not accept. Different answer keys
+    make the arms incomparable.
+
+    Returns (errors, warnings):
+      errors   — predicate/branch changed although the anchor's payload
+                 type is the SAME as the canonical one (pure weakening or
+                 tightening; comparability is broken). Also structural
+                 problems: unknown goal id, anchor not an edge of the
+                 target protocol.
+      warnings — predicate changed AND the payload type changed too (e.g.
+                 canonical String -> drafted Bool). The change may be a
+                 legitimate type translation ('"approved" in x' cannot
+                 match a payload that is only ever "True"/"False"), but a
+                 human must confirm it does not also weaken the goal.
+    """
+    errors: list[str] = []
+    warnings: list[str] = []
+    canon = {g.id: g for g in case.goals}
+    canon_types = _edge_types(case.protocol_path)
+    new_types = _edge_types(scr_path)
+
+    for d in goals_data.get("goals", []):
+        gid = d.get("id", "?")
+        g = canon.get(gid)
+        if g is None:
+            errors.append(f"{gid}: no canonical goal with this id in case.yaml")
+            continue
+        anchor = d.get("anchor") or {}
+        tup = (anchor.get("sender"), anchor.get("receiver"),
+               anchor.get("label"))
+        if tup not in new_types:
+            errors.append(f"{gid}: anchor {tup[0]} -> {tup[1]} : {tup[2]} "
+                          f"is not an edge of {scr_path.name}")
+            continue
+        if (d.get("branch") or "") != (g.branch or ""):
+            errors.append(f"{gid}: branch changed "
+                          f"{g.branch!r} -> {d.get('branch')!r}")
+        pred = (d.get("predicate") or "").strip()
+        if pred == g.predicate.strip():
+            continue
+        old_t = canon_types.get(
+            (g.anchor_sender, g.anchor_receiver, g.anchor_label), "")
+        new_t = new_types[tup]
+        if (new_t or "") == (old_t or ""):
+            errors.append(
+                f"{gid}: predicate changed although the payload type is the "
+                f"same ({old_t or 'none'}): canonical {g.predicate!r} vs "
+                f"re-anchored {pred!r} — this changes the pass condition, "
+                f"not the anchor")
+        else:
+            warnings.append(
+                f"{gid}: predicate translated with a payload type change "
+                f"({old_t or 'none'} -> {new_t or 'none'}): {g.predicate!r} "
+                f"-> {pred!r} — confirm the translation does not weaken "
+                f"the goal")
+    return errors, warnings
 
 
 SYSTEM = """You are a session-types analyst. Given a goal (a predicate over
@@ -137,12 +212,15 @@ def re_anchor(case: Case, kind: str) -> dict:
 
     new_scribble = scr_path.read_text(encoding="utf-8")
     edges = _valid_edges(scr_path)
+    edge_types = _edge_types(scr_path)
+    canon_types = _edge_types(case.protocol_path)
     print(f"  source protocol: {scr_path.relative_to(TESTING_IDEAS)}")
     print(f"  output:          {out_path.relative_to(TESTING_IDEAS)}")
     print(f"  canonical goals: {len(case.goals)}")
     print(f"  protocol edges:  {len(edges)}")
     print()
 
+    from stjp_core.foundry.llm_client import LLMClient
     llm = LLMClient()
     new_goals: list[dict] = []
     dropped: list[dict] = []
@@ -207,21 +285,49 @@ def re_anchor(case: Case, kind: str) -> dict:
             dropped.append({"id": g.id, "reason": reason})
             continue
 
-        # Build the case.yaml-shaped goal dict
-        new_goals.append({
+        # Build the case.yaml-shaped goal dict. Invariance rule: only the
+        # ANCHOR may change. The predicate (the pass condition) stays the
+        # canonical one whenever the new anchor carries the same payload
+        # type — otherwise every arm sits a different exam. The LLM's
+        # rewritten predicate is kept ONLY when the payload type changed
+        # (e.g. canonical String -> drafted Bool, where '"approved" in x'
+        # can never match a payload that is only ever "True"/"False"),
+        # and that case is recorded in `predicate_note` for human review.
+        tup = (mapped["sender"], mapped["receiver"], mapped["label"])
+        old_type = canon_types.get(
+            (g.anchor_sender, g.anchor_receiver, g.anchor_label), "")
+        new_type = edge_types.get(tup, "")
+        goal_out = {
             "id": g.id,
             "description": g.description,
             "metric": g.metric,
-            "predicate": mapped.get("predicate", g.predicate),
+            "predicate": g.predicate,
             "anchor": {
                 "sender": mapped["sender"],
                 "receiver": mapped["receiver"],
                 "label": mapped["label"],
             },
-            "threshold": mapped.get("threshold", g.threshold),
-        })
+            "threshold": g.threshold,
+        }
+        if g.branch:
+            goal_out["branch"] = g.branch
+        llm_pred = (mapped.get("predicate") or "").strip()
+        if llm_pred and llm_pred != g.predicate.strip():
+            if (new_type or "") == (old_type or ""):
+                print(f"     NOTE: discarding LLM predicate rewrite "
+                      f"{llm_pred!r} (payload type unchanged: "
+                      f"{old_type or 'none'}); keeping canonical")
+            else:
+                goal_out["predicate"] = llm_pred
+                goal_out["threshold"] = mapped.get("threshold", g.threshold)
+                goal_out["predicate_note"] = (
+                    f"translated from canonical {g.predicate!r} because the "
+                    f"payload type changed {old_type or 'none'} -> "
+                    f"{new_type or 'none'}; review that it does not weaken "
+                    f"the goal")
+        new_goals.append(goal_out)
         print(f"     -> {mapped['sender']} -> {mapped['receiver']} : "
-              f"{mapped['label']}  predicate={mapped.get('predicate', g.predicate)[:50]}")
+              f"{mapped['label']}  predicate={goal_out['predicate'][:50]}")
 
     # Write YAML — same shape as the goals: section of case.yaml so we can
     # reuse CaseGoal.from_dict to load it back.
@@ -234,6 +340,18 @@ def re_anchor(case: Case, kind: str) -> dict:
         "dropped": dropped,
         "goals": new_goals,
     }
+    # Invariance gate: refuse to write a goal set that changed pass
+    # conditions rather than anchors. Warnings (type-translated
+    # predicates) are printed but do not block.
+    errors, warns = check_invariance(case, out_data, scr_path)
+    for w in warns:
+        print(f"  WARNING: {w}")
+    if errors:
+        for e in errors:
+            print(f"  ERROR: {e}")
+        raise SystemExit(
+            f"re-anchored goals failed the invariance check "
+            f"({len(errors)} error(s) above); nothing written")
     out_path.write_text(yaml.safe_dump(out_data, sort_keys=False),
                         encoding="utf-8")
     print()
@@ -243,10 +361,40 @@ def re_anchor(case: Case, kind: str) -> dict:
     return out_data
 
 
+def check_existing(case: Case, kind: str) -> int:
+    """Audit an already-written goals.yaml against the invariance rule.
+
+    No LLM calls. Returns the number of errors (0 = comparable answer keys).
+    """
+    drafts_dir = case.case_dir / "protocols" / "llm_drafts" / kind
+    scr_path = drafts_dir / "v1.scr"
+    goals_path = drafts_dir / "goals.yaml"
+    if not goals_path.exists():
+        print(f"  nothing to check: {goals_path} does not exist")
+        return 0
+    goals_data = yaml.safe_load(goals_path.read_text(encoding="utf-8"))
+    errors, warns = check_invariance(case, goals_data, scr_path)
+    for w in warns:
+        print(f"  WARNING: {w}")
+    for e in errors:
+        print(f"  ERROR: {e}")
+    if not errors and not warns:
+        print(f"  OK: {goals_path.relative_to(TESTING_IDEAS)} only re-points "
+              f"anchors; pass conditions match case.yaml")
+    elif not errors:
+        print(f"  OK with {len(warns)} warning(s): predicate translations "
+              f"follow payload-type changes; review them once")
+    return len(errors)
+
+
 def main():
     args = sys.argv[1:]
+    check_only = "--check" in args
+    args = [a for a in args if a != "--check"]
     if len(args) < 2:
-        print("usage: re_anchor_goals.py <case_id> <kind:valid|unsafe>")
+        print("usage: re_anchor_goals.py <case_id> <kind:valid|unsafe> [--check]")
+        print("  --check: audit the existing goals.yaml against case.yaml "
+              "(no LLM calls); exit 1 on invariance errors.")
         sys.exit(2)
     case_id, kind = args[0], args[1]
     if kind not in ("valid", "unsafe"):
@@ -254,8 +402,11 @@ def main():
         sys.exit(2)
     case = Case.load(CASES_DIR / case_id)
     print("=" * 72)
-    print(f"  RE-ANCHOR GOALS  case={case.case_id}  kind={kind}")
+    print(f"  {'CHECK' if check_only else 'RE-ANCHOR'} GOALS  "
+          f"case={case.case_id}  kind={kind}")
     print("=" * 72)
+    if check_only:
+        sys.exit(1 if check_existing(case, kind) else 0)
     re_anchor(case, kind)
 
 

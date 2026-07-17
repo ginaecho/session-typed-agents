@@ -124,9 +124,23 @@ the two goal files shows the rewritten key also got **easier**:
 Each difference is small, but they all lean the same way: the protocol teams
 sit a slightly easier exam.
 
+**One honest nuance.** Part of this drift turned out to be *forced*, not
+sloppy: the drafted protocol carries different payload types than the
+canonical one. The canonical approval message carries text
+(`RevenueAuditApproval(String)`), so "contains 'approved'" is checkable; the
+drafted protocol's approval carries a true/false value (`Approval(Bool)`),
+whose payload is only ever "True" or "False" — the canonical predicate could
+*never* pass there. In that situation the pass condition must be translated,
+and the honest thing is to do the translation explicitly and flag it for a
+human, rather than let an LLM quietly rewrite it (which is how the sloppy
+`"true" in x` — a substring check that would also match "untrue" — got in).
+
 **The fix.** Make the re-anchoring step change *only* the labels, never the
-pass conditions, and add an automated check that fails loudly if the two goal
-files differ in anything but labels. That way this can never drift again.
+pass conditions, and add an automated check with two verdicts: an **error**
+when a predicate changed even though the payload type is the same (pure
+drift — comparability broken), and a **warning** when the payload type
+changed too (a translation that a human must confirm does not weaken the
+goal). That way this can never drift silently again.
 
 ---
 
@@ -254,6 +268,42 @@ hints switched off, so we know how much each part contributes.
    Beating those is the comparison practitioners actually care about.
 
 ---
+
+## Status: fixes implemented on 2026-07-17
+
+The four measurement fixes are now in the code (the rest remain future
+work — the new baseline arm, the sequential-timing mode, and the
+convincing-evidence items in the previous section):
+
+1. **Fair headline success rule** (`case_runner.py`, `goal_elicitor.py`).
+   Arms that were shown the protocol are still judged strictly on exact
+   labels. Arms that never saw it (bare and the MAF baselines) now pass a
+   goal when the right sender delivered a predicate-satisfying payload to
+   the right receiver under *any* label. Both numbers are recorded in every
+   attempt marker (`goals_pass` under the arm's own rule, plus
+   `goals_pass_strict`), and `summary.json` says which rule each arm used
+   (`success_rule`). The retry loop now also retries on the fair rule, so
+   the bare arm no longer burns attempts chasing labels it cannot see.
+2. **Answer-key invariance guard** (`re_anchor_goals.py`). Re-anchoring
+   now always keeps the canonical predicate unless the payload type
+   changed, refuses to write a goal file that fails the check, and a new
+   `--check` mode audits existing files with no LLM calls. The finance
+   `valid/goals.yaml` was corrected: G3 tightened to `x.lower() == "true"`
+   with a note explaining the Bool translation; G5 keeps its forced
+   translation but now carries the note and the canonical description
+   (descriptions feed every arm's prompt, so they must stay identical).
+3. **Error bars** (`case_runner.py` + the existing `stats.py`). Every
+   arm's success rate in `summary.json` and the printed table now carries
+   a 95% confidence range (`success_rate_ci95_pct`, Wilson method).
+4. **Truncation warning** (`case_runner.py`). If any arm's installed
+   prompt was clipped at the Foundry 8,000-character limit, the summary
+   lists the clipped roles (`prompt_truncated_roles`) and the printed
+   table shouts a warning that the arm's numbers are not comparable.
+
+Note for anyone comparing runs: fix 1 changes what `success_rate_pct`
+means for the no-protocol arms, so summaries produced before and after
+this change are not directly comparable on that column. Re-run, or
+recompute old runs with `--summarize-only`.
 
 ## Where each fix lives
 

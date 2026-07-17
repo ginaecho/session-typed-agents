@@ -206,9 +206,17 @@ update the matching `prompts_schema_version`.
 
 - `summary.json` — Set A (conformance + process cost). `violations`,
   `violation_types`, `success_rate_pct`, token/seconds totals.
-  `success_rate_pct` here = % of trials where the runtime monitor saw zero
-  violations end-to-end. It is **monitor-strict** and means nothing for arms
-  with no monitor (e.g. `maf_groupchat_unsafe` — see "Unsafe" section above).
+  `success_rate_pct` = % of trials where every goal predicate passed, under
+  the arm's own `success_rule` (also in the summary): `strict` (exact
+  anchor sender/receiver/label match) for arms whose prompt contained the
+  protocol vocabulary (`evaluate_run.VOCABULARY_ARMS`), `role_pair`
+  (label-free — right sender, right receiver, predicate-satisfying payload,
+  any label) for arms that never saw the protocol (bare, maf_*). Rationale
+  + history: `docs/BENCHMARK_FAIRNESS_REVIEW.md` Problem 1. Each arm also
+  carries `success_rate_ci95_pct` (95% Wilson interval — quote it, not just
+  the point estimate) and `prompt_truncated_roles` (non-empty = that arm's
+  installed prompt was clipped at Foundry's 8000-char limit; treat its
+  numbers as invalid for comparison).
 - `summary_eval.json` — Set B (goal achievement). `strict_pct` /
   `role_pair_pct` / per-goal breakdowns. Strict = exact-anchor match; role_pair
   relaxes the label requirement (any message between the expected sender/

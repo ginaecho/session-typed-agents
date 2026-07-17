@@ -9,6 +9,23 @@ dropped: []
 # so protocol-perfect trials (e.g. runs/20260601T095940 spec arm, 11/11 events
 # accepted) were scored as goal failures. Also restored the branch tags that
 # the canonical case.yaml goals carry (G1/G2 are high-branch-only).
+#
+# Invariance pass 2026-07-17 (see docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 2):
+# re-anchoring may only re-point ANCHORS; pass conditions must match
+# case.yaml so every arm sits the same exam. Two predicates legitimately
+# differ because the drafted protocol carries a different payload TYPE than
+# the canonical one — those carry a predicate_note and are flagged as
+# warnings (not errors) by `re_anchor_goals.py <case> valid --check`:
+#   G3: canonical RevenueAuditApproval(String) -> drafted Approval(Bool);
+#       '"approved" in x.lower()' can never match a payload that is only
+#       ever "True"/"False", so the translation is x.lower() == "true".
+#       (The previous predicate here also accepted '"true" in x.lower()' as
+#       a SUBSTRING, which would match "untrue" — tightened to equality.)
+#   G5: canonical ExpenseAnalysis(String, >10 chars) -> drafted
+#       ExpenseData(Double); "substantive text" is meaningless for a
+#       number, so the translation is "a value is present" (len(x) > 0).
+# G5's description is kept canonical so goals_text() — which feeds every
+# arm's prompt — stays identical across arms.
 goals:
 - id: G1
   description: High-path revenue must exceed $50,000
@@ -33,12 +50,15 @@ goals:
 - id: G3
   description: Tax verifier must approve the audit explicitly
   metric: audit_approval
-  predicate: '"true" in x.lower() or "approved" in x.lower() or "ok" in x.lower()'
+  predicate: x.lower() == "true"
+  predicate_note: translated from canonical '"approved" in x.lower() or "ok" in
+    x.lower()' because the payload type changed String -> Bool (payload is only
+    ever "True"/"False")
   anchor:
     sender: TaxVerifier
     receiver: RevenueAnalyst
     label: Approval
-  threshold: explicit approval
+  threshold: explicit approval (Bool payload == true)
 - id: G4
   description: Revenue analysis must be substantive (>10 chars)
   metric: analysis_quality
@@ -49,14 +69,17 @@ goals:
     label: FinalRevenueAnalysis
   threshold: '> 10 chars'
 - id: G5
-  description: Expense analysis must be substantive (non-empty)
+  description: Expense analysis must be substantive (>10 chars)
   metric: expense_quality
   predicate: len(x) > 0
+  predicate_note: translated from canonical 'len(x) > 10' because the payload
+    type changed String -> Double (a number cannot be "substantive text"; the
+    check degrades to "a value is present")
   anchor:
     sender: ExpenseAnalyst
     receiver: RevenueAnalyst
     label: ExpenseData
-  threshold: non-empty
+  threshold: non-empty (Double payload)
 - id: G6
   description: A final quarterly report is produced and delivered to the user, terminating
     the pipeline

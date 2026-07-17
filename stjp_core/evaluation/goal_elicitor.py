@@ -278,6 +278,7 @@ def verify_goals_against_trace(
     goal_set: GoalSet,
     trace_events: list,
     branch: str | None = None,
+    match_labels: bool = True,
 ) -> dict[str, tuple[bool, str]]:
     """
     Post-execution verification: check each goal against the trace.
@@ -289,6 +290,15 @@ def verify_goals_against_trace(
     the trial did not take, and is reported as vacuously satisfied (True)
     instead of failed for a missing anchor. Goals with no `branch` are
     mandatory on every branch. Pass branch=None to disable this skipping.
+
+    match_labels: True (default) is the STRICT rule — the event must match
+    the goal's (sender, receiver, label) exactly. False is the FAIR rule
+    for arms that were never shown the protocol's message labels (e.g. the
+    bare arm): any event between the goal's sender and receiver whose
+    payload satisfies the predicate counts, whatever label the agents
+    chose. Without this, a bare-arm agent that sends the right content to
+    the right peer under a self-invented label would score zero — grading
+    it on vocabulary it was never given.
     """
     from stjp_core.compiler.refinement_checker import Refinement
 
@@ -307,22 +317,35 @@ def verify_goals_against_trace(
         matching = [e for e in trace_events
                     if e.sender == goal.anchor_sender
                     and e.receiver == goal.anchor_receiver
-                    and e.label == goal.anchor_label]
+                    and (not match_labels or e.label == goal.anchor_label)]
 
         if not matching:
-            results[goal.id] = (False, f"Anchor message not found in trace: "
-                                       f"{goal.anchor_sender}->{goal.anchor_receiver}:{goal.anchor_label}")
+            want = (f"{goal.anchor_sender}->{goal.anchor_receiver}"
+                    + (f":{goal.anchor_label}" if match_labels else " (any label)"))
+            results[goal.id] = (False, f"Anchor message not found in trace: {want}")
             continue
 
-        # Check the predicate against the payload
-        event = matching[0]
         refn = Refinement(
             sender=goal.anchor_sender,
             receiver=goal.anchor_receiver,
             label=goal.anchor_label,
             predicates=[goal.predicate],
         )
-        ok, err = refn.check(event.payload)
+        if match_labels:
+            # Strict: judge the first exactly-matching event (unchanged
+            # historical semantics — do not silently alter old results).
+            event = matching[0]
+            ok, err = refn.check(event.payload)
+        else:
+            # Label-free: ANY event on the role pair that satisfies the
+            # predicate counts (mirrors evaluate_run.verify_role_pair).
+            ok, err, event = False, "", matching[0]
+            for e in matching:
+                e_ok, e_err = refn.check(e.payload)
+                if e_ok:
+                    ok, err, event = True, "", e
+                    break
+                err = e_err
         if ok:
             results[goal.id] = (True, f"PASS: {goal.description} (payload={event.payload!r})")
         else:
