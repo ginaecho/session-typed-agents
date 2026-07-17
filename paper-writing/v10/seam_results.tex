@@ -1,0 +1,92 @@
+% =====================================================================
+% seam_results.tex  --  RESULTS TEMPLATE for the trainable-seam program.
+%
+% Every number produced by the GPU training program (T0 prompt-era
+% baselines, T1 SFT, T2 GRPO, and the judge-panel calibration gate) is
+% declared here as a \newcommand that defaults to a visible \pending
+% marker.  The seam section's results tables (\S\ref{sec:seam}) and the
+% E5 translation-fidelity cells (\S\ref{sec:bench}) consume ONLY these
+% macros -- nothing is hardcoded.  Post-GPU, fill in a number by editing
+% exactly one \renewcommand line below; the paper re-typesets with no
+% structural change.  TEMPLATE_HOWTO.md maps each macro to the harness
+% output field (experiments/seam_bench/eval metrics) that fills it.
+%
+% Discipline: DO NOT edit the tables in main.tex to drop a number in.
+% Edit only this file.  A macro still showing \pending in the compiled
+% PDF is an honest, visible "not yet measured" cell -- the same
+% pending-cell discipline the rest of the paper follows.
+% =====================================================================
+
+% The visible marker for any not-yet-measured cell.  One definition,
+% one place to restyle every pending cell at once.
+\newcommand{\pending}{{\small\textsc{pending}}}
+
+% Convenience: use \seamfill{<macro>}{<value>} in a "fill sheet" if you
+% prefer; equivalently \renewcommand the target directly.  Provided so
+% the HOWTO can show a single canonical fill idiom.
+\newcommand{\seamfill}[2]{\renewcommand{#1}{#2}}
+
+% ---------------------------------------------------------------------
+% GROUP A -- E5 translation-fidelity cells (v8 Table~\ref{tab:transfid}).
+% These are the "pending" rows v8 shipped; v9 wires them to the same
+% macros the T0 run fills, so the E5 table and the seam tables update
+% together.  Filled from reports/seam/T0_baselines.md (Sonnet, best-of-1
+% draft under the production T+R loop).
+% ---------------------------------------------------------------------
+\newcommand{\seamEfiveFirstDraft}{\pending}   % first-draft validator pass rate
+\newcommand{\seamEfiveRepairRounds}{\pending} % mean repair rounds to validity (cap 3)
+\newcommand{\seamEfiveGuardCoemit}{\pending}  % guard-sidecar co-emission rate
+
+% ---------------------------------------------------------------------
+% GROUP B -- T0 prompt-era baselines, per API model (no weights trained).
+% validity@1 (first-draft validator pass), validity@k (best-of-n filter),
+% mean repair-rounds to validity, and $-to-accepted, per model tier.
+% Filled from reports/seam/T0_baselines.md / the eval metric block.
+% ---------------------------------------------------------------------
+\newcommand{\seamTzeroValOneHaiku}{\pending}
+\newcommand{\seamTzeroValOneSonnet}{\pending}
+\newcommand{\seamTzeroValOneOpus}{\pending}
+
+\newcommand{\seamTzeroValKHaiku}{\pending}   % best-of-10 (validity@10)
+\newcommand{\seamTzeroValKSonnet}{\pending}
+\newcommand{\seamTzeroValKOpus}{\pending}
+
+\newcommand{\seamTzeroRepairHaiku}{\pending}
+\newcommand{\seamTzeroRepairSonnet}{\pending}
+\newcommand{\seamTzeroRepairOpus}{\pending}
+
+\newcommand{\seamTzeroDollarHaiku}{\pending}
+\newcommand{\seamTzeroDollarSonnet}{\pending}
+\newcommand{\seamTzeroDollarOpus}{\pending}
+
+% ---------------------------------------------------------------------
+% GROUP C -- T1 SFT (system S4: SFT-7B+GCD).  Absolute post-SFT numbers.
+% Filled from reports/seam/T1_sft_report.md.
+% ---------------------------------------------------------------------
+\newcommand{\seamSftValOne}{\pending}   % validity@1 on test-syn
+\newcommand{\seamSftBisimOne}{\pending} % bisim@1 (E5 equivalence to gold)
+\newcommand{\seamSftDollar}{\pending}   % $-to-accepted
+
+% ---------------------------------------------------------------------
+% GROUP D -- T2 GRPO (system S6/S7).  Deltas vs the T1 SFT checkpoint
+% (the pre-registered H4 form: validity or graded-equivalence gain with
+% repair-rounds strictly down).  Filled from reports/seam/T2_grpo_report.md.
+% ---------------------------------------------------------------------
+\newcommand{\seamGrpoValDelta}{\pending}    % Delta validity@1 vs S4
+\newcommand{\seamGrpoEquivDelta}{\pending}  % Delta graded-equivalence@1 vs S4
+\newcommand{\seamGrpoRepairDelta}{\pending} % Delta repair-rounds vs S4
+
+% ---------------------------------------------------------------------
+% GROUP E -- Judge-panel calibration gate (\S6 of the execution plan).
+% Filled from reports/seam/W7_calibration.md (the panel run).
+% ---------------------------------------------------------------------
+\newcommand{\seamPanelAUC}{\pending}        % gold-vs-mutant separation AUC (non-D2 strata)
+\newcommand{\seamPanelHumanLB}{\pending}    % human-agreement Wilson 95% lower bound, n>=200
+\newcommand{\seamPanelSwapReject}{\pending} % swapped-pair rejection rate
+\newcommand{\seamPanelEffVotes}{\pending}   % effective independent votes
+
+% ---------------------------------------------------------------------
+% GROUP F -- Transfer (H6).  Point estimate + CI on (trained gap minus
+% baseline gap) at test-real.  Filled from the phase-gate report.
+% ---------------------------------------------------------------------
+\newcommand{\seamTransferGap}{\pending}     % transfer gap-of-gaps, bootstrap point est. [95% CI]
