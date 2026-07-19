@@ -17,8 +17,10 @@ The theory underneath is **multiparty session types (MPST)** on top of
 library, but it's why the guarantees hold.
 
 > **Scope.** This README covers the `stjp_core/` library and its runnable apps.
-> The vendored Scribble compiler lives in
-> [`../scribble-java/`](../scribble-java/); the research and design write-ups in
+> The Scribble compiler lives in `../scribble-java/` (cloned locally during
+> setup from [scribble/scribble-java](https://github.com/scribble/scribble-java);
+> the directory is gitignored, so it is absent in a fresh clone until you run
+> the setup step); the research and design write-ups in
 > [`../docs/`](../docs/). The LLM-driven cross-case benchmark and the Flask live
 > demo live in the `experiments/` harness of the development tree — they are kept
 > **out of this security-governed repository** because they pull in dependencies
@@ -86,7 +88,7 @@ Verified against a clean virtualenv with `requirements.txt` only:
 
 - **Python 3.13** (project virtualenv: `stjp_core/.venv`)
 - **Java 17** — for the vendored Scribble compiler (`java` on `PATH`)
-- **Scribble** — vendored and pre-built at [`../scribble-java/`](../scribble-java/); nothing to install
+- **Scribble** — cloned and pre-built at `../scribble-java/` (from [scribble/scribble-java](https://github.com/scribble/scribble-java); gitignored, so clone it once during setup)
 - **Azure OpenAI / AI Foundry** — *only* for the LLM profiles: a GPT deployment plus the Azure CLI (`az login`)
 
 ```powershell
