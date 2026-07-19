@@ -105,7 +105,10 @@ tagged SYNTH placeholder to be replaced by real n=30 runs.
 
 ## E5 — how good is English→protocol? (translation fidelity)
 
-`efsm_equiv.py` compares two protocols by MEANING (per-role EFSM bisimulation +
+`efsm_equiv.py` compares two protocols by MEANING (per-role EFSM
+bisimulation — an EFSM is a role's contract compiled to a state machine,
+and *bisimulation* is the formal check that two state machines behave
+identically no matter what happens — plus
 identical conversation language), validated by `test_efsm_equiv.py` (equivalent
 to itself/reformat; different under relabel/reorder/role-rename) and a `--demo`
 that scores 90 real (gold, draft) pairs — gold being a known-correct reference

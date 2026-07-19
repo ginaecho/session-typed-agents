@@ -2,12 +2,23 @@
 
 `langgraph_ladder.py` runs an STJP arm-ladder case (`revenue_audit`,
 `escrow_trade`) as a **LangGraph `StateGraph`** instead of the native
-`engine_ladder.py`. It exists for two reasons, and it answers a question that
-had been marked "blocked": *can you install LangGraph and use it to trace token
-usage and agent behaviour?*
+`engine_ladder.py`. (The *arm ladder* is the graded series of configurations —
+from no protocol at all up to full gate + scheduler — that the subagent-trials
+harness compares; see `../subagent_trials/README.md`.) It exists for two
+reasons, and it answers a question that had been marked "blocked": *can you
+install LangGraph and use it to trace token usage and agent behaviour?*
+
+## Menu
+
+- [1. E7 third harness (portability)](#1-e7-third-harness-portability--done-1414-agreement)
+- [2. Token metering](#2-token-metering--wired-and-ready-needs-an-llm-key)
+- [3. Behaviour tracing](#3-behaviour-tracing)
+- [Status vs the plan](#status-vs-the-plan)
 
 ## 1. E7 third harness (portability) — **done, 14/14 agreement**
 
+E7 is the benchmark plan's cross-runtime portability experiment: do the STJP
+monitor's verdicts stay the same when the protocol runs on a different runtime?
 The plan's E7 was "in-process vs standalone monitor agreement only." This adds a
 genuinely different runtime. LangGraph executes the protocol (roles = graph
 nodes, rounds = a self-looping `poll` node, the gate/scheduler as node logic);

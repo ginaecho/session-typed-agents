@@ -8,7 +8,7 @@ intent ─► LLM drafts global type ─► Scribble ─► projection ─► ge
 
 But most teams already **have** skills — Claude skills, agent specs, prose
 instruction sheets — written by hand, one per agent, never checked against
-each other. The trade_deadlock case shows why that matters: the Buyer's
+each other. The [`trade_deadlock`](../../experiments/cases/trade_deadlock/) case shows why that matters: the Buyer's
 skill ("don't pay until goods arrive") and the Seller's ("don't ship until
 paid") each read fine alone and deadlock together.
 
@@ -82,16 +82,19 @@ human can diff what the compactor understood against what the skill says.
 ## 2. Compatibility — the cheap cross-check
 
 `check_compatibility()` runs the duality pre-check across all local types
-before any synthesis: every send must have a matching receive (same
+before any synthesis (*duality* is the simple idea that every send must be
+mirrored by a matching receive on the other side): every send must have a matching receive (same
 sender/receiver/label), payload types must agree, no unknown peers. This is
-the multiparty generalisation of binary duality and catches the crude
+the multiparty generalisation of two-party duality and catches the crude
 authoring bugs (typo'd labels, one-sided messages, "who is 'the seller'?")
 with pinpoint messages, for free.
 
 ## 3. Synthesis — local types → global type, deterministically
 
 `global_synthesizer.synthesize_global()` runs a product construction over
-the roles' programs:
+the roles' programs (it steps all the roles' state machines forward
+together in lockstep, emitting a global step whenever a send and its
+matching receive line up):
 
 - a communication is emitted when a role's next action is a send and the
   receiver can accept it as its next action (entering an external-choice

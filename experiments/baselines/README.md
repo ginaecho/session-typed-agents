@@ -119,12 +119,14 @@ arm as the sole control.
 
 - `__init__.py` — re-exports `SCENARIOS`, `make_runner`, `BaselineRunner`, `AttemptResult`
 - `base.py` — `BaselineRunner` ABC + `AttemptResult` dataclass
-- `registry.py` — the `SCENARIOS` registry (8-arm matrix) + `make_runner(case, key)`
+- `registry.py` — the `SCENARIOS` registry (the 15-arm matrix) + `make_runner(case, key)`
 - `instructions.py` — prompt builders: `build_bare_instructions`,
   `build_global_spec_instructions`, `build_spec_instructions`,
-  `build_spec_minimal_instructions`
+  `build_spec_minimal_instructions`, `build_unchecked_skills_instructions`
 - `_foundry_client.py` — lazy shared `AgentsClient` singleton
-- `foundry_runner.py` — `FoundryRunner` (drives `bare`, `spec_llmvalid`, `min_llmvalid`)
+- `foundry_runner.py` — `FoundryRunner` (drives `bare`, `unchecked_skills`,
+  `global_decentralized`, and the whole `spec`/`min` family, including the
+  gate and scheduler variants)
 - `_maf_common.py` — `MAFRunnerBase` (shared loop logic for the MAF arms)
 - `maf_native.py` — `MAFNativeRunner` (MAF Agent + Azure OpenAI direct)
 - `maf_foundry.py` — `MAFFoundryRunner` (MAF Agent + Foundry chat client)
