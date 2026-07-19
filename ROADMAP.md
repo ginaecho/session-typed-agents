@@ -6,6 +6,44 @@ Last updated 2026-05-07. Supersedes the previously fragmented `PROPOSAL.md`, `PL
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+  - [Thesis](#thesis)
+  - [Architecture](#architecture)
+- [Phase 1 — Foundation: Scribble compiler, monitor, authoring loop, lexical sub-sessions](#phase-1--foundation-scribble-compiler-monitor-authoring-loop-lexical-sub-sessions)
+  - [1.1 Scribble integration & monitor pipeline](#11-scribble-integration--monitor-pipeline)
+  - [1.2 Runtime refinement contracts (Bocchi 2010)](#12-runtime-refinement-contracts-bocchi-2010)
+  - [1.3 STJP authoring loop — forward (NL → Scribble)](#13-stjp-authoring-loop--forward-nl--scribble)
+  - [1.4 STJP authoring loop — reverse (skills.md → Scribble)](#14-stjp-authoring-loop--reverse-skillsmd--scribble)
+  - [1.5 Sub-session composition (lexical, cross-file)](#15-sub-session-composition-lexical-cross-file)
+  - [1.6 Real-world audit](#16-real-world-audit)
+- [Phase 2 — Static verification: refinement discharge, subtyping, capability cross-check](#phase-2--static-verification-refinement-discharge-subtyping-capability-cross-check)
+  - [2.1 Static refinement discharge via Z3](#21-static-refinement-discharge-via-z3)
+  - [2.2 Synchronous structural subtyping](#22-synchronous-structural-subtyping)
+  - [2.3 Refinement-aware subtyping](#23-refinement-aware-subtyping)
+  - [2.4 Conditional / asserted MPST (full integration)](#24-conditional--asserted-mpst-full-integration)
+  - [2.5 Capability projection ↔ frontmatter cross-check](#25-capability-projection--frontmatter-cross-check)
+  - [2.6 Hard-schema linter](#26-hard-schema-linter)
+- [Phase 3 — Advanced research: composition, async, dynamic, NL frontend, harness backends](#phase-3--advanced-research-composition-async-dynamic-nl-frontend-harness-backends)
+  - [3.1 Hybrid MPST projection-preserving composition](#31-hybrid-mpst-projection-preserving-composition)
+  - [3.2 Async subtyping (bounded-buffer fragment)](#32-async-subtyping-bounded-buffer-fragment)
+  - [3.3 Dynamic-multirole MPST](#33-dynamic-multirole-mpst)
+  - [3.4 Probabilistic refinement](#34-probabilistic-refinement)
+  - [3.5 Bounded recursion + cost annotations](#35-bounded-recursion--cost-annotations)
+  - [3.6 Hyperproperty layer (HyperLTL)](#36-hyperproperty-layer-hyperltl)
+  - [3.7 LLM-assisted protocol extraction (annotate-then-convert)](#37-llm-assisted-protocol-extraction-annotate-then-convert)
+  - [3.8 OTel GenAI trace adapter](#38-otel-genai-trace-adapter)
+  - [3.9 Harness-specific monitor codegen](#39-harness-specific-monitor-codegen)
+  - [3.10 LLM-as-`dyn` role + gradual session typing](#310-llm-as-dyn-role--gradual-session-typing)
+  - [3.11 NL round-trip renderer](#311-nl-round-trip-renderer)
+  - [Phase summary table](#phase-summary-table)
+  - [Honest scope statement](#honest-scope-statement)
+  - [Risk register](#risk-register)
+  - [Strategic decisions (load-bearing)](#strategic-decisions-load-bearing)
+  - [References](#references)
+<!-- MENU:END -->
+
 ## Thesis
 
 The core gap practitioners feel — *declared agent spec vs. observed behaviour* — is exactly where today's agent verification ecosystem (LLM-as-judge, AgentSpec, Agent-C, LangGraph asserts, Guardrails, NeMo) is weakest. Hard-schema declarations describe **capability surface** (what an agent *can* touch); the **behavioural contract** lives in markdown prose; nothing today proves the two agree.

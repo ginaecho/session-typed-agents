@@ -2,7 +2,17 @@
 
 Per the fairness checklist (BENCHMARK_PLAN_V2 §11), the expected outcome of each
 experiment is registered here BEFORE running, then graded after. Registered
-2026-07-04.
+2026-07-04. Writing predictions down first is what makes a later "confirmed"
+mean something: a prediction that can be edited after the run can never fail.
+
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Predictions and graded outcomes](#predictions-and-graded-outcomes)
+- [Term notes](#term-notes)
+<!-- MENU:END -->
+
+## Predictions and graded outcomes
 
 | Exp | Prediction (registered before running) | Outcome |
 |---|---|---|
@@ -15,6 +25,8 @@ experiment is registered here BEFORE running, then graded after. Registered
 | E7 portability | the standalone generated monitor agrees with the in-process monitor on conformant canonical traces | **CONFIRMED — 100% agreement (59/59)** (three-harness live comparison pending; async-reordered traces diverge by the documented codegen limitation) |
 | E3 capability sweep | A-arm disasters rise with model strength; enforcement gain falls to 0 | **PENDING — needs multiple model families (2 real anchors: gpt-4o +60 gain/4 disasters, gpt-5.4 0 gain/22 disasters)** |
 
-> Term notes: **gold** = a known-correct reference answer (here, paired with a
+## Term notes
+
+> **gold** = a known-correct reference answer (here, paired with a
 > draft translation for scoring). **pass^k** = the probability that all of the
 > next k runs succeed.

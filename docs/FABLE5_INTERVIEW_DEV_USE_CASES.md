@@ -82,7 +82,7 @@ cover it, and each one already exists as a runnable case in this repo.
 
 **Jump to a use case:**
 
-1. [Coordinating subagents (deadlock-free)](#uc1-coordinating-subagents) — incl. the real-repo-grounded [`agenticpay_settlement`](#uc1-coordinating-subagents) benchmark
+1. [Coordinating subagents (deadlock-free)](#uc1-coordinating-subagents) — incl. the real-repo-grounded [`agenticpay_settlement`](../experiments/cases/agenticpay_settlement/) benchmark
 2. [Agent pipelines with review/approval gates](#uc2-agent-pipelines-with-reviewapproval-gates)
 3. [Loops with budgets](#uc3-loops-with-budgets)
 4. [Skill/prompt authoring itself](#uc4-skillprompt-authoring-itself)

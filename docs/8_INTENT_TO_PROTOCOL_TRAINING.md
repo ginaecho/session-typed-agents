@@ -151,10 +151,10 @@ over three known-good (intent, protocol) pairs plus one deliberately swapped
 pair, using 14 isolated judge calls.
 
 - **The swapped pair (canary — a planted check item with a known correct
-  answer):** intent from the banking case paired with
-  the protocol from the travel case. Both forward judges correctly said "no
+  answer):** intent from the [`banking`](../experiments/cases/banking/) case paired with
+  the protocol from the [`travel`](../experiments/cases/travel/) case. Both forward judges correctly said "no
   match" at 0.99 confidence — proof the panel isn't a rubber stamp.
-- **The interesting catch — `trade_deadlock`:** this case's intent literally
+- **The interesting catch — [`trade_deadlock`](../experiments/cases/trade_deadlock/):** this case's intent literally
   describes a deadlock ("Buyer releases payment only after goods received;
   Seller releases goods only after payment" — each side waiting on the
   other, forever). The protocol on file doesn't implement that deadlock; it

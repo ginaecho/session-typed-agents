@@ -6,6 +6,46 @@ These notes are the authoritative source the project's design decisions are draw
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [Part I — Multiparty Session Types for LLM Agent Verification](#part-i--multiparty-session-types-for-llm-agent-verification)
+  - [1. MPST foundations](#1-mpst-foundations)
+  - [2. MPST extensions relevant to agents](#2-mpst-extensions-relevant-to-agents)
+  - [3. Bridging natural language → types](#3-bridging-natural-language--types)
+  - [4. Verification of LLM/agent systems (2024–2026)](#4-verification-of-llmagent-systems-20242026)
+  - [5. Tools and implementations](#5-tools-and-implementations)
+- [Part II — The Agent Harness Landscape: Machine-Readable Surface Area for Verification](#part-ii--the-agent-harness-landscape-machine-readable-surface-area-for-verification)
+  - [Executive framing](#executive-framing)
+  - [1. Claude Code (Anthropic)](#1-claude-code-anthropic)
+  - [2. OpenAI Agents SDK / Codex](#2-openai-agents-sdk--codex)
+  - [3. LangGraph / LangChain](#3-langgraph--langchain)
+  - [4. AutoGen (Microsoft)](#4-autogen-microsoft)
+  - [5. Other harnesses](#5-other-harnesses)
+  - [6. Emerging standards (2025–2026)](#6-emerging-standards-20252026)
+  - [7. Eval / verification harnesses](#7-eval--verification-harnesses)
+  - [8. Per-harness verifier surface](#8-per-harness-verifier-surface)
+- [Part III — Verifying & Validating LLM Agent Behavior](#part-iii--verifying--validating-llm-agent-behavior)
+  - [1. Verification paradigms applicable to LLM agents](#1-verification-paradigms-applicable-to-llm-agents)
+  - [2. Specifications LLMs can be checked against](#2-specifications-llms-can-be-checked-against)
+  - [3. Formal specification of agent goals](#3-formal-specification-of-agent-goals)
+  - [4. Practical verification tooling](#4-practical-verification-tooling)
+  - [5. Recent agent-verification papers (2024–2026)](#5-recent-agent-verification-papers-20242026)
+  - [6. The hard problem: markdown as a typing system](#6-the-hard-problem-markdown-as-a-typing-system)
+  - [7. Why MPST is the right core](#7-why-mpst-is-the-right-core)
+- [Consolidated Bibliography](#consolidated-bibliography)
+  - [Multiparty session types — foundational](#multiparty-session-types--foundational)
+  - [MPST extensions](#mpst-extensions)
+  - [Choreographies](#choreographies)
+  - [Tools](#tools)
+  - [NL → spec / agentic verification (2024–2026)](#nl--spec--agentic-verification-20242026)
+  - [Harness / standards / runtime](#harness--standards--runtime)
+  - [Calibration / behavioural](#calibration--behavioural)
+  - [Metamorphic / property-based](#metamorphic--property-based)
+  - [Goal specification](#goal-specification)
+  - [Guardrails / contracts](#guardrails--contracts)
+<!-- MENU:END -->
+
 # Part I — Multiparty Session Types for LLM Agent Verification
 
 ## 1. MPST foundations

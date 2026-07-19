@@ -6,6 +6,33 @@ This is the technical heart of `AI_verf`. Drafted 2026-05-02. Companion: `PROPOS
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. The MPST loop in agent terms](#1-the-mpst-loop-in-agent-terms)
+- [2. Eight static-time guarantees → cost / efficiency translation](#2-eight-static-time-guarantees--cost--efficiency-translation)
+  - [2.1 Bounded message count](#21-bounded-message-count)
+  - [2.2 Deadlock-freedom — no token-burning stuck states](#22-deadlock-freedom--no-token-burning-stuck-states)
+  - [2.3 No off-protocol detours](#23-no-off-protocol-detours)
+  - [2.4 Maximal parallelism by construction](#24-maximal-parallelism-by-construction)
+  - [2.5 Tight capability projection — minimum permissions per role](#25-tight-capability-projection--minimum-permissions-per-role)
+  - [2.6 Bounded recursion — no infinite-loop billing surprises](#26-bounded-recursion--no-infinite-loop-billing-surprises)
+  - [2.7 Refinement contracts cut bad inputs early](#27-refinement-contracts-cut-bad-inputs-early)
+  - [2.8 Static composition — sessions you can plug together](#28-static-composition--sessions-you-can-plug-together)
+- [3. From local projection to runtime monitor](#3-from-local-projection-to-runtime-monitor)
+  - [3.1 The monitor is *generated*, not authored](#31-the-monitor-is-generated-not-authored)
+  - [3.2 Monitor algorithm](#32-monitor-algorithm)
+  - [3.3 Where the monitor sits](#33-where-the-monitor-sits)
+  - [3.4 Cost of the monitor itself](#34-cost-of-the-monitor-itself)
+  - [3.5 The runtime data model: State + Assignee + Audit Trail](#35-the-runtime-data-model-state--assignee--audit-trail)
+  - [3.6 Failure modes the monitor catches](#36-failure-modes-the-monitor-catches)
+- [4. Composition theorem in plain language](#4-composition-theorem-in-plain-language)
+- [5. Worked example (sketch)](#5-worked-example-sketch)
+- [6. Honest boundaries](#6-honest-boundaries)
+- [7. Pointer to implementation](#7-pointer-to-implementation)
+- [8. References (load-bearing for this document)](#8-references-load-bearing-for-this-document)
+<!-- MENU:END -->
+
 ## 1. The MPST loop in agent terms
 
 In MPST, you write a **global type** `G` describing the protocol of a multi-party interaction (e.g., a router agent, a tool-using executor, a verifier sub-agent, plus their tools and the orchestrator):

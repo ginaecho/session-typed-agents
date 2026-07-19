@@ -1,12 +1,13 @@
 # experiments/apps/live_demo
 
-Flask UI for the STJP 8-arm benchmark. Walks an audience through:
+Flask UI for the STJP arm-matrix benchmark (15 arms — see
+`../../baselines/README.md`). Walks an audience through:
 
 1. **Pick a case** (or edit its intent prose).
 2. **Draft a global type** — LLM architect drafts a Scribble protocol N times,
    Scribble validates each; the first valid and first unsafe drafts are kept
    and shown side by side with the canonical reference.
-3. **Run the 8 arms** — `case_runner` runs in a subprocess; each arm's
+3. **Run the arms** — `case_runner` runs in a subprocess; each chosen arm's
    `events_<arm>.jsonl` is tailed and streamed into a per-arm panel via SSE.
 4. **Drill in** — open any role's full pre-truncation system prompt straight
    from `runs/<ts>/prompts/<arm>/<Role>.system.md`. Summary tables (Set A

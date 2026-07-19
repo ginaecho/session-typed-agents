@@ -6,6 +6,23 @@ Drafted 2026-05-02.
 
 ---
 
+<!-- MENU:START (auto-generated — edit headings, then regenerate) -->
+## Menu
+
+- [1. Why Scribble is the moat](#1-why-scribble-is-the-moat)
+- [2. What we installed](#2-what-we-installed)
+  - [Repository](#repository)
+  - [Build](#build)
+  - [Smoke tests run](#smoke-tests-run)
+  - [Cheat sheet (CLI)](#cheat-sheet-cli)
+- [3. What Scribble caught immediately](#3-what-scribble-caught-immediately)
+- [4. Improvement roadmap — Scribble extensions for agent verification](#4-improvement-roadmap--scribble-extensions-for-agent-verification)
+- [5. Integration architecture](#5-integration-architecture)
+- [6. Where the Scribble source lives](#6-where-the-scribble-source-lives)
+- [7. Decision: fork or extend?](#7-decision-fork-or-extend)
+- [8. References](#8-references)
+<!-- MENU:END -->
+
 ## 1. Why Scribble is the moat
 
 Multiparty session types are a 20-year body of theory; Scribble is the 20-year body of *engineering* that makes them shippable. It has:

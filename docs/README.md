@@ -103,7 +103,7 @@ What you'll learn:
 - The three gating layers (completion → safety → efficiency)
 - Severity grading (S0 to S4, from benign to disaster)
 - Critical properties (C1 data provenance, C2 context completeness, C3 authorization)
-- A concrete example: the finance benchmark
+- A concrete example: the [`finance`](../experiments/cases/finance/) benchmark
 - Common benchmarking mistakes to avoid
 
 **Read time:** 20 minutes
@@ -198,7 +198,7 @@ What you'll learn:
   (faithfulness — does the protocol mean what the user meant?)
 - The two instruments: the verifier stack (validity) and the memoryless
   judge panel (faithfulness) — the three judge classes, why they share no
-  memory, and a live catch (the `trade_deadlock` case) explained in plain
+  memory, and a live catch (the [`trade_deadlock`](../experiments/cases/trade_deadlock/) case) explained in plain
   language
 - What's built today, component by component, each with its one-command
   usage and the report backing it: toolchain setup, grammar-constrained

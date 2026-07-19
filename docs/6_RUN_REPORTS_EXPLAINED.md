@@ -11,7 +11,7 @@ and [§10](#what-this-reproduction-actually-cost-in-dollars).
 
 This document has two parts:
 
-- **Part 1 — the finance run (2026-07-02), then the same ladder on REAL public
+- **Part 1 — the [`finance`](../experiments/cases/finance/) run (2026-07-02), then the same ladder on REAL public
   skills.** One realistic task, six AI agents, run 10 times per setting: shows
   that the full STJP system is both the safest and the cheapest way to run the
   agents. Start here. Part 1 then repeats the ladder on **real MIT-licensed
@@ -274,16 +274,16 @@ the honest, interesting part.** Per case (n=100 each):
 
 | case (source) | unchecked | bare | STJP |
 |---|---|---|---|
-| airline_seat (openai-agents) | **0% — deadlock** (skill says "transfer to Seat Booking"; that human name ≠ the role id, so the handoff message never routes) | 100% GCR but **0% CGC, 100 double seat-writes** | 100% / 100% / 0 |
-| booking_saga (langgraph) | 100% GCR but **0% CGC, 100 double charges** (Sonnet coordinates the hold-then-pay order from the intent, but re-sends `PaymentCaptured`) | **0% — livelock** (rigidly re-runs its 4-step contract, never advancing) | 100% / 100% / 0 |
-| code_execution (autogen) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
-| content_pipeline (crewAI) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
+| [`airline_seat`](../experiments/cases/skills_safety/airline_seat/) (openai-agents) | **0% — deadlock** (skill says "transfer to Seat Booking"; that human name ≠ the role id, so the handoff message never routes) | 100% GCR but **0% CGC, 100 double seat-writes** | 100% / 100% / 0 |
+| [`booking_saga`](../experiments/cases/skills_safety/booking_saga/) (langgraph) | 100% GCR but **0% CGC, 100 double charges** (Sonnet coordinates the hold-then-pay order from the intent, but re-sends `PaymentCaptured`) | **0% — livelock** (rigidly re-runs its 4-step contract, never advancing) | 100% / 100% / 0 |
+| [`code_execution`](../experiments/cases/skills_safety/code_execution/) (autogen) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
+| [`content_pipeline`](../experiments/cases/skills_safety/content_pipeline/) (crewAI) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
 
 **What this teaches (read carefully — it is more honest than "unchecked always
 dies"):**
 
 - **A strong model can sometimes paper over unvalidated skills at runtime.**
-  Sonnet coordinated `booking_saga` and both simple pipelines from the prose
+  Sonnet coordinated [`booking_saga`](../experiments/cases/skills_safety/booking_saga/) and both simple pipelines from the prose
   intent alone, where the weaker Haiku model deadlocked all of them. So the
   *runtime* success of unvalidated skills is **model-dependent and
   unreliable** — you cannot count on it.

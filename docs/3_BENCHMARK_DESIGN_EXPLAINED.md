@@ -251,6 +251,8 @@ We check three "critical properties" to see when agents really need protocol hel
 
 ## 6. A concrete example: The finance benchmark
 
+The example below is the [`finance`](../experiments/cases/finance/) case.
+
 ### The task
 
 Six agents process a revenue report:
