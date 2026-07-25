@@ -32,7 +32,7 @@ from stjp_core.monitor.monitor import SessionMonitor, TraceEvent      # noqa: E4
 PROTO = Path(__file__).resolve().parent / "protocols" / "v1.scr"
 NAME = "LiteratureSweep"
 ROLES = ["Coordinator", "Scout", "Verifier"]
-BUDGET = 30          # must match `state searches_left` in v1.refn
+BUDGET = 12          # must match `state searches_left` in v1.refn
 
 
 def _spend(n: int, step: int) -> list[TraceEvent]:
@@ -76,14 +76,14 @@ def main() -> int:
         failures.append(f"ledger incoherent: {errs}")
 
     # 4. The gate refuses the spend that would overdraw the shared budget.
-    #    Four requests of 10 against a budget of 30: the fourth must be
+    #    Three requests of 5 against a budget of 12: the third must be
     #    rejected pre-delivery, and the budget must sit at 0, never below.
     events = [
         TraceEvent("Coordinator", "Scout", "Assignment", "sweep the literature", step=1),
         TraceEvent("Coordinator", "Verifier", "Watch", "sweep the literature", step=2),
     ]
     step = 3
-    for n in (10, 10, 10, 10):
+    for n in (5, 5, 5):
         events += _spend(n, step)
         step += 3
 
@@ -92,7 +92,7 @@ def main() -> int:
     remaining = sm.ledger.values["searches_left"]
     blocked = [v for v in sm.ledger_violations
                if "REJECTED pre-delivery" in (v.message or "")]
-    print(f"[4] budget after 4x10 of {BUDGET}      : {remaining} "
+    print(f"[4] budget after 3x5 of {BUDGET}       : {remaining} "
           f"(blocked {len(blocked)} overdraw{'s' if len(blocked) != 1 else ''})")
     if remaining < 0:
         failures.append(f"budget went negative ({remaining}) — gate did not hold")

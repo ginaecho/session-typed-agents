@@ -62,7 +62,7 @@ already uses, and the earlier fan-out did not.
 | Roles | Coordinator, Scout, Verifier (in **both** arms) |
 | Search assignment | one identical research question, given to both arms |
 | Role descriptions | the prose block from `case.yaml`, in both arms |
-| Search budget | 30 calls |
+| Search budget | 12 calls (see amendment below) |
 | Step cap | 40 |
 | Role-players | the same model at the same settings in both arms |
 | Driver loop | the same loop drives both arms, so neither gets a human in the loop the other lacks |
@@ -71,6 +71,16 @@ already uses, and the earlier fan-out did not.
 |---|---|---|
 | `bare` | the intent as prose only | none |
 | `min_llmvalid_sched` | its projected local type | gate + EFSM turn selection + budget ledger |
+
+**Amendment, 2026-07-25, before any trial was run.** The shared search budget
+was lowered from 30 calls to 12. Reason: six trials at 30 would need up to 180
+real search calls, and this session's search pool has a hard cap that was already
+reached once. The change is recorded here, and in a comment in `v1.refn`, because
+it was made *before* any arm ran — the same change made after seeing results
+would not be legitimate, and the whole point of this document is that the
+difference is visible. `check_case.py` was re-run at the new budget and still
+passes: three spend requests of five against twelve leave the budget at 2 with
+one overdraw rejected pre-delivery.
 
 **The search assignment must be a question whose answer is not already known to
 the operator.** The earlier sweep's topic is disqualified: its findings are

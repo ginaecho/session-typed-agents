@@ -43,12 +43,15 @@ type: str
 require: len(x) > 0
 
 # ── Session ledger: the shared search budget ─────────────────────────────────
-# 30 search calls for the whole team. Each SearchSpend message carries the
+# 12 search calls for the whole team (lowered from 30 before any trial was run:
+# six trials at 30 would need 180 real searches and the session search pool has a
+# hard cap. Recorded in the pre-registration; changing it after seeing results
+# would not be legitimate). Each SearchSpend message carries the
 # number of calls the Scout intends to make; the ledger debits it. The
 # invariant is what the unprotected run violated: the budget went negative in
 # effect, because two agents spent it all and nobody was watching the total.
 # Severity S4 = an irreversible-resource breach (the calls, once spent, are gone).
 
-state searches_left: int = 30
+state searches_left: int = 12
 on SearchSpend(cost): searches_left -= cost
 invariant searches_left >= 0  @S4
