@@ -129,6 +129,7 @@ from each `case.yaml`.
 | [`cases/iterative_polling/`](cases/iterative_polling/) | 3 | Shape D — loop sessions: Client polls Server in a recursion with a minimal continue-vs-stop choice |
 | [`cases/nested_retry/`](cases/nested_retry/) | 4 | Shape F — loop plus nested branching: editorial revise-vs-accept, each side with its own inner choice |
 | [`cases/planner_workers/`](cases/planner_workers/) | 4 | Coordinator hands tasks to two workers; a shared repository grants one push turn at a time (mutual exclusion on the shared branch) |
+| [`cases/publish_flow/`](cases/publish_flow/) | 2 | Mechanism demo (no `case.yaml`, deterministic): the typed publish channel — a git-push rule checked as a payload refinement pre-delivery instead of a hook; predictions pre-registered and graded |
 | [`cases/rag/`](cases/rag/) | 6 | Retrieval-augmented generation with a bounded verification loop: parallel retrieval, draft, fact-check, revise until verified |
 | [`cases/report_pipeline/`](cases/report_pipeline/) | 6 | THE TOKEN-EFFICIENCY DEMO: a completable 6-role linear pipeline where the metric is tokens/calls to finish, not whether it finishes |
 | [`cases/report_pipeline_large/`](cases/report_pipeline_large/) | 10 | Scale variant of report_pipeline: global-text token cost grows with protocol size, the projected local contract stays flat |

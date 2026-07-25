@@ -91,7 +91,9 @@ the platform creates and the agent cannot rename; then run the checker with
 and leave renaming or merging the branch away to the owner. Never resolve
 such a conflict silently, in either direction — silent resolution toward the
 nearer instruction is exactly how four rules were broken in one push
-(session record §7).
+(session record §7). This precedence is also machine-readable:
+`tools/check_rule_conflicts.py` diffs the rule sources in `tools/rules/`
+and fails loudly on any conflict no precedence declaration covers.
 
 **Before pushing, run all three checkers:**
 
