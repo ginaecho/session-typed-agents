@@ -103,7 +103,7 @@ Full definitions in `../docs/archive/EXPERIMENT_DESIGN_v2.md`.
 - **Set B — goal achievement** — did the run actually accomplish the task?
   `summary_eval.json` carries `strict` / `role_pair` / `semantic` per arm.
   `case_runner.py` computes strict + role-pair at the end of every run;
-  `--semantic` adds the LLM-judged lens.
+  `--semantic` adds the LLM-judged scoring rule.
 - **Process cost** — tokens, LLM calls, wall-clock, attempts — in `summary.json`.
 
 Note that `success_rate_pct` in `summary.json` is **goal-based**, not
@@ -117,7 +117,7 @@ from each `case.yaml`.
 | case | roles | what it tests |
 |---|---|---|
 | [`cases/_corpus/`](cases/_corpus/) | — | 30 generated Scribble protocols (no `case.yaml`) — the corpus behind mutation testing (E1) |
-| [`cases/agenticpay_settlement/`](cases/agenticpay_settlement/) | 4 | Goods-for-payment trade adapted from real AgenticPay buyer/seller agents; their individually-reasonable rules form a circular wait (deadlock) that Scribble's checker forces an Escrow-first fix for |
+| [`cases/agenticpay_settlement/`](cases/agenticpay_settlement/) | 4 | Goods-for-payment trade adapted from real AgenticPay buyer/seller agents; their individually-reasonable rules form a circular wait (deadlock) that Scribble's checker forces an Escrow-first fix for — the escrow being a neutral third party that holds funds until both sides deliver |
 | [`cases/auction/`](cases/auction/) | 4 | Sealed-bid auction with three bidders; refinements require positive bids and reserved announcement keywords |
 | [`cases/banking/`](cases/banking/) | 5 | Banking transfer with an amount-dependent approval branch — large transfers must route through an Approver; rejections exit cleanly |
 | [`cases/clinical_enrollment/`](cases/clinical_enrollment/) | 5 | Clinical-trial enrolment: screening, sequenced consent + baseline, ethics approval — all before enrolling |

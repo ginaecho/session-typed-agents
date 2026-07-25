@@ -39,7 +39,7 @@ request becomes a Scribble-validated protocol.
 ## How this sweep was run, and how much to trust it
 
 Eight search agents in two rounds: six broad sweeps with deliberately disjoint
-lenses (formal coordination; agent artifacts and standards; failure modes and
+search assignments (formal coordination; agent artifacts and standards; failure modes and
 token cost; runtime enforcement; plain-language-to-specification translation and
 judge-free evaluation; industry and standards landscape), then two verification
 agents aimed only at the items that came back contested.
@@ -262,7 +262,7 @@ argument for enforcement rather than measurement, made by someone else.
 A second, weaker instance: **`agenticraft-foundation`**
 (`github.com/agenticraft/agenticraft-foundation`, **verified by fetch**) claims
 CSP, multiparty session types with global-to-local projection, and deadlock
-detection wired into a deployment gate. Its `verify()` runs five checks on an
+detection connected into a deployment gate. Its `verify()` runs five checks on an
 application manifest, including per-workflow deadlock-freedom. But it verifies
 an abstract manifest, generates no per-role prompts or skills, and is at
 version 0.1.0 with 31 commits and one star. Cite it for completeness; the
@@ -648,7 +648,7 @@ provable parallelism unused.
 Three things follow. It answers the "centralized orchestration limits
 scalability" criticism directly: the enabled-set is the set of roles the type
 *proves* may act now, so the scheduler can be parallel with a guarantee, where
-a hand-wired flow graph gets concurrency only where an engineer drew it. It
+a hand-built flow graph gets concurrency only where an engineer drew it. It
 upgrades the scheduler claim from "fewer calls than taking turns in a fixed
 circle" to "the validated type computes the safe parallel schedule" — a
 projection artifact no competing system can derive. And it is cheap to measure,
@@ -668,7 +668,7 @@ Running eight agents produced an unplanned piece of evidence: a coordination
 failure of exactly the kind the compiler is built to prevent, in first person,
 with a token bill.
 
-**What went wrong.** I wrote six lenses in English and hoped they were
+**What went wrong.** I wrote six lenses — each a role's task assignment — in English and hoped they were
 disjoint. They were not. All six agents independently found ZipperGen; four
 independently found TraceFix; three found Agentproof; several separately found
 DPBench, AgentLTL, *Before the Tool Call*, and *Oversight Has a Capacity*. That
@@ -702,7 +702,7 @@ which exist in this repository today:
   never go negative — is an exact fit for a shared 200-call search pool. This
   is the one that stings: the mechanism that would have prevented the worst
   failure of the session is already built, documented in the README as an
-  opt-in extension, and I did not have it wired into the thing I was running.
+  opt-in extension, and I did not have it connected into the thing I was running.
 - **The EFSM enabled-set as a claim predicate** (the v3 plan's plane B) stops
   two agents claiming the same lens, because only a role with an enabled move
   may claim.

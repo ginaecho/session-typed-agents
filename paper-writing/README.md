@@ -14,7 +14,7 @@ v10 contains:
 - `main.tex` - Main LaTeX source file (single source, standalone preamble;
   `\input{seam_results.tex}`)
 - `main.pdf` - Compiled PDF
-- `seam_results.tex` - Results template for the trainable-seam program
+- `seam_results.tex` - Results template for the trainable-seam program — the seam being the translation step from plain-language intent to formal protocol
   (26 pending-number macros; see `TEMPLATE_HOWTO.md` for the fill map)
 - `fig1_system.pdf`, `fig2_results.pdf`, `fig3_projected.pdf`,
   `fig4_ladder.pdf` - Figures

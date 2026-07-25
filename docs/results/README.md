@@ -94,7 +94,7 @@ Real, well-written agent instruction files are published every day —
 Anthropic's [skills](https://github.com/anthropics/skills), GitHub's
 [awesome-copilot](https://github.com/github/awesome-copilot), the example
 folders of every agent framework. Each file describes one job well. **None
-of them says how a team of them must work together** — and a team wired
+of them says how a team of them must work together** — and a team assembled
 from them fails in ways no file predicts:
 
 - **Deadlock** — everyone waits, forever, politely. Four agents each obeying

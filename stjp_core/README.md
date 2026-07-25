@@ -233,7 +233,7 @@ Every LLM call routes through here so it is visible in the Foundry portal.
 |---|---|
 | `llm_client.py` | `LLMClient` — public entry point; resolves to the Foundry path by default (`STJP_LLM_BACKEND=chat` for the direct path). |
 | `foundry_client.py` | `FoundryLLMClient` — single-shot calls through the `stjp-utility` agent. |
-| `foundry_tracing.py` | `enable_foundry_tracing()` — wires OpenTelemetry → Application Insights. |
+| `foundry_tracing.py` | `enable_foundry_tracing()` — connects OpenTelemetry → Application Insights. |
 | `session_helpers.py` | `build_view` / `parse_action` / `latest_assistant_text` — the per-role turn-loop primitives used by the benchmark. |
 | `az_credential.py` | `AzCliCredential` — Azure auth via `az login` (Windows-safe). |
 

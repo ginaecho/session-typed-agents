@@ -22,7 +22,7 @@ Records in the sample files carry their final `split` assignment (the
 splitter ran over the FULL builds; these are the first N records of each).
 `d1_recursive.jsonl` is `split="unassigned"` — it is the standalone
 recursion-focused build (see `docs/reference/reports/seam/W15_recursion_gen.md`),
-not yet folded through `splitter.py`; the `recursive` operator IS wired into
+not yet folded through `splitter.py`; the `recursive` operator IS connected into
 `d1_expand.py`'s mixed build (see `d1_expand.py::_PATTERN`), so a fresh full
 D1 run of `d1_dataset.jsonl` naturally includes and splits recursive
 families going forward.

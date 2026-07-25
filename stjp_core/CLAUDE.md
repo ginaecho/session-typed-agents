@@ -38,7 +38,7 @@ through the Foundry Agent Service so the interaction is visible in the portal.
 in the Foundry portal under Agents → Threads. Direct chat-completion calls
 are invisible there.
 
-### How it's wired
+### How it's connected
 
 - `foundry/foundry_client.py` `FoundryLLMClient` — single-shot calls go through
   `stjp-utility` agent (auto-created on first use). Each call creates one

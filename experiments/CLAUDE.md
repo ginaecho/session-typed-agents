@@ -1,6 +1,6 @@
 # experiments/ — project policy
 
-How the STJP benchmark is wired together. Read this before answering questions
+How the STJP benchmark fits together. Read this before answering questions
 about the arm matrix (15 arms), the skills files, or where prompts come from.
 
 ## Menu

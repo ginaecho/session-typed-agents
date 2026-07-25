@@ -52,7 +52,7 @@ scripts/case_runner.py <case_id> [n_trials]`).
 ## 2. One-time setup for this case: generate the validated protocol draft
 
 The case's own `protocols/v1.scr` is the hand-authored, Scribble-validated
-escrow-first fix (see this directory's `README.md`). But the harness's
+escrow-first fix (an escrow is a neutral third party that holds funds until both sides deliver; see this directory's `README.md`). But the harness's
 registered WITH-arms (`spec_llmvalid`, `min_llmvalid` in
 `experiments/baselines/registry.py`) do **not** read `protocols/v1.scr`
 directly — every WITH-arm factory in that file is built through

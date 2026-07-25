@@ -7,7 +7,7 @@ This case is the **real-repo-grounded** version of the hand-authored
 AgenticPay as a real, MIT-licensed negotiation benchmark that stops short
 of settlement/escrow), this case takes AgenticPay's actual buyer and
 seller agent code and adapts it, then adds the escrow/carrier settlement
-layer AgenticPay does not model.
+layer — the escrow being a neutral third party that holds funds until both sides deliver — which AgenticPay does not model.
 
 ## Menu
 
@@ -131,8 +131,8 @@ fetched cleanly.
   applies equally here and is not re-derived in this file).
 - AgenticPay's actual runtime message schema (`### BUYER_PRICE($X) ###`
   tags, `<mental_model>`, `<selected_seller>`, JSON `<contract>` blocks for
-  its multi-term negotiation mode) is not reproduced verbatim as the wire
-  format for this case — this case's harness (`case_runner.py` /
+  its multi-term negotiation mode) is not reproduced verbatim as the wire format
+  for this case — this case's harness (`case_runner.py` /
   `instructions.py`) uses its own `{"send_to", "label", "payload",
   "rationale"}` JSON schema for every case, and the skill files describe
   AgenticPay's real instructions in prose rather than trying to run its

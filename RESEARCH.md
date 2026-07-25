@@ -183,7 +183,7 @@ The core gap AI_verf targets — declared spec vs. observed behaviour — is exa
 - **Inspect AI (UK AISI)**: `Task` = dataset + solver + scorer. Built-in scorers (exact_match, includes, model_graded_qa). Sandboxed Docker execution. 200+ built-in evals + community `inspect_evals` repo. Closest thing to a "harness for harnesses."
 - **OpenAI Evals**: YAML-registered, `string_check` and `model_grade` graders.
 - **LangSmith**: trajectory capture; evaluators are Python/TS functions over runs.
-- **Braintrust**: dataset-first, scorer functions wired into CI.
+- **Braintrust**: dataset-first, scorer functions connected into CI.
 - **DeepEval**: pytest-style local-first; widest metric coverage.
 - **Arize Phoenix**: OTel-native, self-hostable.
 
