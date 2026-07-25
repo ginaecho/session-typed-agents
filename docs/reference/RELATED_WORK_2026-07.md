@@ -611,16 +611,51 @@ your projection is correct?" — not because we match it, but because pointing a
 the mechanised neighbour and saying plainly that we inherit peer-reviewed
 theory instead is more credible than claiming rigour we did not do.
 
-Third, and this is a genuine technical borrow rather than positioning: the
-follow-up's central argument is that a distributed agent workflow **must not be
-monitored as a single sequential log**, because a decision may only depend on
-events causally visible to the role making it. Our typed event log and our
-judge-free metrics are defined over an ordered event sequence. If that sequence
-is a flattened global order, this is a real critique of our evaluation design,
-not just of our positioning — and it has a known fix (per-role local traces
-with vector clocks). Worth checking against `stjp_core/monitor` and either
-fixing or scoping the conformance definition to synchronous protocols and
-saying so in Limitations.
+Third, the follow-up's central argument — that a distributed agent workflow
+**must not be monitored as a single sequential log**, because a decision may
+only depend on events causally visible to the role making it — needs a stated
+answer in the paper, but it is not a defect in ours. It is a constraint in
+*their* model and a non-issue in a session-typed one, for two reasons that come
+straight from the theory. Asynchronous MPST permits permutation of causally
+independent actions, and session fidelity holds up to that independence rather
+than against any one sequence. And projection gives **one monitor per role**,
+each checking only its own local type — the monitorability result we already
+cite — so no component ever consults a global order, and a role is never asked
+about another role's events. CPL needs causal-visibility machinery precisely
+because its guards read other lifelines' latest values; a projected local type
+has no such dependency by construction.
+
+What remains is presentation, not semantics: the events file is one
+linearization, used for reading traces and computing metrics. That is sound for
+every ordering the global type imposes, because those orderings are causally
+enforced; metrics must simply not assert order over actions the type leaves
+independent. One explicit sentence in the methodology closes this — a reviewer
+who has just read CPL will ask, and the answer is that conformance is per-role
+and a linearization is a reporting choice.
+
+**The useful consequence runs the other way, and it is an opportunity we are
+currently not taking.** `enabled_senders()` in
+[`stjp_core/runtime/delm_runner.py`](../../stjp_core/runtime/delm_runner.py)
+returns a *list* of roles — every role whose projected local state has an
+enabled send. Both runtimes then serialize that set: the decentralized runner
+loops over it one role at a time, and the benchmark runner
+([`experiments/baselines/foundry_runner.py`](../../experiments/baselines/foundry_runner.py))
+builds the enabled list and takes `enabled[0]`. Because the global type proves
+those actions independent, dispatching them concurrently is sound by the same
+theorem that licenses picking one — so we are serializing by policy and leaving
+provable parallelism unused.
+
+Three things follow. It answers the "centralized orchestration limits
+scalability" criticism directly: the enabled-set is the set of roles the type
+*proves* may act now, so the scheduler can be parallel with a guarantee, where
+a hand-wired flow graph gets concurrency only where an engineer drew it. It
+upgrades the scheduler claim from "fewer calls than taking turns in a fixed
+circle" to "the validated type computes the safe parallel schedule" — a
+projection artifact no competing system can derive. And it is cheap to measure,
+because `delm_runner` already counts actual polls against the round-robin
+baseline: a `min_llmvalid_sched_parallel` arm that dispatches the whole enabled
+set is a small addition to the registry, and it is the arm where sequential
+wall-clock timing finally carries meaning.
 
 **The thing to worry about is not ZipperGen.** It is TraceFix, which is
 peer-reviewed and has our whole pipeline shape, and `llmcontract`, which has
@@ -736,9 +771,17 @@ Ordered by how much reviewer damage each prevents.
    none — being careful not to imply that paper does static analysis.
 10. **Add the missing theory citation** (Stutz & D'Osualdo ESOP 2025) and the
     declarative-protocol line (Ahoy, Strabo, Pact).
-11. **Check the event log's causal ordering** against the Causal Past Logic
-    critique; fix, or scope the conformance definition and say so in
-    Limitations.
+11. **State the permutation answer explicitly in the methodology** — session
+    fidelity holds up to permutation of independent actions, monitors are
+    per-role, and the linearized event log is a reporting choice, not a
+    semantic commitment. This pre-empts the Causal Past Logic objection in one
+    sentence.
+12. **Add a parallel-enabled-set scheduler arm.** The type already proves which
+    roles may act concurrently and both runtimes discard that by taking one.
+    This converts the scheduler contribution from a call-count saving into
+    "the validated type computes the safe parallel schedule," and it is the
+    principled answer to the charge that a central scheduler limits
+    scalability.
 
 Three things must be checked from an unblocked network before submission.
 **Every arXiv identifier in this document**, because one first-round identifier
