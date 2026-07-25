@@ -197,6 +197,24 @@ over 16 families in three difficulty tiers, a 3,456-run runtime comparison, a
 270-run paired ablation, a model-capability degradation curve, and fault
 injection at 0/30/60/90%.
 
+*[Status note, added in a follow-up session after checking the codebase: the
+"if our checker just fails" conditional does not hold.
+`experiments/seam_bench/t0/repair_loop.py` already implements the
+instrumented loop — draft → validate through the real Scribble CLI → on
+reject, repair on the validator's own counterexample text → revalidate,
+capped at 3 rounds — with one record per attempt, a `repair_rounds` metric,
+and first-attempt validity (the direct analogue of TraceFix's 62.5%
+statistic). Verified in a fresh container: its test suite passes 10/10
+against a from-source Scribble build, and `validity.py` raises rather than
+fall back to any weaker checker. The D3 mutation-based repair tuples go a
+step further than TraceFix's sixteen hand-written anti-patterns: they are a
+*training corpus* for the repairer, classed per mutation operator. What
+TraceFix has and this program does not yet have is numbers from a real
+drafting model — T0 has only run with mock/replay drafters, so the
+comparison cell stays pending until one metered run (ICLR_READINESS prices
+it at $5–20, needing only an LLM key). The concession to keep is
+evaluation breadth; the loop itself is built.]*
+
 One line in their README is aimed squarely at our design: centralized
 orchestration "avoids concurrency — but also limits scalability," and they
 target independent concurrent agents with shared resources. **An EFSM scheduler
