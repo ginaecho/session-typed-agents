@@ -32,7 +32,7 @@ becomes a Scribble-validated protocol.
 - [6. "Lens" — a term I invented, in breach of the project's writing rule](#6-lens--a-term-i-invented-in-breach-of-the-projects-writing-rule)
   - [6.1 One quotation, checked and then superseded](#61-one-quotation-checked-and-then-superseded)
 - [7. The branch and trailer rule I broke four times](#7-the-branch-and-trailer-rule-i-broke-four-times)
-- [8. What was actually built and verified](#8-what-was-actually-built-and-verified)
+- [8. What was built, what it proved, and why it was then removed](#8-what-was-built-what-it-proved-and-why-it-was-then-removed)
 - [9. Why an agent does not follow prose rules — four mechanisms](#9-why-an-agent-does-not-follow-prose-rules--four-mechanisms)
 - [10. The enforceability partition — a proposal](#10-the-enforceability-partition--a-proposal)
 - [11. Open decisions](#11-open-decisions)
@@ -298,29 +298,55 @@ Renaming means creating a different branch, which the permission granted
 ("only at this branch") appears to exclude, so it is left for the owner to
 direct (§11).
 
-## 8. What was actually built and verified
+## 8. What was built, what it proved, and why it was then removed
 
 Everything here ran in this container against a freshly built Scribble compiler
 (cloned and built with Maven, since the checkout does not vendor it).
 
-**A new case, `experiments/cases/agent_lit_sweep/`.** Three roles —
-Coordinator, Scout, Verifier — and a recursive protocol in which a claim must
-pass the Verifier before the Coordinator may record it, and every intended
-search spend is announced so a budget invariant can refuse the one that would
-overdraw. It models the failure from §5, which was observed rather than seeded.
+**The scaffolding described in this section no longer exists in the repository.**
+A case directory (`experiments/cases/agent_lit_sweep/` — protocol, refinement
+sidecar, case spec, a check script and a driver) and a pre-registration document
+were written, verified, and then deleted at the owner's direction, because no
+trial was ever run and the purpose of this record is the lessons rather than
+unrun apparatus. The findings below are stated here as self-contained facts;
+the files that produced them are recoverable from this branch's history (they
+were removed in the commit that added this paragraph, and existed from the commit
+titled "case: agent_lit_sweep — first case to use the session ledger" onward).
 
-**The first real use of the session ledger in this repository.** The
-`__ledger__` mechanism described in the README as an opt-in extension had no case
-using it. Now: `state searches_left: int = 12`,
-`on SearchSpend(cost): searches_left -= cost`,
-`invariant searches_left >= 0  @S4`.
+**The case, for the record.** Three roles — Coordinator, Scout, Verifier — and a
+recursive protocol in which a claim must pass the Verifier before the Coordinator
+may record it, and every intended search spend is announced so a budget invariant
+can refuse the one that would overdraw. It modelled the failure from §5, which
+was observed rather than seeded.
 
-**`check_case.py`, which passes in four steps.** The protocol is well-formed
-under the real compiler; all three roles project (13, 7 and 6 transitions); the
-ledger passes its static coherence check against the protocol's labels; and three
-spend requests of five against a budget of twelve leave the budget at 2 with
-exactly one overdraw **rejected pre-delivery** — never negative. This is
-deterministic, involves no agents and needs no statistics.
+**The first real use of the session ledger in this repository, and the syntax
+that worked.** The `__ledger__` mechanism the README documents as an opt-in
+extension had no case using it. Three lines in a `.refn` sidecar are the whole
+thing, and they are kept here because they are the only worked example this
+project has:
+
+```
+state searches_left: int = 12
+on SearchSpend(cost): searches_left -= cost
+invariant searches_left >= 0  @S4
+```
+
+Read as: declare a running value; debit it by the `cost` field of every
+`SearchSpend` message; and never let it go below zero, treating a breach as an
+irreversible-resource failure. The middle line is what a per-message rule cannot
+express — whether *this* request is the one that overdraws depends on every
+request before it.
+
+**Four checks passed, deterministically, with no agents and no statistics.**
+The protocol was well-formed under the real compiler. All three roles projected
+to non-empty local contracts — 13, 7 and 6 transitions. The ledger passed its
+static coherence check against the protocol's labels. And three spend requests of
+five against a budget of twelve left the budget at 2, with exactly one overdraw
+**rejected pre-delivery**, never negative — the monitor reporting
+`stateful invariant 'searches_left >= 0' breached at SearchSpend; virtual state
+{'searches_left': -10.0}; REJECTED pre-delivery` while the committed value stayed
+at 2. That is the mechanism the unprotected run of §5 lacked, doing exactly what
+it claims.
 
 **The compiler rejected my first protocol draft.** `Subject not enabled: Scout`
 — the loop re-entry left Scout having to choose with nothing received. Authoring
@@ -338,24 +364,30 @@ belonging to another role (`off_protocol`), a payload failing its refinement
 (`refinement_failed`), and a spend that would overdraw the ledger. Four for four;
 a legal spend passes.
 
-**A pre-registration, written before any trial.**
-[`../predictions/AGENT_LIT_SWEEP_PREREGISTRATION.md`](../predictions/AGENT_LIT_SWEEP_PREREGISTRATION.md)
-records the design, four mechanical metrics, the fair success rule so the
-unprotected arm is not graded on labels it never saw, and five predictions —
-including two registered *against* the compiler: that the compiled arm is worse
-on tokens per finding at three roles, and that the unprotected arm will probably
-not deadlock on a problem this shallow. It also records the one amendment (budget
-lowered from 30 to 12) as pre-run, with the reason.
+**A pre-registration was written before any trial**, and its shape is the lesson
+worth keeping even though the document is gone. It fixed the design (same case,
+roles, intent, model, budget and step cap; one variable, the arm), four metrics
+computed from the trace with no judge, and the fair success rule so the
+unprotected arm would not be graded on labels it never saw. It carried five
+predictions, two of them registered *against* the compiler: that the compiled arm
+would be **worse** on tokens per finding at three roles, because a short loop pays
+protocol round trips without enough roles for projection to offset them; and that
+the unprotected arm would probably **not** deadlock on a problem that shallow, so
+a null result could not later be reported as a win. It also recorded its one
+amendment — the budget lowered from 30 to 12 — as pre-run, with the reason, since
+the same change after seeing results would not have been legitimate.
 
-**One driver for both arms, `sweep_driver.py`.** The canonical harness cannot run
-this case: it has no tool calling and drives Azure Foundry, while a literature
-sweep needs role-players that can search. So both arms run through the same three
-commands and the arm flag decides exactly three things — turn order, enforcement,
-and what each role is told. In the unprotected arm the monitor and ledger still
-watch but never block, so budget overrun stays measurable.
+**A single driver was written for both arms**, because the canonical harness
+cannot run a case like this: it has no tool calling and drives Azure Foundry,
+while a literature sweep needs role-players that can search. The design
+constraint is the transferable part — both arms run through the same commands, so
+neither can receive more operator attention than the other, and the arm flag
+decides exactly three things: turn order, enforcement, and what each role is
+told. In the unprotected arm the monitor and ledger still watch but never block,
+so budget overrun stays measurable.
 
-**The trials have not been run.** The owner chose a fresh literature sweep with a
-web-search budget, three trials per arm. That remains outstanding.
+**No trial was ever run**, which is why none of this is a benchmark result and
+why the apparatus was removed rather than kept.
 
 ## 9. Why an agent does not follow prose rules — four mechanisms
 
@@ -467,9 +499,11 @@ roles. TraceFix has the identical hole, by its own architecture document.
    retiring this one — one word from the owner and it is done. A local backup tag
    `pre-trailer-rewrite` still points at the pre-rewrite history and can be
    deleted once the result is accepted.
-2. **The trials.** Three per arm on a fresh assignment, per the pre-registration.
-   Expected outcome, already registered: the ledger and the verification barrier
-   hold, and the token story does not show at three roles.
+2. **The trials, if ever wanted.** Three per arm on a fresh assignment. The
+   apparatus was deleted as unrun (§8) and would need rebuilding, which is cheap
+   — the protocol was 44 lines and the ledger three. The registered expectation
+   stands: the ledger and the verification barrier hold, and the token story does
+   not show at three roles.
 3. **Two checkers**, which on this session's evidence would do more than better
    prose: a style lint beside `tools/check_md_links.py`, flagging undefined terms
    of art and the known-offender words already tabulated in `AGENT.md` §5; and a
