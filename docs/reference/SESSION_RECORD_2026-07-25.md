@@ -509,8 +509,12 @@ roles. TraceFix has the identical hole, by its own architecture document.
    of art and the known-offender words already tabulated in `AGENT.md` §5; and a
    pre-push hook rejecting a branch name or trailer containing "claude", which
    would have stopped four violations.
+   *[Status, added in a follow-up session: built — `tools/check_style.py`,
+   `tools/check_git_rules.py`, and `.githooks/pre-push`.]*
 4. **The enforceability partition**, built and run over `AGENT.md` itself as the
    worked example.
+   *[Status, added in a follow-up session: built —
+   [`ENFORCEABILITY_PARTITION.md`](ENFORCEABILITY_PARTITION.md).]*
 5. **Confirming reads** for every arXiv identifier in
    [`RELATED_WORK_2026-07.md`](RELATED_WORK_2026-07.md), for Agentproof's six
    structural checks individually, and for arXiv:2605.11770.

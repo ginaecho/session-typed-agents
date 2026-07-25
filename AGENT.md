@@ -5,6 +5,7 @@ This file is for Claude and other AI agents working on the STJP codebase. It exp
 <!-- MENU:START (auto-generated — edit headings, then regenerate) -->
 ## Menu
 
+- [🧭 Read this first — rule precedence and non-negotiables](#-read-this-first--rule-precedence-and-non-negotiables)
 - [🎯 What This Project Does](#-what-this-project-does)
 - [📁 Key Files & Directories](#-key-files--directories)
   - [Core library (`stjp_core/`)](#core-library-stjp_core)
@@ -40,6 +41,65 @@ This file is for Claude and other AI agents working on the STJP codebase. It exp
   - [Commit message shape (both hops)](#commit-message-shape-both-hops)
 - [🚀 Next Steps for New Contributors](#-next-steps-for-new-contributors)
 <!-- MENU:END -->
+
+---
+
+## 🧭 Read this first — rule precedence and non-negotiables
+
+Why this section exists, and why it sits at the top: on 2026-07-25 an agent
+opened this file, read one section, and then broke four rules that live in a
+section 200 lines further down — a forbidden branch name, assistant trailers,
+a wrong commit identity, and an invented nickname in replies. The full account,
+including the four mechanisms by which a prose rule fails to govern an agent,
+is [`docs/reference/SESSION_RECORD_2026-07-25.md`](docs/reference/SESSION_RECORD_2026-07-25.md)
+§9. The lesson is structural: a rule that is not in context at the moment of
+action is absent. So the rules that must never be broken are restated here
+once, near the top — and each is backed by a mechanical check that does not
+depend on anyone re-reading anything.
+
+**The non-negotiables:**
+
+1. **Git identity.** Author and committer of every commit:
+   `ginaecho <gina.tcchen@gmail.com>`. No assistant or session trailers. No
+   "claude" keyword anywhere in git artifacts — branch names, commit messages
+   (including quoted paths), tags, PR titles/bodies. Every branch starts with
+   `gc/`. Full text: [Git identity section](#-git-identity--always-commitpushpr-as-ginaecho).
+   Enforced by `tools/check_git_rules.py`, run automatically if you enable the
+   pre-push hook once per clone: `git config core.hooksPath .githooks`.
+2. **Plain language — in replies too.** The writing rule in
+   [§5](#5-plain-language-writing-rule-docs-reports-replies) applies to chat
+   replies, not only committed docs. Do not coin a new nickname for anything;
+   if a term of art is needed, gloss it at first use. The known offenders are
+   linted by `tools/check_style.py`.
+3. **Experiments: one variable, registered first.** A comparison holds
+   everything constant except the arm, and its expected outcome is written to
+   `docs/predictions/` before the run. Choosing metrics after seeing the data,
+   or comparing runs whose assignments differ, is not an experiment — it is a
+   story (see the session record §5 for how that happened here).
+4. **Verify identifiers before citing.** An arXiv id, URL, or quotation
+   enters a doc only after something actually fetched it. One fabricated
+   identifier reached a committed doc on 2026-07-25 (session record §4.2);
+   every unverified item must say it is unverified.
+
+**When instructions conflict.** A platform or session configuration (a hosted
+agent environment's defaults, a CI template) may mandate something this file
+forbids — a `claude/...` working-branch name, an assistant co-author trailer,
+a bot commit identity. Precedence: **this file wins for everything that lands
+in the repository.** The one tolerated exception is a working-branch *name*
+the platform creates and the agent cannot rename; then run the checker with
+`STJP_PLATFORM_BRANCH=1`, state the conflict explicitly in your first reply,
+and leave renaming or merging the branch away to the owner. Never resolve
+such a conflict silently, in either direction — silent resolution toward the
+nearer instruction is exactly how four rules were broken in one push
+(session record §7).
+
+**Before pushing, run all three checkers:**
+
+```bash
+python tools/check_md_links.py    # every relative link and anchor resolves
+python tools/check_style.py       # no known-offender jargon without a gloss
+python tools/check_git_rules.py   # branch name, identity, trailers, keywords
+```
 
 ---
 
@@ -433,8 +493,10 @@ Applies to prose in docs, reports, READMEs, changelogs, and chat replies — not
 - Don't assume the reader already knows project slang from Slack, standups, or earlier docs.
 - Don't drop a term of art into a heading, table cell, or bullet with no adjacent gloss anywhere in the doc.
 
-**Known offenders and how to gloss or replace them:**
+**Known offenders and how to gloss or replace them** (this table is enforced
+by `tools/check_style.py` — keep the two lists in sync when adding a term):
 
+<!-- style-lint: off — the table below names the offender words themselves -->
 | Term | Plain phrase / gloss |
 |---|---|
 | canary | a planted check item with a known correct answer |
@@ -442,8 +504,10 @@ Applies to prose in docs, reports, READMEs, changelogs, and chat replies — not
 | pillar | (avoid; name the actual thing it refers to instead) |
 | wire / wired | connect |
 | seam | the translation step from plain-language intent to formal protocol (define on first use in *any* doc) |
+| lens | a role's task assignment (avoid coining more of these; this one was invented in a session and is kept only so the lint can catch it — see `docs/reference/SESSION_RECORD_2026-07-25.md` §6) |
 | escrow | a neutral third party that holds funds until both sides deliver |
 | geometric median | a robust way to combine scores so one extreme judge cannot drag the result |
+<!-- style-lint: on -->
 
 **Example:** first use in a doc — "a planted check item with a known correct answer (a *canary*)"; every later use in that doc may just say "canary."
 
@@ -477,6 +541,13 @@ Applies to prose in docs, reports, READMEs, changelogs, and chat replies — not
    cat cases/my_case/runs/LATEST/summary.json | jq '.[] | {arm, success_rate_pct, cost_to_goal}'
    ```
 
+5. **Run the repo checkers** (all three must be clean before any push):
+   ```bash
+   python tools/check_md_links.py     # links and anchors
+   python tools/check_style.py        # known-offender jargon
+   python tools/check_git_rules.py    # branch, identity, trailers, keywords
+   ```
+
 ---
 
 ## 🚫 Common Mistakes (Don't Repeat)
@@ -490,6 +561,11 @@ Applies to prose in docs, reports, READMEs, changelogs, and chat replies — not
 | Forgetting to populate `_role_prompts` in a new runner | Prompts not saved | Check `BaselineRunner.prompts()` returns dict |
 | Modifying monitor without re-running all cases | Silent regressions | Always re-run `finance 3` after any monitor change |
 | Assuming `.scr` files are authoritative in skills | Skills drift | Always re-generate from current `.scr` and `case.yaml` |
+| Reading one section of this file and acting under another's rules | Four git-rule violations in one push (2026-07-25) | Read [🧭 Read this first](#-read-this-first--rule-precedence-and-non-negotiables); enable the pre-push hook |
+| Silently resolving a conflict between session config and this file | Forbidden branch + trailers pushed without anyone deciding | State the conflict in your reply; this file wins for repo contents |
+| Coining a new nickname in replies or docs ("lens") | Undefined jargon spreads before anyone notices | Use the plain phrase; `tools/check_style.py` catches known offenders |
+| Citing an identifier nothing fetched | A fabricated arXiv id reached a committed doc | Fetch before citing; mark unverified items as unverified |
+| Comparing runs whose assignments differ, or picking metrics after the run | Confounded "result" that narrates instead of measures | One variable per comparison; pre-register in `docs/predictions/` |
 
 ---
 
@@ -605,6 +681,14 @@ git -c user.name="ginaecho" -c user.email="gina.tcchen@gmail.com" \
 **Branch naming:** every branch ALWAYS starts with the `gc/` prefix, e.g.
 `gc/paper-v8-iclr-reposition-concurrent-work`. Never create `claude/...` or
 other-prefixed branches.
+
+**Mechanical enforcement:** all four clauses above are checked by
+`tools/check_git_rules.py`, and `.githooks/pre-push` runs it on every push
+once you enable it (`git config core.hooksPath .githooks`). If the platform
+itself created a working branch you cannot rename, run the checker with
+`STJP_PLATFORM_BRANCH=1` and follow the conflict rule in
+[🧭 Read this first](#-read-this-first--rule-precedence-and-non-negotiables) —
+say so in your reply; the owner renames or merges the branch away.
 
 ---
 
