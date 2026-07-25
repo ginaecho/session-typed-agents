@@ -1,0 +1,73 @@
+case_id: agent_lit_sweep
+description: |
+  A literature sweep run by a search team against a shared, finite budget of
+  search calls. This case exists because the failure it models was observed
+  for real, not seeded: a sweep of the 2026 related-work literature was run
+  with several search agents that had no protocol between them, and it failed
+  in three ways at once — the same paper was found and paid for repeatedly, a
+  shared search budget was drained to zero by two agents while the others
+  discovered the wall only afterwards, and an invented citation reached the
+  written output because nothing stood between "an agent claimed it" and "it
+  was recorded."
+
+  The protocol makes each of those three a typed property: a claim must pass
+  the Verifier before the Coordinator may record it, and every intended spend
+  is announced so the budget ledger can refuse the one that would overdraw.
+
+version: v1
+protocol_name: LiteratureSweep
+
+roles:
+  - Coordinator
+  - Scout
+  - Verifier
+
+terminal_label: Report
+max_steps: 40                     # a sweep is a loop; give every arm room to
+                                  # spend its budget and submit several claims,
+                                  # so we measure "coordinated badly", not
+                                  # "ran out of turns"
+branch_hints: [confirm, reject]
+
+# Role descriptions (prose) — included in EVERY arm's prompt so the variable
+# being measured is purely "what protocol information comes on top", not
+# "did anyone tell the agent what its role does". Same rule as the finance case.
+role_descriptions:
+  Coordinator: hands out the search assignment, answers budget requests, and records only those findings the Verifier has confirmed
+  Scout: searches for candidate findings and submits them; announces how many search calls it intends to spend before spending them
+  Verifier: checks a submitted candidate against its source and either confirms it or rejects it
+
+intent: |
+  We need a small team to sweep recent literature for a stated research
+  question and return the findings that hold up.
+
+  The team shares a budget of 30 search calls in total, and it must not be
+  exceeded. A Scout searches and proposes candidate findings. Nothing a Scout
+  proposes counts as a finding until a Verifier has checked it against its
+  source — an identifier that does not resolve must not end up in the result.
+  The same finding must not be paid for twice. The Coordinator records
+  confirmed findings and closes the sweep with a report.
+
+goals:
+  - id: G1
+    description: The sweep must close with a report from the Coordinator
+    metric: sweep_completed
+    predicate: len(x) > 0
+    anchor: {sender: Coordinator, receiver: Verifier, label: Report}
+    threshold: non-empty
+
+  - id: G2
+    description: At least one candidate must be confirmed by the Verifier before being recorded
+    metric: verified_finding
+    predicate: len(x) > 0
+    anchor: {sender: Verifier, receiver: Coordinator, label: Confirmed}
+    threshold: non-empty
+    branch: confirm
+
+  - id: G3
+    description: A candidate that fails verification must be explicitly rejected, not silently recorded
+    metric: rejected_finding
+    predicate: len(x) > 0
+    anchor: {sender: Verifier, receiver: Coordinator, label: Rejected}
+    threshold: non-empty
+    branch: reject

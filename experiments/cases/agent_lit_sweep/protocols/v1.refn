@@ -1,0 +1,54 @@
+# Refinement contracts and session ledger for LiteratureSweep (v1.scr).
+#
+# Two layers here. The [sender -> receiver : Label] blocks are per-message
+# payload rules, checked when that message is sent. The state/on/invariant
+# lines below them are the *session ledger* — a running value tracked across
+# the whole conversation, which is what a per-message rule cannot express.
+#
+# A small example of the difference. A per-message rule can say "this spend
+# request must ask for between 1 and 10 searches". It cannot say "the team has
+# 30 searches in total and this is the request that would take them to -4",
+# because that depends on every spend that came before. The ledger can, and the
+# gate sits at delivery where it sees the ordered stream, so it refuses that
+# request before the searches are spent rather than reporting the overdraft
+# afterwards.
+
+[Coordinator -> Scout : Assignment]
+type: str
+require: len(x) > 0
+
+[Scout -> Coordinator : SearchSpend]
+type: int
+require: x > 0
+require: x <= 10
+
+[Scout -> Coordinator : Candidate]
+type: str
+require: len(x) > 0
+
+[Coordinator -> Verifier : Check]
+type: str
+require: len(x) > 0
+
+[Verifier -> Coordinator : Confirmed]
+type: str
+require: len(x) > 0
+
+[Verifier -> Coordinator : Rejected]
+type: str
+require: len(x) > 0
+
+[Coordinator -> Verifier : Report]
+type: str
+require: len(x) > 0
+
+# ── Session ledger: the shared search budget ─────────────────────────────────
+# 30 search calls for the whole team. Each SearchSpend message carries the
+# number of calls the Scout intends to make; the ledger debits it. The
+# invariant is what the unprotected run violated: the budget went negative in
+# effect, because two agents spent it all and nobody was watching the total.
+# Severity S4 = an irreversible-resource breach (the calls, once spent, are gone).
+
+state searches_left: int = 30
+on SearchSpend(cost): searches_left -= cost
+invariant searches_left >= 0  @S4

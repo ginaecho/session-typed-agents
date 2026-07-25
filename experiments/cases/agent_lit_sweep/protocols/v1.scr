@@ -1,0 +1,44 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Integer" from "rt.jar" as Integer;
+
+// A literature sweep run by several search agents against a shared, finite
+// search-call budget. Every claim a Scout finds must pass the Verifier before
+// the Coordinator may record it, and every search spend is announced so the
+// budget ledger (v1.refn) can refuse the spend that would overdraw it.
+//
+// All branches of the choice at Scout send to the SAME receiver (Coordinator),
+// and the Coordinator then tells the Verifier which branch was taken, so no
+// role has to guess the branch — this is what makes the protocol projectable.
+global protocol LiteratureSweep(role Coordinator, role Scout, role Verifier) {
+    Assignment(String) from Coordinator to Scout;
+    Watch(String)      from Coordinator to Verifier;
+
+    rec SWEEP {
+        choice at Scout {
+            // Announce an intended spend of N search calls. The Coordinator
+            // answers, so Scout is enabled again at the loop head.
+            SearchSpend(Integer) from Scout to Coordinator;
+            BudgetNote(Integer)  from Coordinator to Verifier;
+            BudgetOk(Integer)    from Coordinator to Scout;
+            continue SWEEP;
+        } or {
+            // Submit a candidate finding. It is NOT a result yet.
+            Candidate(String) from Scout to Coordinator;
+            Check(String)     from Coordinator to Verifier;
+            choice at Verifier {
+                Confirmed(String) from Verifier to Coordinator;
+                RecordOk(String)  from Coordinator to Scout;
+                continue SWEEP;
+            } or {
+                Rejected(String)  from Verifier to Coordinator;
+                RecordNo(String)  from Coordinator to Scout;
+                continue SWEEP;
+            }
+        } or {
+            SweepDone(String) from Scout to Coordinator;
+            Report(String)    from Coordinator to Verifier;
+        }
+    }
+}
