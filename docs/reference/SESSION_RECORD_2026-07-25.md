@@ -271,9 +271,32 @@ session's own configuration **mandated** that branch name and those trailers.
 Two instructions in direct contradiction, with nothing anywhere stating which
 takes precedence. I resolved it silently in favour of the more proximate
 instruction and said nothing. From the fifth commit onward the trailers were
-dropped. The branch name and the four existing commit messages cannot be fixed
-without a history rewrite and permission to push elsewhere, so they remain
-outstanding (§11).
+dropped.
+
+**A second failure of the same kind, found while repairing the first.** Asked to
+fix the history, I finally read the whole section instead of grepping near it —
+and it contains two further requirements I had never retrieved. Commits must be
+authored as `ginaecho <gina.tcchen@gmail.com>`, not as any assistant identity;
+mine were all authored as "Claude". And **every branch must start with a `gc/`
+prefix**, with `claude/...` named explicitly as the thing never to create. So the
+rule I had already broken twice turned out to have four clauses, and I had
+violated three of them. The mechanism is §9's first one, retrieval failure,
+occurring a second time in the same file on the same day.
+
+**What was repaired**, with permission to rewrite this branch: the trailers were
+stripped from all four commits; author and committer on every commit of mine were
+rewritten to the owner's identity; and one commit body that named a path
+containing the forbidden word was reworded, since the rule says "anywhere". The
+owner's own commit was left with its message and identity untouched, though a
+history rewrite necessarily changes its hash. The resulting tree is byte-identical
+to the pre-rewrite tree — only metadata changed, verified by diff against a local
+backup tag.
+
+**What is still not compliant:** the branch is still named
+`claude/stjp-research-related-works-yj81zs`, where the rule requires `gc/`.
+Renaming means creating a different branch, which the permission granted
+("only at this branch") appears to exclude, so it is left for the owner to
+direct (§11).
 
 ## 8. What was actually built and verified
 
@@ -438,9 +461,12 @@ roles. TraceFix has the identical hole, by its own architecture document.
 
 ## 11. Open decisions
 
-1. **Branch and trailer remediation.** The branch name and four commit messages
-   violate `AGENT.md`:595 and need a history rewrite plus permission to push
-   elsewhere.
+1. **Branch rename.** The trailers and the author identity were repaired by
+   rewriting this branch (§7). The branch *name* still violates the `gc/` prefix
+   rule, and fixing it means creating `gc/stjp-research-related-works` and
+   retiring this one — one word from the owner and it is done. A local backup tag
+   `pre-trailer-rewrite` still points at the pre-rewrite history and can be
+   deleted once the result is accepted.
 2. **The trials.** Three per arm on a fresh assignment, per the pre-registration.
    Expected outcome, already registered: the ledger and the verification barrier
    hold, and the token story does not show at three roles.
