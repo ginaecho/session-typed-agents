@@ -9,6 +9,11 @@ Provably Safe and More Token-Efficient"**
 
 - **v10/** - The paper (single current version; v6–v9 were removed on
   2026-07-17 — their full history remains in git)
+- [`DISCUSSION_RELATED_WORK_2026-07-25.md`](DISCUSSION_RELATED_WORK_2026-07-25.md) -
+  Discussion notes (not paper text) for the next version: Agentproof
+  graph-vs-global-type, TraceFix boundedness and its projection gap, the
+  comparison table, evidence-vs-capability, the residual-as-risk-register
+  argument, and a candid self-review of the 2026-07-25 mechanisms
 
 v10 contains:
 - `main.tex` - Main LaTeX source file (single source, standalone preamble;
