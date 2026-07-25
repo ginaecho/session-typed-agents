@@ -30,6 +30,7 @@ becomes a Scribble-validated protocol.
   - [4.3 The causal-ordering claim, corrected by the project owner](#43-the-causal-ordering-claim-corrected-by-the-project-owner)
 - [5. The self-observation, and why it was not an experiment](#5-the-self-observation-and-why-it-was-not-an-experiment)
 - [6. "Lens" — a term I invented, in breach of the project's writing rule](#6-lens--a-term-i-invented-in-breach-of-the-projects-writing-rule)
+  - [6.1 One quotation, checked and then superseded](#61-one-quotation-checked-and-then-superseded)
 - [7. The branch and trailer rule I broke four times](#7-the-branch-and-trailer-rule-i-broke-four-times)
 - [8. What was actually built and verified](#8-what-was-actually-built-and-verified)
 - [9. Why an agent does not follow prose rules — four mechanisms](#9-why-an-agent-does-not-follow-prose-rules--four-mechanisms)
@@ -238,6 +239,21 @@ the unprotected one — differing only in which assignment each got.
 The term is recorded here rather than quietly dropped because the owner asked for
 it to be, and because a document about an agent ignoring writing rules that
 silently tidied away its own violation would be worthless.
+
+### 6.1 One quotation, checked and then superseded
+
+Related, and recorded because the owner queried it. In a reply I quoted a line
+back at them as the project's own antidote to post-hoc storytelling: "a
+prediction that can be edited after the run can never fail." The owner asked
+whether they had actually written that. I checked, and they had — it was
+`docs/predictions/BENCHMARK_V2_PREREGISTRATION.md` line 6, so the attribution was
+accurate at the time, not words put in their mouth.
+
+They subsequently removed that sentence from the file (commit `92cbbd6`,
+"Update pre-registration guidelines in benchmark plan"). The line therefore no
+longer exists in the repository, and any future citation of it should point here
+rather than at that file. The rule it described — register the expected outcome
+before running, then grade it — is still stated in the same document.
 
 ## 7. The branch and trailer rule I broke four times
 
