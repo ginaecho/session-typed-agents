@@ -12,7 +12,7 @@ three on prose, four of four on mechanism). The partition was proposed in
 that record's §10; this is the record's §11.4 item, built.
 
 Why this matters beyond housekeeping: of the systems the July 2026
-literature sweep surfaced ([`RELATED_WORK_2026-07.md`](RELATED_WORK_2026-07.md)),
+literature sweep surfaced ([`RELATED_WORK_2026-07-25.md`](RELATED_WORK_2026-07-25.md)),
 none partitions a specification by enforceability tier, and none reports the
 residual — the list of rules it *cannot* enforce. STJP has all three
 enforcement tiers, so it is the only system in that sweep that can produce

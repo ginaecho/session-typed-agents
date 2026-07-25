@@ -34,6 +34,7 @@ request becomes a Scribble-validated protocol.
 - [Where STJP would have helped this very sweep](#where-stjp-would-have-helped-this-very-sweep)
 - [The edit list for the paper](#the-edit-list-for-the-paper)
 - [Sources](#sources)
+- [What was implemented in response — 2026-07-25](#what-was-implemented-in-response--2026-07-25)
 <!-- MENU:END -->
 
 ## How this sweep was run, and how much to trust it
@@ -860,3 +861,25 @@ Needs a confirming read before quotation:
 [TLA-Prover](https://arxiv.org/abs/2606.06133) ·
 [Rocq MPST liveness](https://arxiv.org/abs/2605.23633) ·
 [Mixed choice async MPST](https://arxiv.org/abs/2602.23927)
+
+## What was implemented in response — 2026-07-25
+
+The sweep's findings and the same-day session record did not stay
+analysis: each led to a mechanism, pre-registered before running
+([`../predictions/SPEC_TO_GATE_PREREGISTRATION.md`](../predictions/SPEC_TO_GATE_PREREGISTRATION.md),
+P1–P8 graded; one graded failed-then-amended) and documented in
+[`SPEC_TO_GATE_PLAN.md`](SPEC_TO_GATE_PLAN.md) and
+[`ENFORCEABILITY_PARTITION.md`](ENFORCEABILITY_PARTITION.md). The scripts,
+each linked, with what it answers:
+
+| Implemented / revised | What it is, and which finding it answers |
+|---|---|
+| [`tools/check_git_rules.py`](../../tools/check_git_rules.py) + [`.githooks/pre-push`](../../.githooks/pre-push) | the four-clause git rule as a mechanism instead of prose — the rule broken four times in the recorded session (record §7) |
+| [`tools/check_style.py`](../../tools/check_style.py) | the known-offender writing rule linted (the "lens" coinage class, record §6); wraps the same scope conventions as [`tools/check_md_links.py`](../../tools/check_md_links.py) |
+| [`tools/rules/AGENT_RULES.yaml`](../../tools/rules/AGENT_RULES.yaml) · [`PLATFORM_SESSION_RULES.yaml`](../../tools/rules/PLATFORM_SESSION_RULES.yaml) · [`PRECEDENCE.yaml`](../../tools/rules/PRECEDENCE.yaml) | the rules of `AGENT.md` and the platform's defaults as reviewable data — the machine-readable enforceability partition |
+| [`tools/check_rule_conflicts.py`](../../tools/check_rule_conflicts.py) | instruction conflict as a compile-time error ("refusing to guess") — kills the silent precedence resolution of record §7/§9; no analogue in any swept system |
+| [`tools/gen_gate.py`](../../tools/gen_gate.py) → [`tools/generated/gate_git.py`](../../tools/generated/gate_git.py), parity-proven by [`tools/tests/run_gate_parity.py`](../../tools/tests/run_gate_parity.py) | a gate generated from the registry alone — rule added as data becomes an enforced check with no new code |
+| [`experiments/cases/publish_flow/`](../../experiments/cases/publish_flow/README.md) | the typed publish channel demo: a branch-name rule as a payload refinement refused pre-delivery, protocol Scribble-validated |
+| [`tools/governed_push.py`](../../tools/governed_push.py) + [`experiments/cases/governed_push/`](../../experiments/cases/governed_push/README.md) | a REAL `git push` executed through the typed channel — "rules loaded before push" as type structure; effects gated strictly even though observation is permutation-tolerant (P7's graded failure and amendment) |
+| [`../predictions/PARALLEL_SCHEDULER_PREREGISTRATION.md`](../predictions/PARALLEL_SCHEDULER_PREREGISTRATION.md) | the standing answer to TraceFix's scalability line, registered before any implementation — the enabled-set dispatch this document's scheduler section derives |
+| [`../../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md`](../../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md) | the companion key document: discussion notes and self-review feeding the next paper version |

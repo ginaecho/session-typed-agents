@@ -5,7 +5,7 @@ so the next paper version can draw on them as references and discussion
 material. **This document does not revise the paper**; it records the
 arguments, the evidence behind them, and an honest self-review of the new
 mechanisms. Verified competitor facts all trace to
-[`../docs/reference/RELATED_WORK_2026-07.md`](../docs/reference/RELATED_WORK_2026-07.md)
+[`../docs/reference/RELATED_WORK_2026-07-25.md`](../docs/reference/RELATED_WORK_2026-07-25.md)
 (per-item verification status there; arXiv confirming reads still pending
 an unblocked network). Terms glossed once: the **seam** is the translation
 step from plain-language intent to formal protocol; an **arm** is one
@@ -20,6 +20,7 @@ configuration being compared, like a trial's treatment and control groups.
 - [4. Evidence strength vs. system capability](#4-evidence-strength-vs-system-capability)
 - [5. The residual as a risk register, not a shrug](#5-the-residual-as-a-risk-register-not-a-shrug)
 - [6. Self-review: enough? needed? distinctive? on-vision?](#6-self-review-enough-needed-distinctive-on-vision)
+- [7. Implemented artifacts, linked](#7-implemented-artifacts-linked)
 <!-- MENU:END -->
 
 ## 1. Agentproof: why a workflow graph is not a global type
@@ -245,3 +246,39 @@ monitor's guarantee, and Stage 4 is the declared path from "linted beside
 the session" to "typed inside it." As long as each new checker is either a
 compiled projection of a declared rule or explicitly tagged residual
 support, the tooling serves the thesis instead of diluting it.
+
+## 7. Implemented artifacts, linked
+
+Everything §6 grades was implemented the same day, pre-registered before
+running in
+[`../docs/predictions/SPEC_TO_GATE_PREREGISTRATION.md`](../docs/predictions/SPEC_TO_GATE_PREREGISTRATION.md)
+(P1–P8; P7 graded failed-as-registered with its amendment recorded). The
+scripts and cases, for the next paper version to point at directly:
+
+- [`../tools/check_git_rules.py`](../tools/check_git_rules.py) and
+  [`../.githooks/pre-push`](../.githooks/pre-push) — the git rules as a
+  mechanism (lint tier).
+- [`../tools/check_style.py`](../tools/check_style.py) — the
+  known-offender writing rule linted, beside
+  [`../tools/check_md_links.py`](../tools/check_md_links.py).
+- [`../tools/rules/AGENT_RULES.yaml`](../tools/rules/AGENT_RULES.yaml),
+  [`../tools/rules/PLATFORM_SESSION_RULES.yaml`](../tools/rules/PLATFORM_SESSION_RULES.yaml),
+  [`../tools/rules/PRECEDENCE.yaml`](../tools/rules/PRECEDENCE.yaml) — the
+  machine-readable partition and precedence declaration.
+- [`../tools/check_rule_conflicts.py`](../tools/check_rule_conflicts.py) —
+  instruction conflict as a compile-time error.
+- [`../tools/gen_gate.py`](../tools/gen_gate.py) →
+  [`../tools/generated/gate_git.py`](../tools/generated/gate_git.py),
+  parity-proven by
+  [`../tools/tests/run_gate_parity.py`](../tools/tests/run_gate_parity.py).
+- [`../experiments/cases/publish_flow/`](../experiments/cases/publish_flow/README.md)
+  — the typed publish channel, Scribble-validated.
+- [`../tools/governed_push.py`](../tools/governed_push.py) +
+  [`../experiments/cases/governed_push/`](../experiments/cases/governed_push/README.md)
+  — a real `git push` executed through the typed channel; the
+  synchronous-effect-gating finding.
+- [`../docs/predictions/PARALLEL_SCHEDULER_PREREGISTRATION.md`](../docs/predictions/PARALLEL_SCHEDULER_PREREGISTRATION.md)
+  — the scheduler change registered, unimplemented by rule.
+- Companion key document with the sweep's verified findings and the same
+  linked table:
+  [`../docs/reference/RELATED_WORK_2026-07-25.md`](../docs/reference/RELATED_WORK_2026-07-25.md).

@@ -89,7 +89,7 @@ journal-corpus sweep, **nobody has applied multiparty session types, Scribble,
 or projection to agent markdown artifacts**. But the *pipeline shape* is no
 longer unclaimed, and three of the paper's framing sentences are now falsifiable.
 Full detail, with per-item verification status and the edit list it forces, is in
-[`RELATED_WORK_2026-07.md`](RELATED_WORK_2026-07.md). In brief:
+[`RELATED_WORK_2026-07-25.md`](RELATED_WORK_2026-07-25.md). In brief:
 
 | Finding | Effect on the paper |
 |---|---|
@@ -516,5 +516,5 @@ roles. TraceFix has the identical hole, by its own architecture document.
    *[Status, added in a follow-up session: built —
    [`ENFORCEABILITY_PARTITION.md`](ENFORCEABILITY_PARTITION.md).]*
 5. **Confirming reads** for every arXiv identifier in
-   [`RELATED_WORK_2026-07.md`](RELATED_WORK_2026-07.md), for Agentproof's six
+   [`RELATED_WORK_2026-07-25.md`](RELATED_WORK_2026-07-25.md), for Agentproof's six
    structural checks individually, and for arXiv:2605.11770.
