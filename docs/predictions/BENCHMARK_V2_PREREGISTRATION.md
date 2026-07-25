@@ -1,9 +1,7 @@
 # Pre-registration — Benchmark Plan v2 experiments
 
 Per the fairness checklist (BENCHMARK_PLAN_V2 §11), the expected outcome of each
-experiment is registered here BEFORE running, then graded after. Registered
-2026-07-04. Writing predictions down first is what makes a later "confirmed"
-mean something: a prediction that can be edited after the run can never fail.
+experiment is registered here BEFORE running, then graded after. 
 
 <!-- MENU:START (auto-generated — edit headings, then regenerate) -->
 ## Menu
