@@ -124,7 +124,21 @@ the same mechanism `GAP_CLOSED.md` built for payload rules generally.
 
 ## Stage 4 — the working session as a session (future)
 
-The generalization of stage 3, not built yet: model an agent working
+**Increment 1 is built and graded** (P6–P8, registered before the runs):
+`experiments/cases/governed_push/` + `tools/governed_push.py` execute the
+**real** `git push` through the typed channel — `RulesAck` (a verified
+quote of the live git-rules section) must precede `PushRequest`, so the
+retrieval failure of 2026-07-25 is unrepresentable on this path. Grading
+note worth carrying into the paper: P7 failed as registered — the session
+monitor rightly tolerates asynchronous permutation and only reports the
+missing `RulesAck` at trace end — so the driver gates the effect
+*strictly*, refusing any send not enabled in the sender's current
+projected state before the effect fires. Observation may be
+permutation-tolerant; **effects must be gated synchronously**. The honest
+boundary: nothing yet forces an agent onto this path over raw `git push`;
+that closure needs environment support (see the case README).
+
+The rest of the stage, still future: model an agent working
 session's *significant actions* as protocol messages (`RulesAck` for "the
 git rules are loaded", `PushRequest`, `RegisterPrediction`, `RunStart`), so
 that orderings like "rules retrieved before the first push" and
@@ -157,6 +171,9 @@ Filled after the runs; see the pre-registration for the predictions.
 | P3 — generated gate ≡ hand-written checker on 6/6 fixtures | **pass** — 6/6 agree, all matching the expected verdicts |
 | P4 — publish-flow protocol validates under real Scribble | **pass** — `(True, '')` on the first committed draft (compiler built from source in-container) |
 | P5 — forbidden push refused pre-delivery; clean push conformant | **pass** — 1 refusal with remediation shown; corrected push delivered, globally conformant, accepting state |
+| P6 — GovernedPush protocol validates under real Scribble | **pass** — `(True, '')`, first committed draft |
+| P7 — rules-skipped push refused as off-protocol at the call site | **failed as registered, amended** — the monitor defers (permutation tolerance, record §8); the strict effect gate in `governed_push.py` achieves the registered outcome: refusal before any git command, naming the missing step |
+| P8 — full sequence executes a real push, conformantly | **pass** — quote verified against live AGENT.md, real push executed to the fixture remote, 4-event trace globally conformant; forbidden branch refused pre-execution on the same path |
 
 One known scope note from P3, recorded rather than smoothed over: the
 hand-written checker additionally accepts the owner's two Microsoft

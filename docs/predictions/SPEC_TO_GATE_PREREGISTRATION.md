@@ -79,6 +79,48 @@ with the registry's remediation text shown; the push with branch
 `gc/stjp-opus5-improvements` is delivered, the session reaches its accepting
 state, and **zero violations** are recorded.
 
+## Later registration, same day — Stage 4 increment 1 (P6–P8)
+
+Registered 2026-07-25, after P1–P5 were graded and **before** any of the
+three artifacts below was written or run. The increment: `governed_push` —
+the first working-session action executed *through* the typed channel
+rather than beside it. Roles: Agent, Registry (verifies that the rules
+section quoted in `RulesAck` matches the current AGENT.md bytes), Repo (the
+real `git push`, executed only on gate-passed delivery).
+
+### P6 — the GovernedPush protocol validates
+
+**Prediction:** the committed `experiments/cases/governed_push/protocols/v1.scr`
+(RulesAck → RulesOk → PushRequest → PushAck/PushRejected) validates under
+the real Scribble-Java compiler. Any rejected intermediate draft is
+reported in the case README as an authoring catch, not hidden.
+
+### P7 — skipping the rules step is refused as off-protocol, pre-execution
+
+**Prediction:** driving the channel with the rules step skipped (the
+`--skip-rules` flag, simulating the 2026-07-25 retrieval failure — acting
+without having loaded the rules) is refused **before any git command
+runs**: the Agent-side projected state machine expects `RulesAck` as the
+first send, so the premature `PushRequest` is an ordering violation at the
+call site. The refusal names the missing step. Note the asymmetry with
+asynchronous permutation tolerance: a *receiver* may see messages out of
+order, but a role's **own sends** are ordered by its local type, so this
+block is sound, not over-strict.
+
+### P8 — the full sequence executes a real push, conformantly
+
+**Prediction:** against a local bare fixture remote, the full sequence on
+a `gc/`-prefixed branch (a) verifies the quoted rules text against the
+live AGENT.md, (b) passes the branch-name refinement, (c) executes the
+real `git push`, and (d) yields a globally conformant trace reaching the
+accepting state, written to a session log. On a forbidden branch name the
+push is refused pre-execution by the same refinement as P5.
+
+If P6–P8 hold, the final push of this very increment to
+`gc/stjp-opus5-improvements` will itself be performed through
+`tools/governed_push.py` — the channel used in production the day it is
+built, not only demonstrated.
+
 ## Grading
 
 Each prediction is graded pass/fail in the case README and the plan document
