@@ -12,6 +12,7 @@ canonical plain-language list for every term the STJP docs use.
 - [`MINED_SKILLS_SOURCES.md`](MINED_SKILLS_SOURCES.md) — verified registry of every public repository the "real-world skills" evidence came from, with working permalinks and license checks.
 - [`REAL_SKILLS_REEXAMINED.md`](REAL_SKILLS_REEXAMINED.md) — a line-by-line re-read of the real source files behind the two "real skills" cases, and the corrected protocols that came out of it.
 - [`RELATED_WORK_2026-07.md`](RELATED_WORK_2026-07.md) — July 2026 literature sweep: which competing 2026 papers make our framing sentences false, which third-party numbers we should be citing instead of our own, and the paper edits each one forces.
+- [`SESSION_RECORD_2026-07-25.md`](SESSION_RECORD_2026-07-25.md) — unsanitised record of the session that produced the sweep: the findings, the assistant's own errors and the corrections to them, and what happened when an agent was handed this project's prose rules and broke three of them while obeying every mechanical check.
 
 ## Scribble & protocol tooling
 
