@@ -57,7 +57,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 
-OWNER_NAME = "ginaecho"
+OWNER_NAME = "ginaecho"  # REPO may be overridden by --repo (used by the
+                         # parity fixtures in tools/tests/)
 OWNER_EMAIL = "gina.tcchen@gmail.com"
 # Identities AGENT.md's git section names for the owner across both repos,
 # plus GitHub's web-editor committer (what the owner's own UI edits carry).
@@ -149,7 +150,12 @@ def main() -> int:
                     help="branch name to judge (default: current branch)")
     ap.add_argument("--include-pushed", action="store_true",
                     help="also audit commits already on origin/* refs")
+    ap.add_argument("--repo", type=Path, default=None,
+                    help="repository to check (default: this repo)")
     args = ap.parse_args()
+    if args.repo is not None:
+        global REPO
+        REPO = args.repo.resolve()
 
     problems: list[str] = []
     warnings: list[str] = []
