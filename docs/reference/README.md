@@ -11,6 +11,7 @@ canonical plain-language list for every term the STJP docs use.
 - [`HOW_TO_USE_TRACES.md`](HOW_TO_USE_TRACES.md) — how to re-derive every headline number yourself from the raw per-trial traces committed in the repo.
 - [`MINED_SKILLS_SOURCES.md`](MINED_SKILLS_SOURCES.md) — verified registry of every public repository the "real-world skills" evidence came from, with working permalinks and license checks.
 - [`REAL_SKILLS_REEXAMINED.md`](REAL_SKILLS_REEXAMINED.md) — a line-by-line re-read of the real source files behind the two "real skills" cases, and the corrected protocols that came out of it.
+- [`RELATED_WORK_2026-07.md`](RELATED_WORK_2026-07.md) — July 2026 literature sweep: which competing 2026 papers make our framing sentences false, which third-party numbers we should be citing instead of our own, and the paper edits each one forces.
 
 ## Scribble & protocol tooling
 
