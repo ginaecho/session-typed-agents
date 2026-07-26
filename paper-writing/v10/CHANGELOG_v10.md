@@ -1,5 +1,50 @@
 # STJP paper v10 — changes from v9
 
+## v10.2 (2026-07-26) — clarity and presentation pass (no numbers changed)
+
+Purpose: address reader feedback that the paper was hard to follow. No
+experimental number, claim, or table value was added or changed; every edit
+is presentational. All edits in `main.tex` (plus title lines in the READMEs).
+
+1. **Title** — "Compile the Conversation …" → "Compiling the Coordination
+   Protocols of Multi-Agent Systems: …". "Conversation" wrongly suggested
+   runtime chat; the object being compiled is the statically defined
+   interaction protocol. The intro's framing question was reworded the same
+   way, and remaining uses of "conversation" for the protocol/session were
+   replaced throughout (§3, §4 conclusion).
+2. **Professional terminology for the artifact class** — "skill files, agent
+   markdowns, and specification documents" are now *examples* of a named
+   class, "natural-language coordination artifacts" (abstract, intro ¶1,
+   contribution 1, conclusion).
+3. **Abstract rewritten for story and readability** — problem → mechanism →
+   scenario ("a financial-reporting team in which an audit and an approval
+   must precede an irreversible filing") → the three findings, each stated
+   in plain language before its numbers (63% fewer tokens; 73% fewer calls;
+   9× per successful run; 4–22× per violation-free run; 95/100 vs 0
+   unauthorized irreversible acts; the livelock and static-deadlock stories;
+   95.1% mutation detection; 100% vs 41.7% exfiltration blocking).
+4. **Every abbreviation expanded at first use** — LLM, MPST, EFSM (endpoint
+   finite-state machine), MCP, DSL, SMT, MSC, LTL, CuP, FIFO, GCR, CGC, GCD
+   (grammar-constrained decoding), SFT, RL, GRPO, LGA, AUC, CI, pass^k, LoRA,
+   +CF, T0.
+5. **Every label family explained at first use** — pipeline stages S1–S5
+   ("S" for stage, explicitly distinguished from severity grades S0–S4, "S"
+   for severity); experiments E0–E10 ("E" for experiment) with a new lead
+   paragraph in §7 stating the question each experiment answers; theorems
+   T1–T4; predictions P1–P5; hypotheses H1–H6.
+6. **Scenario story added at the top of §6** — the six-role finance case,
+   why filing-before-approval is the failure that matters, and what an
+   "arm" is (defined in §5.3 with the clinical-trial analogy and the
+   information-ladder reading of A/B/C/C-min/C+).
+7. **Citations renumbered by order of first appearance** — the manual
+   thebibliography was reordered so [1], [2], [3] … follow the text
+   (natbib numbers by list position); the one uncited entry (owasp) sits
+   last. Verified: clean compile, 0 undefined citations/references.
+8. **E6 scaling paragraph rewritten** — explains that "roles" are
+   participating agents, what the structural proxy is, and why the
+   9.2×→17.1× widening from two to ten roles means the advantage grows
+   with team size; `tab:ctcg` caption now defines the arm abbreviations.
+
 ## v10.1 (2026-07-19) — fairness-audit alignment, statistical rigor, reproducibility
 
 Purpose: bring every claim in line with the 2026-07-17 benchmark fairness
