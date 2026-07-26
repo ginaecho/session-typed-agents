@@ -44,7 +44,35 @@ is presentational. All edits in `main.tex` (plus title lines in the READMEs).
    participating agents, what the structural proxy is, and why the
    9.2×→17.1× widening from two to ten roles means the advantage grows
    with team size; `tab:ctcg` caption now defines the arm abbreviations.
-9. **Contributions 4 and 5 rewritten; H1–H6 given their story** —
+9a. **Citation integrity: governance-layers paragraph corrected** — the
+   "recent syntheses organize agent governance as a three-layer stack"
+   framing was misattributed: LGA (arXiv:2603.07191) actually proposes a
+   *four*-layer runtime architecture and GovernSpec (arXiv:2605.22634) a
+   contract format; neither contains the Layer 0/1/2 taxonomy or the quoted
+   words "not available". §2 now presents the three-level stack explicitly
+   as *our synthesis*, describes each cited work by what it actually does,
+   and drops the fabricated quote. Bib entries for skilldex, governspec,
+   lga corrected to verified titles/authors (Saha & Hemanth; T. Liu; Y. Ge).
+   The unverifiable "34% of packages violate the format spec" figure in §1
+   softened to "reports widespread nonconformance".
+9b. **Figure 1 simplified** — in-figure wording cut to short plain phrases
+   (e.g. "wrong message? blocked before delivery", "asks only the role
+   whose turn it is"); lane-label overlaps fixed; regenerated via
+   `make_figs_v2.py`.
+9c. **§4.1 pipeline rewritten in formal prose** — S1–S5 now use uniform
+   run-in `\paragraph` headings (fixes the S1 indent mismatch); telegraphic
+   colon/parenthesis fragments replaced with full sentences.
+9d. **Table 2 (guarantees) rewritten** — full-sentence cells, general rules
+   only; the $50k-audit example moved out of the rule cell into the caption.
+9e. **Results and validation suite given why/how/result framing** — §6.1,
+   §6.2, §6.3, §6.4 open with the question the experiment answers; E0, E2,
+   E3, E4, E5 rewritten with explicit *Why / How / Result / Insight*
+   structure; E7 given its motivating question; six-arm ladder intro
+   explains why each task exists (safety axis vs cost axis); the two giant
+   results paragraphs (six-arm ladder, real-skills) split into paragraphs
+   per finding; metric definitions added to Table 3's caption; smaller
+   glosses (pass^10@LB, delivered violations, round 2, false positives).
+10. **Contributions 4 and 5 rewritten; H1–H6 given their story** —
    contribution 4 ("guarantee transfer") now states what each MPST theorem
    *means* for an agent system instead of listing theorem names;
    contribution 5 now tells the benchmark-self-testing story, explains what
