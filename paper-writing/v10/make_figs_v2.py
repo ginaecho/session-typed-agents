@@ -84,18 +84,18 @@ def badge(x, y, s):
 ax.axhline(27.5, xmin=0.0, xmax=1.0, color="#C9CED4", lw=0.8, ls=(0, (2, 3)))
 ax.axhline(11.5, xmin=0.0, xmax=1.0, color="#C9CED4", lw=0.8, ls=(0, (2, 3)))
 ax.text(0.5, 52.6, "COMPILE TIME", fontsize=8.2, fontweight="bold", color="#5A6570")
-ax.text(14.5, 52.6, "static — runs before any agent exists", fontsize=7.4, color="#8A939C", style="italic")
+ax.text(14.5, 52.6, "before any agent runs", fontsize=7.4, color="#8A939C", style="italic")
 ax.text(0.5, 25.9, "RUN TIME", fontsize=8.2, fontweight="bold", color="#5A6570")
-ax.text(9.5, 25.9, "deterministic code, not agents — O(1) per message, zero tokens", fontsize=7.4, color="#8A939C", style="italic")
+ax.text(11.5, 25.9, "plain code, not agents — zero tokens", fontsize=7.4, color="#8A939C", style="italic")
 ax.text(0.5, 9.9, "MEASUREMENT", fontsize=8.2, fontweight="bold", color="#5A6570")
-ax.text(13.0, 9.9, "offline, bit-reproducible", fontsize=7.4, color="#8A939C", style="italic")
+ax.text(16.5, 9.9, "offline, bit-reproducible", fontsize=7.4, color="#8A939C", style="italic")
 
 # ---- compile row (y=34..46) ----
-B_int  = bx(1,  35.5, 14, 9, "User intent", "natural language\ntask + policies", FILL_N)
-B_llm  = bx(19, 35.5, 14, 9, "LLM drafter", "intent \u2192 protocol\n(+ guard sidecar)", FILL_C)
-B_scr  = bx(37, 35.5, 15, 9, "Global type G", "Scribble .scr\n+ .refn guards\n+ goal markers", FILL_C)
-B_val  = bx(56, 35.5, 16, 9, "Static validator", "projectability \u00b7 deadlock\nguarded recursion\ngoal reachability", FILL_V, edge="#4E9B6F")
-B_proj = bx(76, 35.5, 15, 9, "Projection G\u21beRi", "one local type\nper role \u2192 EFSM", FILL_V, edge="#4E9B6F")
+B_int  = bx(1,  35.5, 14, 9, "User intent", "task stated in\nplain language", FILL_N)
+B_llm  = bx(19, 35.5, 14, 9, "LLM drafter", "writes a draft\nprotocol", FILL_C)
+B_scr  = bx(37, 35.5, 15, 9, "Global type G", "the protocol\n+ guards + goals", FILL_C)
+B_val  = bx(56, 35.5, 16, 9, "Static validator", "no deadlock;\ngoal reachable", FILL_V, edge="#4E9B6F")
+B_proj = bx(76, 35.5, 15, 9, "Projection G\u21beRi", "each role gets\nonly its slice", FILL_V, edge="#4E9B6F")
 
 elbow(B_int, B_llm); elbow(B_llm, B_scr); elbow(B_scr, B_val)
 elbow(B_val, B_proj, label="VALID", loff=(0, 0.6))
@@ -103,7 +103,7 @@ elbow(B_val, B_proj, label="VALID", loff=(0, 0.6))
 ax.add_patch(FancyArrowPatch((64, 44.5), (28, 44.5), arrowstyle="-|>", mutation_scale=11,
                              lw=1.1, color=OI["verm"], linestyle=(0, (4, 2)),
                              connectionstyle="arc3,rad=-0.20"))
-ax.text(46, 49.4, "REJECTED + counterexample \u2192 re-draft   (human endorses the final G)",
+ax.text(46, 49.4, "rejected \u2192 re-draft;  human approves the final G",
         ha="center", fontsize=7.2, color=OI["verm"], style="italic")
 badge(19, 45.6, "S1"); badge(56, 45.6, "S2"); badge(76, 45.6, "S3")
 
@@ -112,10 +112,10 @@ B_art = bx(94, 35.5, 11, 9, "3 artifacts\nper role", "", FILL_V, edge="#4E9B6F",
 elbow(B_proj, B_art)
 
 # ---- runtime row (y=14..24) ----
-B_ag   = bx(1,  15, 18, 9, "LLM agents", "receive lean local skill\n(SEND/RECV table + guards);\nuntyped 'dyn' participants", FILL_N)
-B_gate = bx(30, 15, 21, 9, "Monitor + Gate  (generated)", "EFSM interpreter per role;\noff-contract send rejected\npre-delivery \u2192 re-prompt", FILL_R, edge="#C2836B")
-B_schd = bx(58, 15, 20, 9, "EFSM scheduler", "prompts only roles enabled\nat the current protocol state;\nno idle polling", FILL_R, edge="#C2836B")
-B_log  = bx(85, 15, 20, 9, "Typed event log", "role \u00b7 state \u00b7 branch \u00b7 verdict\n\u00b7 guard result \u00b7 goal marker",
+B_ag   = bx(1,  15, 18, 9, "LLM agents", "each follows its own\nlean skill", FILL_N)
+B_gate = bx(30, 15, 21, 9, "Monitor + Gate  (generated)", "wrong message?\nblocked before delivery", FILL_R, edge="#C2836B")
+B_schd = bx(58, 15, 20, 9, "EFSM scheduler", "asks only the role\nwhose turn it is", FILL_R, edge="#C2836B")
+B_log  = bx(85, 15, 20, 9, "Typed event log", "every message recorded\nwith its verdict",
             FILL_C)
 badge(30, 25.1, "S4"); badge(58, 25.1, "S5")
 
@@ -128,7 +128,7 @@ ax.text(23, 31.9, "skill", fontsize=7.0, color="#4E9B6F", style="italic")
 ax.text(44.5, 31.9, "monitor", fontsize=7.0, color="#4E9B6F", style="italic")
 ax.text(71.5, 31.9, "schedule", fontsize=7.0, color="#4E9B6F", style="italic")
 
-elbow(B_ag, B_gate, label="send m", loff=(0, 0.4))
+elbow(B_ag, B_gate, label="send", loff=(0, 0.4))
 ax.add_patch(FancyArrowPatch((30, 16.8), (19, 16.8), arrowstyle="-|>", mutation_scale=11, lw=1.1, color=OI["verm"]))
 ax.text(24.5, 14.2, "block + re-prompt", fontsize=7.0, color=OI["verm"], style="italic")
 elbow(B_gate, B_schd, label="allow", loff=(0, 0.4))
@@ -137,13 +137,13 @@ ax.plot([68, 68], [15, 13.3], color="#8A939C", lw=1.0, ls=(0, (1, 2)))
 ax.plot([68, 10], [13.3, 13.3], color="#8A939C", lw=1.0, ls=(0, (1, 2)))
 ax.add_patch(FancyArrowPatch((10, 13.3), (10, 14.9), arrowstyle="-|>", mutation_scale=11, lw=1.0,
                              color="#8A939C", linestyle=(0, (1, 2))))
-ax.text(39, 13.7, "turn control: 'you are the enabled sender at this state'", fontsize=6.6,
+ax.text(39, 13.7, "turn control: 'your turn to send'", fontsize=6.6,
         color="#8A939C", style="italic")
 
 # ---- measurement row (y=1..8.5) ----
-B_met = bx(14, 1, 56, 7.5, "Deterministic metric engine  (no golden trajectory, no LLM judge)",
-           "conformance rate \u00b7 path distribution \u00b7 goal progress \u00b7 detour cost \u00b7 repair burden \u00b7 S0\u2013S4 severity", FILL_V, edge="#4E9B6F")
-B_anc = bx(76, 1, 29, 7.5, "Human outcome anchor (sampled)", "divergence \u21d2 re-draft G with the user,\nnot patch agents", FILL_N)
+B_met = bx(14, 1, 56, 7.5, "Metric engine  (plain code \u2014 no LLM judge)",
+           "conformance \u00b7 goal progress \u00b7 cost \u00b7 severity", FILL_V, edge="#4E9B6F")
+B_anc = bx(76, 1, 29, 7.5, "Human outcome anchor (sampled)", "if users are unhappy,\nre-draft G with them", FILL_N)
 elbow(B_log, B_met, side1="b", side2="t")
 elbow(B_log, B_anc, side1="b", side2="t")
 

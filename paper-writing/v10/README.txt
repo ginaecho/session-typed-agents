@@ -1,7 +1,10 @@
-STJP paper v10 -- "Compile the Conversation of Multi-Agent Coordination:
-Provably Safe and More Token-Efficient"
+STJP paper v10 -- "Compiling the Coordination Protocols of Multi-Agent
+Systems: Provably Safe and More Token-Efficient"
 ============================================================================
-NOTE: retitled 2026-07-17 (was "Compile the Conversation: Multiparty Session
+NOTE: retitled 2026-07-26 (was "Compile the Conversation of Multi-Agent
+Coordination: Provably Safe and More Token-Efficient"; "conversation" read
+as runtime chat rather than the statically defined interaction protocol).
+Earlier retitle 2026-07-17 (was "Compile the Conversation: Multiparty Session
 Types Make Multi-Agent Coordination Provably Safe -- and Cheaper than
 Failure") and the abstract rewritten in the token-efficiency direction; v6-v9
 directories removed from the tree the same day (history remains in git).
