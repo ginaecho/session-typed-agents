@@ -1,5 +1,88 @@
 # STJP paper v10 — changes from v9
 
+## v10.2 (2026-07-26) — clarity and presentation pass (no numbers changed)
+
+Purpose: address reader feedback that the paper was hard to follow. No
+experimental number, claim, or table value was added or changed; every edit
+is presentational. All edits in `main.tex` (plus title lines in the READMEs).
+
+1. **Title** — "Compile the Conversation …" → "Compiling the Coordination
+   Protocols of Multi-Agent Systems: …". "Conversation" wrongly suggested
+   runtime chat; the object being compiled is the statically defined
+   interaction protocol. The intro's framing question was reworded the same
+   way, and remaining uses of "conversation" for the protocol/session were
+   replaced throughout (§3, §4 conclusion).
+2. **Professional terminology for the artifact class** — "skill files, agent
+   markdowns, and specification documents" are now *examples* of a named
+   class, "natural-language coordination artifacts" (abstract, intro ¶1,
+   contribution 1, conclusion).
+3. **Abstract rewritten for story and readability** — problem → mechanism →
+   scenario ("a financial-reporting team in which an audit and an approval
+   must precede an irreversible filing") → the three findings, each stated
+   in plain language before its numbers (63% fewer tokens; 73% fewer calls;
+   9× per successful run; 4–22× per violation-free run; 95/100 vs 0
+   unauthorized irreversible acts; the livelock and static-deadlock stories;
+   95.1% mutation detection; 100% vs 41.7% exfiltration blocking).
+4. **Every abbreviation expanded at first use** — LLM, MPST, EFSM (endpoint
+   finite-state machine), MCP, DSL, SMT, MSC, LTL, CuP, FIFO, GCR, CGC, GCD
+   (grammar-constrained decoding), SFT, RL, GRPO, LGA, AUC, CI, pass^k, LoRA,
+   +CF, T0.
+5. **Every label family explained at first use** — pipeline stages S1–S5
+   ("S" for stage, explicitly distinguished from severity grades S0–S4, "S"
+   for severity); experiments E0–E10 ("E" for experiment) with a new lead
+   paragraph in §7 stating the question each experiment answers; theorems
+   T1–T4; predictions P1–P5; hypotheses H1–H6.
+6. **Scenario story added at the top of §6** — the six-role finance case,
+   why filing-before-approval is the failure that matters, and what an
+   "arm" is (defined in §5.3 with the clinical-trial analogy and the
+   information-ladder reading of A/B/C/C-min/C+).
+7. **Citations renumbered by order of first appearance** — the manual
+   thebibliography was reordered so [1], [2], [3] … follow the text
+   (natbib numbers by list position); the one uncited entry (owasp) sits
+   last. Verified: clean compile, 0 undefined citations/references.
+8. **E6 scaling paragraph rewritten** — explains that "roles" are
+   participating agents, what the structural proxy is, and why the
+   9.2×→17.1× widening from two to ten roles means the advantage grows
+   with team size; `tab:ctcg` caption now defines the arm abbreviations.
+9a. **Citation integrity: governance-layers paragraph corrected** — the
+   "recent syntheses organize agent governance as a three-layer stack"
+   framing was misattributed: LGA (arXiv:2603.07191) actually proposes a
+   *four*-layer runtime architecture and GovernSpec (arXiv:2605.22634) a
+   contract format; neither contains the Layer 0/1/2 taxonomy or the quoted
+   words "not available". §2 now presents the three-level stack explicitly
+   as *our synthesis*, describes each cited work by what it actually does,
+   and drops the fabricated quote. Bib entries for skilldex, governspec,
+   lga corrected to verified titles/authors (Saha & Hemanth; T. Liu; Y. Ge).
+   The unverifiable "34% of packages violate the format spec" figure in §1
+   softened to "reports widespread nonconformance".
+9b. **Figure 1 simplified** — in-figure wording cut to short plain phrases
+   (e.g. "wrong message? blocked before delivery", "asks only the role
+   whose turn it is"); lane-label overlaps fixed; regenerated via
+   `make_figs_v2.py`.
+9c. **§4.1 pipeline rewritten in formal prose** — S1–S5 now use uniform
+   run-in `\paragraph` headings (fixes the S1 indent mismatch); telegraphic
+   colon/parenthesis fragments replaced with full sentences.
+9d. **Table 2 (guarantees) rewritten** — full-sentence cells, general rules
+   only; the $50k-audit example moved out of the rule cell into the caption.
+9e. **Results and validation suite given why/how/result framing** — §6.1,
+   §6.2, §6.3, §6.4 open with the question the experiment answers; E0, E2,
+   E3, E4, E5 rewritten with explicit *Why / How / Result / Insight*
+   structure; E7 given its motivating question; six-arm ladder intro
+   explains why each task exists (safety axis vs cost axis); the two giant
+   results paragraphs (six-arm ladder, real-skills) split into paragraphs
+   per finding; metric definitions added to Table 3's caption; smaller
+   glosses (pass^10@LB, delivered violations, round 2, false positives).
+10. **Contributions 4 and 5 rewritten; H1–H6 given their story** —
+   contribution 4 ("guarantee transfer") now states what each MPST theorem
+   *means* for an agent system instead of listing theorem names;
+   contribution 5 now tells the benchmark-self-testing story, explains what
+   the *seam* is and why it needs its own instruments, and says what the
+   H1–H6 hypotheses are for. §8.4 restructured as an itemized list: each
+   hypothesis stated as the design question it settles (grammar constraint
+   help-or-hurt, sampling baseline, SFT/GRPO checkpoint gates, judge-panel
+   calibration, synthetic-to-human transfer), with its pass/fail rule and
+   the explicit note that none is graded yet — the GPU runs are pending.
+
 ## v10.1 (2026-07-19) — fairness-audit alignment, statistical rigor, reproducibility
 
 Purpose: bring every claim in line with the 2026-07-17 benchmark fairness

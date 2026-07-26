@@ -2,8 +2,10 @@
 
 This directory contains the LaTeX source for the STJP ICLR paper.
 
-Current title: **"Compile the Conversation of Multi-Agent Coordination:
-Provably Safe and More Token-Efficient"**
+Current title: **"Compiling the Coordination Protocols of Multi-Agent Systems:
+Provably Safe and More Token-Efficient"** (retitled 2026-07-26; "conversation"
+in the earlier title read as runtime chat rather than the statically defined
+interaction protocol)
 
 ## Directory Structure
 
