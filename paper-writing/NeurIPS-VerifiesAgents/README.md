@@ -40,7 +40,8 @@ Same numbers, same honesty discipline, different lead: verification-first.
   verifies behavior *against* a spec/skill/markdown, but nothing verifies the
   basis itself (sound & complete as a coordination discipline — deadlock-free,
   goal-reaching); STJP checks it statically, before runtime resources are spent.
-- §5 "Verifying the verifiers" promotes E0/E1 mutation testing, E2 red-teaming,
+- §5 "Verifying the verifiers" promotes the instrument-validation and
+  mutation-testing exercises, the gate red-teaming,
   the **harness fairness self-audit**, and the forensic audit to the paper's core
   (workshop Pillar 1: robust verifiers, red-teamed evaluation harnesses).
 - §3 compresses MPST to guarantees-with-consequences (no projection calculus);
@@ -48,7 +49,8 @@ Same numbers, same honesty discipline, different lead: verification-first.
 - MAST (Cemri, Pan, …, Stoica — two organizers + one invited speaker) is cited
   in the intro as the empirical problem statement STJP answers.
 - Cut relative to ICLR draft: §8 seam training (one Limitations sentence),
-  §9 typed extensions, E5/E6 detail. Nothing PENDING appears in this paper.
+  §9 typed extensions, and the extended validation-suite detail. Nothing
+  PENDING appears in this paper.
 
 ## Submission checklist
 - [ ] Replace `neurips_2026.sty` with the official file once posted

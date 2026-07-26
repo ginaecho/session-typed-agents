@@ -221,11 +221,11 @@ plt.tight_layout(w_pad=1.8, h_pad=2.4)
 plt.savefig("fig2_results.png", dpi=260); plt.savefig("fig2_results.pdf"); plt.close()
 
 # =========================================================
-# Figure 3 — validation suite: E1/E2/E3/E6 ALL MEASURED
+# Figure 3 — validation suite: four measured panels
 # =========================================================
 fig, axes = plt.subplots(2, 2, figsize=(7.0, 5.4)); axes = axes.flatten()
 
-# (a) E1 mutation testing — measured + adjudicated
+# (a) mutation testing — measured + adjudicated
 ax = axes[0]
 cls = ["undecl.\nrole", "flipped\nsubj.", "branch\nasym.", "GROUP:\nwell-fmd.", "reorder\n(accept)"]
 det = [100.0, 100.0, 82.5, 95.1, 0.8]
@@ -246,10 +246,10 @@ ax.axvline(3.5, color="#CCCCCC", lw=0.8, ls=":")
 ax.text(2.0, 116, "0/100 false positives", fontsize=7.2, color=ARM["A"], ha="center")
 ax.set_xticks(xb, cls, fontsize=6.8); ax.set_ylim(0, 126); ax.set_yticks([0, 25, 50, 75, 100])
 ax.set_ylabel("Flagged by validator (%)")
-ax.set_title("E1 \u2014 mutation-testing the checker")
+ax.set_title("Mutation-testing the checker")
 panel_label(ax, "(a)")
 
-# (b) E2 adversarial — measured four-condition layering
+# (b) adversarial — measured four-condition layering
 ax = axes[1]
 sysn = ["no\nguard", "keyword\nrules", "structural\ngate", "gate +\nrefinement"]
 blocked = [0.0, 41.7, 91.7, 100.0]
@@ -263,10 +263,10 @@ ax.annotate("1 legal-route\nsmuggle", xy=(2, 94), xytext=(0.75, 108),
             fontsize=7.0, color="#555555", arrowprops=dict(arrowstyle="->", lw=0.7, color="#555555"))
 ax.set_xticks(xb, sysn, fontsize=7.6); ax.set_ylim(0, 124); ax.set_yticks([0, 25, 50, 75, 100])
 ax.set_ylabel("Exfiltration blocked (%)")
-ax.set_title("E2 \u2014 injected exfiltration")
+ax.set_title("Injected exfiltration")
 panel_label(ax, "(b)")
 
-# (c) E3 capability sweep — MEASURED, Claude tier ladder, revenue_audit
+# (c) capability sweep — MEASURED, Claude tier ladder, revenue_audit
 ax = axes[2]
 tiers = ["haiku\nn=100", "sonnet\nn=30", "opus\nn=10"]
 xs = np.arange(3)
@@ -284,10 +284,10 @@ ax.set_xticks(xs, tiers, fontsize=7.2)
 ax.set_ylim(0, 118); ax.set_yticks([0, 25, 50, 75, 100])
 ax.set_ylabel("Clean-goal completion (%)")
 ax.legend(loc="center right", fontsize=7.4)
-ax.set_title("E3 \u2014 capability sweep")
+ax.set_title("Capability sweep")
 panel_label(ax, "(c)")
 
-# (d) E6 roles sweep — measured structural cost proxy
+# (d) roles sweep — measured structural cost proxy
 ax = axes[3]
 roles = [2, 5, 10]
 b_cost = [1376, 4550, 12820]
@@ -301,7 +301,7 @@ ax.set_yscale("log"); ax.set_ylim(90, 30000)
 ax.set_xticks(roles)
 ax.set_xlabel("Number of roles"); ax.set_ylabel("Coordination cost proxy (log)")
 ax.legend(loc="upper left", fontsize=7.6)
-ax.set_title("E6 \u2014 scaling (structural proxy)")
+ax.set_title("Role-scaling (structural proxy)")
 panel_label(ax, "(d)")
 
 plt.tight_layout(w_pad=1.8, h_pad=3.0)
