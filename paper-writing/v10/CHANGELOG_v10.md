@@ -44,6 +44,16 @@ is presentational. All edits in `main.tex` (plus title lines in the READMEs).
    participating agents, what the structural proxy is, and why the
    9.2×→17.1× widening from two to ten roles means the advantage grows
    with team size; `tab:ctcg` caption now defines the arm abbreviations.
+9. **Contributions 4 and 5 rewritten; H1–H6 given their story** —
+   contribution 4 ("guarantee transfer") now states what each MPST theorem
+   *means* for an agent system instead of listing theorem names;
+   contribution 5 now tells the benchmark-self-testing story, explains what
+   the *seam* is and why it needs its own instruments, and says what the
+   H1–H6 hypotheses are for. §8.4 restructured as an itemized list: each
+   hypothesis stated as the design question it settles (grammar constraint
+   help-or-hurt, sampling baseline, SFT/GRPO checkpoint gates, judge-panel
+   calibration, synthetic-to-human transfer), with its pass/fail rule and
+   the explicit note that none is graded yet — the GPU runs are pending.
 
 ## v10.1 (2026-07-19) — fairness-audit alignment, statistical rigor, reproducibility
 
