@@ -8,8 +8,8 @@ authors:
     alias: ginaecho
 repository-code: "https://github.com/ginaecho/session-typed-agents"
 license: MIT
-version: 0.1.0
-date-released: "2026-07-02"
+version: 1.0.0
+date-released: "2026-07-27"
 keywords:
   - multiparty session types
   - multi-agent systems
@@ -20,12 +20,14 @@ keywords:
   - runtime monitoring
   - agent skills
 abstract: >-
-  Session-Typed Skills (STJP, the Session-Typed Judge Panel) treats the
-  conversation between LLM agents as the artifact to type-check. A
+  Session-Typed Skills (STJP) is a static compiler that type-checks the
+  coordination protocol of a multi-agent LLM system before any agent runs. A
   natural-language intent is drafted into a multiparty session type, validated
-  for deadlock-freedom by the Scribble compiler, and statically projected into
-  one interaction-safe skill per agent plus a runtime enforcement monitor and
-  an execution scheduler derived from the same proof. Benchmarked on real
-  Azure AI Foundry agents: catches deadlocks no runtime approach can, prevents
-  unauthorized irreversible actions, and cuts agent calls and token cost by
-  removing idle-agent polling.
+  by the Scribble compiler for deadlock-freedom, communication safety, and
+  goal reachability, and then statically projected into one interaction-safe
+  local contract per agent plus a runtime enforcement monitor, value-dependent
+  branch guards, and an execution scheduler derived from the same proof. The
+  compiled code enforces the protocol on free-running, untrusted LLM agents at
+  the message boundary. Benchmarked on real Azure AI Foundry agents, it catches
+  deadlocks no runtime approach can, prevents unauthorized irreversible
+  actions, and cuts agent calls and token cost by removing idle-agent polling.
