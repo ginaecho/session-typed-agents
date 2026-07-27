@@ -1,5 +1,7 @@
 # Session-Typed Judge Panel (STJP) — Quick Start & Running Experiments
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21629711.svg)](https://doi.org/10.5281/zenodo.21629711)
+
 **A session-typed static compiler for safe interactions in multi-agent systems.**
 
 Multi-agent systems fail in the spaces *between* agents: one agent acts before authorization, two agents wait forever (deadlock), everyone wastes tokens negotiating coordination. STJP type-checks the **conversation itself** before any agent runs — catching deadlocks, catching unsafe orderings, and compiling safe per-agent prompts with a runtime guard and scheduler.
