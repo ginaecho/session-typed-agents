@@ -1,0 +1,39 @@
+name: Cut Zenodo release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create v1.0.0 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<'NOTES'
+          First archived release of Session-Typed Skills (STJP): a static compiler that
+          type-checks the coordination protocol of multi-agent LLM systems before any
+          agent runs, grounded in multiparty session types.
+
+          - Intent to Scribble global protocol to static validation (deadlock-freedom,
+            communication safety, goal reachability) to per-agent local contracts,
+            monitors, branch guards, and an EFSM scheduler.
+          - Enforces the protocol on free-running, untrusted LLM agents at the message
+            boundary; all metrics computed mechanically from a typed event log.
+          - Includes the ICLR paper (paper-writing/v10), the 1,200-trial validation
+            suite, and the released benchmark.
+          NOTES
+          if gh release view v1.0.0 --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release v1.0.0 already exists; nothing to do."
+          else
+            gh release create v1.0.0 \
+              --repo "${{ github.repository }}" \
+              --target main \
+              --title "v1.0.0 — Session-Typed Skills" \
+              --notes-file notes.md
+          fi
