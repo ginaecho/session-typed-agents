@@ -1,5 +1,23 @@
 # STJP paper v10 — changes from v9
 
+## v10.3 (2026-07-27) — external rewrite adopted + final style pass
+
+1. **Adopted the uploaded full-paper rewrite** (author-supplied main.tex /
+   paper_rewrite_full.patch): "run 1,001" replaced with the correct
+   epistemic claim (a guarantee over all executions requires a proof, which
+   only a type system with a formal logic can supply); slogan finding
+   headers ("projection replaces prose") replaced with self-explanatory
+   statements; "arm" renamed "configuration"; severity scale S0–S4 fully
+   defined with rationale in contribution 2; parenthetical asides reduced
+   throughout.
+2. **Abstract shortened** from 432 to ~330 words on top of the rewrite,
+   keeping problem → proof-not-testing argument → mechanism → the three
+   quantified findings → closing line.
+3. **Further de-parenthesization** — E0–E7 question list in §7 rewritten as
+   full sentences; §6.1 closing paragraph rewritten without nested
+   parentheses/colon fragments; intro example list unparenthesized.
+4. PDF rebuilt: 28 pages, clean compile, 0 undefined references.
+
 ## v10.2 (2026-07-26) — clarity and presentation pass (no numbers changed)
 
 Purpose: address reader feedback that the paper was hard to follow. No
