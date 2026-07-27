@@ -33,7 +33,7 @@ jobs:
           else
             gh release create v1.0.0 \
               --repo "${{ github.repository }}" \
-              --target main \
+              --target 5c14f0c14 \
               --title "v1.0.0 — Session-Typed Skills" \
               --notes-file notes.md
           fi
