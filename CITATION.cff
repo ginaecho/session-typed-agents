@@ -7,6 +7,10 @@ authors:
     given-names: Tzu-Chun
     alias: ginaecho
 repository-code: "https://github.com/ginaecho/session-typed-agents"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21629711
+    description: "Archived v1.0.0 release on Zenodo."
 license: MIT
 version: 1.0.0
 date-released: "2026-07-27"
