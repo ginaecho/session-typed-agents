@@ -115,6 +115,26 @@ identical to before these extensions existed. Existing tests and cases are
 unaffected. Turn either extension on deliberately, per run, only when you
 want it.
 
+**A worked ledger example** (verified end to end against the real compiler
+and monitor on 2026-07-25 — the full account, including the overdraw the
+monitor rejected pre-delivery, is in
+[`docs/reference/SESSION_RECORD_2026-07-25.md`](docs/reference/SESSION_RECORD_2026-07-25.md)
+§8). Three lines in a case's `.refn` sidecar are the whole thing:
+
+```
+state searches_left: int = 12
+on SearchSpend(cost): searches_left -= cost
+invariant searches_left >= 0  @S4
+```
+
+Read as: declare a running value; debit it by the `cost` field of every
+`SearchSpend` message; never let it go below zero, treating a breach as an
+irreversible-resource failure. The middle line is what a per-message rule
+cannot express — whether *this* request is the one that overdraws depends on
+every request before it. In the verified run, three spends of five against a
+budget of twelve left the budget at 2, with exactly one overdraw rejected
+*before delivery* (never a committed negative value).
+
 ---
 
 ## 🧪 Running Experiments

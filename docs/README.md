@@ -53,6 +53,7 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
 - **Verifying the results from the raw traces?** → See [`reference/HOW_TO_USE_TRACES.md`](reference/HOW_TO_USE_TRACES.md) (re-derive every metric; read a trace by eye)
 - **Which developer use cases fit STJP (interview format)?** → See [`FABLE5_INTERVIEW_DEV_USE_CASES.md`](FABLE5_INTERVIEW_DEV_USE_CASES.md)
 - **Is the benchmark itself fair?** → See [`BENCHMARK_FAIRNESS_REVIEW.md`](BENCHMARK_FAIRNESS_REVIEW.md) (a skeptical audit of the scoring and cost claims)
+- **What changed on 2026-07-25 (related-work sweep + the mechanisms built from it)?** → Two key documents, each linking every implemented script: [`reference/RELATED_WORK_2026-07-25.md`](reference/RELATED_WORK_2026-07-25.md) and [`../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md`](../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md)
 - **What does a run cost in real money?** → See [`reference/COST_ESTIMATES.md`](reference/COST_ESTIMATES.md) (which commands touch Azure; per-model dollar table)
 
 ---
@@ -234,6 +235,7 @@ a human doing it by hand.
 
 ### `reference/` — technical deep-dives (current, for researchers)
 
+- [`reference/RELATED_WORK_2026-07-25.md`](reference/RELATED_WORK_2026-07-25.md) — **Key document, 2026-07-25**: the July 2026 literature sweep and the linked table of every mechanism implemented in response (checkers, rule registry, conflict pass, typed publish channel, governed push); its companion is [`../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md`](../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md)
 - [`reference/GLOSSARY.md`](reference/GLOSSARY.md) — Plain-language glossary (same terms as [`1_TECH_SETUP.md`](1_TECH_SETUP.md) section 4; the canonical version)
 - [`reference/SCRIBBLE_EXTENSIONS.md`](reference/SCRIBBLE_EXTENSIONS.md) — Deep dive on how STJP extends Scribble (technical)
 - [`reference/CHOICE_GUARDS_AND_GATE.md`](reference/CHOICE_GUARDS_AND_GATE.md) — How value-dependent choice guards and the enforcement gate work (technical)

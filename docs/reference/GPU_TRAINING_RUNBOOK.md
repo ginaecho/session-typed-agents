@@ -579,7 +579,7 @@ needs to have to match the reward math above.
 if within-group reward std < 0.05 on >50% of groups for 200 consecutive
 steps, **halt the run and escalate** — this is the plan's B2 red-team
 finding manifesting live (shortest-valid mode collapse once the validator
-term saturates). Wire this as a `TrainerCallback` that reads
+term saturates). Connect this as a `TrainerCallback` that reads
 `trainer_state`/logged group-reward variance every step and raises
 `RuntimeError` (not a warning) at the threshold, so a background run
 cannot silently keep spending GPU-hours on a collapsed policy.
@@ -672,8 +672,8 @@ a terminate/preemption. Persist, at minimum, at the end of every phase
    native equivalent, so HF Hub datasets is the simplest common target).
 4. **Manifest committed to git** — the piece that actually makes "a fresh
    container reconstructs any phase gate from git + manifest" (plan §9 W14
-   done-criterion) true. Commit `docs/reference/reports/seam/artifacts/
-   MANIFEST.json` (or wherever W14 lands it — check for the actual file
+   done-criterion) true. Commit
+   `docs/reference/reports/seam/artifacts/MANIFEST.json` (or wherever W14 lands it — check for the actual file
    before creating a second one) recording, per phase gate: HF repo id +
    commit SHA for every checkpoint/dataset/cache pushed, the exact command
    that produced it, and the git SHA of the code that ran it. A fresh

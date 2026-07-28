@@ -106,7 +106,7 @@ STJP 100/100 ([`RESULT_01`](results/RESULT_01_DEADLOCK.md),
 hand-authored. [`agenticpay_settlement`](../experiments/cases/agenticpay_settlement/)
 adapts the real buyer and seller negotiation agents from the MIT-licensed
 [AgenticPay benchmark](https://github.com/SafeRL-Lab/AgenticPay) and adds the
-escrow settlement layer that benchmark does not model. Left to each agent's own
+escrow settlement layer — an escrow being a neutral third party that holds funds until both sides deliver — that benchmark does not model. Left to each agent's own
 reasonable rule ("don't pay before the goods arrive" / "don't ship before you're
 paid"), the two form a circular wait. A bounded live run playing all four roles
 (Buyer, Seller, Escrow, Carrier) with subagents across **three model tiers
@@ -223,7 +223,7 @@ Concretely, the STJP blueprint would help me in four ways:
    monitor's violation record `(role, step, state, expected)` is also exactly
    the audit trail I'd want when a multi-agent run goes wrong.
 4. **Safe incremental evolution.** When I add a stage mid-task (say, a new
-   "security lens" verifier), the incremental-extension result (E3 in
+   "security review" verifier), the incremental-extension result (E3 in
    [`RESULT_05`](results/RESULT_05_SUBAGENT_VALIDATION.md): only Escrow + the new
    Auditor re-verified, everyone else untouched) is the right model — re-verify
    and re-prompt only the roles whose slice changed, instead of rewriting the

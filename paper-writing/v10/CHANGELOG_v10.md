@@ -145,7 +145,7 @@ pending-framed ablations, and reporting infrastructure. All edits in
    `report_pipeline`, loses on `finance_nested`/`intel_report`/`auction`);
    (5) hint ablation arm `min_llmvalid_gate_nohint` (prediction: zero
    disasters preserved, some liveness lost). All framed pending — **no
-   invented numbers**, same discipline as the seam template.
+   invented numbers**, same discipline as the seam template (the seam being the translation step from plain-language intent to formal protocol).
 7. **Limitations** — four additions: n≤10 CI overlap (re-run headline
    claims at n≥30); scoring-rule history (strict-rule tables are lower
    bounds for bare arms; contended wall-clock carries no comparative

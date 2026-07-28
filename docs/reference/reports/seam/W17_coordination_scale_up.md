@@ -404,7 +404,7 @@ Code (`experiments/seam_bench/mining/`):
   backward compatibility); `ledger.py` gained `crewAIInc/crewAI` (MIT) and
   `rohitg00/awesome-claude-code-toolkit` (Apache-2.0) license facts, and a
   documented, deliberate absence of a `crewAIInc/crewAI-examples` entry.
-- `run_mining.py` — wired the two new sources into `DEFAULT_REMOTES`.
+- `run_mining.py` — connected the two new sources into `DEFAULT_REMOTES`.
 - `llm_read/extraction.py` — one defensive fix (selects the original 13
   teams by `team_id` instead of list position, since `build_teams` now
   returns ~110); verified byte-identical output to W16's original run.

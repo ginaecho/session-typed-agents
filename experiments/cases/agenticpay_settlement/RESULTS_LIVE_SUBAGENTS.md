@@ -12,7 +12,7 @@
 
 ## The story at a glance (STAR)
 
-- **Situation** — AgenticPay's real, MIT-licensed `BuyerAgent`/`SellerAgent` skills reproduce a classic escrow deadlock: each side's rule ("don't pay until goods arrive" / "don't ship until paid") is reasonable alone, but together they wait for each other forever.
+- **Situation** — AgenticPay's real, MIT-licensed `BuyerAgent`/`SellerAgent` skills reproduce a classic escrow deadlock (an escrow is a neutral third party that holds funds until both sides deliver): each side's rule ("don't pay until goods arrive" / "don't ship until paid") is reasonable alone, but together they wait for each other forever.
 - **Task** — Check whether this deadlock, and the STJP fix for it, reproduce on real upstream open-source-grounded agent skills across multiple subscription model tiers, as a fast bounded precursor to the metered Azure AI Foundry run.
 - **Action** — One bounded run per tier (Opus 4.8, Sonnet 5, Haiku 4.5) comparing unchecked skills (capped at 4 polling rounds) vs. the Scribble-validated escrow-first protocol, using subscription subagents playing Buyer/Seller/Escrow/Carrier.
 - **Result** — Every tier deadlocked unchecked (**"no — deadlock"**, 0 progress messages, 8 role-turns all "WAIT"); every tier completed the STJP protocol (**"yes"**, 7 steps to `SettlementComplete`).

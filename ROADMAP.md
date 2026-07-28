@@ -370,7 +370,7 @@ Per-harness latch points are catalogued in `RESEARCH.md` Part II (Agent Harness 
 # Phase 3 — Advanced research: composition, async, dynamic, NL frontend, harness backends
 
 **Status: research roadmap.**
-**Goal: close the academic-grade composition story; wire AI_ST_verf into real agent harnesses; tackle the open NL→spec extraction problem with bidirectional round-tripping.**
+**Goal: close the academic-grade composition story; connect AI_ST_verf into real agent harnesses; tackle the open NL→spec extraction problem with bidirectional round-tripping.**
 **Theorems consulted: Gheri & Yoshida OOPSLA'23 (Hybrid MPST); Bravetti-Carbone-Zavattaro 2017 + Lange-Yoshida FoSSaCS'19 (async undecidability); Deniélou & Yoshida ESOP'11 / ICALP'12 (dynamic multirole); Fu POPL'25 (probabilistic refinement).**
 
 ## 3.1 Hybrid MPST projection-preserving composition

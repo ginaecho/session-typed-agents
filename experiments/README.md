@@ -103,7 +103,7 @@ Full definitions in `../docs/archive/EXPERIMENT_DESIGN_v2.md`.
 - **Set B — goal achievement** — did the run actually accomplish the task?
   `summary_eval.json` carries `strict` / `role_pair` / `semantic` per arm.
   `case_runner.py` computes strict + role-pair at the end of every run;
-  `--semantic` adds the LLM-judged lens.
+  `--semantic` adds the LLM-judged scoring rule.
 - **Process cost** — tokens, LLM calls, wall-clock, attempts — in `summary.json`.
 
 Note that `success_rate_pct` in `summary.json` is **goal-based**, not
@@ -117,7 +117,7 @@ from each `case.yaml`.
 | case | roles | what it tests |
 |---|---|---|
 | [`cases/_corpus/`](cases/_corpus/) | — | 30 generated Scribble protocols (no `case.yaml`) — the corpus behind mutation testing (E1) |
-| [`cases/agenticpay_settlement/`](cases/agenticpay_settlement/) | 4 | Goods-for-payment trade adapted from real AgenticPay buyer/seller agents; their individually-reasonable rules form a circular wait (deadlock) that Scribble's checker forces an Escrow-first fix for |
+| [`cases/agenticpay_settlement/`](cases/agenticpay_settlement/) | 4 | Goods-for-payment trade adapted from real AgenticPay buyer/seller agents; their individually-reasonable rules form a circular wait (deadlock) that Scribble's checker forces an Escrow-first fix for — the escrow being a neutral third party that holds funds until both sides deliver |
 | [`cases/auction/`](cases/auction/) | 4 | Sealed-bid auction with three bidders; refinements require positive bids and reserved announcement keywords |
 | [`cases/banking/`](cases/banking/) | 5 | Banking transfer with an amount-dependent approval branch — large transfers must route through an Approver; rejections exit cleanly |
 | [`cases/clinical_enrollment/`](cases/clinical_enrollment/) | 5 | Clinical-trial enrolment: screening, sequenced consent + baseline, ethics approval — all before enrolling |
@@ -129,6 +129,8 @@ from each `case.yaml`.
 | [`cases/iterative_polling/`](cases/iterative_polling/) | 3 | Shape D — loop sessions: Client polls Server in a recursion with a minimal continue-vs-stop choice |
 | [`cases/nested_retry/`](cases/nested_retry/) | 4 | Shape F — loop plus nested branching: editorial revise-vs-accept, each side with its own inner choice |
 | [`cases/planner_workers/`](cases/planner_workers/) | 4 | Coordinator hands tasks to two workers; a shared repository grants one push turn at a time (mutual exclusion on the shared branch) |
+| [`cases/governed_push/`](cases/governed_push/) | 3 | Mechanism demo (no `case.yaml`, deterministic): a REAL `git push` executed through the typed channel — rules-quote before push is type structure, effects gated strictly; predictions pre-registered and graded (one graded failed-then-amended) |
+| [`cases/publish_flow/`](cases/publish_flow/) | 2 | Mechanism demo (no `case.yaml`, deterministic): the typed publish channel — a git-push rule checked as a payload refinement pre-delivery instead of a hook; predictions pre-registered and graded |
 | [`cases/rag/`](cases/rag/) | 6 | Retrieval-augmented generation with a bounded verification loop: parallel retrieval, draft, fact-check, revise until verified |
 | [`cases/report_pipeline/`](cases/report_pipeline/) | 6 | THE TOKEN-EFFICIENCY DEMO: a completable 6-role linear pipeline where the metric is tokens/calls to finish, not whether it finishes |
 | [`cases/report_pipeline_large/`](cases/report_pipeline_large/) | 10 | Scale variant of report_pipeline: global-text token cost grows with protocol size, the projected local contract stays flat |

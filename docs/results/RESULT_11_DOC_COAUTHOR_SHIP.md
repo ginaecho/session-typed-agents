@@ -402,7 +402,7 @@ calls):
 | `stjp` | 12.0 | 120 | **$0.15** |
 
 Whole-run total: 760 calls → **~$0.95 (estimated)**. This prices *calls*,
-not the raw token counts above (the two are different lenses used
+not the raw token counts above (the two are different accounting views used
 elsewhere in this project — see `COST_ESTIMATE.md`'s own caveat that
 per-call pricing is a lean-deployment lower bound, while the raw
 `tokens_est` figures include this run's CLI-driver batching overhead).

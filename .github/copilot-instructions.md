@@ -89,7 +89,7 @@ for every role implies global protocol satisfaction (no central observer).
 
 **Two-set evaluation**: Set A = global-type conformance (`monitor/monitor.py`,
 `summary.json`); Set B = goal achievement (`evaluation/`, `summary_eval.json`).
-Set B has three lenses of increasing leniency — `strict` (exact
+Set B has three scoring rules of increasing leniency — `strict` (exact
 `(sender,receiver,label)` + predicate), `role_pair` (label dropped), `semantic`
 (LLM-judged). Strict is N/A for arms with no protocol vocabulary. A
 `protocol_unprojectable` marker means the monitor was disabled for that arm, so

@@ -4,6 +4,28 @@ One line per document, grouped by what you are trying to do. Start with the
 [`GLOSSARY.md`](GLOSSARY.md) if any term here is unfamiliar — it is the
 canonical plain-language list for every term the STJP docs use.
 
+## 2026-07-25 — related work and the mechanisms built from it
+
+Two **key documents** carry this update; each links every script that was
+implemented or revised, so they are the entry points:
+
+- [`RELATED_WORK_2026-07-25.md`](RELATED_WORK_2026-07-25.md) — **key
+  document.** The July 2026 literature sweep (which competing papers make
+  our framing sentences false, which third-party numbers to cite, the edit
+  list for the paper) plus the linked table of everything implemented in
+  response the same day.
+- [`../../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md`](../../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md)
+  — **key document.** The discussion notes feeding the next paper version:
+  why a workflow graph is not a global type, what TraceFix's bound really
+  bounds, the comparison table, the residual-as-risk-register argument, a
+  candid self-review, and the same linked artifact list.
+
+Supporting records behind the two key documents:
+
+- [`SESSION_RECORD_2026-07-25.md`](SESSION_RECORD_2026-07-25.md) — unsanitised record of the session that produced the sweep: the findings, the assistant's own errors and the corrections to them, and what happened when an agent was handed this project's prose rules and broke three of them while obeying every mechanical check.
+- [`ENFORCEABILITY_PARTITION.md`](ENFORCEABILITY_PARTITION.md) — every rule in `AGENT.md` sorted by what would enforce it (type / refinement / lint / nothing), with the honest residual list, its compensating controls, and the three conditions that predict when a prose rule gets broken.
+- [`SPEC_TO_GATE_PLAN.md`](SPEC_TO_GATE_PLAN.md) — the staged plan (with graded pre-registered results P1–P8) for compiling a governance document's rules into mechanisms: rule registry, conflict/precedence pass, generated git gate, typed publish channel, and the governed real push.
+
 ## Benchmark internals
 
 - [`GLOSSARY.md`](GLOSSARY.md) — plain-language meaning of every term used in the STJP docs (metrics, severity ladder, arms, machinery).

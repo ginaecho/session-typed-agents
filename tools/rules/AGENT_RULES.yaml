@@ -1,0 +1,96 @@
+# AGENT_RULES.yaml — AGENT.md's enforceable rules, normalized to data.
+#
+# This registry is the reviewed compilation product of the prose in AGENT.md
+# ("Read this first" and "Git identity" sections). Downstream tools consume
+# it deterministically: tools/check_rule_conflicts.py diffs it against other
+# rule sources, tools/gen_gate.py generates a gate script from its lint-tier
+# constraints. When AGENT.md's rules change, change this file in the same
+# commit — the registry drifting from the prose defeats its purpose.
+#
+# Fields:
+#   id          stable name, dotted by area
+#   subject     the thing constrained (shared vocabulary across sources)
+#   statement   the prose being compiled, quoted or tightly paraphrased
+#   tier        enforceability tier: lint | refinement | type | prose
+#   constraint  a typed deterministic predicate (lint/refinement tiers only)
+#   remediation what a gate tells the violator to do
+
+source: AGENT.md
+
+rules:
+  - id: git.branch_prefix
+    subject: branch_name
+    statement: "every branch ALWAYS starts with the gc/ prefix"
+    tier: lint
+    constraint: {kind: prefix_required, value: "gc/"}
+    remediation: "create a gc/-prefixed branch and push that instead"
+
+  - id: git.branch_no_keyword
+    subject: branch_name
+    statement: "no 'claude' keywords anywhere in git artifacts: branch names"
+    tier: lint
+    constraint: {kind: substring_forbidden, value: "claude", case_sensitive: false}
+    remediation: "create a branch whose name does not contain the keyword"
+
+  - id: git.message_no_keyword
+    subject: commit_message
+    statement: "no 'claude' keywords anywhere in git artifacts: commit messages (the rule says anywhere — quoted paths count)"
+    tier: lint
+    constraint: {kind: substring_forbidden, value: "claude", case_sensitive: false}
+    remediation: "reword the commit message: git -c user.name=ginaecho -c user.email=gina.tcchen@gmail.com commit --amend"
+
+  - id: git.author_identity
+    subject: commit_author
+    statement: "author for this repo: ginaecho <gina.tcchen@gmail.com>"
+    tier: lint
+    constraint: {kind: identity_required, name: "ginaecho", email: "gina.tcchen@gmail.com"}
+    remediation: "amend with git -c user.name=ginaecho -c user.email=gina.tcchen@gmail.com commit --amend --reset-author"
+
+  - id: git.committer_identity
+    subject: commit_committer
+    statement: "committer for this repo: ginaecho <gina.tcchen@gmail.com>"
+    tier: lint
+    constraint: {kind: identity_required, name: "ginaecho", email: "gina.tcchen@gmail.com"}
+    remediation: "amend with git -c user.name=ginaecho -c user.email=gina.tcchen@gmail.com commit --amend"
+
+  - id: git.no_assistant_trailer
+    subject: commit_trailer
+    statement: "do NOT add a Co-Authored-By: ... trailer or any assistant/session trailer"
+    tier: lint
+    constraint: {kind: trailer_forbidden_except_owner, owner_match: ["ginaecho", "gina"]}
+    remediation: "strip the trailer from the commit message and amend"
+
+  - id: docs.gloss_known_offenders
+    subject: doc_prose
+    statement: "known-offender terms appear only with their gloss (AGENT.md §5 table)"
+    tier: lint
+    constraint: {kind: external_checker, tool: "tools/check_style.py"}
+    remediation: "add the gloss at first use, or use the plain phrase"
+
+  - id: docs.links_resolve
+    subject: doc_links
+    statement: "every relative link and menu anchor resolves"
+    tier: lint
+    constraint: {kind: external_checker, tool: "tools/check_md_links.py"}
+    remediation: "fix or remove the dead link/anchor"
+
+  - id: exp.preregister_before_run
+    subject: experiment_workflow
+    statement: "the expected outcome of each experiment is registered before running, then graded after"
+    tier: type
+    constraint: null   # an ordering property of a whole workflow; see stage 4 of the plan
+    remediation: "write the prediction into docs/predictions/ before the run; record amendments pre-run"
+
+  - id: exp.one_variable
+    subject: experiment_design
+    statement: "a comparison holds everything constant except the arm"
+    tier: prose
+    constraint: null   # partially mechanized by the harness registry when used
+    remediation: "use the registry harness; if the assignments differ, it is not an arm comparison"
+
+  - id: docs.no_playing_smart
+    subject: doc_prose
+    statement: "never compress a point into dense shorthand to sound expert"
+    tier: prose
+    constraint: null
+    remediation: null   # residual: judgment; see ENFORCEABILITY_PARTITION.md
