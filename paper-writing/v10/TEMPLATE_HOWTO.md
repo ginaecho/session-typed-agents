@@ -1,6 +1,6 @@
 # seam_results.tex — how to fill the trainable-seam results template
 
-The trainable-seam section — the seam being the translation step from plain-language intent to formal protocol — (`\S`ref `sec:seam`) and the E5 translation-fidelity
+The trainable-seam section (`\S`ref `sec:seam`) and the E5 translation-fidelity
 cells (Table `tab:transfid`) consume **only** macros defined in
 `seam_results.tex`. Every macro defaults to a visible `\pending` marker. After
 the GPU training runs land, drop each number in by editing **one line** in
