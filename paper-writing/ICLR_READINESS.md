@@ -30,7 +30,7 @@ the message-blocking gate, and the turn scheduler.
 |---|---|---|
 | **Novelty** | **ready** | Type-checking deployed skill files as a protocol language, enforced on free-running untrusted agents, is genuinely new; the concurrent-work boundary (ZipperGen) is argued carefully and honestly. |
 | **Evidence** | **weak** | The n=100 suite and nine real-skills cases are strong, but the headline finance tables were scored under the pre-audit strict rule (bare-arm 0% is partly manufactured by the grading) and have not been re-run under the fair per-arm rule. |
-| **Baselines** | **weak** | Bare agents and pasted-protocol text are the only live competitors; the realistic alternative — a hand-built flow graph (LangGraph style) or protocol text plus a cheap checker — is never run, and the cheap-scheduler control exists but has no live numbers. |
+| **Baselines** | **weak** | Bare agents and pasted-protocol text are the only live competitors; the realistic alternative — a hand-wired flow graph (LangGraph style) or protocol text plus a cheap checker — is never run, and the cheap-scheduler control exists but has no live numbers. |
 | **Ablations** | **weak** | The two ablations a reviewer will ask for first (gate without per-turn hints; protocol-free last-receiver scheduling) are built and pre-registered but pending — the paper currently cannot separate "blocks wrong messages" from "whispers the next move". |
 | **Statistical rigor** | **weak** | Wilson 95% intervals are now reported and the n=100 suite is well-powered, but the live frontier-model runs are n≤10 per cell (adjacent arms overlap), and the n=100 trials use cheap subagent role-players rather than frontier models. |
 | **Reproducibility** | **ready** | Appendix B now gives layout, commands, what summaries record, the determinism boundary, and costs; traces are the artifact of record and evaluators are bit-reproducible. (Caveat: some early run directories are not committed.) |
@@ -98,11 +98,11 @@ needs authoring first — reuse the case-creation guide in
 Cost: ≈ 5M tokens ≈ **$15–20** for the existing two sizes; budget ~$20–30
 more for a 20-role case.
 
-**5. External-framework baseline (hand-built DAG, LangGraph style).**
+**5. External-framework baseline (hand-wired DAG, LangGraph style).**
 The realistic competitor to STJP is not agents shouting in a circle — it
 is an engineer hand-wiring the flow as a graph. The E7 portability adapter
 already executes ladder protocols as LangGraph StateGraphs, so the build
-cost is modest: run the finance case as a hand-built graph arm and compare
+cost is modest: run the finance case as a hand-wired graph arm and compare
 cost and safety. The honest expected result: the DAG matches STJP on cost
 for a fixed linear flow, and loses on branching/authorization cases plus
 everything static checking catches at authoring time. Reporting that
@@ -115,7 +115,7 @@ LLM-drafted protocols across varied intents, and report the fraction
 rejected as unsafe before any token was spent, by defect class. Drafting
 is cents per protocol and validation is free, so this is the cheapest
 headline number in the whole plan; it also doubles as the T0 baseline row
-of the seam program — the seam being the translation step from plain-language intent to formal protocol (`experiments/seam_bench/`).
+of the seam program (`experiments/seam_bench/`).
 Cost: **$5–20**.
 
 **7. Semantic-judge rung as a cross-check on the headline metric.**
