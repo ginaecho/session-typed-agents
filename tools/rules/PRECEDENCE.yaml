@@ -1,0 +1,30 @@
+# PRECEDENCE.yaml — which rule source wins when two sources constrain the
+# same subject incompatibly.
+#
+# This file is the machine-readable form of the precedence rule in
+# AGENT.md ("Read this first"): repository rules outrank platform-session
+# defaults for everything that lands in the repository. Without this file,
+# tools/check_rule_conflicts.py refuses to guess and fails loudly — by
+# design, because the silent resolution of exactly this conflict is how
+# four rules were broken in one push on 2026-07-25
+# (docs/reference/SESSION_RECORD_2026-07-25.md §7).
+
+# Earlier entry wins.
+order:
+  - AGENT.md
+  - platform-session
+
+# Declared exceptions: a losing source's rule that is tolerated anyway,
+# with an obligation attached. Keep this list short — every entry here is
+# a standing deviation the owner has accepted.
+exceptions:
+  - subject: branch_name
+    tolerate: platform-session
+    reason: >
+      The platform creates the working branch before the agent runs and the
+      agent cannot rename it. The branch NAME is tolerated for the session.
+    obligation: >
+      The agent must state the conflict in its first reply
+      (STJP_PLATFORM_BRANCH=1 downgrades only the branch-name check to a
+      warning), and the owner renames the branch or merges it away — commit
+      contents must still satisfy the AGENT.md rules in full.

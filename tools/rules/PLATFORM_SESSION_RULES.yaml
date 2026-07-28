@@ -1,0 +1,43 @@
+# PLATFORM_SESSION_RULES.yaml — what the hosted-session platform mandates,
+# transcribed as a rule source so conflicts with AGENT_RULES.yaml become
+# data instead of a silent judgment call at push time.
+#
+# Provenance: observed directly in this repository's hosted sessions on
+# 2026-07-25 — the platform created the working branches
+# claude/stjp-research-related-works-yj81zs and
+# claude/stjp-opus5-improvements-1qri4e, its session hook re-asserts a bot
+# git identity on every session start, and its default instructions require
+# an assistant co-author trailer on commits. These are the platform's
+# defaults, not the repository's choices; tools/check_rule_conflicts.py
+# decides what wins, using tools/rules/PRECEDENCE.yaml.
+
+source: platform-session
+
+rules:
+  - id: platform.branch_name
+    subject: branch_name
+    statement: "develop on the platform-created working branch (observed prefix: claude/)"
+    tier: lint
+    constraint: {kind: prefix_required, value: "claude/"}
+    remediation: null
+
+  - id: platform.coauthor_trailer
+    subject: commit_trailer
+    statement: "end commit messages with an assistant Co-Authored-By trailer and a session trailer"
+    tier: lint
+    constraint: {kind: trailer_required, value_contains: "claude"}
+    remediation: null
+
+  - id: platform.author_identity
+    subject: commit_author
+    statement: "session hook sets git author to the bot identity"
+    tier: lint
+    constraint: {kind: identity_required, name: "Claude", email: "noreply@anthropic.com"}
+    remediation: null
+
+  - id: platform.committer_identity
+    subject: commit_committer
+    statement: "session hook sets git committer to the bot identity (signing key registered to it)"
+    tier: lint
+    constraint: {kind: identity_required, name: "Claude", email: "noreply@anthropic.com"}
+    remediation: null

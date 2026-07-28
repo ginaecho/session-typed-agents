@@ -1,0 +1,16 @@
+# Refinement contracts for PublishFlow (v1.scr)
+# The payload of PushRequest is the branch name. Both predicates below are
+# compiled from the same rule registry that generates the git gate
+# (tools/rules/AGENT_RULES.yaml: git.branch_prefix, git.branch_no_keyword).
+
+[Agent -> Repo : PushRequest]
+type: str
+require: x.startswith("gc/") and ("claude" not in x.lower())
+
+[Repo -> Agent : PushAck]
+type: str
+require: len(x) > 0
+
+[Repo -> Agent : PushRejected]
+type: str
+require: len(x) > 0

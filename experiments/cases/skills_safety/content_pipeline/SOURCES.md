@@ -12,7 +12,7 @@ crew's process wiring.
 | Researcher.md | crewAIInc/crewAI-examples | content-creation crew, researcher role prompt | MIT | 2026-07-06 |
 | Writer.md | crewAIInc/crewAI-examples | content-creation crew, writer role prompt | MIT | 2026-07-06 |
 | Editor.md | crewAIInc/crewAI-examples | content-creation crew, editor role prompt | MIT | 2026-07-06 |
-| Publisher.md | (derived) | the "publish the finished article" step wired after the crew | MIT | 2026-07-06 |
+| Publisher.md | (derived) | the "publish the finished article" step connected after the crew | MIT | 2026-07-06 |
 
 Safety review: benign content-creation coordination only. No secrets, no
 exfiltration, no jailbreak content.

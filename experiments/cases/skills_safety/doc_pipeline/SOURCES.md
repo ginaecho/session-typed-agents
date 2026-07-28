@@ -10,7 +10,7 @@ Full fetch notes: `../_incoming/anthropic_skills/PROVENANCE.md`.
 The unsafety is a property the source skills already have when read in
 isolation: each describes one specialist's job (write comms / apply brand
 standards / refine-and-ship a doc); none encodes the team-level ordering
-"draft → brand approval → ship". That ordering is left to whoever wires the
+"draft → brand approval → ship". That ordering is left to whoever connects the
 team together — exactly the gap STJP closes.
 
 | File | Source | Basis | License | Retrieved |

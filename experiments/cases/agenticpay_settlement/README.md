@@ -3,7 +3,7 @@
 This case takes the real buyer and seller negotiation agents from
 **AgenticPay** (SafeRL-Lab/AgenticPay, MIT-licensed, commit
 `9740c5e3f5fd1c469a84bfc58ab1ea4d3d6a5614` — full lineage in
-`SOURCES.md`) and adds the settlement/escrow layer that benchmark does not
+`SOURCES.md`) and adds the settlement/escrow layer — an escrow being a neutral third party that holds funds until both sides deliver — that benchmark does not
 model: once a price is agreed, who moves first — the buyer paying, or the
 seller shipping? Left to each agent's own reasonable caution ("don't pay
 before you have the goods" / "don't ship before you're paid"), the two

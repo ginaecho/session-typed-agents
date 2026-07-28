@@ -279,7 +279,7 @@ hints switched off, so we know how much each part contributes.
    and report what fraction were unsafe and got caught by the checker before
    any tokens were spent. That number *is* the value of static checking.
 6. **Add stronger competitors.** The realistic alternative to STJP is not
-   agents shouting in a circle — it is a hand-wired flow graph (the
+   agents shouting in a circle — it is a hand-built flow graph (the
    LangGraph style) or pasted protocol text plus a cheap regex checker.
    Beating those is the comparison practitioners actually care about.
 

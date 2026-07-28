@@ -1,0 +1,37 @@
+#!/bin/sh
+# pre-push — refuse a push that breaks the git rules of AGENT.md
+# ("Git identity — ALWAYS commit/push/PR as ginaecho").
+#
+# Why: on 2026-07-25 four commits with a forbidden branch name, assistant
+# trailers, and a wrong author identity were pushed despite the rule being
+# written in AGENT.md; see docs/reference/SESSION_RECORD_2026-07-25.md §7.
+# A hook cannot be forgotten the way a paragraph can.
+#
+# Enable once per clone:
+#   git config core.hooksPath .githooks
+#
+# git calls this with lines on stdin: <local ref> <local sha> <remote ref>
+# <remote sha>. We check every commit that is about to leave the machine.
+
+status=0
+zero=0000000000000000000000000000000000000000
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    [ "$local_sha" = "$zero" ] && continue   # deleting a remote ref
+    if [ "$remote_sha" = "$zero" ]; then
+        range="$local_sha"                    # new remote branch: all commits
+    else
+        range="$remote_sha..$local_sha"       # only the commits being pushed
+    fi
+    branch=${remote_ref#refs/heads/}
+    python3 "$(git rev-parse --show-toplevel)/tools/check_git_rules.py" \
+        --range "$range" --branch "$branch" || status=1
+done
+
+if [ "$status" -ne 0 ]; then
+    echo ""
+    echo "push refused: fix the violations above (identity: amend with"
+    echo "  git -c user.name=ginaecho -c user.email=gina.tcchen@gmail.com commit --amend"
+    echo "branch name: create a gc/-prefixed branch and push that instead)."
+fi
+exit $status

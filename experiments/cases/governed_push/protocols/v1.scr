@@ -1,0 +1,23 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// Stage 4 increment 1: the first working-session action executed THROUGH
+// the typed channel. The type structure itself encodes "rules loaded before
+// the first push": Agent's local type cannot send PushRequest before
+// RulesAck, so the 2026-07-25 retrieval failure (acting on a rule never
+// loaded) becomes unrepresentable rather than forbidden-in-prose.
+//
+// Payloads: RulesAck carries the quoted git-rules text (Registry verifies
+// it against the live AGENT.md, so a stale quote fails); PushRequest
+// carries the branch name (refinement: gc/ prefix, no forbidden keyword).
+global protocol GovernedPush(role Agent, role Registry, role Repo) {
+    RulesAck(String) from Agent to Registry;
+    RulesOk(String) from Registry to Agent;
+    PushRequest(String) from Agent to Repo;
+    choice at Repo {
+        PushAck(String) from Repo to Agent;
+    } or {
+        PushRejected(String) from Repo to Agent;
+    }
+}

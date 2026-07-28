@@ -11,7 +11,7 @@ install LangGraph and use it to trace token usage and agent behaviour?*
 ## Menu
 
 - [1. E7 third harness (portability)](#1-e7-third-harness-portability--done-1414-agreement)
-- [2. Token metering](#2-token-metering--wired-and-ready-needs-an-llm-key)
+- [2. Token metering](#2-token-metering--connected-and-ready-needs-an-llm-key)
 - [3. Behaviour tracing](#3-behaviour-tracing)
 - [Status vs the plan](#status-vs-the-plan)
 
@@ -37,7 +37,7 @@ python experiments/harness_adapters/langgraph_ladder.py --case revenue_audit --a
 python experiments/harness_adapters/langgraph_ladder.py --case revenue_audit --arm intent --fault
 ```
 
-## 2. Token metering — **wired and ready, needs an LLM key**
+## 2. Token metering — **connected and ready, needs an LLM key**
 
 Each role node calls a pluggable `decide(view)`. If `ANTHROPIC_API_KEY` is set
 it uses `langchain_anthropic.ChatAnthropic` and **real per-call token usage is
@@ -67,6 +67,6 @@ a live per-agent behaviour log.
 
 - **E7 "three-harness":** was blocked; now LangGraph is a working third harness,
   14/14 agreement. (LangGraph + langchain-anthropic are installed.)
-- **Token-metered E6 / live token numbers:** the framework is done and wired;
+- **Token-metered E6 / live token numbers:** the framework is done and connected;
   the only remaining dependency is an LLM key, which is an environment/access
   matter, not a code one.

@@ -1,0 +1,26 @@
+# Refinement contracts for GovernedPush (v1.scr)
+# RulesAck must quote the real git-rules text (the driver's Registry role
+# additionally verifies the quote against the live AGENT.md bytes, which a
+# payload predicate cannot do alone). PushRequest carries the branch name;
+# same registry-derived predicates as publish_flow
+# (tools/rules/AGENT_RULES.yaml: git.branch_prefix, git.branch_no_keyword).
+
+[Agent -> Registry : RulesAck]
+type: str
+require: contains(x, "ginaecho") and contains(x, "gc/")
+
+[Registry -> Agent : RulesOk]
+type: str
+require: len(x) > 0
+
+[Agent -> Repo : PushRequest]
+type: str
+require: x.startswith("gc/") and ("claude" not in x.lower())
+
+[Repo -> Agent : PushAck]
+type: str
+require: len(x) > 0
+
+[Repo -> Agent : PushRejected]
+type: str
+require: len(x) > 0

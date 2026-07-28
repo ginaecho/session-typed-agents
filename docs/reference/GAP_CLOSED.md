@@ -64,8 +64,8 @@ LocalType_A  =  send(B, Transfer, amount: Money) where amount < 50000
 ## What was implemented
 
 The predicate is now **compiled into the projected tool function** so the
-check fires at the call site, before the EFSM advances and before any wire
-emission.
+check fires at the call site, before the EFSM advances and before any message
+is sent.
 
 ### Edit 1 — `refinement_checker.py`
 

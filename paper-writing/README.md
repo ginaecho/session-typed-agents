@@ -11,12 +11,17 @@ interaction protocol)
 
 - **v10/** - The paper (single current version; v6–v9 were removed on
   2026-07-17 — their full history remains in git)
+- [`RELATED_WORK_DISCUSSION_2026-07-25.md`](RELATED_WORK_DISCUSSION_2026-07-25.md) -
+  Discussion notes (not paper text) for the next version: Agentproof
+  graph-vs-global-type, TraceFix boundedness and its projection gap, the
+  comparison table, evidence-vs-capability, the residual-as-risk-register
+  argument, and a candid self-review of the 2026-07-25 mechanisms
 
 v10 contains:
 - `main.tex` - Main LaTeX source file (single source, standalone preamble;
   `\input{seam_results.tex}`)
 - `main.pdf` - Compiled PDF
-- `seam_results.tex` - Results template for the trainable-seam program
+- `seam_results.tex` - Results template for the trainable-seam program — the seam being the translation step from plain-language intent to formal protocol
   (26 pending-number macros; see `TEMPLATE_HOWTO.md` for the fill map)
 - `fig1_system.pdf`, `fig2_results.pdf`, `fig3_projected.pdf`,
   `fig4_ladder.pdf` - Figures

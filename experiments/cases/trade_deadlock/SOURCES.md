@@ -98,7 +98,7 @@ under several names:
 - **Fair exchange protocols.** N. Asokan, V. Shoup, M. Waidner's
   "Optimistic Fair Exchange of Digital Signatures" gives a provably fair
   protocol for exchanging items of value (e.g., a signed payment for a
-  signed receipt) using a **trusted third party (TTP)** that only has to
+  signed receipt) using a **trusted third party (TTP)** — an escrow, a neutral third party that holds funds until both sides deliver — that only has to
   step in if someone tries to cheat — the same "neutral intermediary breaks
   the standoff" idea `trade_deadlock`'s Escrow role embodies.
   Semantic Scholar record: <https://www.semanticscholar.org/paper/Optimistic-fair-exchange-of-digital-signatures-Asokan-Shoup/0b51b0acf1f2025fb95c65072a0905c309e02858>
