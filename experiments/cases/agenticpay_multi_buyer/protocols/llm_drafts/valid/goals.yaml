@@ -1,0 +1,34 @@
+source_protocol: experiments\cases\agenticpay_multi_buyer\protocols\llm_drafts\valid\v1.scr
+re_anchored_from: experiments\cases\agenticpay_multi_buyer\case.yaml
+n_canonical_goals: 3
+n_kept: 3
+n_dropped: 0
+dropped: []
+goals:
+- id: G1
+  description: settlement terminates for buyer B
+  metric: settled
+  predicate: 'True'
+  anchor:
+    sender: Escrow
+    receiver: BuyerB
+    label: SettlementCompleteB
+  threshold: terminal
+- id: G2
+  description: buyer A funded escrow
+  metric: fundedA
+  predicate: 'True'
+  anchor:
+    sender: BuyerA
+    receiver: Escrow
+    label: FundEscrowA
+  threshold: present
+- id: G3
+  description: seller shipped to B after funding
+  metric: shipB
+  predicate: 'True'
+  anchor:
+    sender: Seller
+    receiver: Carrier
+    label: ShipB
+  threshold: present

@@ -1,0 +1,34 @@
+source_protocol: experiments\cases\agenticpay_multi_seller\protocols\llm_drafts\valid\v1.scr
+re_anchored_from: experiments\cases\agenticpay_multi_seller\case.yaml
+n_canonical_goals: 3
+n_kept: 3
+n_dropped: 0
+dropped: []
+goals:
+- id: G1
+  description: settlement terminates
+  metric: settled
+  predicate: 'True'
+  anchor:
+    sender: Escrow
+    receiver: Buyer
+    label: SettlementComplete
+  threshold: terminal
+- id: G2
+  description: seller A paid after receipt
+  metric: releaseA
+  predicate: 'True'
+  anchor:
+    sender: Escrow
+    receiver: SellerA
+    label: ReleaseA
+  threshold: present
+- id: G3
+  description: seller B paid after receipt
+  metric: releaseB
+  predicate: 'True'
+  anchor:
+    sender: Escrow
+    receiver: SellerB
+    label: ReleaseB
+  threshold: present

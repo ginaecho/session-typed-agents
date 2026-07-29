@@ -40,7 +40,7 @@ roles:
   - Carrier
 
 terminal_label: SettlementComplete
-max_steps: 24
+max_steps: 48
 branch_hints: [standard, standard]
 
 role_descriptions:

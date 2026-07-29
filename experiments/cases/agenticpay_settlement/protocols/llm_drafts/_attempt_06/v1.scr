@@ -1,0 +1,19 @@
+module v1;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    // Buyer places funds into escrow
+    FundsHeld() from Buyer to Escrow;
+
+    // Seller decides whether to release goods
+    choice at Seller {
+        ReleaseGoods() from Seller to Buyer;
+        ReleaseGoods() from Seller to Escrow;
+        ReleaseGoods() from Seller to Carrier;
+        GoodsDelivered(String) from Carrier to Buyer;
+        
+        // Buyer decides whether to release payment
+        choice at Buyer {
+            ReleasePayment() from Buyer to Escrow;
+            ReleasePayment() from Escrow Seller visible

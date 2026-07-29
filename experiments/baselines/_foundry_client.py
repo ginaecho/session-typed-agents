@@ -24,6 +24,12 @@ def get_foundry_client():
             from stjp_core.foundry.az_credential import AzCliCredential
             from azure.ai.agents import AgentsClient
             endpoint = os.environ["AZURE_AI_PROJECT_ENDPOINT"]
+            # connection/read timeouts (seconds): without these a single
+            # dropped TCP read hangs the whole run forever — observed twice
+            # (11h stall 2026-07-25, 3h stall 2026-07-27). azure-core passes
+            # them to the transport for every request this client makes.
             _CLIENT = AgentsClient(endpoint=endpoint,
-                                   credential=AzCliCredential())
+                                   credential=AzCliCredential(),
+                                   connection_timeout=30,
+                                   read_timeout=180)
         return _CLIENT

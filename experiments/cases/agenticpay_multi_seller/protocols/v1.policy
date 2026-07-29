@@ -1,0 +1,15 @@
+[sequence]
+id: SAFE1
+description: seller A is paid only after the buyer confirms receipt of A's goods
+before: Buyer -> Escrow : ReceivedA
+after: Escrow -> SellerA : ReleaseA
+[sequence]
+id: SAFE2
+description: seller B is paid only after the buyer confirms receipt of B's goods
+before: Buyer -> Escrow : ReceivedB
+after: Escrow -> SellerB : ReleaseB
+[aggregate]
+id: SAFE3
+description: seller A paid at most once
+count: Escrow -> SellerA : ReleaseA
+max: 1

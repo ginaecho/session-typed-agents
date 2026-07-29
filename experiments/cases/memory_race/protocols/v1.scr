@@ -1,0 +1,26 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// SAFE memory protocol — the two writers' read-modify-write critical sections
+// are SERIALISED by routing both through MemoryStore, which does not enable
+// WriterB's ReadReq until WriterA's Write has Committed. This projects to a
+// single-writer-at-a-time local type, so the runtime gate rejects any second
+// concurrent write. Deadlock-free and race-free by construction.
+global protocol MemoryRace(role Coordinator, role WriterA, role WriterB, role MemoryStore) {
+    Begin(String) from Coordinator to MemoryStore;
+
+    // ---- WriterA critical section ----
+    ReadReqA(String) from WriterA to MemoryStore;
+    ReadRespA(String) from MemoryStore to WriterA;
+    WriteA(String) from WriterA to MemoryStore;
+    CommittedA(String) from MemoryStore to Coordinator;
+
+    // ---- WriterB critical section (enabled only after A commits) ----
+    ReadReqB(String) from WriterB to MemoryStore;
+    ReadRespB(String) from MemoryStore to WriterB;
+    WriteB(String) from WriterB to MemoryStore;
+    CommittedB(String) from MemoryStore to Coordinator;
+
+    Done(String) from MemoryStore to Coordinator;
+}

@@ -1,0 +1,29 @@
+module v1;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol MemoryRace(role Coordinator, role WriterA, role WriterB, role MemoryStore) {
+    InitialBalance(Int) from Coordinator to MemoryStore;
+
+    // Ensure WriterA writes first
+    choice at Coordinator {
+        WriterAUpdate() from Coordinator to MemoryStore;  // notify MemoryStore first
+        WriterAUpdate() from Coordinator to WriterA;     // notify WriterA about the update
+        WriterAWrite(Int) from WriterA to MemoryStore;
+    } or {
+        SkipWriterA() from Coordinator to MemoryStore;
+        SkipWriterA() from Coordinator to WriterA;
+    }
+
+    // Ensure WriterB reads WriterA's write before writing
+    choice at Coordinator {
+        WriterBUpdate() from Coordinator to MemoryStore;  // notify MemoryStore first
+        WriterBUpdate() from Coordinator to WriterB;      // notify WriterB about the update
+        WriterBRead(Int) from MemoryStore to WriterB;
+        WriterBWrite(Int) from WriterB to MemoryStore;
+    } or {
+        SkipWriterB() from Coordinator to MemoryStore;
+        SkipWriterB() from Coordinator to WriterB;
+    }
+
+    Done() from MemoryStore to Coordinator;
+}

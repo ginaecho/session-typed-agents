@@ -1,0 +1,32 @@
+module v1;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol PrReviewMerge(role Author, role CodeReviewer, role SecurityReviewer, role Merger) {
+    PullRequest(String) from Author to CodeReviewer;
+
+    choice at CodeReviewer {
+        CodeClean() from CodeReviewer to SecurityReviewer;
+        CodeClean() from CodeReviewer to Author;
+        ReadyForSecurityReview(String) from CodeReviewer to SecurityReviewer;
+    } or {
+        CodeComments(String) from CodeReviewer to SecurityReviewer;
+        CodeComments(String) from CodeReviewer to Author;
+        RevisionRequest(String) from CodeReviewer to Author;
+        NewRevision(String) from Author to CodeReviewer;
+        continue; // Restart the review loop
+    }
+
+    choice at SecurityReviewer {
+        SecurityApprove() from SecurityReviewer to Merger;
+        SecurityApprove() from SecurityReviewer to Author;
+        MergeInitiated() from SecurityReviewer to Merger;
+        MergeDone() from Merger to Author; // Ends the protocol
+    } or {
+        SecurityFindings(String) from SecurityReviewer to Merger;
+        SecurityFindings(String) from SecurityReviewer to Author;
+        RevisionSecurityRequest(String) from SecurityReviewer to Author;
+        NewRevision(String) from Author to SecurityReviewer;
+        continue; // Restart the review loop
+    }
+}

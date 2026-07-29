@@ -1,0 +1,43 @@
+{
+  "n_corpus": 30,
+  "baseline_false_positives": {
+    "scribble_fp": 0,
+    "nuscr_fp": 0,
+    "nuscr_tool_errors": 19,
+    "n": 30
+  },
+  "classes": {
+    "circular_wait": {
+      "applied": 30,
+      "comparable": 11,
+      "scribble_caught": 0,
+      "nuscr_caught": 0,
+      "scribble_name_errors_excluded": 0,
+      "nuscr_tool_errors_excluded": 19
+    },
+    "swap_order": {
+      "applied": 30,
+      "comparable": 11,
+      "scribble_caught": 0,
+      "nuscr_caught": 0,
+      "scribble_name_errors_excluded": 0,
+      "nuscr_tool_errors_excluded": 19
+    },
+    "drop_message": {
+      "applied": 30,
+      "comparable": 11,
+      "scribble_caught": 0,
+      "nuscr_caught": 0,
+      "scribble_name_errors_excluded": 0,
+      "nuscr_tool_errors_excluded": 19
+    },
+    "rewire_peer": {
+      "applied": 30,
+      "comparable": 11,
+      "scribble_caught": 0,
+      "nuscr_caught": 0,
+      "scribble_name_errors_excluded": 0,
+      "nuscr_tool_errors_excluded": 19
+    }
+  }
+}

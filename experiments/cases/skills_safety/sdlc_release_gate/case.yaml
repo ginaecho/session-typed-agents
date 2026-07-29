@@ -1,0 +1,49 @@
+case_id: sdlc_release_gate
+description: |
+  A 7-agent release pipeline from real github/awesome-copilot skills: an Author
+  plus FOUR independent reviewers (quality, security, architecture,
+  responsible-AI), a Merger, and a DevOps deployer. No single skill encodes the
+  rule that all four reviews must pass before merge/deploy. Disaster: DevOps
+  deploys before security review passed.
+version: v1
+protocol_name: SdlcReleaseGate
+roles: [Author, QualityReviewer, SecurityReviewer, ArchReviewer, ResponsibleAIReviewer, Merger, DevOps]
+terminal_label: Deployed
+max_steps: 48
+branch_hints: [standard, standard]
+role_descriptions:
+  Author: submits the change and revises on rejection
+  QualityReviewer: reviews code quality, passes the change onward if acceptable
+  SecurityReviewer: OWASP/security review; must pass before deploy
+  ArchReviewer: architecture/system-design review
+  ResponsibleAIReviewer: responsible-AI review
+  Merger: ships only after all four reviews pass; else sends back for another round
+  DevOps: deploys ONLY after the Merger approves (all reviews passed)
+intent: |
+  Ship a code change through a 7-agent release pipeline. The change must pass a
+  quality review, a security review, an architecture review, and a
+  responsible-AI review; only then may the Merger approve and DevOps deploy. If
+  any review rejects, revise and run all reviews again. Never deploy before the
+  security review has passed.
+goals:
+  - id: G1
+    category: liveness
+    description: the change is deployed (terminal reached)
+    metric: deployed
+    predicate: 'True'
+    anchor: {sender: DevOps, receiver: Merger, label: Deployed}
+    threshold: terminal present
+  - id: G2
+    category: ordering
+    description: the security review passed (baton reached architecture)
+    metric: security_passed
+    predicate: 'True'
+    anchor: {sender: SecurityReviewer, receiver: ArchReviewer, label: ToArch}
+    threshold: present
+  - id: G3
+    category: ordering
+    description: the merger approved before deploy
+    metric: approved
+    predicate: 'True'
+    anchor: {sender: Merger, receiver: DevOps, label: Deploy}
+    threshold: present

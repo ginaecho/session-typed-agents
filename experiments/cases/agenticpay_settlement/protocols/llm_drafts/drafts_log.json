@@ -1,0 +1,75 @@
+{
+  "case_id": "agenticpay_settlement",
+  "intent": "Settle a purchase that a real AgenticPay Buyer agent and Seller agent have\nalready negotiated (price, quantity, and terms come from that negotiation),\nusing an Escrow to hold funds and a Carrier to move the goods. The Buyer\nreleases payment only after the goods are received; the Seller releases\nthe goods only after payment is made. The trade is complete once the\ngoods are delivered and the payment is released to the Seller.",
+  "module_name": "v1",
+  "max_attempts": 10,
+  "attempts_used": 7,
+  "attempts": [
+    {
+      "attempt": 1,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1636,
+      "elapsed_s": 6.6
+    },
+    {
+      "attempt": 2,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1326,
+      "elapsed_s": 6.6
+    },
+    {
+      "attempt": 3,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1439,
+      "elapsed_s": 6.5
+    },
+    {
+      "attempt": 4,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1778,
+      "elapsed_s": 9.0
+    },
+    {
+      "attempt": 5,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1980,
+      "elapsed_s": 7.9
+    },
+    {
+      "attempt": 6,
+      "valid": false,
+      "error": "line 19:41 missing TO_KW at 'Seller'",
+      "deadlock_score": 0,
+      "draft_chars": 746,
+      "elapsed_s": 7.8
+    },
+    {
+      "attempt": 7,
+      "valid": false,
+      "error": "Inconsistent external choice subjects for Carrier: [Carrier=Seller, Carrier=Escrow]",
+      "deadlock_score": 2,
+      "draft_chars": 2428,
+      "elapsed_s": 9.1
+    }
+  ],
+  "kept_valid": {
+    "path": "experiments\\cases\\agenticpay_settlement\\protocols\\llm_drafts\\valid\\v1.scr",
+    "from_attempt": 1
+  },
+  "kept_unsafe": {
+    "path": "experiments\\cases\\agenticpay_settlement\\protocols\\llm_drafts\\unsafe\\v1.scr",
+    "from_attempt": 7,
+    "deadlock_score": 2
+  },
+  "ts": "2026-07-25T11:25:05"
+}

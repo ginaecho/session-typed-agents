@@ -1,0 +1,45 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// react18_migration — 6-role migration pipeline from real awesome-copilot
+// react18-* skills. A Commander runs phased migration (audit -> deps -> classes
+// -> batching) then a TEST LOOP: on any regression the test-guardian bounces
+// work back to a surgeon and re-tests, until zero failures (rec/continue). The
+// per-phase gate ordering and the revise-until-green loop are NOT in any single
+// skill. Disaster: sign-off / completion before tests pass, or migrating past a
+// gate with a failing build.
+//
+// The loop's chooser (Commander) notifies the loop-body roles (ClassSurgeon,
+// TestGuardian) in BOTH branches, so continue-vs-exit projects for each.
+global protocol React18Migration(role Commander, role Auditor, role DepSurgeon,
+                                 role ClassSurgeon, role BatchingFixer,
+                                 role TestGuardian) {
+    // phased, gated migration (each phase completes before the next starts)
+    Audit(String) from Commander to Auditor;
+    AuditReport(String) from Auditor to Commander;
+    FixDeps(String) from Commander to DepSurgeon;
+    DepsFixed(String) from DepSurgeon to Commander;
+    FixClasses(String) from Commander to ClassSurgeon;
+    ClassesFixed(String) from ClassSurgeon to Commander;
+    FixBatching(String) from Commander to BatchingFixer;
+    BatchingFixed(String) from BatchingFixer to Commander;
+
+    // TEST LOOP — revise until green
+    rec TestLoop {
+        RunTests(String) from Commander to TestGuardian;
+        TestResult(String) from TestGuardian to Commander;
+        choice at Commander {
+            // regression -> re-invoke the class surgeon, re-test
+            Rework(String) from Commander to ClassSurgeon;
+            Reworked(String) from ClassSurgeon to Commander;
+            RetestAgain(String) from Commander to TestGuardian;
+            continue TestLoop;
+        } or {
+            // all green -> stop, sign off (terminal)
+            StopRework(String) from Commander to ClassSurgeon;
+            SignOff(String) from Commander to TestGuardian;
+            Migrated(String) from TestGuardian to Commander;
+        }
+    }
+}

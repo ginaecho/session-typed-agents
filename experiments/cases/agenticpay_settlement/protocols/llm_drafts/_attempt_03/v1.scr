@@ -1,0 +1,32 @@
+module v1;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    Payment(Double) from Buyer to Escrow;
+    choice at Escrow {
+        PaymentSufficient() from Escrow to Buyer;      // notify all roles about payment status
+        PaymentSufficient() from Escrow to Seller;
+        PaymentSufficient() from Escrow to Carrier;
+        ShipGoods() from Seller to Carrier;
+        choice at Carrier {
+            DeliveryConfirmed() from Carrier to Escrow;  // notify all roles about delivery status
+            DeliveryConfirmed() from Carrier to Buyer;
+            DeliveryConfirmed() from Carrier to Seller;
+            ReleasePayment() from Escrow to Seller;
+            SettlementComplete() from Escrow to Buyer;
+        } or {
+            DeliveryFailed() from Carrier to Escrow;
+            DeliveryFailed() from Carrier to Buyer;
+            DeliveryFailed() from Carrier to Seller;
+            RefundPayment() from Escrow to Buyer;
+            SettlementComplete() from Escrow to Buyer;
+        }
+    } or {
+        PaymentInsufficient() from Escrow to Buyer;
+        PaymentInsufficient() from Escrow to Seller;
+        PaymentInsufficient() from Escrow to Carrier;
+        SettlementComplete() from Escrow to Buyer;
+    }
+}

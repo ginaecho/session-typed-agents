@@ -1,0 +1,53 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// gem_dev_team — 7-role dev team composed from real awesome-copilot gem-* skills.
+// Coordination the individual skills do NOT encode:
+//   BRANCH   : complexity MEDIUM -> Reviewer only; HIGH -> Reviewer + Critic.
+//   LOOP     : implement -> test; on failure, replan and loop (rec/continue).
+//   ORDERING : DevOps.Deploy is terminal — only reachable after the test loop
+//              exits (i.e. tests passed). Deploy-before-green-tests is the disaster.
+global protocol GemDevTeam(role Orchestrator, role Planner, role Implementer,
+                           role Reviewer, role Critic, role BrowserTester, role DevOps) {
+    RequestPlan(String) from Orchestrator to Planner;
+    PlanReady(String) from Planner to Orchestrator;
+
+    // BRANCH on complexity. Reviewer behaves identically (merges); Critic is
+    // told which branch (Critique vs SkipCritique) so it never blocks.
+    choice at Orchestrator {
+        ReviewPlan(String) from Orchestrator to Reviewer;
+        PlanApproved(String) from Reviewer to Orchestrator;
+        SkipCritique(String) from Orchestrator to Critic;
+    } or {
+        ReviewPlan(String) from Orchestrator to Reviewer;
+        PlanApproved(String) from Reviewer to Orchestrator;
+        Critique(String) from Orchestrator to Critic;
+        CritiqueDone(String) from Critic to Orchestrator;
+    }
+
+    // LOOP: build -> test; every loop-body role is notified per branch so the
+    // recursion projects (continue) vs exit is unambiguous for each of them.
+    rec ImplementLoop {
+        Implement(String) from Orchestrator to Implementer;
+        Built(String) from Implementer to Orchestrator;
+        RunTests(String) from Orchestrator to BrowserTester;
+        TestResult(String) from BrowserTester to Orchestrator;
+        choice at Orchestrator {
+            // tests FAILED -> replan and loop
+            Replan(String) from Orchestrator to Planner;
+            Replanned(String) from Planner to Orchestrator;
+            LoopImpl(String) from Orchestrator to Implementer;
+            LoopTest(String) from Orchestrator to BrowserTester;
+            LoopDeploy(String) from Orchestrator to DevOps;
+            continue ImplementLoop;
+        } or {
+            // tests PASSED -> exit loop; notify all, THEN deploy (terminal)
+            DonePlan(String) from Orchestrator to Planner;
+            DoneImpl(String) from Orchestrator to Implementer;
+            DoneTest(String) from Orchestrator to BrowserTester;
+            Deploy(String) from Orchestrator to DevOps;
+            Deployed(String) from DevOps to Orchestrator;
+        }
+    }
+}

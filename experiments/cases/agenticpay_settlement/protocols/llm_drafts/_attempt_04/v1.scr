@@ -1,0 +1,40 @@
+module v1;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    // Initial step: Buyer sends agreed payment information to Escrow for holding funds
+    DepositFunds(Double) from Buyer to Escrow;
+    
+    // Seller sends the goods to Carrier for delivery to Buyer
+    DispatchGoods(String) from Seller to Carrier;
+
+    // Carrier delivers the goods to Buyer
+    DeliverGoods(String) from Carrier to Buyer;
+
+    // Choice at Buyer: After the goods are received, Buyer decides to proceed with payment or cancel
+    choice at Buyer {
+        ProceedWithPayment() from Buyer to Escrow; // Notify all roles
+        ProceedWithPayment() from Buyer to Seller;
+        ProceedWithPayment() from Buyer to Carrier;
+        ReleasePayment(String) from Buyer to Escrow;
+    } or {
+        CancelTransaction() from Buyer to Escrow; // Notify all roles
+        CancelTransaction() from Buyer to Seller;
+        CancelTransaction() from Buyer to Carrier;
+        CancelProcess(String) from Buyer to Escrow;
+    }
+
+    // Choice at Escrow: Escrow decides to release the funds or hold them per Buyer's decision
+    choice at Escrow {
+        ReleaseFunds() from Escrow to Buyer; // Notify both Buyer and Seller
+        ReleaseFunds() from Escrow to Seller;
+        Confirmation(String) from Escrow to Seller; // Funds are released to the Seller
+    } or {
+        DoNotReleaseFunds() from Escrow to Buyer; // Notify both Buyer and Seller
+        DoNotReleaseFunds() from Escrow to Seller;
+        HaltNotice(String) from Escrow to Seller; // Funds are not released
+    }
+
+    SettlementComplete() from Carrier to Buyer; // Terminal message
+}
