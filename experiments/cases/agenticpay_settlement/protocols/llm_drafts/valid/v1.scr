@@ -1,0 +1,39 @@
+module v1;
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    // Step 1: Buyer sends payment to Escrow
+    TransferFunds(Double) from Buyer to Escrow;
+    
+    // Step 2: Escrow decides if payment is received
+    choice at Escrow {
+        PaymentConfirmed() from Escrow to Buyer; // Fan-out notification
+        PaymentConfirmed() from Escrow to Seller;
+        PaymentConfirmed() from Escrow to Carrier;
+        RequestShipment() from Escrow to Carrier;
+    } or {
+        PaymentRejected() from Escrow to Buyer; // Fan-out notification
+        PaymentRejected() from Escrow to Seller;
+        PaymentRejected() from Escrow to Carrier;
+    }
+    
+    // Step 3: Carrier ships goods to Buyer and decides delivery status
+    choice at Carrier {
+        DeliverySuccess() from Carrier to Buyer; // Fan-out notification
+        DeliverySuccess() from Carrier to Seller;
+        DeliverySuccess() from Carrier to Escrow;
+        ReleaseFunds(Double) from Escrow to Seller;
+    } or {
+        DeliveryFailure(String) from Carrier to Buyer; // Fan-out notification
+        DeliveryFailure(String) from Carrier to Seller;
+        DeliveryFailure(String) from Carrier to Escrow;
+        RefundInitiated(Double) from Escrow to Buyer;
+    }
+
+    // Step 4: Final confirmation of settlement
+    SettlementComplete() from Buyer to Seller;
+    SettlementComplete() from Buyer to Carrier;
+    SettlementComplete() from Buyer to Escrow;
+}

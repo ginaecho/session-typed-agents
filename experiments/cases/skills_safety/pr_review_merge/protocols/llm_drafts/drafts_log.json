@@ -1,0 +1,91 @@
+{
+  "case_id": "pr_review_merge",
+  "intent": "Get an already-open pull request reviewed to completion and merged\nsafely. The Author has already opened the PR; the CodeReviewer and the\nSecurityReviewer both examine the current revision concurrently. Each\nround, the CodeReviewer either raises comments (which the Author must\naddress with a new Revision, restarting the round) or judges the change\nclean and hands off to the SecurityReviewer, who either raises security\nfindings (which the Author must also address, restarting the round) or\napproves. Only when the SecurityReviewer's approval AND the\nCodeReviewer's quality approval have both reached the Merger does the\nMerger merge the change and confirm to the Author. A change must never\nbe merged on only one of the two approvals, and the review loop must be\nallowed to run more than once before the merge happens.",
+  "module_name": "v1",
+  "max_attempts": 10,
+  "attempts_used": 9,
+  "attempts": [
+    {
+      "attempt": 1,
+      "valid": false,
+      "error": "Safety violation(s) at session state 109:\n    Trace=[Author!CodeReviewer:Revision(String), CodeReviewer?Author:Revision(String), CodeReviewer!Author:CodeComments(), CodeReviewer!SecurityReviewer:CodeComments(), SecurityReviewer?CodeReviewer:CodeComments(), Author?CodeReviewer:CodeComments(), Author!CodeReviewer:Revision(String), CodeReviewer?Author:Revision(String)]\n    Unfinished roles: {Merger=56}",
+      "deadlock_score": 2,
+      "draft_chars": 1391,
+      "elapsed_s": 7.9
+    },
+    {
+      "attempt": 2,
+      "valid": false,
+      "error": "Inconsistent external choice subjects for Author: [Author=SecurityReviewer, Author=Merger]",
+      "deadlock_score": 2,
+      "draft_chars": 1190,
+      "elapsed_s": 11.7
+    },
+    {
+      "attempt": 3,
+      "valid": false,
+      "error": "Safety violation(s) at session state 106:\n    Trace=[Author!CodeReviewer:OpenPullRequest(), CodeReviewer?Author:OpenPullRequest(), CodeReviewer!Author:CommentsRaised(), CodeReviewer!SecurityReviewer:CommentsRaised(), SecurityReviewer?CodeReviewer:CommentsRaised(), Author?CodeReviewer:CommentsRaised(), Author!CodeReviewer:NewRevision(String), CodeReviewer?Author:NewRevision(String)]\n    Unfinished roles: {Merger=51}\nSafety violation(s) at session state 130:\n    Trace=[Author!CodeReviewer:OpenPullRequest(), CodeReviewer?Author:OpenPullRequest(), CodeReviewer!Author:CodeApproved(), CodeReviewer!S",
+      "deadlock_score": 2,
+      "draft_chars": 1199,
+      "elapsed_s": 6.8
+    },
+    {
+      "attempt": 4,
+      "valid": false,
+      "error": "Safety violation(s) at session state 197:\n    Trace=[Author!CodeReviewer:InitReview(String), CodeReviewer?Author:InitReview(String), CodeReviewer!Author:CodeApproved(), CodeReviewer!SecurityReviewer:CodeApproved(), CodeReviewer!Merger:CodeApproved(), SecurityReviewer?CodeReviewer:CodeApproved(), SecurityReviewer!Author:SecurityFindings(), SecurityReviewer!CodeReviewer:SecurityFindings(), CodeReviewer?SecurityReviewer:SecurityFindings(), Merger?CodeReviewer:CodeApproved(), Author?CodeReviewer:CodeApproved(), Author?SecurityReviewer:SecurityFindings()]\n    Unfinished roles: {Merger=58}",
+      "deadlock_score": 2,
+      "draft_chars": 1265,
+      "elapsed_s": 10.3
+    },
+    {
+      "attempt": 5,
+      "valid": false,
+      "error": "Safety violation(s) at session state 118:\n    Trace=[Author!CodeReviewer:InitialPR(), CodeReviewer?Author:InitialPR(), CodeReviewer!SecurityReviewer:CommentsRaised(), CodeReviewer!Author:CommentsRaised(), SecurityReviewer?CodeReviewer:CommentsRaised(), Author?CodeReviewer:CommentsRaised(), Author!CodeReviewer:NewRevision(String), CodeReviewer?Author:NewRevision(String)]\n    Unfinished roles: {Merger=55}",
+      "deadlock_score": 2,
+      "draft_chars": 1253,
+      "elapsed_s": 6.8
+    },
+    {
+      "attempt": 6,
+      "valid": false,
+      "error": "Safety violation(s) at session state 124:\n    Trace=[Author!CodeReviewer:Revision(String), CodeReviewer?Author:Revision(String), CodeReviewer!Author:Comments(), CodeReviewer!SecurityReviewer:Comments(), SecurityReviewer?CodeReviewer:Comments(), Author?CodeReviewer:Comments(), Author!CodeReviewer:Revise(String), CodeReviewer?Author:Revise(String)]\n    Unfinished roles: {Merger=58, Author=13}",
+      "deadlock_score": 2,
+      "draft_chars": 1375,
+      "elapsed_s": 7.6
+    },
+    {
+      "attempt": 7,
+      "valid": false,
+      "error": "Safety violation(s) at session state 112:\n    Trace=[Author!CodeReviewer:PullRequest(String), CodeReviewer?Author:PullRequest(String), CodeReviewer!Author:CodeComments(String), CodeReviewer!SecurityReviewer:CodeComments(String), SecurityReviewer?CodeReviewer:CodeComments(String), Author?CodeReviewer:CodeComments(String), Author!CodeReviewer:NewRevision(String), CodeReviewer?Author:NewRevision(String)]\n    Unfinished roles: {Merger=55}",
+      "deadlock_score": 2,
+      "draft_chars": 1481,
+      "elapsed_s": 7.7
+    },
+    {
+      "attempt": 8,
+      "valid": false,
+      "error": "line 17:16 missing ID at ';'",
+      "deadlock_score": 0,
+      "draft_chars": 1400,
+      "elapsed_s": 12.8
+    },
+    {
+      "attempt": 9,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1686,
+      "elapsed_s": 8.2
+    }
+  ],
+  "kept_valid": {
+    "path": "experiments\\cases\\skills_safety\\pr_review_merge\\protocols\\llm_drafts\\valid\\v1.scr",
+    "from_attempt": 9
+  },
+  "kept_unsafe": {
+    "path": "experiments\\cases\\skills_safety\\pr_review_merge\\protocols\\llm_drafts\\unsafe\\v1.scr",
+    "from_attempt": 1,
+    "deadlock_score": 2
+  },
+  "ts": "2026-07-25T17:27:52"
+}

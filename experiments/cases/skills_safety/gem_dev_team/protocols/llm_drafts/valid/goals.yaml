@@ -1,0 +1,34 @@
+source_protocol: experiments\cases\skills_safety\gem_dev_team\protocols\llm_drafts\valid\v1.scr
+re_anchored_from: experiments\cases\skills_safety\gem_dev_team\case.yaml
+n_canonical_goals: 3
+n_kept: 3
+n_dropped: 0
+dropped: []
+goals:
+- id: G1
+  description: the change is deployed (terminal reached)
+  metric: deployed
+  predicate: 'True'
+  anchor:
+    sender: DevOps
+    receiver: Orchestrator
+    label: Deployed
+  threshold: terminal present
+- id: G2
+  description: the plan was approved by the reviewer
+  metric: plan_approved
+  predicate: 'True'
+  anchor:
+    sender: Reviewer
+    receiver: Orchestrator
+    label: PlanApproved
+  threshold: present
+- id: G3
+  description: the change was implemented
+  metric: built
+  predicate: 'True'
+  anchor:
+    sender: Implementer
+    receiver: Orchestrator
+    label: Built
+  threshold: present

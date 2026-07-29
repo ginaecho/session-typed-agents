@@ -1,0 +1,34 @@
+source_protocol: experiments\cases\memory_race\protocols\llm_drafts\valid\v1.scr
+re_anchored_from: experiments\cases\memory_race\case.yaml
+n_canonical_goals: 3
+n_kept: 3
+n_dropped: 0
+dropped: []
+goals:
+- id: G1
+  description: The settlement terminates (final balance delivered to the Coordinator)
+  metric: settled
+  predicate: 'True'
+  anchor:
+    sender: MemoryStore
+    receiver: Coordinator
+    label: Done
+  threshold: terminal event present
+- id: G2
+  description: WriterA commits the correct post-A balance (150)
+  metric: a_committed
+  predicate: True
+  anchor:
+    sender: WriterA
+    receiver: MemoryStore
+    label: Write
+  threshold: == 150
+- id: G3
+  description: The final balance is 180 with no lost update (verified by environment.py)
+  metric: final_balance
+  predicate: True
+  anchor:
+    sender: MemoryStore
+    receiver: Coordinator
+    label: Done
+  threshold: == 180

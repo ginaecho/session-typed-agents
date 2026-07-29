@@ -47,10 +47,18 @@ class AzCliCredential:
         if self.tenant_id:
             cmd += ["--tenant", self.tenant_id]
 
-        # shell=True is the magic that makes Windows resolve az -> az.cmd
-        result = subprocess.run(
-            " ".join(cmd), shell=True, capture_output=True, text=True
-        )
+        # shell=True is the magic that makes Windows resolve az -> az.cmd.
+        # timeout=60: `az` can hang indefinitely on a token-cache lock, which
+        # froze whole benchmark runs for hours with no socket-level timeout to
+        # catch it (2026-07-25/27 stalls). On timeout we raise so the caller's
+        # retry loop can re-attempt instead of hanging forever.
+        try:
+            result = subprocess.run(
+                " ".join(cmd), shell=True, capture_output=True, text=True,
+                timeout=60,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(f"az get-access-token timed out after 60s") from exc
         if result.returncode != 0:
             raise RuntimeError(f"az get-access-token failed: {result.stderr}")
         data = json.loads(result.stdout)

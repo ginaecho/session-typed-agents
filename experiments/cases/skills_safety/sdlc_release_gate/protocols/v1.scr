@@ -1,0 +1,45 @@
+module v1;
+
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// sdlc_release_gate — 7-role release pipeline from real awesome-copilot skills.
+// Coordination the individual skills do NOT encode: a change must pass FOUR
+// independent reviews (quality, security, architecture, responsible-AI) before
+// the Merger may ship it, and DevOps may Deploy ONLY after that. On any
+// rejection the Merger sends everyone back for another round (rec/continue).
+// Disaster: Deploy before security review passed, or deploy more than once.
+//
+// Projection note: the Merger (the loop's chooser) notifies EVERY role in BOTH
+// branches, so each role's continue-vs-exit decision is an external choice on
+// messages from a single sender (Merger) — the pattern that makes a many-role
+// rec+choice projectable.
+global protocol SdlcReleaseGate(role Author, role QualityReviewer,
+                                role SecurityReviewer, role ArchReviewer,
+                                role ResponsibleAIReviewer, role Merger, role DevOps) {
+    rec ReviewLoop {
+        Submit(String) from Author to QualityReviewer;
+        ToSecurity(String) from QualityReviewer to SecurityReviewer;
+        ToArch(String) from SecurityReviewer to ArchReviewer;
+        ToRai(String) from ArchReviewer to ResponsibleAIReviewer;
+        ToMerger(String) from ResponsibleAIReviewer to Merger;
+        choice at Merger {
+            // any review rejected -> another round
+            ReviseAuthor(String) from Merger to Author;
+            AgainQuality(String) from Merger to QualityReviewer;
+            AgainSecurity(String) from Merger to SecurityReviewer;
+            AgainArch(String) from Merger to ArchReviewer;
+            AgainRai(String) from Merger to ResponsibleAIReviewer;
+            AgainDevOps(String) from Merger to DevOps;
+            continue ReviewLoop;
+        } or {
+            // all four reviews passed -> stop reviewers, merge, deploy
+            ApprovedAuthor(String) from Merger to Author;
+            StopQuality(String) from Merger to QualityReviewer;
+            StopSecurity(String) from Merger to SecurityReviewer;
+            StopArch(String) from Merger to ArchReviewer;
+            StopRai(String) from Merger to ResponsibleAIReviewer;
+            Deploy(String) from Merger to DevOps;
+            Deployed(String) from DevOps to Merger;
+        }
+    }
+}

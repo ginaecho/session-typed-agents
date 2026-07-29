@@ -1,0 +1,50 @@
+module v1;
+
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    // Buyer sends payment information to Escrow
+    Payment(Double) from Buyer to Escrow;
+
+    // Escrow validates payment and makes a choice
+    choice at Escrow {
+        PaymentReceived() from Escrow to Buyer;   // Fan-out to notify all roles
+        PaymentReceived() from Escrow to Seller;
+        PaymentReceived() from Escrow to Carrier;
+
+        // Payment is held in escrow; seller releases goods to Carrier
+        ReleaseGoods() from Seller to Carrier;
+
+        // Carrier delivers goods and confirms delivery
+        DeliverGoods(String) from Carrier to Buyer;
+
+        // Carrier confirms delivery success or failure
+        choice at Carrier {
+            DeliverySuccessful() from Carrier to Buyer;  // Notify all roles
+            DeliverySuccessful() from Carrier to Seller;
+            DeliverySuccessful() from Carrier to Escrow;
+
+            // Escrow releases funds to Seller
+            ReleaseFunds(Double) from Escrow to Seller;
+
+            // Protocol completes successfully
+            SettlementComplete() from Seller to Buyer;
+        } or {
+            DeliveryFailed(String) from Carrier to Buyer; // Notify all roles
+            DeliveryFailed(String) from Carrier to Seller;
+            DeliveryFailed(String) from Carrier to Escrow;
+
+            // Protocol ends with failed settlement
+            SettlementComplete() from Carrier to Buyer;
+        }
+    } or {
+        PaymentNotReceived(String) from Escrow to Buyer;  // Fan-out to notify all roles
+        PaymentNotReceived(String) from Escrow to Seller;
+        PaymentNotReceived(String) from Escrow to Carrier;
+
+        // No further progress; protocol ends
+        SettlementComplete() from Escrow to Buyer;
+    }
+}

@@ -1,0 +1,25 @@
+module v1;
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// agenticpay_multi_buyer — 2 Buyers, 1 Seller, Escrow, Carrier.
+// UNCHECKED deadlock (contention): Seller withholds shipment until BOTH buyers
+// pay; each Buyer withholds payment until goods arrive -> contention deadlock.
+// FIX (this protocol): Escrow SEQUENCES buyer funding; Seller ships per funded
+// buyer; Escrow releases after each buyer confirms receipt.
+global protocol AgenticPayMultiBuyer(role BuyerA, role BuyerB, role Seller,
+                                     role Escrow, role Carrier) {
+    FundEscrowA(String) from BuyerA to Escrow;
+    FundsSecuredA(String) from Escrow to Seller;
+    ShipA(String) from Seller to Carrier;
+    DeliverA(String) from Carrier to BuyerA;
+    ReceivedA(String) from BuyerA to Escrow;
+    ReleaseA(String) from Escrow to Seller;
+    FundEscrowB(String) from BuyerB to Escrow;
+    FundsSecuredB(String) from Escrow to Seller;
+    ShipB(String) from Seller to Carrier;
+    DeliverB(String) from Carrier to BuyerB;
+    ReceivedB(String) from BuyerB to Escrow;
+    ReleaseB(String) from Escrow to Seller;
+    SettlementCompleteA(String) from Escrow to BuyerA;
+    SettlementCompleteB(String) from Escrow to BuyerB;
+}

@@ -1,0 +1,99 @@
+{
+  "case_id": "memory_race",
+  "intent": "Apply two updates to a shared balance that starts at 100: WriterA must add 50\nand WriterB must add 30, so the final balance is 180. Neither update may be\nlost. Route reads and writes through the MemoryStore so the two writers do not\noverwrite each other; WriterB must read only after WriterA's write has\ncommitted.",
+  "module_name": "v1",
+  "max_attempts": 10,
+  "attempts_used": 10,
+  "attempts": [
+    {
+      "attempt": 1,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1240,
+      "elapsed_s": 6.5
+    },
+    {
+      "attempt": 2,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 740,
+      "elapsed_s": 6.4
+    },
+    {
+      "attempt": 3,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1180,
+      "elapsed_s": 6.4
+    },
+    {
+      "attempt": 4,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1102,
+      "elapsed_s": 5.2
+    },
+    {
+      "attempt": 5,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1312,
+      "elapsed_s": 6.5
+    },
+    {
+      "attempt": 6,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 482,
+      "elapsed_s": 5.3
+    },
+    {
+      "attempt": 7,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 802,
+      "elapsed_s": 6.4
+    },
+    {
+      "attempt": 8,
+      "valid": false,
+      "error": "Exception in thread \"main\" java.lang.RuntimeException: [TODO] multiple destination roles: Done() from Coordinator to WriterA, WriterB, MemoryStore;\n\tat org.scribble.del.global.GMessageTransferDel.translate(GMessageTransferDel.java:61)\n\tat org.scribble.del.global.GMessageTransferDel.translate(GMessageTransferDel.java:28)\n\tat org.scribble.visit.GTypeTranslator.visit(GTypeTranslator.java:36)\n\tat org.scribble.visit.GTypeTranslator.visit(GTypeTranslator.java:23)\n\tat org.scribble.ast.ScribNode.visitWith(ScribNode.java:58)\n\tat org.scribble.del.global.GInteractionSeqDel.translate(GInteractionSeqDel.ja",
+      "deadlock_score": 1,
+      "draft_chars": 830,
+      "elapsed_s": 5.3
+    },
+    {
+      "attempt": 9,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 795,
+      "elapsed_s": 5.2
+    },
+    {
+      "attempt": 10,
+      "valid": true,
+      "error": "",
+      "deadlock_score": 0,
+      "draft_chars": 1181,
+      "elapsed_s": 6.5
+    }
+  ],
+  "kept_valid": {
+    "path": "experiments\\cases\\memory_race\\protocols\\llm_drafts\\valid\\v1.scr",
+    "from_attempt": 1
+  },
+  "kept_unsafe": {
+    "path": "experiments\\cases\\memory_race\\protocols\\llm_drafts\\unsafe\\v1.scr",
+    "from_attempt": 8,
+    "deadlock_score": 1
+  },
+  "ts": "2026-07-25T17:29:52"
+}

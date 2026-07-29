@@ -1,0 +1,14 @@
+# Refinement contracts for MemoryRace (v1.scr).
+# The committed balance must be a number; the final Done value must equal the
+# initial balance plus both deltas (100 + 50 + 30 = 180). These are payload-
+# level guards; the AUTHORITATIVE check is the stateful environment.py, which
+# no hallucinated payload can fake.
+
+WriteA(String) from WriterA to MemoryStore
+  x: float(x) == 150        # 100 (initial) + 50 (WriterA delta)
+
+WriteB(String) from WriterB to MemoryStore
+  x: float(x) == 180        # 150 (A committed) + 30 (WriterB delta)
+
+Done(String) from MemoryStore to Coordinator
+  x: float(x) == 180        # correct final balance, no lost update

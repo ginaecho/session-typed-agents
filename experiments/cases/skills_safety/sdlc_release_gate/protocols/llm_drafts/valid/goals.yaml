@@ -1,0 +1,34 @@
+source_protocol: experiments\cases\skills_safety\sdlc_release_gate\protocols\llm_drafts\valid\v1.scr
+re_anchored_from: experiments\cases\skills_safety\sdlc_release_gate\case.yaml
+n_canonical_goals: 3
+n_kept: 3
+n_dropped: 0
+dropped: []
+goals:
+- id: G1
+  description: the change is deployed (terminal reached)
+  metric: deployed
+  predicate: 'True'
+  anchor:
+    sender: DevOps
+    receiver: Merger
+    label: Deployed
+  threshold: terminal present
+- id: G2
+  description: the security review passed (baton reached architecture)
+  metric: security_passed
+  predicate: 'True'
+  anchor:
+    sender: SecurityReviewer
+    receiver: ArchReviewer
+    label: ToArch
+  threshold: present
+- id: G3
+  description: the merger approved before deploy
+  metric: approved
+  predicate: 'True'
+  anchor:
+    sender: Merger
+    receiver: DevOps
+    label: Deploy
+  threshold: present

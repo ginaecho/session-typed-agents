@@ -30,6 +30,7 @@ Supporting records behind the two key documents:
 
 - [`GLOSSARY.md`](GLOSSARY.md) — plain-language meaning of every term used in the STJP docs (metrics, severity ladder, arms, machinery).
 - [`BENCHMARK_PLAN_V2.md`](BENCHMARK_PLAN_V2.md) — the hardened evaluation plan: eight experiments, each testing exactly one component, with real-vs-pending status for every number.
+- [`HOW_TO_RUN_BENCHMARKS.md`](HOW_TO_RUN_BENCHMARKS.md) — the committed procedure for producing results: one case on one deployment (`case_runner.py`), re-checking finished runs, and safe parallel campaigns across deployments (`run_campaign.py`, with the three safety rules and the incidents behind them).
 - [`HOW_TO_USE_TRACES.md`](HOW_TO_USE_TRACES.md) — how to re-derive every headline number yourself from the raw per-trial traces committed in the repo.
 - [`MINED_SKILLS_SOURCES.md`](MINED_SKILLS_SOURCES.md) — verified registry of every public repository the "real-world skills" evidence came from, with working permalinks and license checks.
 - [`REAL_SKILLS_REEXAMINED.md`](REAL_SKILLS_REEXAMINED.md) — a line-by-line re-read of the real source files behind the two "real skills" cases, and the corrected protocols that came out of it.

@@ -1,0 +1,14 @@
+module v1;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol MemoryRace(role Coordinator, role WriterA, role WriterB, role MemoryStore) {
+    Begin(Int) from Coordinator to WriterA;
+    UpdateA(Int) from WriterA to MemoryStore;
+    ConfirmA() from MemoryStore to Coordinator;
+
+    Begin(Int) from Coordinator to WriterB;
+    UpdateB(Int) from WriterB to MemoryStore;
+    ConfirmB() from MemoryStore to Coordinator;
+
+    Done() from Coordinator to MemoryStore;
+}

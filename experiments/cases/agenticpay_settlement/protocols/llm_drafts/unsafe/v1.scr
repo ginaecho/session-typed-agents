@@ -1,0 +1,49 @@
+module v1;
+
+data <java> "java.lang.Double" from "rt.jar" as Double;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    NegotiationDetails(String) from Buyer to Escrow; // Terms, price, and quantity
+    NegotiationDetails(String) from Buyer to Seller;
+    NegotiationAck() from Escrow to Buyer;          // Acknowledgement from Escrow
+
+    choice at Buyer {                                // First choice: Buyer decides to release funds to Escrow
+        ReleasePayment(Double) from Buyer to Escrow; // Notify Escrow first
+        PaymentConfirmed() from Escrow to Buyer;
+        PaymentNotification() from Escrow to Seller;
+
+        ShipGoods(String) from Seller to Carrier;    // Seller ships the goods
+        ShipmentDetails(String) from Carrier to Escrow;
+        ShipmentDetails(String) from Carrier to Buyer;
+
+        choice at Carrier {                          // Second choice: Carrier confirms delivery status
+            GoodsDelivered() from Carrier to Buyer;  // Notify Buyer and Escrow
+            GoodsDelivered() from Carrier to Escrow;
+            GoodsDelivered() from Carrier to Seller;
+
+            ReleaseToSeller(Double) from Escrow to Seller; // Payment is released to Seller
+            SettlementComplete() from Escrow to Buyer;     // Terminal message
+            SettlementComplete() from Escrow to Seller;
+            SettlementComplete() from Escrow to Carrier;
+        } or {
+            DeliveryFailed() from Carrier to Buyer;  // Notify Buyer and Escrow
+            DeliveryFailed() from Carrier to Escrow;
+            DeliveryFailed() from Carrier to Seller;
+
+            RefundToBuyer(Double) from Escrow to Buyer;    // Refund payment back to Buyer
+            SettlementComplete() from Escrow to Buyer;     // Terminal message
+            SettlementComplete() from Escrow to Seller;
+            SettlementComplete() from Escrow to Carrier;
+        }
+    } or { 
+        CancelPayment() from Buyer to Escrow;         // Notify parties of cancellation
+        PaymentCancelled() from Escrow to Buyer;
+        PaymentCancelled() from Escrow to Seller;
+
+        SettlementComplete() from Escrow to Buyer;    // Terminal message
+        SettlementComplete() from Escrow to Seller;
+        SettlementComplete() from Escrow to Carrier;
+    }
+}
