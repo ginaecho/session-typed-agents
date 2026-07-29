@@ -1,0 +1,22 @@
+module v1;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol MemoryRace(role Coordinator, role WriterA, role WriterB, role MemoryStore) {
+    InitBalance(Int) from Coordinator to MemoryStore;
+    
+    choice at Coordinator {
+        Branch1Note() from Coordinator to WriterB;
+        StartWriterA() from Coordinator to WriterA;   // Fan-out for WriterA's turn
+        StartWriterA() from Coordinator to MemoryStore;
+        UpdateA(Int) from WriterA to MemoryStore;     // WriterA writes the update
+        AckA() from MemoryStore to WriterA;           // Acknowledgment from MemoryStore to WriterA
+    } or {
+        Branch2Note() from Coordinator to WriterA;
+        StartWriterB() from Coordinator to WriterB;   // Fan-out for WriterB's turn
+        StartWriterB() from Coordinator to MemoryStore;
+        UpdateB(Int) from WriterB to MemoryStore;     // WriterB writes the update
+        AckB() from MemoryStore to WriterB;           // Acknowledgment from MemoryStore to WriterB
+    }
+    
+    Done() from MemoryStore to Coordinator;           // Terminate with Done message
+}

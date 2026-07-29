@@ -1,0 +1,49 @@
+source_protocol: experiments\cases\agenticpay_settlement\protocols\llm_drafts\valid\v1.scr
+re_anchored_from: experiments\cases\agenticpay_settlement\case.yaml
+n_canonical_goals: 4
+n_kept: 4
+n_dropped: 0
+dropped: []
+goals:
+- id: G1
+  description: The Buyer funds the escrow with a positive amount
+  metric: escrow_funded
+  predicate: float(x) > 0
+  anchor:
+    sender: Buyer
+    receiver: Escrow
+    label: TransferFunds
+  threshold: '> 0'
+- id: G2
+  description: The goods are dispatched by the Seller
+  metric: dispatched
+  predicate: len(x) >= 0
+  anchor:
+    sender: Escrow
+    receiver: Carrier
+    label: RequestShipment
+  threshold: present
+- id: G3
+  description: Escrow releases a positive payment to the Seller
+  metric: payment_released
+  predicate: float(x) > 0
+  anchor:
+    sender: Escrow
+    receiver: Seller
+    label: ReleaseFunds
+  threshold: '> 0'
+- id: G4
+  description: The settlement terminates (completion delivered to the Buyer)
+  metric: settled
+  predicate: 'True'
+  anchor:
+    # Re-anchored 2026-07-27: the runner ends the attempt at the FIRST message
+    # carrying the terminal label, and the drafted protocol broadcasts
+    # SettlementComplete Buyer->Seller FIRST (then Carrier, then Escrow). The
+    # original Buyer->Escrow anchor was the LAST copy and thus unobservable --
+    # a structurally impossible goal (0% ceiling for every arm). See
+    # docs/reference/GOAL_QUALITY_AUDIT.md (impossible-goal flag).
+    sender: Buyer
+    receiver: Seller
+    label: SettlementComplete
+  threshold: terminal event present

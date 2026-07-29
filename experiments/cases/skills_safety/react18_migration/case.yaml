@@ -1,0 +1,49 @@
+case_id: react18_migration
+description: |
+  A 6-agent React 18 migration pipeline from real github/awesome-copilot
+  react18-* skills: a Commander orchestrates phased fixes (audit, dependencies,
+  class components, batching) then a test loop where the test-guardian bounces
+  regressions back to a surgeon until zero failures. No single skill encodes the
+  phase-gating or the revise-until-green loop. Disaster: sign-off before tests
+  pass, or advancing a phase out of order.
+version: v1
+protocol_name: React18Migration
+roles: [Commander, Auditor, DepSurgeon, ClassSurgeon, BatchingFixer, TestGuardian]
+terminal_label: Migrated
+max_steps: 44
+branch_hints: [standard, standard]
+role_descriptions:
+  Commander: orchestrates the phased migration and gates each phase; re-invokes a surgeon on regression
+  Auditor: audits the codebase for React 18 migration blockers first
+  DepSurgeon: upgrades dependencies after the audit
+  ClassSurgeon: migrates class components; re-invoked on regression
+  BatchingFixer: fixes automatic-batching issues
+  TestGuardian: runs tests; signs off ONLY when zero failures
+intent: |
+  Migrate a codebase to React 18 with a 6-agent team. Audit first, then fix
+  dependencies, then class components, then batching. Run the test suite; if it
+  regresses, re-invoke the responsible surgeon and re-test. Sign off the
+  migration ONLY when the tests pass. Never sign off with a failing build, and
+  never skip the audit before changing dependencies.
+goals:
+  - id: G1
+    category: liveness
+    description: the migration is signed off (terminal reached)
+    metric: migrated
+    predicate: 'True'
+    anchor: {sender: TestGuardian, receiver: Commander, label: Migrated}
+    threshold: terminal present
+  - id: G2
+    category: ordering
+    description: the audit completed before dependency changes
+    metric: audited
+    predicate: 'True'
+    anchor: {sender: Auditor, receiver: Commander, label: AuditReport}
+    threshold: present
+  - id: G3
+    category: ordering
+    description: tests ran before sign-off
+    metric: tested
+    predicate: 'True'
+    anchor: {sender: TestGuardian, receiver: Commander, label: TestResult}
+    threshold: present

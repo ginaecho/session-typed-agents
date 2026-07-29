@@ -1,0 +1,34 @@
+module v1;
+data <java> "java.lang.String" from "rt.jar" as String;
+data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+
+global protocol PrReviewMerge(role Author, role CodeReviewer, role SecurityReviewer, role Merger) {
+    Revision(String) from Author to CodeReviewer;
+
+    rec ReviewLoop {
+        choice at CodeReviewer {
+            CodeComments() from CodeReviewer to Author;     // notify every role
+            CodeComments() from CodeReviewer to SecurityReviewer;
+            CodeComments() from CodeReviewer to Merger;
+            Revision(String) from Author to CodeReviewer;  // Author addresses comments
+            continue ReviewLoop;
+        } or {
+            CodeClean() from CodeReviewer to Author;       // notify every role
+            CodeClean() from CodeReviewer to SecurityReviewer;
+            CodeClean() from CodeReviewer to Merger;
+            choice at SecurityReviewer {
+                SecurityFindings() from SecurityReviewer to Author; // notify every role
+                SecurityFindings() from SecurityReviewer to CodeReviewer;
+                SecurityFindings() from SecurityReviewer to Merger;
+                Revision(String) from Author to CodeReviewer;  // Author addresses findings
+                continue ReviewLoop;
+            } or {
+                SecurityApproved() from SecurityReviewer to Author;  // notify every role
+                SecurityApproved() from SecurityReviewer to CodeReviewer;
+                SecurityApproved() from SecurityReviewer to Merger;
+                Merge() from Merger to Author;   // merging decision
+                MergeDone() from Merger to Author; // terminal message
+            }
+        }
+    }
+}

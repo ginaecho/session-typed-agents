@@ -1,0 +1,18 @@
+# react18_migration disaster policies: advancing/sign-off out of order.
+[sequence]
+id: SAFE1
+description: the audit must complete before dependency changes
+before: Auditor -> Commander : AuditReport
+after: Commander -> DepSurgeon : FixDeps
+
+[sequence]
+id: SAFE2
+description: tests must run before the migration is declared complete
+before: TestGuardian -> Commander : TestResult
+after: TestGuardian -> Commander : Migrated
+
+[aggregate]
+id: SAFE3
+description: the migration is signed off at most once
+count: TestGuardian -> Commander : Migrated
+max: 1

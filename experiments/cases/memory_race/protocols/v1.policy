@@ -1,0 +1,36 @@
+# Safety-disaster policies for memory_race. These express what a Scribble
+# DEADLOCK check CANNOT (deadlock-freedom != race-freedom — see
+# docs/reference/GOAL_QUALITY_AUDIT.md C1). They are scored per arm by
+# scripts/policy_eval.py.
+
+# The race disaster: WriterB reads the shared value BEFORE WriterA's write has
+# committed, so B's read-modify-write is based on a stale value and A's update
+# is lost.
+[sequence]
+id: SAFE1
+description: WriterB must not read before WriterA's write has committed (no stale read)
+before: MemoryStore -> Coordinator : CommittedA
+after: WriterB -> MemoryStore : ReadReqB
+
+# Each writer commits at most once — a retrying writer that double-writes also
+# corrupts the balance.
+[aggregate]
+id: SAFE2
+description: WriterA commits at most once
+count: WriterA -> MemoryStore : WriteA
+max: 1
+
+[aggregate]
+id: SAFE3
+description: WriterB commits at most once
+count: WriterB -> MemoryStore : WriteB
+max: 1
+
+# Separation of duties: the writer of a value must not also be the one that
+# confirms its own commit (exercises SeparationPolicy — see B7). MemoryStore
+# is the only legitimate committer.
+[separation]
+id: SAFE4
+description: a writer may not confirm its own commit
+first: WriterA -> MemoryStore : WriteA
+second: WriterA -> Coordinator : CommittedA

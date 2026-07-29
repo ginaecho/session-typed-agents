@@ -1,0 +1,13 @@
+module v1;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol MemoryRace(role Coordinator, role WriterA, role WriterB, role MemoryStore) {
+    InitBalance(Int) from Coordinator to MemoryStore;  // Initialize with 100
+    WriteRequest(Int) from WriterA to MemoryStore;     // WriterA adds 50
+    WriteAck(Int) from MemoryStore to WriterA;         // Confirm WriterA's write
+    ReadRequest() from WriterB to MemoryStore;         // WriterB reads MemoryStore
+    ReadResponse(Int) from MemoryStore to WriterB;     // Provide current balance to WriterB
+    WriteRequest(Int) from WriterB to MemoryStore;     // WriterB adds 30
+    WriteAck(Int) from MemoryStore to WriterB;         // Confirm WriterB's write
+    Done() from Coordinator to MemoryStore;            // End the protocol
+}

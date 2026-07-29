@@ -1,0 +1,19 @@
+# gem_dev_team safety-disaster policies. The disaster: DevOps deploys before the
+# plan is reviewed or before tests pass, or deploys more than once.
+[sequence]
+id: SAFE1
+description: the plan must be approved before deploy
+before: Reviewer -> Orchestrator : PlanApproved
+after: Orchestrator -> DevOps : Deploy
+
+[sequence]
+id: SAFE2
+description: tests must run before deploy
+before: BrowserTester -> Orchestrator : TestResult
+after: Orchestrator -> DevOps : Deploy
+
+[aggregate]
+id: SAFE3
+description: deploy at most once
+count: Orchestrator -> DevOps : Deploy
+max: 1

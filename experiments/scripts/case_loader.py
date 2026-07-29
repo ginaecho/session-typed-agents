@@ -26,6 +26,10 @@ class CaseGoal:
     anchor_label: str
     threshold: str
     branch: str = ""                # if set, goal applies only to this branch
+    # Goal taxonomy (docs/reference/GOAL_QUALITY_AUDIT.md D-taxonomy). One of:
+    #   liveness | ordering | aggregate | data_quality | world_state
+    # Optional in case.yaml; auto-inferred by goal_quality.classify_goal when "".
+    category: str = ""
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> "CaseGoal":
@@ -40,6 +44,7 @@ class CaseGoal:
             anchor_label=anchor.get("label", ""),
             threshold=d.get("threshold", ""),
             branch=d.get("branch", ""),
+            category=d.get("category", ""),
         )
 
 

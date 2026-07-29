@@ -1,0 +1,24 @@
+module v1;
+data <java> "java.lang.String" from "rt.jar" as String;
+
+// agenticpay_multi_seller — 1 Buyer, 2 Sellers, Escrow, Carrier.
+// UNCHECKED deadlock (3-node cycle): Buyer withholds payment until BOTH goods
+// arrive; each Seller withholds shipment until paid -> nobody moves. FIX
+// (this protocol): Escrow-first. Buyer funds escrow once (multi-dimensional
+// contract JSON); Escrow signals each Seller funds are secured; each ships;
+// Carrier delivers; Buyer confirms receipt per seller; Escrow releases per seller.
+global protocol AgenticPayMultiSeller(role Buyer, role SellerA, role SellerB,
+                                      role Escrow, role Carrier) {
+    FundEscrow(String) from Buyer to Escrow;
+    FundsSecuredA(String) from Escrow to SellerA;
+    FundsSecuredB(String) from Escrow to SellerB;
+    ShipA(String) from SellerA to Carrier;
+    ShipB(String) from SellerB to Carrier;
+    DeliverA(String) from Carrier to Buyer;
+    DeliverB(String) from Carrier to Buyer;
+    ReceivedA(String) from Buyer to Escrow;
+    ReceivedB(String) from Buyer to Escrow;
+    ReleaseA(String) from Escrow to SellerA;
+    ReleaseB(String) from Escrow to SellerB;
+    SettlementComplete(String) from Escrow to Buyer;
+}

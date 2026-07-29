@@ -1,0 +1,86 @@
+# memory_race — a shared-memory read-modify-write RACE case.
+#
+# Purpose (docs/reference/GOAL_QUALITY_AUDIT.md Part C): demonstrate a failure
+# class the static Scribble deadlock check CANNOT catch on its own — a lost
+# update — and show that STJP catches it via (1) a protocol that serialises the
+# writers (gate enforces single-writer-at-a-time), (2) safety policies scored by
+# policy_eval.py, and (3) a stateful environment (environment.py) that asserts
+# the real final balance. Deadlock-freedom != race-freedom.
+#
+# This case is AUTHORED (not mined from a public repo) — see SOURCES.md.
+case_id: memory_race
+description: |
+  Two writer agents each apply a delta to a shared balance held by a MemoryStore
+  agent. Initial balance 100; WriterA adds 50; WriterB adds 30; the correct final
+  balance is 180. Each writer's natural skill is read-modify-write: read the
+  current balance, add its delta, write the sum back. Run WITHOUT coordination,
+  both writers read 100 concurrently and write back (150 and 130); whichever
+  writes last wins and the other update is LOST — final 150 or 130, never 180.
+  This is a data race, and crucially it is NOT a deadlock, so Scribble's
+  deadlock-freedom check alone does not flag it. The SAFE protocol
+  (protocols/v1.scr) serialises the two critical sections through MemoryStore so
+  WriterB reads only after WriterA commits; it passes Scribble AND projects to
+  single-writer local types, so the runtime gate rejects a second concurrent
+  write. The disaster is scored directly by the sequence/aggregate policies
+  (protocols/v1.policy) and the final balance is verified for real by
+  environment.py.
+
+version: v1
+protocol_name: MemoryRace
+
+roles:
+  - Coordinator
+  - WriterA
+  - WriterB
+  - MemoryStore
+
+terminal_label: Done
+max_steps: 24
+branch_hints: [standard, standard]
+
+role_descriptions:
+  Coordinator: starts the update and receives commit confirmations and the final balance
+  WriterA: reads the shared balance and writes back balance + 50 (authored)
+  WriterB: reads the shared balance and writes back balance + 30 (authored)
+  MemoryStore: holds the shared balance; serialises writers so B reads only after A commits (authored)
+
+intent: |
+  Apply two updates to a shared balance that starts at 100: WriterA must add 50
+  and WriterB must add 30, so the final balance is 180. Neither update may be
+  lost. Route reads and writes through the MemoryStore so the two writers do not
+  overwrite each other; WriterB must read only after WriterA's write has
+  committed.
+
+# Environment configuration consumed by environment.py (the world-state oracle).
+environment:
+  module: environment
+  initial_balance: 100
+  deltas:
+    WriterA: 50
+    WriterB: 30
+  expected_final: 180
+
+goals:
+  - id: G1
+    category: liveness
+    description: The settlement terminates (final balance delivered to the Coordinator)
+    metric: settled
+    predicate: 'True'
+    anchor: {sender: MemoryStore, receiver: Coordinator, label: Done}
+    threshold: terminal event present
+
+  - id: G2
+    category: data_quality
+    description: WriterA commits the correct post-A balance (150)
+    metric: a_committed
+    predicate: float(x) == 150
+    anchor: {sender: WriterA, receiver: MemoryStore, label: WriteA}
+    threshold: "== 150"
+
+  - id: G3
+    category: world_state
+    description: The final balance is 180 with no lost update (verified by environment.py)
+    metric: final_balance
+    predicate: float(x) == 180
+    anchor: {sender: MemoryStore, receiver: Coordinator, label: Done}
+    threshold: "== 180"

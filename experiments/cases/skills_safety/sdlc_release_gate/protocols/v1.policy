@@ -1,0 +1,12 @@
+# sdlc_release_gate disaster policies: deploy before security review, or twice.
+[sequence]
+id: SAFE1
+description: security review must pass before deploy
+before: SecurityReviewer -> ArchReviewer : ToArch
+after: Merger -> DevOps : Deploy
+
+[aggregate]
+id: SAFE2
+description: deploy at most once
+count: Merger -> DevOps : Deploy
+max: 1

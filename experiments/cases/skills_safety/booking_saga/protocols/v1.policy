@@ -1,0 +1,15 @@
+# Safety-disaster policies for booking_saga (from skills_cases.py::_POLICIES,
+# materialized so the Foundry path can score the disaster via policy_eval.py).
+# Disaster: the traveler is charged before the room is held, or double-charged.
+
+[sequence]
+id: SAFE1
+description: the room must be held before the charge is captured
+before: Hotel -> Payment : RoomHeld
+after: Payment -> Hotel : PaymentCaptured
+
+[aggregate]
+id: SAFE2
+description: the traveler is charged at most once (no double charge)
+count: Payment -> Hotel : PaymentCaptured
+max: 1

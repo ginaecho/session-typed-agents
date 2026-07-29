@@ -1,0 +1,34 @@
+source_protocol: experiments\cases\skills_safety\react18_migration\protocols\llm_drafts\valid\v1.scr
+re_anchored_from: experiments\cases\skills_safety\react18_migration\case.yaml
+n_canonical_goals: 3
+n_kept: 3
+n_dropped: 0
+dropped: []
+goals:
+- id: G1
+  description: the migration is signed off (terminal reached)
+  metric: migrated
+  predicate: 'True'
+  anchor:
+    sender: TestGuardian
+    receiver: Commander
+    label: Migrated
+  threshold: terminal present
+- id: G2
+  description: the audit completed before dependency changes
+  metric: audited
+  predicate: 'True'
+  anchor:
+    sender: Auditor
+    receiver: Commander
+    label: AuditReport
+  threshold: present
+- id: G3
+  description: tests ran before sign-off
+  metric: tested
+  predicate: 'True'
+  anchor:
+    sender: TestGuardian
+    receiver: Commander
+    label: TestResult
+  threshold: present

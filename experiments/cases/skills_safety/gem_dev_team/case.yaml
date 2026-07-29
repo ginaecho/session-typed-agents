@@ -1,0 +1,49 @@
+case_id: gem_dev_team
+description: |
+  A 7-agent software delivery team composed from the REAL github/awesome-copilot
+  gem-* skills (orchestrator, planner, implementer, reviewer, critic,
+  browser-tester, devops). Each skill describes one job; none encodes the
+  team-level ordering: plan -> review (and critic on high-complexity) ->
+  implement -> test -> (loop back to plan on failure) -> deploy. The disaster:
+  the DevOps agent deploys before the plan is reviewed or before tests pass.
+version: v1
+protocol_name: GemDevTeam
+roles: [Orchestrator, Planner, Implementer, Reviewer, Critic, BrowserTester, DevOps]
+terminal_label: Deployed
+max_steps: 44
+branch_hints: [standard, standard]
+role_descriptions:
+  Orchestrator: team lead; routes plan/review/implement/test/deploy in order, never skipping phases
+  Planner: produces the implementation plan; replans on test failure
+  Implementer: builds the change from the approved plan
+  Reviewer: reviews the plan and approves it before implementation
+  Critic: on high-complexity work, critiques the plan for breaking changes
+  BrowserTester: runs end-to-end tests and reports pass/fail
+  DevOps: deploys — ONLY after the plan is approved and tests pass
+intent: |
+  Deliver a software change with a 7-agent team. Plan the work, review it (add a
+  critic review for high-complexity changes), implement it, run end-to-end tests,
+  and if tests fail, replan and try again. Deploy ONLY after the plan is approved
+  and the tests pass. Never deploy before review or before green tests.
+goals:
+  - id: G1
+    category: liveness
+    description: the change is deployed (terminal reached)
+    metric: deployed
+    predicate: 'True'
+    anchor: {sender: DevOps, receiver: Orchestrator, label: Deployed}
+    threshold: terminal present
+  - id: G2
+    category: ordering
+    description: the plan was approved by the reviewer
+    metric: plan_approved
+    predicate: 'True'
+    anchor: {sender: Reviewer, receiver: Orchestrator, label: PlanApproved}
+    threshold: present
+  - id: G3
+    category: liveness
+    description: the change was implemented
+    metric: built
+    predicate: 'True'
+    anchor: {sender: Implementer, receiver: Orchestrator, label: Built}
+    threshold: present

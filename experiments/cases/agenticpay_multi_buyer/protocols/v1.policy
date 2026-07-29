@@ -1,0 +1,15 @@
+[sequence]
+id: SAFE1
+description: seller ships to A only after A's funds are secured
+before: Escrow -> Seller : FundsSecuredA
+after: Seller -> Carrier : ShipA
+[sequence]
+id: SAFE2
+description: seller ships to B only after B's funds are secured
+before: Escrow -> Seller : FundsSecuredB
+after: Seller -> Carrier : ShipB
+[aggregate]
+id: SAFE3
+description: seller ships to A at most once
+count: Seller -> Carrier : ShipA
+max: 1

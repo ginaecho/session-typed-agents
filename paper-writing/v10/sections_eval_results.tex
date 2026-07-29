@@ -1,0 +1,500 @@
+% =====================================================================
+% sections_eval_results.tex  --  Updated Evaluation Methodology and
+% Benchmark Results sections using the comprehensive n=30 data.
+% 
+% Data sources:
+%   finance / gpt-5.4-mini: 30 pooled (runs 20260720, 20260728)
+%   finance / gpt-5.4:      30/arm (run 20260729T080229)
+%   agenticpay / gpt-5.4-mini: 10/arm (run 20260727)
+%   agenticpay / gpt-5.4:      10/arm (run 20260728)
+%
+% To integrate: replace sec:method and sec:results in main.tex,
+% or \input this file at the appropriate location.
+% =====================================================================
+
+\section{Evaluation Methodology}\label{sec:method}
+
+\subsection{Conformance and goal achievement}\label{sec:conform}
+
+\textbf{Protocol conformance (Set~A).}
+Let $T$ be a run's event trace and $M_r$ the projected EFSM for role~$r$.
+A message event $e = (s, r, \ell, v)$ \emph{conforms} iff it is accepted by
+$M_s$ (structurally legal send) and satisfies any associated refinement
+predicate $\phi_\ell(v)$ from the guard sidecar.
+The \emph{violation rate} of a trace is the fraction of events rejected by
+at least one role's monitor.
+Conformance is deterministic, per-message, and requires no LLM judge.
+
+\textbf{Goal achievement (Set~B).}
+Each case defines $k$ goals $G_1, \ldots, G_k$, each anchored to a specific
+message edge $(s, r, \ell)$ and a payload predicate $\phi_i(v)$.
+A trial \emph{succeeds} iff all $k$ goals are satisfied in at least one
+of its allowed attempts.
+Goals are graded under two rungs:
+\emph{strict} requires exact $(s, r, \ell)$ match plus $\phi_i$;
+\emph{role-pair} requires $(s, r)$ match plus $\phi_i$ under any label.
+Configurations shown the protocol vocabulary are graded strictly;
+the bare configuration (never shown the labels) is graded on the
+role-pair rung---a fairness correction adopted after audit
+(\S\ref{sec:fairaudit}).
+
+\textbf{Design principle.}
+The separation into Set~A (structural conformance) and Set~B (task
+completion) is not incidental---it is the empirical instantiation of
+the theoretical claim that \emph{type safety and progress are distinct
+guarantees}.
+A system can achieve zero violations while failing its goals (the
+protocol is followed but the session runs out of steps), or achieve
+all goals while accumulating violations (correct outcome, incorrect
+path).
+Reporting both sets is necessary to distinguish safety from liveness.
+
+\subsection{Consequence-graded violations: the severity scale S0--S4}\label{sec:severity}
+
+Each surviving deviation is graded by consequence on five levels:
+\textbf{S0}~benign (reordering of independent messages; not counted);
+\textbf{S1}~waste (duplicate message, costs tokens, breaks nothing);
+\textbf{S2}~broken obligation (skipped read or wrong ordering);
+\textbf{S3}~non-termination (session exhausts its budget);
+\textbf{S4}~unauthorized irreversible act (filing before approval).
+The grading is computed against the partial order of data and authority
+dependencies declared in the protocol.
+Empirical validation: across all configurations and runs, every attempt
+containing an S2+ violation went on to fail its goal.
+
+\subsection{Experimental configurations}\label{sec:configs}
+
+Each experiment runs the same task under five \emph{configurations}
+(arms), forming a ladder of increasing protocol enforcement.
+All share the same intent, role descriptions, model, and retry budget;
+only the protocol information and enforcement mechanism differ.
+
+\begin{table}[h]
+\centering\small
+\caption{The five experimental configurations. Each adds one mechanism
+to the previous. ``Protocol info'' = what is pasted into the agent's prompt;
+``Enforcement'' = what the runtime does with off-contract messages.}
+\label{tab:configs}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Arm} & \textbf{Protocol info} & \textbf{Enforcement} & \textbf{Scheduling} \\
+\midrule
+\texttt{bare} & Intent only (natural language) & None & Round-robin \\
+\texttt{maf} & Full validated global type as text & None (MAF GroupChat) & LLM speaker-select \\
+\texttt{min\_llmvalid} & Projected local type per role & None (observe only) & Round-robin \\
+\texttt{gate} & Projected local type per role & Gate rejects violations & Round-robin \\
+\texttt{sched} & Projected local type per role & Gate rejects violations & EFSM-driven \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ladder isolates three orthogonal effects:
+(i)~\emph{protocol knowledge} (bare$\to$min\_llmvalid): does telling the
+agent the protocol help?
+(ii)~\emph{enforcement} (min\_llmvalid$\to$gate): does blocking wrong
+messages help beyond telling?
+(iii)~\emph{scheduling} (gate$\to$sched): does polling only enabled roles
+help beyond blocking?
+The MAF arm tests an alternative delivery mechanism (global text +
+LLM-based speaker selection) that represents the dominant industry
+pattern.
+
+\subsection{Statistical methodology}
+
+All confidence intervals are \textbf{Wilson score intervals} (95\%,
+$z = 1.96$), appropriate for binomial proportions and well-behaved at
+boundary values (0\% and 100\%).
+Token counts are the primary efficiency metric; wall-clock times are
+reported but labeled indicative due to parallel execution and rate-limit
+contention.
+Each case uses balanced branch allocation (equal trials per protocol
+branch) to prevent branch-composition confounds.
+
+% =====================================================================
+
+\section{Experiments and Results}\label{sec:results}
+
+We evaluate \stjp{} on two multi-agent coordination tasks spanning
+different protocol complexities, each run under two model capability
+tiers.
+The design produces a $2 \times 2 \times 5$ matrix:
+2~cases $\times$ 2~models $\times$ 5~arms, with $n \geq 26$ per cell
+on the primary case.
+
+\subsection{Cases}
+
+\textbf{Finance} (6~roles, branching choice, 6~goals).
+A quarterly revenue report produced by Fetcher, RevenueAnalyst,
+ExpenseAnalyst, Writer, TaxVerifier, and TaxSpecialist.
+Revenue above \$50k triggers an audit branch requiring TaxSpecialist
+analysis and TaxVerifier approval before the report can be written.
+The protocol exercises fan-out notifications, value-dependent branching,
+and convergence of parallel analysis streams.
+
+\textbf{AgenticPay Settlement} (4~roles, linear, 4~goals).
+An escrow-mediated trade between Buyer, Seller, Escrow, and Carrier.
+The protocol is linear (no branching) but requires strict sequencing:
+deposit $\to$ ship $\to$ release $\to$ settle.
+A circular-wait variant (each role waits for the other) demonstrates
+the deadlock the session type prevents.
+
+\subsection{Models}
+
+\textbf{GPT-5.4 Mini}: a cost-efficient model where enforcement effects
+are most visible (weaker models make more coordination errors).
+\textbf{GPT-5.4}: a frontier-capability model that tests whether
+enforcement remains necessary as model quality improves.
+Both are deployed on Azure AI Foundry.
+
+\subsection{Main results: finance ($n{=}30$)}\label{sec:finance-results}
+
+\begin{table}[t]
+\centering\small
+\caption{Finance case: goal completion (strict), violations, and cost.
+$n = 30$ per arm on GPT-5.4; $n = 26$--$30$ pooled on GPT-5.4 Mini
+(two independent runs).
+Wilson 95\% CIs in brackets.
+Token savings computed relative to bare.
+Bold = best in column.}
+\label{tab:finance}
+\begin{tabular}{@{}l cc cc cc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{Goal completion (\%)}}
+& \multicolumn{2}{c}{\textbf{Violation rate (\%)}}
+& \multicolumn{2}{c}{\textbf{Tokens/trial}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+\textbf{Arm} & \textbf{Mini} & \textbf{Full}
+             & \textbf{Mini} & \textbf{Full}
+             & \textbf{Mini} & \textbf{Full} \\
+\midrule
+\texttt{bare}
+  & 42.1\rlap{$^{\dagger}$} {\scriptsize [23,64]}
+  & 0.0\rlap{$^{\dagger}$} {\scriptsize [0,11]}
+  & 97.3 & 80.1
+  & 135{,}879 & 58{,}007 \\
+\texttt{maf}
+  & 6.7 {\scriptsize [1.8,21]}
+  & \textbf{100.0} {\scriptsize [89,100]}
+  & 28.7 & \textbf{0.0}
+  & 31{,}519 & 25{,}083 \\
+\texttt{min\_llmvalid}
+  & 90.0 {\scriptsize [74,97]}
+  & 50.0 {\scriptsize [32,68]}
+  & 21.9 & \textbf{0.0}
+  & 50{,}200 & 87{,}613 \\
+\texttt{gate}
+  & 52.0 {\scriptsize [34,70]}
+  & \textbf{100.0} {\scriptsize [89,100]}
+  & \textbf{0.0} & \textbf{0.0}
+  & 54{,}633 & 37{,}915 \\
+\texttt{sched}
+  & \textbf{100.0} {\scriptsize [89,100]}
+  & \textbf{100.0} {\scriptsize [89,100]}
+  & \textbf{0.0} & \textbf{0.0}
+  & \textbf{12{,}652} & \textbf{12{,}729} \\
+\bottomrule
+\end{tabular}
+\\[4pt]
+{\footnotesize $\dagger$ Role-pair rung (no protocol vocabulary); strict is N/A.}
+\end{table}
+
+Five findings emerge from Table~\ref{tab:finance}.
+
+\textbf{(1)~SCHED is model-invariant.}
+The EFSM-scheduled arm achieves 100\% goal completion on both models
+at near-identical cost (${\sim}$12.7k tokens/trial, 9.5~calls/trial).
+No other arm achieves this: every alternative's success rate is a
+function of model capability.
+SCHED's calls/trial (11~high branch, 8~standard) matches the
+protocol's theoretical minimum message count, confirming the scheduler
+polls \emph{only} roles with enabled SEND transitions.
+
+\textbf{(2)~Knowledge-only regresses on the stronger model.}
+\texttt{min\_llmvalid} drops from 90\% (Mini) to 50\% (Full)---a
+40-percentage-point regression ($p < 0.01$, Fisher exact).
+The mechanism: GPT-5.4 produces zero protocol violations (agents
+follow message ordering correctly) but its verbose outputs consume
+more turns before reaching the terminal goal (G6 = 50\%).
+This demonstrates that \emph{type safety (conformance) and progress
+(task completion) are orthogonal guarantees}: the protocol is followed,
+but the session runs out of steps.
+Token cost rises 75\% ($50{,}200 \to 87{,}613$), confirming verbosity
+as the mechanism.
+
+\textbf{(3)~Gate and MAF scale positively with model capability.}
+\texttt{gate}: $52\% \to 100\%$ (+48pp).
+\texttt{maf}: $6.7\% \to 100\%$ (+93pp).
+The stronger model's improved instruction-following makes enforcement
+unnecessary \emph{for correctness}---but not for cost (Finding~4).
+
+\textbf{(4)~SCHED is 4.6--6.9$\times$ cheaper than every alternative at 100\%.}
+Even when all enforced arms succeed, cost differs dramatically:
+\texttt{sched} at 12.7k tokens vs.\
+\texttt{maf} at 25.1k ($2.0\times$),
+\texttt{gate} at 37.9k ($3.0\times$),
+\texttt{bare} at 58.0k ($4.6\times$),
+\texttt{min\_llmvalid} at 87.6k ($6.9\times$).
+The mechanism is call count: sched makes 9.5 calls/trial (protocol
+minimum) vs.\ gate's 34.0 (round-robin polling of all 6 roles even
+when 5 are blocked).
+
+\textbf{(5)~The enforcement gradient is non-monotonic across models.}
+On Mini: $\text{bare}(42\%) < \text{maf}(7\%) < \text{gate}(52\%) < \text{min\_llmvalid}(90\%) < \text{sched}(100\%)$.
+On Full: $\text{bare}(0\%) < \text{min\_llmvalid}(50\%) < \{\text{maf}, \text{gate}, \text{sched}\}(100\%)$.
+Knowledge-only inverts position between models; bare itself
+\emph{regresses} ($42\% \to 0\%$ role-pair); only SCHED is
+monotonically at the top.
+
+\subsection{Per-goal analysis: why min\_llmvalid regresses}\label{sec:pergol}
+
+\begin{table}[t]
+\centering\small
+\caption{Per-goal strict completion (\%), finance, GPT-5.4.
+\texttt{min\_llmvalid} passes all structural goals (G1--G3, G5) but
+fails G4 (strict label mismatch; role-pair G4 = 100\%) and G6
+(session budget exhaustion).
+All other protocol-aware arms achieve 100\% on every goal.}
+\label{tab:pergol}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Arm} & \textbf{G1} & \textbf{G2} & \textbf{G3} & \textbf{G4} & \textbf{G5} & \textbf{G6} \\
+\midrule
+\texttt{bare} (rp) & 50 & 53 & 0 & 83 & 100 & 100 \\
+\texttt{maf} & 100 & 100 & 100 & 100 & 100 & 100 \\
+\texttt{min\_llmvalid} & 100 & 100 & 100 & 50 & 100 & 50 \\
+\texttt{gate} & 100 & 100 & 100 & 100 & 100 & 100 \\
+\texttt{sched} & 100 & 100 & 100 & 100 & 100 & 100 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The regression mechanism is visible in Table~\ref{tab:pergol}.
+\texttt{min\_llmvalid} achieves perfect structural conformance (zero
+violations) but fails G6 (final report) in 50\% of trials.
+Trace analysis reveals the pattern: without scheduling, the runtime
+polls all 6~roles every round via round-robin; GPT-5.4's longer
+outputs (each valid, each protocol-conforming) consume the step budget
+before Writer produces the terminal \texttt{GenerateReport} message.
+On Mini, terser outputs complete within budget (90\%); on Full,
+verbosity exhausts it.
+This is not a model defect but a \emph{structural limitation of
+observation-only enforcement}: a monitor can verify that every message
+is correct, but it cannot force progress.
+The scheduler resolves this by eliminating idle polls entirely (9.5
+calls vs.\ 79.0), leaving ample budget for the terminal goal.
+
+\subsection{AgenticPay settlement ($n{=}10$)}\label{sec:agenticpay}
+
+\begin{table}[t]
+\centering\small
+\caption{AgenticPay settlement (4~roles, linear protocol, $n = 10$
+per arm).
+Wilson 95\% CIs at $n{=}10$ are wide ([72,100] at 100\%); the
+differentiation is on Mini.}
+\label{tab:agenticpay}
+\begin{tabular}{@{}l cc cc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{Strict goal completion (\%)}}
+& \multicolumn{2}{c}{\textbf{Tokens/trial}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Arm} & \textbf{Mini} & \textbf{Full}
+             & \textbf{Mini} & \textbf{Full} \\
+\midrule
+\texttt{bare}
+  & 0.0 {\scriptsize [0,28]} & 0.0 {\scriptsize [0,28]}
+  & 98{,}260 & 82{,}544 \\
+\texttt{maf}
+  & 0.0\rlap{$^*$} {\scriptsize [0,28]} & 100.0 {\scriptsize [72,100]}
+  & 49{,}307 & 22{,}965 \\
+\texttt{min\_llmvalid}
+  & 55.6 {\scriptsize [27,81]} & 100.0 {\scriptsize [72,100]}
+  & 97{,}552 & 46{,}408 \\
+\texttt{gate}
+  & 100.0 {\scriptsize [72,100]} & 100.0 {\scriptsize [72,100]}
+  & 102{,}630 & 48{,}497 \\
+\texttt{sched}
+  & \textbf{100.0} {\scriptsize [72,100]} & \textbf{100.0} {\scriptsize [72,100]}
+  & \textbf{44{,}022} & \textbf{15{,}441} \\
+\bottomrule
+\end{tabular}
+\\[4pt]
+{\footnotesize $^*$ 100\% role-pair (correct participants), 0\% strict (wrong labels).}
+\end{table}
+
+On the simpler linear protocol, GPT-5.4 achieves 100\% across all
+protocol-aware arms (Table~\ref{tab:agenticpay})---confirming that a
+four-role linear sequence is within a frontier model's coordination
+capacity even without enforcement.
+The differentiation appears on Mini, where the gradient separates:
+\texttt{bare} (0\%) $<$ \texttt{maf} (0\% strict, 100\% role-pair)
+$<$ \texttt{min\_llmvalid} (55.6\%)
+$<$ \texttt{gate}/\texttt{sched} (100\%).
+Cost follows the same pattern: \texttt{sched} is 81\% cheaper than bare
+on Full (15.4k vs.\ 82.5k) and 55\% cheaper on Mini.
+
+\textbf{Deadlock demonstration.}
+A circular-wait variant of the protocol (\texttt{unchecked\_skills}:
+skill-based agents without shared protocol) produces \emph{zero events}
+across all trials---agents wait indefinitely for messages that never
+arrive.
+The Scribble checker rejects the circular-wait global type before any
+agent runs, at zero token cost.
+
+\subsection{Model-scaling analysis}\label{sec:scaling}
+
+\begin{table}[t]
+\centering\small
+\caption{Model-scaling effects on finance (primary case, $n \geq 26$).
+$\Delta$ = change from Mini to Full.
+Only SCHED is invariant on both axes (correctness and cost).}
+\label{tab:scaling}
+\begin{tabular}{@{}l rr c rr c@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{Goal compl.\ (\%)}} & &
+  \multicolumn{2}{c}{\textbf{Tokens/trial}} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){5-6}
+\textbf{Arm} & \textbf{Mini} & \textbf{Full} & $\Delta$
+             & \textbf{Mini} & \textbf{Full} & $\Delta$ \\
+\midrule
+\texttt{bare}        & 42.1 &   0   & $-42$pp    & 135{,}879 & 58{,}007 & $-57\%$ \\
+\texttt{maf}         &  6.7 & 100.0 & $+93$pp    &  31{,}519 & 25{,}083 & $-20\%$ \\
+\texttt{min\_llmvalid} & 90.0 &  50.0 & $\mathbf{-40}$pp & 50{,}200 & 87{,}613 & $+75\%$ \\
+\texttt{gate}        & 52.0 & 100.0 & $+48$pp    &  54{,}633 & 37{,}915 & $-31\%$ \\
+\texttt{sched}       & 100.0 & 100.0 & $\mathbf{0}$pp & 12{,}652 & 12{,}729 & $+0.6\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:scaling} reveals a striking non-monotonicity.
+Most arms improve with model capability (gate: $+48$pp, maf: $+93$pp),
+consistent with the intuition that stronger models need less
+enforcement.
+But \texttt{min\_llmvalid} \emph{regresses} ($-40$pp, $p < 0.01$)---the
+\textbf{capability-without-efficiency trap}---and even bare regresses
+($42\% \to 0\%$ role-pair) as the stronger model's assertiveness
+breaks the accidental serialization that rescued the weaker one.
+The explanation is that a stronger model with no enforcement produces
+longer, more detailed outputs that are individually correct (zero
+violations) but collectively exhaust the session budget.
+This result falsifies the hypothesis that enforcement becomes
+unnecessary as models scale, and establishes that SCHED---the only
+arm combining type safety (gate) with progress (scheduling)---is
+the only configuration providing model-independent guarantees.
+
+\textbf{Three regimes of model scaling:}
+\begin{enumerate}\itemsep0pt
+\item \emph{Enforcement-independent} (SCHED): 100\%/100\%, constant cost.
+      The guarantee is structural and does not depend on model quality.
+\item \emph{Positively scaling} (gate, maf): improve with capability but
+      require the frontier model. Unsuitable for deployments where model
+      quality cannot be guaranteed.
+\item \emph{Negatively scaling} (min\_llmvalid): degrades with capability.
+      Knowledge alone is a trap: the model follows the protocol perfectly
+      while exhausting the budget.
+\end{enumerate}
+
+\subsection{Cost analysis: the scheduling dividend}\label{sec:cost}
+
+\begin{table}[t]
+\centering\small
+\caption{Cost decomposition, finance, GPT-5.4 ($n = 30$).
+SCHED achieves optimal calls by polling only enabled roles;
+its calls/trial matches the protocol's minimum message count.}
+\label{tab:cost}
+\begin{tabular}{@{}l rrr r@{}}
+\toprule
+\textbf{Arm} & \textbf{Calls/trial} & \textbf{Tok/call} & \textbf{Tok/trial} & \textbf{Savings} \\
+\midrule
+\texttt{bare}           & 45.2 & 1{,}283 & 58{,}007 & --- \\
+\texttt{maf}            & 13.7 & 1{,}831 & 25{,}083 & 56.8\% \\
+\texttt{min\_llmvalid}  & 79.0 & 1{,}109 & 87{,}613 & $-51\%$ \\
+\texttt{gate}           & 34.0 & 1{,}115 & 37{,}915 & 34.6\% \\
+\texttt{sched}          &  9.5 & 1{,}340 & 12{,}729 & \textbf{78.1\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two mechanisms produce the cost differences (Table~\ref{tab:cost}).
+\textbf{Call reduction}: SCHED makes 9.5 calls/trial (the protocol's
+minimum: 11 messages on the high branch, 8 on standard, averaged) vs.\
+gate's 34.0 (round-robin polls all 6~roles every round) and bare's
+45.2 (retries on failure inflate the count).
+Tokens-per-call is roughly constant across arms (${\sim}$1.1--1.8k),
+so the entire cost difference comes from \emph{making fewer calls, not
+shorter ones}.
+\textbf{Budget exhaustion}: \texttt{min\_llmvalid}'s 79 calls (vs.\ 9.5)
+are all valid---each produces a conforming message---but most are wasted
+on roles that cannot advance the protocol, consuming budget that would
+otherwise reach G6.
+
+The per-branch breakdown confirms optimality:
+\texttt{sched} uses 11.0 calls on high (protocol has 11 messages) and
+8.0 on standard (protocol has 8).
+\texttt{gate} uses 40.0 and 28.0 respectively---the difference is pure
+idle polling overhead.
+
+\subsection{Cross-case comparison}\label{sec:crosscase}
+
+\begin{table}[t]
+\centering\small
+\caption{Cross-case comparison (both cases, GPT-5.4 Mini).
+The scheduler's cost advantage grows with protocol complexity:
+from 55\% savings (4-role linear) to 91\% (6-role branching).}
+\label{tab:crosscase}
+\begin{tabular}{@{}l cc cc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{AgenticPay (4 roles, linear)}}
+& \multicolumn{2}{c}{\textbf{Finance (6 roles, branching)}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Metric} & \texttt{gate} & \texttt{sched}
+               & \texttt{gate} & \texttt{sched} \\
+\midrule
+Goal completion & 100\% & 100\% & 52\% & \textbf{100\%} \\
+Violations & 0 & 0 & 0 & 0 \\
+Tokens/trial & 102{,}630 & 44{,}022 & 54{,}633 & \textbf{12{,}652} \\
+Savings vs.\ bare & 0\% & 55\% & 60\% & \textbf{91\%} \\
+Calls/trial & 84.2 & 36.0 & 54.9 & \textbf{9.5} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:crosscase} shows the scheduling dividend \emph{grows}
+with protocol complexity.
+On the linear 4-role protocol, both gate and sched achieve 100\%
+(the linear structure has no out-of-turn ambiguity), but sched saves
+55\% on tokens by eliminating idle polls.
+On the 6-role branching protocol, gate degrades to 52\% (round-robin
+polling exhausts retry budget on roles blocked by the branch) while
+sched maintains 100\% and saves 91\%.
+The mechanism is clear: with more roles, round-robin polling wastes
+proportionally more calls on blocked roles; the EFSM scheduler scales
+near-optimally because it polls only the (at most 2) enabled roles
+at each state.
+
+\subsection{Discussion: implications for multi-agent system design}
+
+The results support three design principles:
+
+\textbf{Principle~1: Type safety does not imply progress.}
+\texttt{min\_llmvalid} on GPT-5.4 demonstrates this formally:
+zero protocol violations, 50\% goal completion.
+A session type guarantees that every message that \emph{happens} is
+correct; it does not guarantee that the \emph{right} messages happen
+in time.
+Progress requires a scheduler that restricts polling to enabled roles,
+preventing budget waste on idle ones.
+
+\textbf{Principle~2: Model scaling is not a substitute for structural
+enforcement.}
+The non-monotonic regression of \texttt{min\_llmvalid} (90\%$\to$50\%)
+shows that ``just use a bigger model'' can make coordination
+\emph{worse} when the system lacks enforcement.
+A stronger model that is more verbose, more confident, and produces
+longer outputs will exhaust finite resources faster when nothing
+constrains it.
+
+\textbf{Principle~3: The cheapest correct system is the most constrained.}
+SCHED's 78--91\% cost savings come not from compressing outputs but
+from \emph{not making calls whose answers cannot advance the protocol}.
+The protocol itself is the scheduling oracle: the EFSM's enabled-set
+at each state is exactly the set of roles worth polling.

@@ -1,0 +1,33 @@
+module v1;
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role Carrier) {
+    TradeTerms(String) from Seller to Buyer;
+    TradeTerms(String) from Seller to Escrow;
+    
+    choice at Seller {
+        GoodsRelease() from Seller to Escrow;   // Notify other roles
+        GoodsRelease() from Seller to Buyer;
+        GoodsRelease() from Seller to Carrier;
+        GoodsTransfer() from Seller to Carrier; // Actual transfer of goods
+        GoodsReceived() from Carrier to Buyer; // Notify goods are received
+    } or {
+        NoGoodsRelease() from Seller to Escrow; // Notify other roles
+        NoGoodsRelease() from Seller to Buyer;
+        NoGoodsRelease() from Seller to Carrier;
+    }
+
+    choice at Buyer {
+        PaymentRelease() from Buyer to Escrow;  // Notify other roles
+        PaymentRelease() from Buyer to Seller;
+        PaymentRelease() from Buyer to Carrier;
+        FundsTransfer() from Escrow to Seller;  // Release funds to the seller
+    } or {
+        NoPaymentRelease() from Buyer to Escrow; // Notify other roles
+        NoPaymentRelease() from Buyer to Seller;
+        NoPaymentRelease() from Buyer to Carrier;
+    }
+
+    SettlementComplete() from Escrow to Buyer;
+    SettlementComplete() from Escrow to Seller;
+}

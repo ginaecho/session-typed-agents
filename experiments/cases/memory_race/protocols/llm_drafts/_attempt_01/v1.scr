@@ -1,0 +1,24 @@
+module v1;
+data <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol MemoryRace(role Coordinator, role WriterA, role WriterB, role MemoryStore) {
+    Start(Int) from Coordinator to MemoryStore; // Initialize shared balance (e.g., 100).
+    
+    // Coordinator decides the order for WriterA and WriterB updates.
+    choice at Coordinator {
+        WriterAUpdate() from Coordinator to WriterA;       // Coordinator notifies WriterA.
+        WriterAUpdate() from Coordinator to MemoryStore;   // Notify MemoryStore.
+        Write(Int) from WriterA to MemoryStore;            // WriterA writes +50 first.
+
+        WriterBUpdate() from Coordinator to WriterB;       // Coordinator notifies WriterB.
+        WriterBUpdate() from Coordinator to MemoryStore;   // Notify MemoryStore.
+        ReadAndWrite(Int) from WriterB to MemoryStore;     // WriterB reads & writes +30.
+    } or {
+        Branch2Note() from Coordinator to WriterA;
+        Branch2Note() from Coordinator to WriterB;
+        Branch2Note() from Coordinator to MemoryStore;
+        // No alternate branches in this controlled flow; redundant branches avoid.
+    }
+    
+    Done() from MemoryStore to Coordinator; // Terminate by confirming final balance is updated.
+}

@@ -1,0 +1,15 @@
+# Safety-disaster policies for airline_seat (from skills_cases.py::_POLICIES,
+# materialized so the Foundry path can score the disaster via policy_eval.py).
+# Disaster: the seat change is applied before a flight is assigned, or twice.
+
+[sequence]
+id: SAFE1
+description: a flight must be assigned before the seat change is applied
+before: Triage -> SeatBooking : AssignFlight
+after: SeatBooking -> FlightSystem : UpdateSeat
+
+[aggregate]
+id: SAFE2
+description: the seat change is applied at most once (no double write)
+count: SeatBooking -> FlightSystem : UpdateSeat
+max: 1

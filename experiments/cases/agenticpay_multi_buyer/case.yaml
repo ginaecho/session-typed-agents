@@ -1,0 +1,30 @@
+case_id: agenticpay_multi_buyer
+description: |
+  2 Buyers, 1 Seller, Escrow, Carrier. Personas ADAPTED from real SafeRL-Lab/AgenticPay
+  (MIT); escrow/carrier + N-party deadlock AUTHORED. Unchecked contention deadlock: Seller
+  withholds shipment until both buyers pay; each buyer withholds payment until goods arrive.
+  Escrow SEQUENCES buyer funding; seller ships per funded buyer; escrow releases after each
+  receipt. Contracts multi-dimensional per AgenticPay contract_config.
+version: v1
+protocol_name: AgenticPayMultiBuyer
+roles: [BuyerA, BuyerB, Seller, Escrow, Carrier]
+terminal_label: SettlementCompleteB
+max_steps: 44
+branch_hints: [standard, standard]
+role_descriptions:
+  BuyerA: real AgenticPay buyer (adapted); funds escrow, confirms receipt
+  BuyerB: real AgenticPay buyer (adapted); funds escrow, confirms receipt
+  Seller: real AgenticPay seller (adapted); ships per funded buyer
+  Escrow: authored; sequences buyer funding and releases per confirmed receipt
+  Carrier: authored; delivers to each buyer
+intent: |
+  Settle purchases by TWO buyers from one seller using an Escrow and Carrier. Each buyer
+  negotiated a multi-dimensional contract (price, delivery_days in 1..14, return_policy,
+  packaging). The escrow sequences funding: buyer A funds, escrow tells seller funds are
+  secured, seller ships to A, carrier delivers, A confirms receipt, escrow releases; then the
+  same for buyer B. Never ship to a buyer before their funds are secured; never release the
+  seller's payment before the buyer confirms receipt.
+goals:
+  - {id: G1, category: liveness, description: settlement terminates for buyer B, metric: settled, predicate: 'True', anchor: {sender: Escrow, receiver: BuyerB, label: SettlementCompleteB}, threshold: terminal}
+  - {id: G2, category: ordering, description: buyer A funded escrow, metric: fundedA, predicate: 'True', anchor: {sender: BuyerA, receiver: Escrow, label: FundEscrowA}, threshold: present}
+  - {id: G3, category: ordering, description: seller shipped to B after funding, metric: shipB, predicate: 'True', anchor: {sender: Seller, receiver: Carrier, label: ShipB}, threshold: present}

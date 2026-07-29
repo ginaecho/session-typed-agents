@@ -1,0 +1,24 @@
+module v1;
+data <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol PrReviewMerge(role Author, role CodeReviewer, role SecurityReviewer, role Merger) {
+    OpenPR() from Author to CodeReviewer;
+
+    choice at CodeReviewer {
+        Comments(String) from CodeReviewer to SecurityReviewer;  // notify SecurityReviewer
+        Comments(String) from CodeReviewer to Author;
+        Revision(String) from Author to CodeReviewer;            // restart the round
+    } or {
+        CodeClean() from CodeReviewer to SecurityReviewer;       // notify SecurityReviewer
+        choice at SecurityReviewer {
+            SecFindings(String) from SecurityReviewer to CodeReviewer; // notify CodeReviewer
+            SecFindings(String) from SecurityReviewer to Author;
+            Revision(String) from Author to CodeReviewer;             // restart the round
+        } or {
+            SecApproved() from SecurityReviewer to CodeReviewer;      // notify CodeReviewer
+            ApprovedForMerge() from SecurityReviewer to Merger;
+            Merge() from CodeReviewer to Merger;
+            MergeDone(String) from Merger to Author;                  // terminal message
+        }
+    }
+}
