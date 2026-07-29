@@ -131,17 +131,23 @@ Symmetric by construction: one row per claim × campaign.
 |---|---|---|---|
 | 1 Composition failure | R-orig 0% (n=10 Haiku); unchecked 75% GCR but 50% CGC + 100 disasters (n=100 Sonnet) | Setting 2 = 0/10 (code_execution), 0/10 (booking_saga), 0–1/10 (airline, rerun pending); worse than intent-only on code_execution | **PROVEN, both stacks** |
 | 2 Design-time detection | compiler rejects all 4 composed real-skill protocols; E1 mutation 100/84/100% | pr_review_merge + loop cases validate True under BOTH backends (sound); but on circular_wait mutants BOTH catch 0 (comparable set) and nuscr can't analyse 19/30 — coinductive backend does NOT close the gap (Part 3c) | **Cross-validated sound for our cases; static detection INCOMPLETE for both backends → the gate is the guarantee** |
-| 3 Enforcement → zero harm | STJP rows: 0 disasters at n=10, n=100, all cases | settings 5–8: 0 violations, 0 disaster trials in every completed n=10 table | **PROVEN, both stacks** |
-| 4 Cheapest-safe | 13.3k vs 120k tokens (finance §2); 1.52–1.67k vs 2.75–4.9k (real skills) | booking_saga: STJP 3,839 tok vs 38k intent-only; MAF appendix: 5,092 vs 17–45k | **PROVEN at n=10; finance-on-Foundry n=10 RUNNING to close the loop** |
+| 3 Enforcement → zero harm | STJP rows: 0 disasters at n=10, n=100, all cases; E2 hostile-agent gate 0→42→92→100% blocked as layers add | settings 5–8: 0 violations, 0 disaster trials in every completed n=10 table | **PROVEN, both stacks** |
+| 4 Cheapest-safe | 13.3k vs 120k tokens (finance §2); 1.52–1.67k vs 2.75–4.9k (real skills); E6 scaling: savings grow 9×→17× from 2→10 roles | booking_saga: STJP 3,839 tok vs 38k intent-only; MAF appendix: 5,092 vs 17–45k; BUT see 3e — at 3–4 roles/linear STJP ties within noise (complexity-dependent) | **PROVEN at n=10; finance-on-Foundry n=10 RUNNING to close the loop** |
 | 5 Model-independence | Haiku vs Sonnet: failures move, STJP flat 100%/0 (Part 3, 120 trials) | gpt-5-mini vs gpt-5.4: same shape (booking 0/10 both no-protocol settings on BOTH models); GPT curve = mini vs 5.4 (2 tiers; sol blocked from ladder) | **PROVEN on 2 Claude tiers + 2 GPT tiers (mini, 5.4)** |
 | 6 Runtime-independence | engine + E7 portability 59/59 | Foundry Agent Service (hosted agents) + MAF appendix reproduce the pattern; E7 re-run 59/59 | **PROVEN across 3 runtimes** |
-| 7 Measurement validity | instruments 40/40; E5 fidelity 300/300 | instruments re-run 40/40; goal-quality tooling (discrimination/mutation/gaming); world-state oracle caught a live race AND a goal false-negative; anti-fabrication: 92/92 recount + verbatim server-thread matches | **PROVEN, and stronger than in 6_RUN** |
+| 7 Measurement validity | instruments 40/40; E5 fidelity 300/300; E4 reliability math: n=100 lifts worst-case pass-ten confidence 17.6× vs n=10 | instruments re-run 40/40; goal-quality tooling (discrimination/mutation/gaming); world-state oracle caught a live race AND a goal false-negative; anti-fabrication: 92/92 recount + verbatim server-thread matches; 2026-07-29 suspicion audit (3e): 0 recount mismatches, all cases goal-audited | **PROVEN, and stronger than in 6_RUN** |
 
-**Open gaps** (the honest to-do list): finance-on-Foundry (running); airline
-re-runs (running); E3 GPT-tier curve; E5 live-drafting; agenticpay root cause;
-pr_review_merge round budget; memory_race delta-semantics fix; content_pipeline
-(blocked on an unlicensed upstream — user decision); n=100 on Foundry (cost
-decision); a non-OpenAI/non-Claude vendor point.
+**Open gaps** (the honest to-do list, updated 2026-07-29 — resolved since
+last update: finance-on-Foundry DONE both models; airline re-runs DONE both
+models; content_pipeline unblocked by user decision, gpt-5.4 leg DONE):
+5 new complex/N-party cases RUNNING (gem_dev_team, sdlc_release_gate,
+react18_migration, agenticpay_multi_seller, agenticpay_multi_buyer — n=10, 8
+settings, both models); content_pipeline mini-leg resume (setting 2 only);
+agenticpay_settlement post-G4-fix re-run (NOT yet queued; prior runs
+quarantined VOID); pr_review_merge round-budget rework + G3 anchor check (its
+07-28 n=10 run failed the suspicion audit — see 7_RUN register); memory_race
+delta-semantics fix; E3 GPT-tier curve; E5 live-drafting; n=100 on Foundry
+(cost decision); a non-OpenAI/non-Claude vendor point.
 
 ---
 
@@ -174,28 +180,59 @@ after its module.)
 Reproduce: `docker build -t nuscr-coind -f tools/nuscr/Dockerfile <nuscr-fork>`,
 then `NuscrCompiler().validate(path)`; write mutants to `<module>.scr`.
 
-## 3d. The scheduler becomes NECESSARY at 7 roles (2026-07-29, PROVISIONAL — run in progress)
+## 3d. At 7 roles, the scheduler is the only reliable AND cheap way to finish (2026-07-29, FINAL for gpt-5.4)
 
-First evidence that the EFSM scheduler is not merely the cheapest way to
-succeed (Claim 4) but, at larger team sizes, the difference between finishing
-and not finishing at all. From the sdlc_release_gate case (7 agents, real
-awesome-copilot review skills, gpt-5.4, 65/80 trials done):
+First case where the EFSM scheduler's completion value (beyond Claim 4's cost
+edge) becomes visible: the smaller cases (1–4 roles) finish for every contract
+setting, so nothing separates them there. sdlc_release_gate (7 agents, real
+awesome-copilot review skills, gpt-5.4, n=10 FINAL) separates them.
 
-7 agents must review and deploy code in at most 48 turns. Only one agent can
-act at any moment. Settings 1–7 hand out turns in a fixed circle, so most
-turns go to agents with nothing to send, and the 48 run out before deployment.
-Setting 8's scheduler gives every turn to the one agent the protocol is
-waiting on, and finishes 10/10.
+> **Corrected from a provisional posting.** An earlier version of this section
+> (from a 65/80 partial run) said "setting 8 is the ONLY setting that
+> finishes; all others 0–2/10." The FINAL 80/80 run REFUTES that — the verbose
+> gate (setting 5) also reaches 10/10. Kept as a live example of the suspicion
+> rule (§5 rule 8): a partial run is never citable.
 
-Provisional numbers: setting 8 is 10/10; every other setting is 0–2/10 —
-including the gate settings, which fail with ZERO violations (the agents
-follow every rule and still run out of turns). The fragile-goal audit is CLEAN
-on the partial run, and the same 48-turn budget applies to every setting, so
-the comparison is fair. If the final numbers hold, this sharpens Claim 3/4:
-enforcement eliminates the harm, but at 7 roles only the scheduler delivers
-completion — coordination overhead, not rule-breaking, becomes the dominant
-failure mode. Full case section: `7_RUN_REPORTS_FOUNDRY_REAL_CASES.md` CASE 6
-(FINAL numbers land there when the run completes and passes the audit gate).
+FINAL result: **two** settings finish all 10 — setting 5 (verbose gate) and
+setting 8 (full STJP) — but at very different cost. Setting 8 finishes at 17
+calls / 18k tokens per trial; setting 5 finishes at 56 calls / 103k tokens
+(3.3× / 5.8× more). The lean gate without the scheduler (6, 7) and the
+unenforced contract (4) mostly run out of the turn budget (0–1/10); raw real
+skills (2) melt down at ~2M tokens/trial. All gated settings hold violations
+to zero. So: enforcement handles SAFETY at every team size (Claim 3 intact),
+but at 7 roles COMPLETION becomes a turn-budget problem and the scheduler is
+the only setting that solves it cheaply — sharpening Claim 4 from "cheapest"
+to "the only reliable-and-cheap option once coordination dominates." Full
+table + mechanism: `7_RUN_REPORTS_FOUNDRY_REAL_CASES.md` CASE 6. gpt-5-mini
+leg still queued.
+
+## 3e. SUSPICION AUDIT of the Foundry tables (2026-07-29)
+
+Standing rule (after the G3 and nuscr measurement bugs): **a result is not
+citable until someone has tried to break it.** Two symmetric suspicions were
+tested against raw logs for every FINAL 7_RUN table:
+
+- **"STJP is 100% — too good?"** Recount of every GCR/violation/token/call
+  from raw `events_*.jsonl` vs `summary.json`: 0 mismatches (9 runs × 8
+  settings). Fragile-goal audit now CLEAN on ALL finalized cases (the three
+  never-audited ones — code_execution, airline_seat, booking_saga — audited
+  2026-07-29). Finance's re-grade verified independently, including a payload
+  spot-check showing the fixed predicate accepts genuine approvals only.
+- **"Settings 4/7 sometimes BEAT STJP on tokens — why?"** Explained from
+  calls/trial: in short linear pipelines every contract setting uses the
+  identical 3.0–4.0 calls (round-robin is already optimal), so the scheduler
+  has nothing to save and the gate's ~100–150-token prompt overhead makes
+  setting 4/7 the token winner. The scheduler's edge grows with coordination
+  complexity: booking (fewer calls, cheapest), finance (3–4× cheaper), sdlc
+  (only setting that finishes). Full mechanism + numbers:
+  `7_RUN_REPORTS_FOUNDRY_REAL_CASES.md` → "SUSPICION AUDIT".
+
+Consequence for the claims: Claim 4 (cheapest-safe) is now stated honestly as
+**complexity-dependent** — at 3–4 roles/linear, STJP ties within noise and the
+unenforced contract can be marginally cheaper; from ~5 roles or any branch/
+loop upward, STJP is strictly cheapest, and at 7 roles it is the only setting
+that completes (3d). Claim 7 (measurement validity) gains the recount +
+audit-all-cases evidence.
 
 ## 3b. MODEL-FAMILY COVERAGE — where each model has actually been tested
 
@@ -278,6 +315,14 @@ Adopting these rules going forward — several are already implemented:
 7. **Incidents are data.** Stalls, collisions, misattributions, impossible
    goals get documented in the report, never silently fixed (see 7_RUN
    Honest limitations).
+8. **The suspicion rule (added 2026-07-29).** Every result section answers,
+   with log evidence: if STJP wins or is 100%, prove it is not a measurement
+   artifact (recount + fragile-goal audit + a real payload spot-check); if
+   any NON-STJP setting beats STJP on any column, never present it silently —
+   find the mechanism in the logs and write it into the doc. An anomaly
+   without an explanation means the number is not citable yet. And every
+   result is written story-first: the scenario in plain English, then what
+   the numbers show, then the verified insight.
 
 ## 6. READING GUIDE
 
