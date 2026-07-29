@@ -23,10 +23,8 @@ from team_builder import build_teams
 from ledger import build_ledger
 from intent_extract import extract_intent
 from schema import DatasetRecord, write_jsonl
+from slug_util import sanitize  # length-capped: keeps filenames portable on Windows
 from stjp_core.generation.skill_compactor import compact_and_synthesize
-
-import re
-def sanitize(name): return re.sub(r"[^A-Za-z0-9_]", "_", name)
 
 WINNERS = {
   0: ("pr_merge__reduced_Author_Merger", ["Author", "Merger"]),

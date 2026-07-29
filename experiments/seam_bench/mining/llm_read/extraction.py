@@ -25,7 +25,7 @@ exclusion reasons for every no-block role).
 """
 from __future__ import annotations
 import argparse
-import sys, json, re, shutil
+import sys, json, shutil
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -36,11 +36,8 @@ sys.path.insert(0, str(MINING))
 
 from run_mining import harvest_all           # noqa: E402
 from team_builder import build_teams          # noqa: E402
+from slug_util import sanitize                # noqa: E402  (length-capped: keeps filenames portable on Windows)
 from stjp_core.generation.skill_compactor import compact_and_synthesize, CompactionError  # noqa: E402
-
-
-def sanitize(name: str) -> str:
-    return re.sub(r"[^A-Za-z0-9_]", "_", name)
 
 
 # ── Manual extraction decisions ─────────────────────────────────────────────
