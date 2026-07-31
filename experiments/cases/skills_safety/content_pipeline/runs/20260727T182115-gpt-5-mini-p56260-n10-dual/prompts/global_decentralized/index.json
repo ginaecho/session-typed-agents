@@ -1,0 +1,36 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Researcher",
+      "chars": 2712,
+      "sha256": "8fb8fecb4ef60ed93d51c460ae9a3fe353cbcfc97743a8cdf50ff7e1ac81fdcc",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Writer",
+      "chars": 2708,
+      "sha256": "c4c6889e6a690e3077d994284c01555f0f02f1d8d6f955e4173f0c60dc48c272",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Editor",
+      "chars": 2708,
+      "sha256": "241ad370d0ddc8c0cf624357b71a9d1af5dcad92ee65cab002cb9d822f2bd2f8",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Publisher",
+      "chars": 2711,
+      "sha256": "7f1b12d6ddfd9afad73e465dfec21dd9e509a6a7532dc88bb6033afdbfef536c",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

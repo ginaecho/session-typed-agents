@@ -1,0 +1,36 @@
+{
+  "arm_key": "unchecked_skills",
+  "scenario_name": "WITHOUT-unchecked-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Researcher",
+      "chars": 1689,
+      "sha256": "629616db66eea81c6b155c012a88e8c9637286b6c1499784ceea10b78ce5bd92",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Writer",
+      "chars": 1682,
+      "sha256": "41d7f58e8a8204f8be0185bd3426ae6995c57be46e2767e4b9dbf985dbbe799d",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Editor",
+      "chars": 1683,
+      "sha256": "d2f19e93d659bbb5e597f0d0ab758cc83a499069f3507c250a78f82b27432d99",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Publisher",
+      "chars": 1662,
+      "sha256": "c2f5771b78c028c8f21e7658215e45abfca006ab33960825ad2a4ef2617bca9c",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

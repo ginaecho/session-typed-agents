@@ -1,0 +1,36 @@
+{
+  "arm_key": "spec_llmvalid_gate",
+  "scenario_name": "WITH-spec-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Researcher",
+      "chars": 2295,
+      "sha256": "fa2aef8fd8bbcd192d6dffe0de5b1a7393ef582c4e5d9d11c59c59a7cf0584c2",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Writer",
+      "chars": 2415,
+      "sha256": "964a28f0a3140526820076ed68b9c527195cd131d0798f94256ecc74fe89067a",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Editor",
+      "chars": 2515,
+      "sha256": "c33ffcedd3fdb084eb993fd594abf2cac7e800689f45cd4a198faea6855da5b2",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Publisher",
+      "chars": 2393,
+      "sha256": "64f4c0df4b691a1a3c3e3f32806970d81fe57729bb37b23bd427f58d000ef0ff",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

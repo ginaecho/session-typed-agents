@@ -1,0 +1,29 @@
+{
+  "arm_key": "spec_llmvalid_gate",
+  "scenario_name": "WITH-spec-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Triage",
+      "chars": 2323,
+      "sha256": "392b55fc231e251a5e34c99c4c05cc2caeda9854819b01c2a99d2cd9e2360daf",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SeatBooking",
+      "chars": 2620,
+      "sha256": "b31f5f78b2a8dd560e687fa0ea60b43b7db125e9388b1a188252fe61f62ae7a8",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "FlightSystem",
+      "chars": 2482,
+      "sha256": "af1f089dcf866cc4a23c5652d86bf7aa7e936f83a4be7ef3ec271e7d85c0ec3f",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "arm_key": "spec_llmvalid_gate",
+  "scenario_name": "WITH-spec-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Commander",
+      "chars": 4276,
+      "sha256": "011935fdc8609c21e51ffc494666453cee3657ec86fad4c3e0261573e3c5f532",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Auditor",
+      "chars": 2540,
+      "sha256": "3a75955c36784c30c6f022b83c10333bd46220687e64e07237ef29baf003fc52",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "DepSurgeon",
+      "chars": 2550,
+      "sha256": "b6418351d1d8bd60d607c37d5afa9a5bbb15649011095ab838b535fde2d40e41",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "ClassSurgeon",
+      "chars": 2861,
+      "sha256": "446b7fa257f57c0c84a890020626ca222e3ff0cb164a87c1a466ce4ec019cda1",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "BatchingFixer",
+      "chars": 2590,
+      "sha256": "c5601ae978547b6ad688badf18366d0061e5503037a35752a799dac589adfef3",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "TestGuardian",
+      "chars": 2853,
+      "sha256": "56d87f2860fa896ab988e893d91df7488d9fc97d156f65d1ab8759cab68f2e81",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

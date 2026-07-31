@@ -1,0 +1,57 @@
+{
+  "arm_key": "bare",
+  "scenario_name": "WITHOUT-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Orchestrator",
+      "chars": 1704,
+      "sha256": "95ea52969abd6b1de2fd27ec299acf8f88be50730d264eb4062a936b665be778",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Planner",
+      "chars": 1704,
+      "sha256": "6f4e48eb8b0ab2b3ee3ef144bc077df405492bc19b701d65894426b10c943fad",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Implementer",
+      "chars": 1704,
+      "sha256": "469e050de17538ab4b7aac1b3adfdd12a270aa99f43d5e416e0cc61957a7da90",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 1704,
+      "sha256": "62359c0490f5563a36e7baefed4b69f5ebbecfff7e4a53b5599a7c66d439f909",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Critic",
+      "chars": 1704,
+      "sha256": "c84db639b7698d8023b8ec7f7143d91f595c4465342a91ab0973edc9dca45199",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "BrowserTester",
+      "chars": 1704,
+      "sha256": "b802cafeef3fce3021ec0acef983cf0c79dfecc2b847d104ac45d016d5b2f9af",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "DevOps",
+      "chars": 1704,
+      "sha256": "44c9279997c789d4ea675ad8856d238f18f591386d6b576ad52e18e1caa3c205",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

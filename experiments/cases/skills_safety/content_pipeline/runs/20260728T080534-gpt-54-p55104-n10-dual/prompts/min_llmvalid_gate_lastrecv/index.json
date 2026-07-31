@@ -1,0 +1,36 @@
+{
+  "arm_key": "min_llmvalid_gate_lastrecv",
+  "scenario_name": "WITH-min-GATE-LASTRECV",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Researcher",
+      "chars": 918,
+      "sha256": "fa63b2a4d1cde38893e81690ee9cf301dfa7d68c43d3ae95a359996dff4ce00e",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Writer",
+      "chars": 979,
+      "sha256": "ee1165d389f6928701fe83b3ae02849e9dab6fe6ad074e24030e352d76022858",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Editor",
+      "chars": 1028,
+      "sha256": "d98b9b7cdcedae96feba22ada8388aeb8c06ca588dd44f3eb32c0ae5cf533d3e",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Publisher",
+      "chars": 970,
+      "sha256": "02ab1d729b1823702bcd5b0b0a3874b6423004ff947a6dc6fe05b5486485c662",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

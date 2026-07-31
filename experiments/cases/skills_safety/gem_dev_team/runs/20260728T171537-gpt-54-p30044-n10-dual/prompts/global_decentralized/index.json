@@ -1,0 +1,57 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Orchestrator",
+      "chars": 7638,
+      "sha256": "87acc2b4a8c256093752bbc04331cabdff0625a13c1f600554e79fb5742befe9",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Planner",
+      "chars": 7633,
+      "sha256": "a286b627779fd1d858fdabc3b20008be6d3f68c427bc5a63be3b843f1a0ac8a9",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Implementer",
+      "chars": 7637,
+      "sha256": "5666a1efce5729aa3ecca184d75ac723f7cad7e11cbc400960524ab69c025d32",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 7634,
+      "sha256": "e86a8ec0cdbc593411f60965c8f2eea83dca7e81284942f2290ffd908e7537b6",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Critic",
+      "chars": 7632,
+      "sha256": "5433c3304d66941acc97837bb47275cf9d7f23f9d9025b972c74c6cea9d523a8",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "BrowserTester",
+      "chars": 7639,
+      "sha256": "715a01ce598e2fc0698f384438c38e598d7880fa1e38fd4893531888af702b83",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "DevOps",
+      "chars": 7632,
+      "sha256": "8d4cca25dbd385d7814e95835230faa18d8ac9a0de87dee0fe5ee56cbc799455",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

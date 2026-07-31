@@ -1,0 +1,29 @@
+{
+  "arm_key": "min_llmvalid",
+  "scenario_name": "WITH-min-llmvalid",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Triage",
+      "chars": 877,
+      "sha256": "3d50cd366529c8e331defe398539d44739de7390c6fff523a59b93dc96b52f82",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SeatBooking",
+      "chars": 1012,
+      "sha256": "eecac8603a9f7b3e654322579de3f0451f291e68cda26ce11f801b948d3b29b3",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "FlightSystem",
+      "chars": 945,
+      "sha256": "2be1333a810480da559eb54a6ff2e1cbc651bda61b15677d4c0e61bfd55e0ba8",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

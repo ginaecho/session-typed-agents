@@ -8,7 +8,7 @@ goals:
 - id: G1
   description: The review loop really happened (at least one round of comments)
   metric: review_loop_happened
-  predicate: True
+  predicate: 'True'
   anchor:
     sender: CodeReviewer
     receiver: Author
@@ -17,7 +17,7 @@ goals:
 - id: G2
   description: Security approved before the merge
   metric: security_cleared
-  predicate: True
+  predicate: 'True'
   anchor:
     sender: SecurityReviewer
     receiver: Merger
@@ -26,7 +26,7 @@ goals:
 - id: G3
   description: Quality approved before the merge
   metric: quality_cleared
-  predicate: True
+  predicate: 'True'
   anchor:
     sender: CodeReviewer
     receiver: Merger

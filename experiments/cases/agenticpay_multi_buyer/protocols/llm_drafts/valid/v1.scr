@@ -14,6 +14,7 @@ global protocol AgenticPayMultiBuyer(role BuyerA, role BuyerB, role Seller,
     DeliverA(String) from Carrier to BuyerA;
     ReceivedA(String) from BuyerA to Escrow;
     ReleaseA(String) from Escrow to Seller;
+    BeginB(String) from Escrow to BuyerB;
     FundEscrowB(String) from BuyerB to Escrow;
     FundsSecuredB(String) from Escrow to Seller;
     ShipB(String) from Seller to Carrier;

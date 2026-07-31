@@ -1,0 +1,29 @@
+{
+  "arm_key": "unchecked_skills",
+  "scenario_name": "WITHOUT-unchecked-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Coder",
+      "chars": 1500,
+      "sha256": "cf46bdac9e920d4a93a1e150f8c688386077a3e324aabcee6012dbb4599c8249",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 1559,
+      "sha256": "a039824feb61d53a4fca68b87ca53fc6827115c2235f9e7d8666a12fdf82531d",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Executor",
+      "chars": 1638,
+      "sha256": "c356b8c38ac257ff1ab79d28c3575bb86ae222073da0a667a0336cf1cf27267b",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

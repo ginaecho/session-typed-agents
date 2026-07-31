@@ -1,0 +1,43 @@
+{
+  "arm_key": "spec_llmvalid_gate",
+  "scenario_name": "WITH-spec-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Buyer",
+      "chars": 3145,
+      "sha256": "f4baf4720428cc5d54f5fff9a0ccc08b446b9a3fd00e131765d478eb10008635",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SellerA",
+      "chars": 2792,
+      "sha256": "0a8b9f0e8b9394ffe62e659d807eb7211fd5169798463a2498f53c68136be4d2",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SellerB",
+      "chars": 2792,
+      "sha256": "337cb1e13a8fa76f37df846acd8139ccec6e5950ddad0c6f98f291751c52175c",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Escrow",
+      "chars": 3413,
+      "sha256": "9893bdd7c85ee0b3cae9a77514d81e71b40b5b057ddc1ec51146a0ba50b80ff4",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Carrier",
+      "chars": 2898,
+      "sha256": "91959eb5a5cf45ca9ddeacecfd4cd7ef71b27ee1033f7c63b4d124d9f9b586ba",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "arm_key": "maf_groupchat",
+  "scenario_name": "WITHOUT-maf-groupchat",
+  "install_truncates": false,
+  "install_limit": null,
+  "roles": [
+    {
+      "role": "Coder",
+      "chars": 1396,
+      "sha256": "93ff0bf008b99f766efbf08a7a15f6bf8b4e86d31e7cef38b2c7de548ece1977",
+      "install_limit": null,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 1396,
+      "sha256": "72d942eed0c34e089bd46423ed5d031bf19d9bfa71817b1941b819f83da9ca64",
+      "install_limit": null,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Executor",
+      "chars": 1396,
+      "sha256": "ae7ade517087a7e853dee9dd9577bcdcb2985563415055ce26ecc849460ad6e7",
+      "install_limit": null,
+      "truncated_on_install": false
+    },
+    {
+      "role": "__orchestrator__",
+      "chars": 798,
+      "sha256": "a9522e391393858eaaa52f7cb6c497ca10e742c23fa7a8b442c66ffe988d1a7f",
+      "install_limit": null,
+      "truncated_on_install": false
+    }
+  ]
+}

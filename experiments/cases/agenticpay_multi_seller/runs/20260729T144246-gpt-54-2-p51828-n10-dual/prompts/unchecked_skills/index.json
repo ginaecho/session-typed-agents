@@ -1,0 +1,43 @@
+{
+  "arm_key": "unchecked_skills",
+  "scenario_name": "WITHOUT-unchecked-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Buyer",
+      "chars": 2141,
+      "sha256": "a4627fdb15bf1eff3bcdcaee8f39a2ecf1759106a89bb8b79d04db30e7f9fc9b",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SellerA",
+      "chars": 2044,
+      "sha256": "3b90511a85b6c370e7c61e4df779f8b963088fce059f445324e9003b1ada6522",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SellerB",
+      "chars": 2044,
+      "sha256": "2c3a08554bd7e3220911e62bf2ee5d56726157b4027cadfa0820206e51b15c98",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Escrow",
+      "chars": 2105,
+      "sha256": "aceee0a7c13520b68f7be4ea592d890f60b01a84de7b82974339051e792aa7df",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Carrier",
+      "chars": 1876,
+      "sha256": "76cd0097fe4e31697c2c2bc26b1594dc990e0db571f97a3cd73b2eb7b086f8d5",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

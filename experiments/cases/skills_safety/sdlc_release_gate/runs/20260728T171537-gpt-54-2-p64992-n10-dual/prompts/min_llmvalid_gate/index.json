@@ -1,0 +1,57 @@
+{
+  "arm_key": "min_llmvalid_gate",
+  "scenario_name": "WITH-min-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Author",
+      "chars": 1166,
+      "sha256": "77efe41722f0543d7f009ae15df563a73b26aed77d62d15638c71193c0c185b2",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "QualityReviewer",
+      "chars": 1239,
+      "sha256": "3b5db0f5781ed3dbe3d653fe87e95c2476f6f19e532447b3ec66816daff332fd",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SecurityReviewer",
+      "chars": 1247,
+      "sha256": "bee856f6eb425a25ef14060cb32566effabc5ef6367418d49ed8d59064c33d23",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "ArchReviewer",
+      "chars": 1240,
+      "sha256": "d2c7fadfac497f7bce3faad47d274de15c4222dfc12b7a99ca209d8ce4487c30",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "ResponsibleAIReviewer",
+      "chars": 1230,
+      "sha256": "f5a6ea96483d682a3fe9511e7a6103f7bc0f82a398ce7ce1071507ffea8980a9",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Merger",
+      "chars": 1893,
+      "sha256": "4f377eea4bcf5735877c9b97325f4028ee135aadf7dc53255f756a8a1b125517",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "DevOps",
+      "chars": 1164,
+      "sha256": "9befb4bf57973efec239a8aaff6211fac5d40e54fea191d0f2c06fd62cd5ecc8",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

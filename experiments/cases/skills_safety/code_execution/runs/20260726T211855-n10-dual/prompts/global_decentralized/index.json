@@ -1,0 +1,29 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Coder",
+      "chars": 2481,
+      "sha256": "43fb834258f48e23605c219564e45abb4b7003f81a3cfc70f30c02bc124cb460",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 2484,
+      "sha256": "5ae184f6d171a00bd38ff68b35f06d11d0c8781ad4b87d3c047c19531bcf0e88",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Executor",
+      "chars": 2484,
+      "sha256": "e3502724e299f8e4ec8368395e705dbcb8fb97a0d8880c55ac78ad1bc6b625ef",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

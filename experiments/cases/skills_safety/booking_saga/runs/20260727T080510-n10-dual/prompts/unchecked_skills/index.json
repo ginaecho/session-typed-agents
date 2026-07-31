@@ -1,0 +1,29 @@
+{
+  "arm_key": "unchecked_skills",
+  "scenario_name": "WITHOUT-unchecked-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Traveler",
+      "chars": 1561,
+      "sha256": "edbc54142a30cd190c220cf5da57ef36e6d0d4f25435dd07c4e6c624c94e526a",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Hotel",
+      "chars": 1770,
+      "sha256": "efc1ce9efe69355b46663ccdd6322a714ac4655df1376a2e452f5d9e80648b47",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Payment",
+      "chars": 1751,
+      "sha256": "2e4743431a87e0f312a0de3f595d6e16d9c83c76b2e9dd8bb8c827375feac8ff",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Traveler",
+      "chars": 2676,
+      "sha256": "806add1541163bb956c93d979337f6d728b6f5cd182f3a7d4bcb14a8a2484511",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Hotel",
+      "chars": 2673,
+      "sha256": "a3c04606297d361a8800a4d5aefc603205b9564adadad9b3874dd70246f661c5",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Payment",
+      "chars": 2675,
+      "sha256": "89626630c5490450a365065984d6d2d49893d37aa7778fa4d71fe4ef43e2279b",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

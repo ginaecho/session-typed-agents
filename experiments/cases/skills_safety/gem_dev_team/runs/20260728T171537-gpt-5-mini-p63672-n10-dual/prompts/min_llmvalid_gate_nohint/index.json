@@ -1,0 +1,57 @@
+{
+  "arm_key": "min_llmvalid_gate_nohint",
+  "scenario_name": "WITH-min-GATE-NOHINT",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Orchestrator",
+      "chars": 2415,
+      "sha256": "83a09109add6b3eea89b8b189ee1422b3c7e230e042a09c704cad6ff4e301eb2",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Planner",
+      "chars": 1341,
+      "sha256": "ba2ce98f2d5303f42124eae09255c5dde89cab10a4ec4e9a1ba318bfca47bec9",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Implementer",
+      "chars": 1278,
+      "sha256": "b02e96bf5497a708faed37a8576031e16a4c679e6bf24f317c1aee9cf4012196",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 1295,
+      "sha256": "84c8b760cce3796e88a40eda4e436c56b4a02613c4fbc6794ad602fa76364b70",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Critic",
+      "chars": 1227,
+      "sha256": "2294f6a29602346c204f85cee9dc40d291a4e5a0ec7b5dec37acac7a276e7c12",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "BrowserTester",
+      "chars": 1284,
+      "sha256": "61412934de96e7c1d313720346f1249f0c234e6e42ee24b932bfdff2252a47a8",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "DevOps",
+      "chars": 1225,
+      "sha256": "5f9b4dfd5a9b5a7236134f0b83b44b08334a9daa68fccd5992c395a0cd1b6b1a",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

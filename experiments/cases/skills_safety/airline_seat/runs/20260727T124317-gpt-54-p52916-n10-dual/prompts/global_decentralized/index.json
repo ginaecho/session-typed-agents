@@ -1,0 +1,29 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Triage",
+      "chars": 2683,
+      "sha256": "70a3c8d4255e94bb5346b2c451fe2c1758957822717a779e0da4b5fde3b57543",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SeatBooking",
+      "chars": 2688,
+      "sha256": "b0fd85a26c3d750d76d7de5c3adf20cf3bce24e797d9ba3c1cf3522336410c12",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "FlightSystem",
+      "chars": 2689,
+      "sha256": "60b359848661f53930276fddd3e51dbe357fa5449ecdc4e18d9a9234a5adcb31",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}
