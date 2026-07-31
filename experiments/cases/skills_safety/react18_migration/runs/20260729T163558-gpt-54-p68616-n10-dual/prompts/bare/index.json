@@ -1,0 +1,50 @@
+{
+  "arm_key": "bare",
+  "scenario_name": "WITHOUT-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Commander",
+      "chars": 1668,
+      "sha256": "48e1b811c40c9c220cf8ed226a2a14435442ace07449c533cdd2985ca72cba13",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Auditor",
+      "chars": 1668,
+      "sha256": "53a763b1c906003ca8ae3d50c71cceb7a044790dcc35822898849cab4422afd3",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "DepSurgeon",
+      "chars": 1668,
+      "sha256": "a97d99cde2120f55dfdd43424f683f253248148b149225f320811840047e0c70",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "ClassSurgeon",
+      "chars": 1668,
+      "sha256": "9e640129c12a88a918f371f91bb9a26c5bd2251d1ee0949e1a49d253fc88e7d3",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "BatchingFixer",
+      "chars": 1668,
+      "sha256": "e6f1badcfc9de2d138763ad0a173cb960ad3f56b0881da5f7cb2243c9a56e33a",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "TestGuardian",
+      "chars": 1668,
+      "sha256": "5c362aca97e582ae8d32188644b2f0c4c85d1cb329afb85588b357d8939f06ee",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

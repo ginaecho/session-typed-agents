@@ -1,0 +1,50 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Commander",
+      "chars": 5948,
+      "sha256": "0d428b5d6c69952f8df73b91e395e69f069be1659755db8a6fc45bdc19f0a558",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Auditor",
+      "chars": 5946,
+      "sha256": "c109af281417b36bd46357663898ada5222f8bd42be8d2c489413befe10704ab",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "DepSurgeon",
+      "chars": 5949,
+      "sha256": "eaac2f573558b45bd93c93396ac9e4e2df303880553545775ed4bf5251a2bb11",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "ClassSurgeon",
+      "chars": 5951,
+      "sha256": "e0edd165b913bb7adecbe9db93a615db0835bdf092b83a0451e8c7c52c3e4e8d",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "BatchingFixer",
+      "chars": 5952,
+      "sha256": "84d1d72af4144fd7698d0463eb0a3b820b555d95b3a65757ee1c021d6007a0ed",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "TestGuardian",
+      "chars": 5951,
+      "sha256": "6f14b18737bbf77a22ed21e3d19b2d2d2f3bc0952fe564e4dd297580a16d514d",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "arm_key": "bare",
+  "scenario_name": "WITHOUT-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Traveler",
+      "chars": 1432,
+      "sha256": "28a25f78ca0ce5290330d4395dc089f369d9a5b38ee5170ad31934092ba1b7f9",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Hotel",
+      "chars": 1432,
+      "sha256": "423d23b89a821c2af878328c1e453cfec13076251239ceea3e349467a2a5e55d",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Payment",
+      "chars": 1432,
+      "sha256": "8841ae7ee71bf822e90d6281361a96ef4103d184def2c853250eb104ce8211bf",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

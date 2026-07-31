@@ -1,0 +1,29 @@
+{
+  "arm_key": "spec_llmvalid",
+  "scenario_name": "WITH-spec-llmvalid",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Traveler",
+      "chars": 2376,
+      "sha256": "6f7666acfcd5a3eb1ce7d0963b0c236751bf3f5a7c7a2bd78833e55d4b5e0eee",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Hotel",
+      "chars": 2641,
+      "sha256": "7a17cb840c5d6768ae2ae2d77c183a51cebc8a127833132a249d027c658af1a4",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Payment",
+      "chars": 2352,
+      "sha256": "eb423032556e618beef19b42d4b2c41606179d0ecb472f37f527bfa4edebc73a",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

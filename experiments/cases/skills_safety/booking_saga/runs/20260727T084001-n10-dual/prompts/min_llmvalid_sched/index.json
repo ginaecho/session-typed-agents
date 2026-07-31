@@ -1,0 +1,29 @@
+{
+  "arm_key": "min_llmvalid_sched",
+  "scenario_name": "WITH-min-llmvalid-SCHED",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Traveler",
+      "chars": 840,
+      "sha256": "14b8870ddc2a1979b3fe173a4222c13458a86ac2485bfcf4be5faf64122cb849",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Hotel",
+      "chars": 960,
+      "sha256": "f1a0ec36f7f98a60b8d530f9a6654505e092ac4826a832aaa0a0de3b491e7b1a",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Payment",
+      "chars": 832,
+      "sha256": "abe280dc4863ab8a43e5fe28097bbaf0683a427142436e99fa456d8efd6be76e",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

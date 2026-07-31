@@ -1,0 +1,36 @@
+{
+  "arm_key": "min_llmvalid_sched",
+  "scenario_name": "WITH-min-llmvalid-SCHED",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Author",
+      "chars": 1501,
+      "sha256": "55b5fe9e392c01c14b53211c53ba7dbab7d742faf320b8f7e4cf611d343dd5af",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "CodeReviewer",
+      "chars": 1607,
+      "sha256": "22eace2627b6b698b824f559fac6dcb6755b67a8072715fa235e75e2ab1892e7",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SecurityReviewer",
+      "chars": 1451,
+      "sha256": "d1942351a85512914757f547f0719819121d7bbf7cbd857168b3f672beb7c42e",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Merger",
+      "chars": 1319,
+      "sha256": "2326950e5fb70399754af4c874503c580d3acbf02e8db36ca0b9f9ea28908cc7",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

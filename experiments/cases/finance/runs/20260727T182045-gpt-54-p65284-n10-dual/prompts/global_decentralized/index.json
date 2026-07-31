@@ -1,0 +1,50 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Fetcher",
+      "chars": 5996,
+      "sha256": "ebcc29f58417a2cf591fca81ff411575e09264cd66a7551d95f9dff6bc558103",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "RevenueAnalyst",
+      "chars": 6003,
+      "sha256": "13540dfa0e0fb1db2880918443442d55bb18fb8bf8a6280f3db2abafcd622c6e",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "ExpenseAnalyst",
+      "chars": 6003,
+      "sha256": "a1a74af274beacd3eb29ae5fe0332fa697a4815c61964423726deb4acd23b97c",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Writer",
+      "chars": 5995,
+      "sha256": "bdbb943b98f1622c2db6c1d9e0c2bfc4d92fbe5d3fd391b034dcec84f0c54579",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "TaxVerifier",
+      "chars": 6000,
+      "sha256": "3119aac7eef40d69c4fc3dd96f5fba5ef83d0bcff043fe4f3ecda98d9d77e96c",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "TaxSpecialist",
+      "chars": 6002,
+      "sha256": "dbf45d44b8e6aa458a4a80948f448b362d7980716f6640e82f1d28689d792df1",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

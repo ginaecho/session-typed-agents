@@ -1,0 +1,29 @@
+{
+  "arm_key": "unchecked_skills",
+  "scenario_name": "WITHOUT-unchecked-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Triage",
+      "chars": 1873,
+      "sha256": "8ac3d25659ccb53a3a320c5925f8b94b5b885f688a28939c2ecb518be3c5d431",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SeatBooking",
+      "chars": 1919,
+      "sha256": "5859ef5b0d0d70003d111ff915e5e4fc512fa2e65d400f305a0fc1465de86259",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "FlightSystem",
+      "chars": 1972,
+      "sha256": "03a06084e2a8a16fa1dc8ec72a891ee0692725d4b39f310aa7da62a9e9ac6418",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

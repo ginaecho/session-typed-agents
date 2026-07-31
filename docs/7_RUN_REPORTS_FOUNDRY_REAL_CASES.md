@@ -81,6 +81,60 @@ coordination complexity; in trivial pipelines it costs ~nothing and buys
 
 ---
 
+## FAILURE ANATOMY — what actually goes wrong without a protocol
+
+The aggregate columns say the no-protocol settings fail; the raw message logs
+say **how**. Five failure modes recur across the twelve cases (all counts
+below are from the committed `events_*.jsonl` files):
+
+**1. Invented vocabulary and self-made orderings (setting 1).** With only the
+task description, each team improvises its own message names and sequence —
+every message is off-protocol by construction (`HoldRoomRequest`,
+`RawExpenseData`, `PlanRequest`, …), and the improvised order races the
+safety-critical steps. This is where the catastrophes occur: in booking_saga
+the payment is captured without any prior `RoomHeld` confirmation — e.g. the
+improvised sequence `Hotel→Payment: CaptureRequest → Payment→Hotel:
+CaptureSucceeded` with no hold message at all (Critic policy SAFE1, violated
+in 8/10 intent-only trials on mini); finance files reports with no audit
+(9–10/10 disaster trials); gem deploys before tests once.
+
+**2. "Success" that never finishes (setting 1).** Because setting 1 is graded
+label-free (†), a trial can count as successful without ever completing the
+workflow. The logs show this is common: react18/gpt-5.4 — 10 of 10 †
+successes, **zero** ever send the finishing `Migrated`; gem/mini — 9 of 10
+lack `Deployed`; multi_seller/mini — 8 of 10 lack `SettlementComplete`. The
+team produces plausible mid-flow artifacts and simply stops.
+
+**3. Phantom recipients (setting 2).** The real skill files describe serving
+"users" and "customers", so composed agents message roles that do not exist:
+airline's SeatBooking sends `RequestConfirmationNumber` to a nonexistent
+`Customer` (×18) and `User` (×11) and waits forever — the deadlock behind its
+1/10; code_execution's Executor returns results to a phantom `User` (×4);
+sdlc reviewers broadcast to a comma-joined pseudo-role
+(`"QualityReviewer,SecurityReviewer,ArchReviewer"`) 12 times.
+
+**4. Waiting-status chatter (setting 2).** With no turn structure, idle
+agents spend their turns announcing that they are idle: gem's Implementer
+sends `AwaitingImplementationTask` ×217 and its tester `AwaitingTestContext`
+×130 in one run (the 2.5–6M-token trials); react18's DepSurgeon emits
+`WAITING_ON_AUDIT_GATE` variants ×116; duplicate re-sends reach ×151 in one
+sdlc run. This chatter — not useful work — is where the no-protocol token
+bills come from.
+
+**5. Negotiation stand-offs (setting 2).** Skills with businesslike caution
+talk each other into deadlock: multi_buyer's BuyerA sends `RefuseToFund` ×37
+(pay-after-delivery stance) while the seller withholds shipment — the classic
+AgenticPay contention, reproduced verbatim; settlement's Buyer repeatedly
+funds with amounts that fail the escrow's validity rule (27–31
+`refinement_failed` events per run).
+
+Settings 3–8 eliminate all five modes **by construction** — fixed vocabulary,
+fixed recipients, an explicit order, and (in 5–8) a gate that blocks the
+stray message before delivery — which is exactly why their violation columns
+read 0 in every case table below.
+
+---
+
 ## CASE 1: code_execution (real microsoft/autogen skills — risk: code runs without review)
 
 **The story.** A three-agent coding team built from real AutoGen skill files:
@@ -308,10 +362,10 @@ violation counts of the no-protocol settings.
 
 ---
 
-## What the eleven cases show, together
+## What the twelve cases show, together
 
 1. **Real public skills fail without a protocol, on both models.** Setting 2
-   completes at most 4/10 in ten of eleven cases (the one exception:
+   completes at most 4/10 in eleven of twelve cases (the one exception:
    multi_seller on the weak model, which completes but with 246 ordering
    violations) — and on code_execution and react18 the real skills are *worse
    than giving no skills at all* while costing the most (up to 6M
@@ -323,7 +377,7 @@ violation counts of the no-protocol settings.
    (CASES 1–4): every contract setting completes, and the scheduler ties the
    others at 3–4 calls/trial. Mid complexity (CASES 5, 8, 10): all gated
    settings complete but STJP is 2–4× cheaper. Hard shapes — many roles,
-   branches, loops (CASES 6, 7, 11): only STJP (on sdlc, STJP and the
+   branches, loops (CASES 6, 7, 11, 12): only STJP (on sdlc, STJP and the
    verbose gate) completes reliably, at the fewest calls. The counter-shape
    is CASE 9, where a no-hint gate matches STJP's completion.
 4. **The scheduler is the cost lever:** wherever coordination is
@@ -709,6 +763,63 @@ cost. gpt-5-mini table will be added when its run completes.
 
 ---
 
+## CASE 12: agenticpay_settlement (real SafeRL-Lab/AgenticPay settlement — risk: funds released before delivery is resolved)
+
+**The story.** A single-purchase settlement from the public
+SafeRL-Lab/AgenticPay project, four agents: a Buyer transfers the negotiated
+amount to an Escrow, the escrow confirms (or rejects) the payment, a Carrier
+ships and reports delivery success or failure, and the escrow then releases
+the funds to the Seller (success) or refunds the Buyer (failure) — the Buyer
+finalizes with `SettlementComplete` only after the funds are resolved either
+way. The protocol contains two branch points (payment confirmed/rejected,
+delivery success/failure). The catastrophe is finalizing a settlement while
+the money is still unresolved.
+
+### gpt-5-mini — n=10 per setting (FINAL, run 20260731T081658-gpt-5-mini-p15040)
+| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+|---|---|---|---|---|---|---|---|
+| 1 | Intent only | 0/10 † | [0, 28] | 276 | — | 74.7 | 97,733 |
+| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 9 | — | 29.7 | 51,222 |
+| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | — | 36.3 | 147,402 |
+| 4 | Local contract (not enforced) | 4/10 | [17, 69] | 0 | — | 112.8 | 185,165 |
+| 5 | Local contract + gate (verbose) | 1/10 | [2, 40] | 0 | — | 59.9 | 58,825 |
+| 6 | Local contract + gate (lean) | 0/10 | [0, 28] | 0 | — | 57.5 | 30,220 |
+| 7 | Local contract + gate, no turn hint | 1/10 | [2, 40] | 0 | — | 58.4 | 32,480 |
+| 8 | Full STJP | **10/10** | [72, 100] | 0 | — | **15.5** | **18,461** |
+
+### gpt-5.4 — n=10 per setting (FINAL, run 20260731T081658-gpt-54-2-p46420)
+| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+|---|---|---|---|---|---|---|---|
+| 1 | Intent only | 0/10 † | [0, 28] | 306 | — | 57.5 | 72,252 |
+| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 8 | — | 29.2 | 50,156 |
+| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | — | 33.0 | 126,084 |
+| 4 | Local contract (not enforced) | 7/10 | [40, 89] | 0 | — | 63.0 | 99,594 |
+| 5 | Local contract + gate (verbose) | 3/10 | [11, 60] | 0 | — | 61.3 | 75,460 |
+| 6 | Local contract + gate (lean) | 4/10 | [17, 69] | 0 | — | 62.5 | 42,638 |
+| 7 | Local contract + gate, no turn hint | 9/10 | [60, 98] | 0 | — | 42.8 | 48,029 |
+| 8 | Full STJP | **10/10** | [72, 100] | 0 | — | **14.2** | **15,683** |
+
+**What the numbers show (plain).** This is the branchiest case in the report
+(two decision points on the way to settlement), and on BOTH models only two
+settings complete all ten trials: the full global protocol as text (3) and
+**full STJP (8)** — with STJP roughly **8× cheaper** (14–16 calls / 16–18k
+tokens vs 33–36 / 126–147k). Both no-protocol settings never settle correctly
+(intent-only racks up 276–306 ordering violations). The gate settings follow
+the rules (0 violations) but frequently stop short of the full
+release-then-finalize sequence within the turn limit; the local contract
+without enforcement is erratic (4–7/10). Disaster column shows "—": this case
+has no Critic policy file; its catastrophe is visible in the violation counts.
+
+**The key insight.** On a branching settlement, an agent needs either the
+whole picture (the full protocol text — expensive, 8× the tokens) or the
+scheduler steering each turn (cheap). Partial guidance — a local slice with
+or without a gate — completes far less reliably on both models. Together with
+CASES 7 and 11 this completes the pattern: as coordination structure grows
+(loops, branches, more roles), full STJP becomes the only setting that is
+simultaneously reliable and cheap.
+
+---
+
 ## APPENDIX A — extra setups (NOT part of the 8-setting comparison)
 
 **Alternative runtime (Microsoft Agent Framework), code_execution, n=10, both models:**
@@ -782,13 +893,13 @@ remain pending as in the original. Outputs: `experiments/reports/e1/`, `e2/`,
 
 ## SCOPE — what this report covers
 
-**Included (FINAL, n=10 per setting):** CASES 1–10 on both models
-(gpt-5-mini and gpt-5.4), and CASE 11 (pr_review_merge) on gpt-5.4.
+**Included (FINAL, n=10 per setting):** CASES 1–10 and CASE 12 on both
+models (gpt-5-mini and gpt-5.4), and CASE 11 (pr_review_merge) on gpt-5.4.
 Every included table passed the verification described at the top of this
 document.
 
-**In progress:** agenticpay_settlement (both models) and the pr_review_merge
-gpt-5-mini run — their tables will be added when the runs complete and pass
+**In progress:** the pr_review_merge gpt-5-mini and memory_race (both models)
+runs — their tables will be added when the runs complete and pass
 verification.
 
 **Not covered by this report:** memory_race's contract settings

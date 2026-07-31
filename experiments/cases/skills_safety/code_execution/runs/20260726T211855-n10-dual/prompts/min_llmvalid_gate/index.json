@@ -1,0 +1,29 @@
+{
+  "arm_key": "min_llmvalid_gate",
+  "scenario_name": "WITH-min-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Coder",
+      "chars": 892,
+      "sha256": "ae47a66bc1d8a706b55b19a82f60bc830b144f8e4e5abdb30ad2765d5f52baf6",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 889,
+      "sha256": "1b4b1df1708d733f96a305bd837413894f06637bd8811e4e88dc52760cebff14",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Executor",
+      "chars": 893,
+      "sha256": "fb6a9e6f2db50da9b3fffac62ab8c5b9fc735eec26c723d39d6e9fbb341baead",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

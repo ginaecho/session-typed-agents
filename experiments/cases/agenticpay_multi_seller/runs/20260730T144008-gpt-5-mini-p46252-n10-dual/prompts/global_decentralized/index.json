@@ -1,0 +1,43 @@
+{
+  "arm_key": "global_decentralized",
+  "scenario_name": "WITH-global-decentralized",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Buyer",
+      "chars": 4220,
+      "sha256": "b5fc2fb98af81fa6ed5d18a6943dcbef1cd23dc21e81e4d09013bec6256d087b",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SellerA",
+      "chars": 4222,
+      "sha256": "59b50a17eb1355b0d2d4153ed90217b1dea734d176983d64d5e80e00184f8ec1",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SellerB",
+      "chars": 4222,
+      "sha256": "c96d27363ea155d5ada9d60e5ad1baf3efc3c5d1b8b0e34b99dd56bc386dc992",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Escrow",
+      "chars": 4221,
+      "sha256": "d8aeded514ebbfee819dd8e1c12a908ce8ceafc7418fba5ee8a2477a3b499e70",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Carrier",
+      "chars": 4222,
+      "sha256": "b5d9ca0ec64b483de83e3af015646b345cc016c7d74404faf411f93719e11bfc",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

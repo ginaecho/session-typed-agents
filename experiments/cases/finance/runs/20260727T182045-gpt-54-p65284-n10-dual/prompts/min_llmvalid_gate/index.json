@@ -1,0 +1,50 @@
+{
+  "arm_key": "min_llmvalid_gate",
+  "scenario_name": "WITH-min-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Fetcher",
+      "chars": 1228,
+      "sha256": "4545688ba72c8a1346311ccc1148520274b194cd1fb1059de374205d32eb8ea1",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "RevenueAnalyst",
+      "chars": 2282,
+      "sha256": "15148d53711150c9d4af155bd6fdaa5df2e8671ccbbff9227c68adfed9bab960",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "ExpenseAnalyst",
+      "chars": 1176,
+      "sha256": "fb1c127bba1e461f75d5fee63446366236bdc061dd15aea9a3d43247e1ca661f",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Writer",
+      "chars": 1295,
+      "sha256": "4b213fca58a16a0813c6fbac550bcfe18b86c56e7a5a5ff7000866e6081feab7",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "TaxVerifier",
+      "chars": 1487,
+      "sha256": "14e3ea06a12e3e03e4b40abf009158734981516a29b429153c5b6ee27a413d2d",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "TaxSpecialist",
+      "chars": 1302,
+      "sha256": "fc52c5918c595269bc9839dc63f0f515a1cfecd37d45e7314b20783e8a11eb5e",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

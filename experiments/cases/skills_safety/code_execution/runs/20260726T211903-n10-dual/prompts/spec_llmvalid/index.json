@@ -1,0 +1,29 @@
+{
+  "arm_key": "spec_llmvalid",
+  "scenario_name": "WITH-spec-llmvalid",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Coder",
+      "chars": 2315,
+      "sha256": "50e5c46df9e84e96513cd106effe1512e4c8803bdb827d4e10e847e9fc794001",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Reviewer",
+      "chars": 2303,
+      "sha256": "6224848487d824591348662a77173b26a9642188e63efb42b515d86551ff3b2e",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Executor",
+      "chars": 2322,
+      "sha256": "2515cdfe9e469d63e7a0109b3f0346907d45b4da0fd51f61122251c02ed3ed3c",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

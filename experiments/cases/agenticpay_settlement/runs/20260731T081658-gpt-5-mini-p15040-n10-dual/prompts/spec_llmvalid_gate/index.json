@@ -1,0 +1,36 @@
+{
+  "arm_key": "spec_llmvalid_gate",
+  "scenario_name": "WITH-spec-llmvalid-GATE",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Buyer",
+      "chars": 3814,
+      "sha256": "0df2df4a20b816de16b23410962388df65c9818b896db64436fe52a459dce691",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Seller",
+      "chars": 3345,
+      "sha256": "2b37bfbab8cea32cdaf55a5c86e2d020d8818ba231bb46f650b32df43a944404",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Escrow",
+      "chars": 4232,
+      "sha256": "0b342c29dcb68bf279ff5c113eb759effbf11f43ae3c28ba4dd1bb4a751c5324",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Carrier",
+      "chars": 3763,
+      "sha256": "5cc3bc64e9d281552eacbe776e1a0ee73a93266cec951e9b163f5a9f0e65c6af",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

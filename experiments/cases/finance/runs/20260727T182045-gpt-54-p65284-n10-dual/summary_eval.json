@@ -1,0 +1,154 @@
+{
+  "run_dir": "C:\\Users\\tzuchunchen\\Documents\\05_Research\\EAG\\eag-innovation\\agentic-governance\\stjp\\experiments\\cases\\finance\\runs\\20260727T182045-gpt-54-p65284-n10-dual",
+  "arms": {
+    "bare": {
+      "arm_name": "WITHOUT-skills",
+      "n_trials": 10,
+      "n_goals": 6,
+      "has_vocabulary": false,
+      "strict_pct": null,
+      "role_pair_pct": 0.0,
+      "semantic_pct": null,
+      "strict_per_goal": null,
+      "role_pair_per_goal": {
+        "G1": 50.0,
+        "G2": 60.0,
+        "G3": 10.0,
+        "G4": 80.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "semantic_per_goal": null
+    },
+    "global_decentralized": {
+      "arm_name": "WITH-global-decentralized",
+      "n_trials": 10,
+      "n_goals": 6,
+      "has_vocabulary": true,
+      "strict_pct": 100.0,
+      "role_pair_pct": 100.0,
+      "semantic_pct": null,
+      "strict_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "role_pair_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "semantic_per_goal": null
+    },
+    "min_llmvalid": {
+      "arm_name": "WITH-min-llmvalid",
+      "n_trials": 10,
+      "n_goals": 6,
+      "has_vocabulary": true,
+      "strict_pct": 50.0,
+      "role_pair_pct": 50.0,
+      "semantic_pct": null,
+      "strict_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 50.0,
+        "G5": 100.0,
+        "G6": 50.0
+      },
+      "role_pair_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 50.0
+      },
+      "semantic_per_goal": null
+    },
+    "spec_llmvalid_gate": {
+      "arm_name": "WITH-spec-llmvalid-GATE",
+      "n_trials": 10,
+      "n_goals": 6,
+      "has_vocabulary": true,
+      "strict_pct": 100.0,
+      "role_pair_pct": 100.0,
+      "semantic_pct": null,
+      "strict_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "role_pair_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "semantic_per_goal": null
+    },
+    "min_llmvalid_gate": {
+      "arm_name": "WITH-min-llmvalid-GATE",
+      "n_trials": 10,
+      "n_goals": 6,
+      "has_vocabulary": true,
+      "strict_pct": 100.0,
+      "role_pair_pct": 100.0,
+      "semantic_pct": null,
+      "strict_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "role_pair_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "semantic_per_goal": null
+    },
+    "min_llmvalid_sched": {
+      "arm_name": "WITH-min-llmvalid-SCHED",
+      "n_trials": 10,
+      "n_goals": 6,
+      "has_vocabulary": true,
+      "strict_pct": 100.0,
+      "role_pair_pct": 100.0,
+      "semantic_pct": null,
+      "strict_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "role_pair_per_goal": {
+        "G1": 100.0,
+        "G2": 100.0,
+        "G3": 100.0,
+        "G4": 100.0,
+        "G5": 100.0,
+        "G6": 100.0
+      },
+      "semantic_per_goal": null
+    }
+  }
+}

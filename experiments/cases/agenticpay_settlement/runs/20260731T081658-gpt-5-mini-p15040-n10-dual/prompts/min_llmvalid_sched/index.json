@@ -1,0 +1,36 @@
+{
+  "arm_key": "min_llmvalid_sched",
+  "scenario_name": "WITH-min-llmvalid-SCHED",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Buyer",
+      "chars": 1707,
+      "sha256": "99f749eceb485978eae35e5061662addef56f83070a7306a2cbecb977b743495",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Seller",
+      "chars": 1475,
+      "sha256": "af8b2d51183b96366e21984d1220ea7526a8346ba63aff85bb4ef1619d3c8fb4",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Escrow",
+      "chars": 1927,
+      "sha256": "3924230db3194012be7394a0e5d3094b5564bd520c066be4613150f4ab2ac38c",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Carrier",
+      "chars": 1705,
+      "sha256": "dad7f93bdbd39da0989a3008b2444d08449138ca5d3d9606c8ca55cc43e476b8",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}
