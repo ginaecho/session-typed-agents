@@ -1,7 +1,5 @@
 # Session-Typed Judge Panel (STJP) — Quick Start & Running Experiments
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21629711.svg)](https://doi.org/10.5281/zenodo.21629711)
-
 **A session-typed static compiler for safe interactions in multi-agent systems.**
 
 Multi-agent systems fail in the spaces *between* agents: one agent acts before authorization, two agents wait forever (deadlock), everyone wastes tokens negotiating coordination. STJP type-checks the **conversation itself** before any agent runs — catching deadlocks, catching unsafe orderings, and compiling safe per-agent prompts with a runtime guard and scheduler.
@@ -45,11 +43,11 @@ Multi-agent systems fail in the spaces *between* agents: one agent acts before a
 **Start here:** Read [`docs/README.md`](docs/README.md) for the full documentation index.
 
 **Quick tours:**
-- **What is STJP?** → [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md) (15 min)
-- **How do we test it?** → [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md) (20 min)
-- **What is each "arm"?** → [`docs/5_ARMS_EXPLAINED.md`](docs/5_ARMS_EXPLAINED.md) (10 min)
-- **Latest results** → [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) (plain English)
-- **Why safety matters** → [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md) (real examples)
+- **What is STJP?** → [`docs/guides/1_TECH_SETUP.md`](docs/guides/1_TECH_SETUP.md) (15 min)
+- **How do we test it?** → [`docs/guides/2_TESTING_STRATEGIES.md`](docs/guides/2_TESTING_STRATEGIES.md) (20 min)
+- **What is each "arm"?** → [`docs/guides/5_ARMS_EXPLAINED.md`](docs/guides/5_ARMS_EXPLAINED.md) (10 min)
+- **Latest results** → [`docs/guides/6_RUN_REPORTS_EXPLAINED.md`](docs/guides/6_RUN_REPORTS_EXPLAINED.md) (plain English)
+- **Why safety matters** → [`docs/guides/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/guides/7_USE_CASE_DEADLOCK_SAFETY.md) (real examples)
 - **Is the benchmark fair?** → [`docs/BENCHMARK_FAIRNESS_REVIEW.md`](docs/BENCHMARK_FAIRNESS_REVIEW.md) (the audit)
 
 ---
@@ -114,26 +112,6 @@ against the original Scribble checker with the original monitor logic —
 identical to before these extensions existed. Existing tests and cases are
 unaffected. Turn either extension on deliberately, per run, only when you
 want it.
-
-**A worked ledger example** (verified end to end against the real compiler
-and monitor on 2026-07-25 — the full account, including the overdraw the
-monitor rejected pre-delivery, is in
-[`docs/reference/SESSION_RECORD_2026-07-25.md`](docs/reference/SESSION_RECORD_2026-07-25.md)
-§8). Three lines in a case's `.refn` sidecar are the whole thing:
-
-```
-state searches_left: int = 12
-on SearchSpend(cost): searches_left -= cost
-invariant searches_left >= 0  @S4
-```
-
-Read as: declare a running value; debit it by the `cost` field of every
-`SearchSpend` message; never let it go below zero, treating a breach as an
-irreversible-resource failure. The middle line is what a per-message rule
-cannot express — whether *this* request is the one that overdraws depends on
-every request before it. In the verified run, three spends of five against a
-budget of twelve left the budget at 2, with exactly one overdraw rejected
-*before delivery* (never a committed negative value).
 
 ---
 
@@ -212,7 +190,7 @@ groups of a medical trial):
 - **min_llmvalid_sched** — lean contract + gate + EFSM scheduler (full STJP)
 
 Each arm is drawn as a one-line flow diagram in
-[`docs/5_ARMS_EXPLAINED.md`](docs/5_ARMS_EXPLAINED.md).
+[`docs/guides/5_ARMS_EXPLAINED.md`](docs/guides/5_ARMS_EXPLAINED.md).
 
 ### 4. Run a different case
 
@@ -364,7 +342,7 @@ If `violation` is not null, the protocol was violated:
 
 ## 🆕 Creating a New Use Case
 
-Follow the step-by-step guide in [`docs/4_HOW_TO_CREATE_USE_CASES.md`](docs/4_HOW_TO_CREATE_USE_CASES.md).
+Follow the step-by-step guide in [`docs/guides/4_HOW_TO_CREATE_USE_CASES.md`](docs/guides/4_HOW_TO_CREATE_USE_CASES.md).
 
 **Quick checklist:**
 
@@ -410,7 +388,7 @@ Follow the step-by-step guide in [`docs/4_HOW_TO_CREATE_USE_CASES.md`](docs/4_HO
    python scripts/case_runner.py my_case 3 --arms bare,min_llmvalid_sched
    ```
 
-See [`docs/4_HOW_TO_CREATE_USE_CASES.md`](docs/4_HOW_TO_CREATE_USE_CASES.md) for detailed steps.
+See [`docs/guides/4_HOW_TO_CREATE_USE_CASES.md`](docs/guides/4_HOW_TO_CREATE_USE_CASES.md) for detailed steps.
 
 ---
 
@@ -422,7 +400,7 @@ The Scribble compiler found a problem (deadlock, unreachable state, inconsistenc
 
 **Fix:**
 1. Read the Scribble error message carefully
-2. Check [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md) for examples
+2. Check [`docs/guides/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/guides/7_USE_CASE_DEADLOCK_SAFETY.md) for examples
 3. Revise your protocol and re-run
 
 ### "Agents are getting stuck"
@@ -528,24 +506,24 @@ against one rate-limited deployment, so speed claims should rest on the
 tokens and calls columns; re-measure time with
 `case_runner.py --sequential`.
 
-See [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) for the full breakdown.
+See [`docs/guides/6_RUN_REPORTS_EXPLAINED.md`](docs/guides/6_RUN_REPORTS_EXPLAINED.md) for the full breakdown.
 
 ---
 
 ## 📖 Next Steps
 
 **Learn the system:**
-1. Read [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md) (15 min)
+1. Read [`docs/guides/1_TECH_SETUP.md`](docs/guides/1_TECH_SETUP.md) (15 min)
 2. Run a 1-trial test: `python experiments/scripts/case_runner.py finance 1 --arms min_llmvalid_sched`
-3. Read [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) to interpret results
+3. Read [`docs/guides/6_RUN_REPORTS_EXPLAINED.md`](docs/guides/6_RUN_REPORTS_EXPLAINED.md) to interpret results
 
 **Run the full benchmark:**
-1. Read [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md) (understand fairness)
+1. Read [`docs/guides/2_TESTING_STRATEGIES.md`](docs/guides/2_TESTING_STRATEGIES.md) (understand fairness)
 2. Run: `python experiments/scripts/case_runner.py finance 10`
 3. View: `python experiments/scripts/index_builder.py && open INDEX.html`
 
 **Create your own case:**
-1. Follow [`docs/4_HOW_TO_CREATE_USE_CASES.md`](docs/4_HOW_TO_CREATE_USE_CASES.md)
+1. Follow [`docs/guides/4_HOW_TO_CREATE_USE_CASES.md`](docs/guides/4_HOW_TO_CREATE_USE_CASES.md)
 2. Add a new directory under `experiments/cases/`
 3. Define protocol, case config, goals
 4. Test with: `python experiments/scripts/case_runner.py <case_id> 3`
@@ -565,11 +543,11 @@ See [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) for the
 ## ❓ Questions?
 
 - **How do I run STJP?** → This README (you are here)
-- **What is STJP technically?** → [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md)
-- **Why are tests confounded?** → [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md)
-- **How do I read results?** → [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md)
-- **Why does safety matter?** → [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md)
-- **How do I create a case?** → [`docs/4_HOW_TO_CREATE_USE_CASES.md`](docs/4_HOW_TO_CREATE_USE_CASES.md)
+- **What is STJP technically?** → [`docs/guides/1_TECH_SETUP.md`](docs/guides/1_TECH_SETUP.md)
+- **Why are tests confounded?** → [`docs/guides/2_TESTING_STRATEGIES.md`](docs/guides/2_TESTING_STRATEGIES.md)
+- **How do I read results?** → [`docs/guides/6_RUN_REPORTS_EXPLAINED.md`](docs/guides/6_RUN_REPORTS_EXPLAINED.md)
+- **Why does safety matter?** → [`docs/guides/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/guides/7_USE_CASE_DEADLOCK_SAFETY.md)
+- **How do I create a case?** → [`docs/guides/4_HOW_TO_CREATE_USE_CASES.md`](docs/guides/4_HOW_TO_CREATE_USE_CASES.md)
 
 ---
 

@@ -7,7 +7,7 @@ hand-curated worked example). W16 (`W16_llm_read_extraction.md`) then read
 those 13 teams carefully and recovered real protocol structure from 4 of
 them. Neither step ever asked the prior question: does the underlying TASK
 (not the file layout) actually require two or more parties to interact at
-all? The project owner's review (`docs/8_INTENT_TO_PROTOCOL_TRAINING.md`,
+all? The project owner's review (`docs/guides/8_INTENT_TO_PROTOCOL_TRAINING.md`,
 2026-07-11 update) found the answer by hand for W16's 13 teams: 6 of 13 did
 not need coordination (4 single-agent tool documents grouped only because
 they happened to share a directory, 2 pure `team_builder` regex artifacts —

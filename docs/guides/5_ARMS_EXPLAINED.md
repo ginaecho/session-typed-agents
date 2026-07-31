@@ -141,7 +141,7 @@ vendor's bug.
 
 - **(m)** — minimal local contracts + enforcement gate + the scheduler that
   only wakes agents whose turn it can be. The strongest "typed execution"
-  setting — and, per [RESULT_04](results/RESULT_04_FULL_STACK.md), simultaneously
+  setting — and, per [RESULT_04](../results/RESULT_04_FULL_STACK.md), simultaneously
   the safest and the cheapest.
 
 ---
@@ -169,23 +169,23 @@ simple STJP is overkill; no current case is rated Low.)
 
 | Case | What it is (short) | STJP fit | Why |
 |---|---|---|---|
-| [`auction`](../experiments/cases/auction/) | Sealed-bid multi-bidder auction with winner/outbid logic | Good | Multiparty fan-in (several senders converging on one receiver) and value constraints; good protocol-check target |
-| [`banking`](../experiments/cases/banking/) | Transfer with amount-based approval/rejection branches | Good | Conditional branch safety and exception path are strong STJP use |
-| [`clinical_enrollment`](../experiments/cases/clinical_enrollment/) | Trial enrollment with screening, consent, lab, ethics approvals | Good | Multi-role sequencing with explicit approval dependencies |
-| [`code_review`](../experiments/cases/code_review/) | PR review with reviewer quorum and CI (automated test-run) gating | Good | Coordination + threshold-style constraints map well to contracts |
-| [`finance`](../experiments/cases/finance/) | Finance report with audit branching | Good | Known sequencing + refinement failure case; excellent benchmark |
-| [`finance_nested`](../experiments/cases/finance_nested/) | Nested 2×2 branching with payload-driven choices | Good | Complex branch structure is exactly where STJP helps most |
-| [`intel_report`](../experiments/cases/intel_report/) | Multi-source intel fan-in, then review/publish pipeline | Good | Parallel/fan-in ordering pressure benefits from typed sequencing |
-| [`iterative_polling`](../experiments/cases/iterative_polling/) | Looping poll-and-log workflow | Medium | Good for recursion behavior; less rich branching complexity |
-| [`nested_retry`](../experiments/cases/nested_retry/) | Loop + nested branching editorial workflow | Good | Strong stress case for loops + nested choices |
-| [`rag`](../experiments/cases/rag/) | Multi-source retrieval + verification loop | Good | Multi-agent loop with correctness checks; strong STJP candidate |
-| [`report_pipeline`](../experiments/cases/report_pipeline/) | 6-role linear pipeline for the token-efficiency demo | Medium | Useful for cost/throughput claims; less about safety complexity |
-| [`report_pipeline_large`](../experiments/cases/report_pipeline_large/) | 10-role scaled linear pipeline | Medium | Good for scaling/token tests; lower structural risk than branch-heavy cases |
-| [`retry_loop`](../experiments/cases/retry_loop/) | Worker/manager retry-until-accept loop | Good | Classic loop + decision-branch safety pattern |
-| [`trade_deadlock`](../experiments/cases/trade_deadlock/) | Intentional circular-wait deadlock demo | Good | Canonical compile-time deadlock-detection showcase |
-| [`trade_settlement`](../experiments/cases/trade_settlement/) | Goods-for-payment with hidden circular dependency | Good | Strong deadlock + enforcement comparison case |
-| [`travel`](../experiments/cases/travel/) | All-or-nothing travel booking with rollback | Good | A "saga": a workflow that undoes (compensates) completed steps when a later step fails — suits protocol enforcement |
-| [`travel_saga`](../experiments/cases/travel_saga/) | 3-supplier booking happy path (rollback planned later) | Medium | Useful now; becomes stronger when the compensation branch is added |
-| [`doc_pipeline`](../experiments/cases/skills_safety/doc_pipeline/) | Announcement team built from real Anthropic public skills | Good | Real-skills approval-ordering case (see [RESULT_09](results/RESULT_09_REAL_SKILLS_TWO_MODELS.md)) |
-| [`pr_merge`](../experiments/cases/skills_safety/pr_merge/) | Code-change team built from real GitHub Copilot public files | Good | Real-skills merge-gating case (see [RESULT_09](results/RESULT_09_REAL_SKILLS_TWO_MODELS.md)) |
-| [`skills_safety/*`](../experiments/cases/skills_safety/) | 4 teams built from real OpenAI/CrewAI/AutoGen/LangGraph skills | Good | The RESULT_08 real-skills safety benchmark |
+| [`auction`](../../experiments/cases/auction/) | Sealed-bid multi-bidder auction with winner/outbid logic | Good | Multiparty fan-in (several senders converging on one receiver) and value constraints; good protocol-check target |
+| [`banking`](../../experiments/cases/banking/) | Transfer with amount-based approval/rejection branches | Good | Conditional branch safety and exception path are strong STJP use |
+| [`clinical_enrollment`](../../experiments/cases/clinical_enrollment/) | Trial enrollment with screening, consent, lab, ethics approvals | Good | Multi-role sequencing with explicit approval dependencies |
+| [`code_review`](../../experiments/cases/code_review/) | PR review with reviewer quorum and CI (automated test-run) gating | Good | Coordination + threshold-style constraints map well to contracts |
+| [`finance`](../../experiments/cases/finance/) | Finance report with audit branching | Good | Known sequencing + refinement failure case; excellent benchmark |
+| [`finance_nested`](../../experiments/cases/finance_nested/) | Nested 2×2 branching with payload-driven choices | Good | Complex branch structure is exactly where STJP helps most |
+| [`intel_report`](../../experiments/cases/intel_report/) | Multi-source intel fan-in, then review/publish pipeline | Good | Parallel/fan-in ordering pressure benefits from typed sequencing |
+| [`iterative_polling`](../../experiments/cases/iterative_polling/) | Looping poll-and-log workflow | Medium | Good for recursion behavior; less rich branching complexity |
+| [`nested_retry`](../../experiments/cases/nested_retry/) | Loop + nested branching editorial workflow | Good | Strong stress case for loops + nested choices |
+| [`rag`](../../experiments/cases/rag/) | Multi-source retrieval + verification loop | Good | Multi-agent loop with correctness checks; strong STJP candidate |
+| [`report_pipeline`](../../experiments/cases/report_pipeline/) | 6-role linear pipeline for the token-efficiency demo | Medium | Useful for cost/throughput claims; less about safety complexity |
+| [`report_pipeline_large`](../../experiments/cases/report_pipeline_large/) | 10-role scaled linear pipeline | Medium | Good for scaling/token tests; lower structural risk than branch-heavy cases |
+| [`retry_loop`](../../experiments/cases/retry_loop/) | Worker/manager retry-until-accept loop | Good | Classic loop + decision-branch safety pattern |
+| [`trade_deadlock`](../../experiments/cases/trade_deadlock/) | Intentional circular-wait deadlock demo | Good | Canonical compile-time deadlock-detection showcase |
+| [`trade_settlement`](../../experiments/cases/trade_settlement/) | Goods-for-payment with hidden circular dependency | Good | Strong deadlock + enforcement comparison case |
+| [`travel`](../../experiments/cases/travel/) | All-or-nothing travel booking with rollback | Good | A "saga": a workflow that undoes (compensates) completed steps when a later step fails — suits protocol enforcement |
+| [`travel_saga`](../../experiments/cases/travel_saga/) | 3-supplier booking happy path (rollback planned later) | Medium | Useful now; becomes stronger when the compensation branch is added |
+| [`doc_pipeline`](../../experiments/cases/skills_safety/doc_pipeline/) | Announcement team built from real Anthropic public skills | Good | Real-skills approval-ordering case (see [RESULT_09](../results/RESULT_09_REAL_SKILLS_TWO_MODELS.md)) |
+| [`pr_merge`](../../experiments/cases/skills_safety/pr_merge/) | Code-change team built from real GitHub Copilot public files | Good | Real-skills merge-gating case (see [RESULT_09](../results/RESULT_09_REAL_SKILLS_TWO_MODELS.md)) |
+| [`skills_safety/*`](../../experiments/cases/skills_safety/) | 4 teams built from real OpenAI/CrewAI/AutoGen/LangGraph skills | Good | The RESULT_08 real-skills safety benchmark |

@@ -94,7 +94,7 @@ contract either side could verify against.
 completion message that a worker's contract requires it to **send**. In
 the candidate protocol below, a worker's local contract (the part of the
 global protocol projected down to just that role — see
-`docs/1_TECH_SETUP.md` for what "projection" means) literally has no
+`docs/guides/1_TECH_SETUP.md` for what "projection" means) literally has no
 "wait to receive a completion notice" state in it. After it receives its
 task card, its very next allowed action is to choose between sending
 `Done` or sending `Blocked` — there is nothing else it is allowed to do.

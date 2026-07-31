@@ -3,7 +3,7 @@
 **Date: 2026-07-17.** This review checked whether the benchmark behind the
 headline results ("bare agents: 0% success; full STJP: 100% success, 9×
 cheaper, 4× faster") is a fair comparison, by reading both the documentation
-(`docs/2_TESTING_STRATEGIES.md`, `docs/3_BENCHMARK_DESIGN_EXPLAINED.md`) and
+(`docs/guides/2_TESTING_STRATEGIES.md`, `docs/guides/3_BENCHMARK_DESIGN_EXPLAINED.md`) and
 the code that actually produces the numbers (`experiments/scripts/case_runner.py`,
 `experiments/baselines/`, `experiments/scripts/evaluate_run.py`).
 
@@ -279,7 +279,7 @@ hints switched off, so we know how much each part contributes.
    and report what fraction were unsafe and got caught by the checker before
    any tokens were spent. That number *is* the value of static checking.
 6. **Add stronger competitors.** The realistic alternative to STJP is not
-   agents shouting in a circle — it is a hand-built flow graph (the
+   agents shouting in a circle — it is a hand-wired flow graph (the
    LangGraph style) or pasted protocol text plus a cheap regex checker.
    Beating those is the comparison practitioners actually care about.
 

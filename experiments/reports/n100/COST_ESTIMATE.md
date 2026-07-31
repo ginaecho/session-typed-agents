@@ -130,7 +130,7 @@ See also:
   [`E3_CAPABILITY_SWEEP.md`](E3_CAPABILITY_SWEEP.md) — the sonnet runs.
 - [`../../harness_adapters/README.md`](../../harness_adapters/README.md) — the
   metering-ready harness that turns the lean lower bound into a measured number.
-- Plain-English docs: `docs/6_RUN_REPORTS_EXPLAINED.md`
-  [§2 (Reading the results table)](../../../docs/6_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table)
+- Plain-English docs: `docs/guides/6_RUN_REPORTS_EXPLAINED.md`
+  [§2 (Reading the results table)](../../../docs/guides/6_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table)
   and
-  [§10 (what this reproduction actually cost)](../../../docs/6_RUN_REPORTS_EXPLAINED.md#what-this-reproduction-actually-cost-in-dollars).
+  [§10 (what this reproduction actually cost)](../../../docs/guides/6_RUN_REPORTS_EXPLAINED.md#what-this-reproduction-actually-cost-in-dollars).

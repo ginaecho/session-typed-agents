@@ -1,36 +1,20 @@
 # Run Reports V2 — Claims and Evidence (the reorganized benchmark)
 
 **Date: 2026-07-27.** This document supersedes nothing and deletes nothing —
-[`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) (the 2026-07-02…08
+[`6_RUN_REPORTS_EXPLAINED.md`](guides/6_RUN_REPORTS_EXPLAINED.md) (the 2026-07-02…08
 campaigns) and [`7_RUN_REPORTS_FOUNDRY_REAL_CASES.md`](7_RUN_REPORTS_FOUNDRY_REAL_CASES.md)
 (the 2026-07-24…27 Azure-Foundry campaign) remain the raw evidence records.
 What V2 adds is the thing both were missing: **one structure that says what
 claim each experiment exists to prove, and where the evidence for each claim
 currently stands.**
 
-## Why V2 exists (an honest diagnosis of the chaos)
+## How to read this document
 
-Reading everything end-to-end, the problems are real:
-
-1. **Nobody stated the claims.** Experiments accumulated run-by-run; a reader
-   met tables before ever being told what question they answer.
-2. **Three arm/setting vocabularies.** 6_RUN Part 1 uses A/B/C-min/C+spec/
-   C+min/STJP; the skills_safety engine uses unchecked/bare/stjp; the Foundry
-   registry uses 15 internal keys. Same ideas, three names each.
-3. **Three metric vocabularies.** GCR/CGC/Disasters (6_RUN) vs
-   strict/role_pair/semantic goal rates (evaluate_run) vs monitor violations
-   vs Critic policy disasters — and one table briefly mislabeled violations as
-   disasters before being corrected.
-4. **Three runtimes and three trial counts** (subagent engine, Foundry Agent
-   Service, MAF; n=1/10/100) presented side-by-side without saying which
-   differences are the point and which are noise.
-5. **Case sprawl without a map.** Purpose-built cases (finance, escrow_trade,
-   trade_deadlock…), mined REAL-skills cases (6), a hybrid (agenticpay), and a
-   methodological case (memory_race) all look alike in a directory listing but
-   exist for different reasons.
-
-V2 fixes this by inverting the structure: **claims first, then the canonical
-experiment grammar, then a symmetric evidence matrix, then the case map.**
+Claims first, then the canonical experiment grammar, then the evidence
+matrix, then the case map. One vocabulary is used throughout: the numbered
+settings 1–8 (legend in 7_RUN), the canonical terms of
+[`reference/GLOSSARY.md`](reference/GLOSSARY.md), and the two metric sets —
+Set A (conformance) and Set B (goal achievement) — defined in section 2.
 
 ---
 
@@ -145,6 +129,33 @@ non-OpenAI/non-Claude vendor point.
 
 ---
 
+## 3b. MODEL-FAMILY COVERAGE — where each model has actually been tested
+
+A reader of the matrix above could miss that the two campaigns used DIFFERENT
+model families. Stated explicitly:
+
+| Evidence source | Models actually used | Settings covered |
+|---|---|---|
+| 6_RUN campaigns | Claude: Haiku 4.5, Sonnet (+GPT-5.4 in the §2 finance run) | full ladder |
+| 7_RUN campaign | GPT: gpt-5-mini, gpt-5.4 | full ladder (1–8) |
+| 7_RUN campaign | **gpt-5.6-sol** | ONLY the MAF-runtime setups and the hosted group agents |
+
+**Why gpt-5.6-sol cannot run settings 1–8:** the classic Foundry Agent
+Service force-injects a `top_p` parameter that reasoning-family models reject
+(verified live; even a REST PATCH to null it returns 400 — RESULT_13). This is
+a platform limitation, not a design choice. Where sol CAN run, it is tested:
+MAF on TWO cases — code_execution and booking_saga (both: no-protocol 0/10,
+global-protocol 10/10) — and all six hosted group agents.
+
+**Follow-ups this observation opened — current state:**
+finance on the GPT pair is complete (7_RUN CASE 5, both models, n=10);
+sol's second-case coverage is complete (booking_saga MAF setups);
+pr_review_merge is complete on gpt-5.4 (7_RUN CASE 11) with the gpt-5-mini
+run in progress; doc_coauthor_ship has not been run on Foundry. The GPT
+capability comparison is the campaign itself — gpt-5-mini vs gpt-5.4 across
+all twelve cases. Claude-tier rows stay labeled as Claude evidence; a claim
+is marked model-independent only where both families show the effect.
+
 ## 3c. Coinductive nuscr re-validation (2026-07-28)
 
 We built the coinductive nuscr fork (Docker image `nuscr-coind`) and re-validated
@@ -238,36 +249,34 @@ verbose gate — completes). Hence Claim 4 is complexity-dependent: STJP ties
 within noise at ≤4 roles/linear and is strictly cheapest (or the only
 finisher) beyond that.
 
-## 3b. MODEL-FAMILY COVERAGE — where each model has actually been tested
+## 3f. FAIR COMPARISON — prompt content across settings, and the adjusted cost numbers
 
-A reader of the matrix above could miss that the two campaigns used DIFFERENT
-model families. Stated explicitly:
+The settings necessarily read different system prompts — that is the
+experimental variable. What a fair reader needs to know (full table and
+method: the FAIR COMPARISON section of
+[`7_RUN_REPORTS_FOUNDRY_REAL_CASES.md`](7_RUN_REPORTS_FOUNDRY_REAL_CASES.md)):
 
-| Evidence source | Models actually used | Settings covered |
-|---|---|---|
-| 6_RUN campaigns | Claude: Haiku 4.5, Sonnet (+GPT-5.4 in the §2 finance run) | full ladder |
-| 7_RUN campaign | GPT: gpt-5-mini, gpt-5.4 | full ladder (1–8) |
-| 7_RUN campaign | **gpt-5.6-sol** | ONLY the MAF-runtime setups and the hosted group agents |
-
-**Why gpt-5.6-sol cannot run settings 1–8:** the classic Foundry Agent
-Service force-injects a `top_p` parameter that reasoning-family models reject
-(verified live; even a REST PATCH to null it returns 400 — RESULT_13). This is
-a platform limitation, not a design choice. Where sol CAN run, it is tested:
-MAF on TWO cases — code_execution and booking_saga (both: no-protocol 0/10,
-global-protocol 10/10) — and all six hosted group agents.
-
-**Extra-work register opened by this observation (in flight as of 2026-07-27):**
-1. finance §2 ladder on the GPT pair — RUNNING (mini leg live, 5.4 queued).
-2. E3 capability curve on GPT tiers — the project's models are gpt-5-mini
-   (weak) and gpt-5.6-sol (advanced), with gpt-5.4 as the working advanced
-   classic-path model (sol is platform-blocked from settings 1–8). The GPT
-   curve is therefore the 2-tier mini vs 5.4 comparison already collected;
-   gpt-5-nano is NOT part of this project and is not used.
-3. sol second-case coverage — RUNNING (booking_saga MAF setups on sol).
-4. Part-3 team equivalents on the GPT pair — pr_review_merge pending its
-   turn-limit re-run; doc_coauthor_ship not yet run on Foundry.
-5. Claude-tier rows in the matrix stay labeled as Claude evidence; claims are
-   only marked model-independent where BOTH families show the effect.
+- **Settings 4, 6, 7, 8 read the byte-identical prompt** (role descriptions +
+  the role's own contract table; no intent or goals prose). The completion
+  gaps among them — enforcement (4→6) and scheduling (7→8) — therefore
+  cannot come from prompt wording. The completion claims need no adjustment.
+- **Settings 1, 3, 5 additionally carry the intent + goals prose** (~63–115
+  tokens, re-read on every call); setting 2 carries the intent plus its skill
+  file. For the cost claims this shared prose is normalized out in the
+  conservative direction (charge Full STJP for the prose it never received,
+  refund setting 3 for carrying it): multi_buyer 6.1×→5.2×, settlement
+  8.0×→7.5×, finance 2.9×→2.6×. Every cost conclusion survives — the
+  advantage comes from fewer calls and from not re-reading the whole
+  protocol, not from shorter boilerplate.
+- **What is never subtracted:** setting 3's pasted protocol text (the
+  treatment itself — the cost of coordinating by handing every role the
+  whole rulebook), setting 2's skill files (the practice under test), and the
+  contract table of settings 4–8 (the mechanism). The benchmark's principled
+  form of subtraction is projection — each role receives only its own
+  mechanically derived slice.
+- **Violations in settings 1–2** are counted against a protocol those agents
+  were never shown: the designed drift baseline, not disobedience — the same
+  reason their successes are graded label-free (†).
 
 ## 4. THE CASE MAP — why each case exists
 
@@ -332,7 +341,7 @@ Adopting these rules going forward — several are already implemented:
 - **This document** — what is claimed and where evidence stands. Start here.
 - [`7_RUN_REPORTS_FOUNDRY_REAL_CASES.md`](7_RUN_REPORTS_FOUNDRY_REAL_CASES.md) —
   the Foundry campaign's symmetric tables (GPT models, live API).
-- [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) — the original
+- [`6_RUN_REPORTS_EXPLAINED.md`](guides/6_RUN_REPORTS_EXPLAINED.md) — the original
   campaigns (Claude models, engine + n=100 suite + two-model teams).
   Unchanged, per the do-not-rewrite-history rule.
 - [`results/RESULT_13_FOUNDRY_REAL_CASES_TWO_MODELS.md`](results/RESULT_13_FOUNDRY_REAL_CASES_TWO_MODELS.md)

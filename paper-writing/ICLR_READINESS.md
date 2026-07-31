@@ -94,7 +94,7 @@ convincing in a way no single ratio is.
 `python experiments/scripts/scaling_chart.py run` then `plot`
 (6-role `report_pipeline`, 10-role `report_pipeline_large`; a 20-role case
 needs authoring first — reuse the case-creation guide in
-`docs/4_HOW_TO_CREATE_USE_CASES.md`).
+`docs/guides/4_HOW_TO_CREATE_USE_CASES.md`).
 Cost: ≈ 5M tokens ≈ **$15–20** for the existing two sizes; budget ~$20–30
 more for a 20-role case.
 

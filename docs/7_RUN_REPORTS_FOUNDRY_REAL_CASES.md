@@ -1,7 +1,7 @@
 # Run Reports — Real-skills cases on Azure AI Foundry (8 settings, two models)
 
 **Date: 2026-07-31.** Same reading approach as
-[`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md), applied to the
+[`6_RUN_REPORTS_EXPLAINED.md`](guides/6_RUN_REPORTS_EXPLAINED.md), applied to the
 **real public-skill cases** run live on Azure AI Foundry (one hosted Foundry
 agent per role) on a weak model (`gpt-5-mini`) and a stronger one (`gpt-5.4`).
 Every number is generated from the committed `summary.json` + `events_*.jsonl`
@@ -128,6 +128,81 @@ STJP finishes at all. The one counter-shape: react18, where a no-hint gate
 matches STJP on completion (CASE 9). Scheduler value scales with
 coordination complexity; in trivial pipelines it costs ~nothing and buys
 ~nothing.
+
+---
+
+## FAIR COMPARISON — what each setting reads, what we subtract, and what must not be subtracted
+
+The eight settings necessarily read different prompts — the prompt content
+**is** the experimental variable. For the comparison to be fair, three things
+must be explicit: exactly what each setting's prompt contains, which part of
+any token difference is neutral background that fair accounting should
+normalize away, and which part is the treatment itself and therefore must
+never be subtracted.
+
+**What each setting's system prompt contains.** Every run persists the exact
+per-role prompt to `runs/<dir>/prompts/<setting>/<Role>.system.md`; sizes
+below are the BuyerA prompt of the multi_buyer gpt-5.4 run:
+
+| # | Setting | Task intent | Goals text | Role descriptions | Protocol information | Size (chars) |
+|---|---|---|---|---|---|---|
+| 1 | Intent only | yes | yes | yes | none | 1,726 |
+| 2 | Real skills, no protocol | yes | no | yes | the real skill file, verbatim | 2,019 |
+| 3 | Global protocol (as text) | yes | yes | yes | the whole validated protocol | 4,408 |
+| 4 | Local contract (not enforced) | no | no | yes | the role's own contract table | 1,135 |
+| 5 | Local contract + gate (verbose) | yes | yes | yes | the role's own contract, long form | 2,924 |
+| 6 | Local contract + gate (lean) | no | no | yes | the role's own contract table | 1,135 |
+| 7 | Local contract + gate, no turn hint | no | no | yes | the role's own contract table | 1,135 |
+| 8 | Full STJP | no | no | yes | the role's own contract table | 1,135 |
+
+Held constant in every setting: the role descriptions, the stop rule, and the
+output format. Settings 4, 6, 7 and 8 read the **byte-identical** prompt.
+
+**The completion claims need no adjustment.** Because settings 4 and 8 read
+the same words, the completion gap between them (finance 5/10 vs 10/10 on
+gpt-5.4; settlement 7/10 vs 10/10) cannot come from prompt wording — only
+from what the runtime does (nothing vs gate + scheduler). The same holds for
+the enforcement step (4→6) and the scheduling step (7→8). This
+identical-prompt control is the cleanest comparison in the benchmark.
+
+**The cost claims: we subtract the shared prose — and only that.** The
+intent + goals prose is neutral background: it belongs to no treatment, yet
+settings 1, 3 and 5 carry it and settings 4, 6, 7, 8 do not (~63–115 tokens
+per call, measured per case from the persisted prompts). Since the model
+re-reads its whole system prompt on every call, fair accounting must correct
+for it. The conservative direction charges Full STJP for the prose it never
+received AND refunds setting 3 for carrying it:
+
+| Case | Full STJP advantage over setting 3, raw | after the conservative correction |
+|---|---|---|
+| multi_buyer | 6.1× | 5.2× |
+| agenticpay_settlement | 8.0× | 7.5× |
+| finance | 2.9× | 2.6× |
+
+The advantage survives everywhere, because the prose is small next to the two
+real mechanisms: fewer calls (multi_buyer 23.8 vs 49.0) and not re-reading
+the whole protocol every call. On multi_buyer/gpt-5.4 the per-call totals
+make the point directly: setting 1 pays 943 tokens/call, settings 4/6/7/8
+pay 934–1,009, Full STJP pays 945 — near-identical. The per-call outliers
+are setting 3 (2,782) and the verbose setting 5 (2,291).
+
+**What must not be subtracted.** The protocol text in setting 3 IS the
+treatment: that setting measures what it costs to coordinate by handing every
+role the entire rulebook, which the role then re-reads on every call. Remove
+that text from the accounting and the setting no longer coordinates —
+there would be nothing left to measure. The same holds for setting 2's skill
+files (composing real published skills is the practice under test) and for
+the contract table in settings 4–8 (the mechanism itself). The benchmark's
+principled version of "subtracting" is **projection**: settings 4–8 give each
+role only its own mechanically derived slice of the protocol. That saving is
+a finding of the benchmark, not an accounting choice.
+
+**Reading the Violations column for settings 1–2.** Their violations are
+counted against the canonical protocol those agents were **never shown** —
+they cannot conform to a vocabulary they never saw. The number measures how
+far unguided (setting 1) or skills-guided (setting 2) behavior drifts from
+the intended protocol; it is the designed baseline, not disobedience. The
+same reasoning is why those settings' successes are graded label-free (†).
 
 ---
 
@@ -377,33 +452,6 @@ whole story here is "a validated contract turns 0/10-at-1.3M-tokens into
 10/10-at-9k." Disaster column shows "—": this case has no Critic policy file,
 so publish-before-review is not policy-scored; it is visible instead in the
 violation counts of the no-protocol settings.
-
----
-
-## What the twelve cases show, together
-
-1. **Real public skills fail without a protocol, on both models.** Setting 2
-   completes at most 4/10 in eleven of twelve cases (the one exception:
-   multi_seller on the weak model, which completes but with 246 ordering
-   violations) — and on code_execution and react18 the real skills are *worse
-   than giving no skills at all* while costing the most (up to 6M
-   tokens/trial on sdlc).
-2. **Enforcement removes violations everywhere:** every gated setting
-   (5–8) reports zero monitor violations and zero policy disasters in every
-   case, on both models.
-3. **Completion splits by coordination complexity.** Short pipelines
-   (CASES 1–4): every contract setting completes, and the scheduler ties the
-   others at 3–4 calls/trial. Mid complexity (CASES 5, 8, 10): all gated
-   settings complete but STJP is 2–4× cheaper. Hard shapes — many roles,
-   branches, loops (CASES 6, 7, 11, 12): only STJP (on sdlc, STJP and the
-   verbose gate) completes reliably, at the fewest calls. The counter-shape
-   is CASE 9, where a no-hint gate matches STJP's completion.
-4. **The scheduler is the cost lever:** wherever coordination is
-   non-trivial, full STJP delivers the same or better completion at the
-   lowest calls and tokens per delivered result.
-5. **Disasters concentrate where there is no contract** — 8/10 disaster
-   trials in intent-only booking_saga, up to 7/10 on the no-contract MAF
-   runtime (Appendix A); never in a contract setting.
 
 ---
 
@@ -786,6 +834,33 @@ simultaneously reliable and cheap.
 
 ---
 
+## What the twelve cases show, together
+
+1. **Real public skills fail without a protocol, on both models.** Setting 2
+   completes at most 4/10 in eleven of twelve cases (the one exception:
+   multi_seller on the weak model, which completes but with 246 ordering
+   violations) — and on code_execution and react18 the real skills are *worse
+   than giving no skills at all* while costing the most (up to 6M
+   tokens/trial on sdlc).
+2. **Enforcement removes violations everywhere:** every gated setting
+   (5–8) reports zero monitor violations and zero policy disasters in every
+   case, on both models.
+3. **Completion splits by coordination complexity.** Short pipelines
+   (CASES 1–4): every contract setting completes, and the scheduler ties the
+   others at 3–4 calls/trial. Mid complexity (CASES 5, 8, 10): all gated
+   settings complete but STJP is 2–4× cheaper. Hard shapes — many roles,
+   branches, loops (CASES 6, 7, 11, 12): only STJP (on sdlc, STJP and the
+   verbose gate) completes reliably, at the fewest calls. The counter-shape
+   is CASE 9, where a no-hint gate matches STJP's completion.
+4. **The scheduler is the cost lever:** wherever coordination is
+   non-trivial, full STJP delivers the same or better completion at the
+   lowest calls and tokens per delivered result.
+5. **Disasters concentrate where there is no contract** — 8/10 disaster
+   trials in intent-only booking_saga, up to 7/10 on the no-contract MAF
+   runtime (Appendix A); never in a contract setting.
+
+---
+
 ## APPENDIX A — extra setups (NOT part of the 8-setting comparison)
 
 **Alternative runtime (Microsoft Agent Framework), code_execution, n=10, both models:**
@@ -827,9 +902,9 @@ zero disasters at ~7× fewer tokens.
 The `environment.py` world-state oracle caught the classic lost update on the
 real unchecked agents: WriterB read stale state before WriterA committed —
 final balance 130 instead of 180 — a lost update, detected structurally and
-arithmetically. The with-contract settings for this case are NOT citable yet
-(the drafted protocol uses delta payload semantics; the goals/oracle assume
-absolute — being re-run). Also observed: the intent-only team reached the
+arithmetically. The with-contract settings for this case are not yet in this
+report — their run is in progress and their table will be added once it
+passes verification. Also observed: the intent-only team reached the
 CORRECT final state while failing its message-shape goals — evidence for the
 world-state-verification argument in `docs/reference/GOAL_QUALITY_AUDIT.md`.
 
@@ -874,8 +949,8 @@ appears in Appendix B); gpt-5.6-sol on settings 1–8 (the platform's Agent
 Service injects a `top_p` parameter that reasoning models reject — sol
 appears only in the MAF rows of Appendix A); wall-clock timing comparisons
 (settings run in parallel waves; timing requires `--sequential` runs).
-Superseded or incomplete run folders are excluded from all tables and kept
-on disk under quarantine suffixes.
+Superseded or incomplete run folders are excluded from all tables; their
+folder names carry a `VOID` marker so they cannot be mistaken for evidence.
 
 ## Reproduce
 ```bash

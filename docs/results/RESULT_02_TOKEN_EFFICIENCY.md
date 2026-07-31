@@ -118,4 +118,4 @@ On this short pipeline the scheduler has little to save (6–7 calls for 6 messa
 
 ## Run it on Azure AI Foundry (later)
 
-This run's harness was already Azure AI Foundry-hosted agents (`experiments/scripts/case_runner.py` / `FoundryRunner`), gpt-5.4. To reproduce or extend it, follow the standard recipe in [`1_TECH_SETUP.md` section 5](../1_TECH_SETUP.md#5-running-stjp-with-azure-ai-foundry-hosted-agents) plus the four registration points listed in [`experiments/CLAUDE.md`](../../experiments/CLAUDE.md) (`registry.py` SCENARIOS, `case_runner.py` `_FOUNDRY_INSTALL_KEYS` and `FOUNDRY_KEYS`, `evaluate_run.py` `VOCABULARY_ARMS`).
+This run's harness was already Azure AI Foundry-hosted agents (`experiments/scripts/case_runner.py` / `FoundryRunner`), gpt-5.4. To reproduce or extend it, follow the standard recipe in [`1_TECH_SETUP.md` section 5](../guides/1_TECH_SETUP.md#5-running-stjp-with-azure-ai-foundry-hosted-agents) plus the four registration points listed in [`experiments/CLAUDE.md`](../../experiments/CLAUDE.md) (`registry.py` SCENARIOS, `case_runner.py` `_FOUNDRY_INSTALL_KEYS` and `FOUNDRY_KEYS`, `evaluate_run.py` `VOCABULARY_ARMS`).

@@ -6,7 +6,7 @@
 Worker report for the open problem the project owner raised after W16: the
 paper's claim — "independently authored agent skills don't state their
 coordination structure" — currently rests on **n=2** real-world teams
-(`docs/8_INTENT_TO_PROTOCOL_TRAINING.md`, the 2026-07-11 "denominator
+(`docs/guides/8_INTENT_TO_PROTOCOL_TRAINING.md`, the 2026-07-11 "denominator
 caveat" update). That number is small because nobody had checked, before
 grouping harvested files into candidate "teams," whether the underlying
 TASK those files describe actually needs more than one party to complete it
@@ -404,7 +404,7 @@ Code (`experiments/seam_bench/mining/`):
   backward compatibility); `ledger.py` gained `crewAIInc/crewAI` (MIT) and
   `rohitg00/awesome-claude-code-toolkit` (Apache-2.0) license facts, and a
   documented, deliberate absence of a `crewAIInc/crewAI-examples` entry.
-- `run_mining.py` — connected the two new sources into `DEFAULT_REMOTES`.
+- `run_mining.py` — wired the two new sources into `DEFAULT_REMOTES`.
 - `llm_read/extraction.py` — one defensive fix (selects the original 13
   teams by `team_id` instead of list position, since `build_teams` now
   returns ~110); verified byte-identical output to W16's original run.

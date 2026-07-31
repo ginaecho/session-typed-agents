@@ -11,7 +11,7 @@ and [§10](#what-this-reproduction-actually-cost-in-dollars).
 
 This document has two parts:
 
-- **Part 1 — the [`finance`](../experiments/cases/finance/) run (2026-07-02), then the same ladder on REAL public
+- **Part 1 — the [`finance`](../../experiments/cases/finance/) run (2026-07-02), then the same ladder on REAL public
   skills.** One realistic task, six AI agents, run 10 times per setting: shows
   that the full STJP system is both the safest and the cheapest way to run the
   agents. Start here. Part 1 then repeats the ladder on **real MIT-licensed
@@ -40,7 +40,7 @@ This document has two parts:
   coordination plan turns out to depend on the model; with full STJP both
   models are flawless and indistinguishable at 3× lower cost. The full
   trial-by-trial report is
-  [`results/RESULT_09_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_09_REAL_SKILLS_TWO_MODELS.md).
+  [`results/RESULT_09_REAL_SKILLS_TWO_MODELS.md`](../results/RESULT_09_REAL_SKILLS_TWO_MODELS.md).
 
 ---
 
@@ -200,7 +200,7 @@ In plain English: **All agents with protocol succeeded, but STJP's version used 
 > $60 in haiku tokens, ~$10 more for the stronger-model replication — under $100
 > for the entire validated suite.** The full breakdown, method, and honest
 > caveats are in
-> [`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents).
+> [`COST_ESTIMATE.md`](../../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents).
 
 **Seconds/trial**
 - Wall-clock time for one complete run
@@ -245,7 +245,7 @@ played by a cheap Haiku-class subagent:
 
 Numbers, traces, and honest caveats (token counts are estimates; seconds are
 not comparable to the GPT-5.4 rows above because subagent dispatch was
-batched): [`results/RESULT_08_SKILL_SAFETY.md`](results/RESULT_08_SKILL_SAFETY.md);
+batched): [`results/RESULT_08_SKILL_SAFETY.md`](../results/RESULT_08_SKILL_SAFETY.md);
 raw data in `experiments/subagent_trials/reports/ss2026_skill_safety/`.
 
 ### The same real-skills ladder at n=100 with a STRONGER model (Sonnet, 2026-07-07)
@@ -274,16 +274,16 @@ the honest, interesting part.** Per case (n=100 each):
 
 | case (source) | unchecked | bare | STJP |
 |---|---|---|---|
-| [`airline_seat`](../experiments/cases/skills_safety/airline_seat/) (openai-agents) | **0% — deadlock** (skill says "transfer to Seat Booking"; that human name ≠ the role id, so the handoff message never routes) | 100% GCR but **0% CGC, 100 double seat-writes** | 100% / 100% / 0 |
-| [`booking_saga`](../experiments/cases/skills_safety/booking_saga/) (langgraph) | 100% GCR but **0% CGC, 100 double charges** (Sonnet coordinates the hold-then-pay order from the intent, but re-sends `PaymentCaptured`) | **0% — livelock** (rigidly re-runs its 4-step contract, never advancing) | 100% / 100% / 0 |
-| [`code_execution`](../experiments/cases/skills_safety/code_execution/) (autogen) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
-| [`content_pipeline`](../experiments/cases/skills_safety/content_pipeline/) (crewAI) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
+| [`airline_seat`](../../experiments/cases/skills_safety/airline_seat/) (openai-agents) | **0% — deadlock** (skill says "transfer to Seat Booking"; that human name ≠ the role id, so the handoff message never routes) | 100% GCR but **0% CGC, 100 double seat-writes** | 100% / 100% / 0 |
+| [`booking_saga`](../../experiments/cases/skills_safety/booking_saga/) (langgraph) | 100% GCR but **0% CGC, 100 double charges** (Sonnet coordinates the hold-then-pay order from the intent, but re-sends `PaymentCaptured`) | **0% — livelock** (rigidly re-runs its 4-step contract, never advancing) | 100% / 100% / 0 |
+| [`code_execution`](../../experiments/cases/skills_safety/code_execution/) (autogen) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
+| [`content_pipeline`](../../experiments/cases/skills_safety/content_pipeline/) (crewAI) | 100% / 100% / 0 | 100% / 100% / 0 | 100% / 100% / 0 |
 
 **What this teaches (read carefully — it is more honest than "unchecked always
 dies"):**
 
 - **A strong model can sometimes paper over unvalidated skills at runtime.**
-  Sonnet coordinated [`booking_saga`](../experiments/cases/skills_safety/booking_saga/) and both simple pipelines from the prose
+  Sonnet coordinated [`booking_saga`](../../experiments/cases/skills_safety/booking_saga/) and both simple pipelines from the prose
   intent alone, where the weaker Haiku model deadlocked all of them. So the
   *runtime* success of unvalidated skills is **model-dependent and
   unreliable** — you cannot count on it.
@@ -313,10 +313,10 @@ tightens the Wilson interval rather than adding behavioural variety. Full
 numbers, per-case reports and the committed **raw per-trial traces**
 (`.../reports/ss2026_n100_sonnet/traces/`, with `VERIFY.md` showing how to
 re-derive every metric from `state.json`):
-[`results/RESULT_08_SKILL_SAFETY.md`](results/RESULT_08_SKILL_SAFETY.md) and
+[`results/RESULT_08_SKILL_SAFETY.md`](../results/RESULT_08_SKILL_SAFETY.md) and
 `experiments/subagent_trials/reports/ss2026_n100_sonnet/`. How to run the
 nuscribble backend that drove it:
-[`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md).
+[`reference/NUSCR_CLOUD_INSTALL.md`](../reference/NUSCR_CLOUD_INSTALL.md).
 
 ---
 
@@ -740,10 +740,10 @@ haiku → sonnet → opus — on both tasks.** The story is clean and consistent
 The one piece still genuinely pending is a **non-Claude vendor** point (to kill
 the "one vendor family" worry) — that needs an external model this environment
 can't reach, and is left honestly unrun rather than invented. Full tables:
-[`E3_CAPABILITY_SWEEP.md`](../experiments/reports/n100/E3_CAPABILITY_SWEEP.md),
+[`E3_CAPABILITY_SWEEP.md`](../../experiments/reports/n100/E3_CAPABILITY_SWEEP.md),
 with machine-readable data in
-[`e3/opus_revenue.json`](../experiments/reports/n100/e3/opus_revenue.json) and
-[`e3/sonnet_escrow.json`](../experiments/reports/n100/e3/sonnet_escrow.json).
+[`e3/opus_revenue.json`](../../experiments/reports/n100/e3/opus_revenue.json) and
+[`e3/sonnet_escrow.json`](../../experiments/reports/n100/e3/sonnet_escrow.json).
 
 ---
 
@@ -876,7 +876,7 @@ the core value on a fresh case, repeated enough times to rule out luck.
 *(Cost = calls × ≈ $0.00125 per lean haiku call — ~1k in + ~50 out at Haiku
 4.5's $1/$5 per 1M. STJP delivers 100 settlements for less than the unchecked
 arm spends deadlocking zero. Method:
-[`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#per-arm-cost-to-goal-in-dollars-the--column-in-the-ladder-tables).)*
+[`COST_ESTIMATE.md`](../../experiments/reports/n100/COST_ESTIMATE.md#per-arm-cost-to-goal-in-dollars-the--column-in-the-ladder-tables).)*
 
 Two things stand out. First, the no-rulebook setting fails **every single
 time** — this is a *structural* deadlock, not bad luck. Second, and more
@@ -958,7 +958,7 @@ CLI-driver subagents that actually *played* these trials cost more per call
 because of orchestration overhead, so the whole run cost more in absolute terms
 (≈ $60 across the ladder) — see
 [What this reproduction actually cost](#what-this-reproduction-actually-cost-in-dollars)
-and [`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#per-trial-cost).
+and [`COST_ESTIMATE.md`](../../experiments/reports/n100/COST_ESTIMATE.md#per-trial-cost).
 
 ### Why this is *not* laid out in the exact same format as §2
 
@@ -993,11 +993,11 @@ because those are the only two measurements Foundry provided that a
 tokens-unmetered, wave-scheduled subagent harness cannot honestly reproduce.
 
 Full tables, per-arm findings, and the integrity log for these runs:
-[`experiments/reports/n100/LADDER_NOFOUNDRY.md`](../experiments/reports/n100/LADDER_NOFOUNDRY.md)
+[`experiments/reports/n100/LADDER_NOFOUNDRY.md`](../../experiments/reports/n100/LADDER_NOFOUNDRY.md)
 (master), with per-case detail in
-[`ladder_revenue_audit_n100/README.md`](../experiments/reports/n100/ladder_revenue_audit_n100/README.md)
+[`ladder_revenue_audit_n100/README.md`](../../experiments/reports/n100/ladder_revenue_audit_n100/README.md)
 and
-[`ladder_escrow_n100/README.md`](../experiments/reports/n100/ladder_escrow_n100/README.md).
+[`ladder_escrow_n100/README.md`](../../experiments/reports/n100/ladder_escrow_n100/README.md).
 
 ### What this reproduction actually cost (in dollars)
 
@@ -1017,13 +1017,13 @@ cost ~$160, with opus roles ~$300+. This figure is an **upper bound** — the
 reported token counts include the driver's CLI/orchestration overhead, so a
 lean, metered run (role tokens only) would land nearer **$5–10**. Full method,
 per-token pricing table, blend assumptions, and the honest caveat are in
-[`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents);
+[`COST_ESTIMATE.md`](../../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents);
 the stronger-tier runs it prices are documented in
-[`P0B_MIDTIER_SONNET.md`](../experiments/reports/n100/P0B_MIDTIER_SONNET.md) and
-[`E3_CAPABILITY_SWEEP.md`](../experiments/reports/n100/E3_CAPABILITY_SWEEP.md),
+[`P0B_MIDTIER_SONNET.md`](../../experiments/reports/n100/P0B_MIDTIER_SONNET.md) and
+[`E3_CAPABILITY_SWEEP.md`](../../experiments/reports/n100/E3_CAPABILITY_SWEEP.md),
 and the metering-ready harness (which turns the $5–10 lower bound into a measured
 number the moment an LLM key exists) is
-[`harness_adapters/README.md`](../experiments/harness_adapters/README.md).
+[`harness_adapters/README.md`](../../experiments/harness_adapters/README.md).
 
 ---
 
@@ -1057,10 +1057,10 @@ Every number in Part 2 is reproducible from files in the repository:
 | E7 portability (59/59) | `experiments/reports/n100/e7/cross_runtime.json` | `python experiments/scripts/cross_runtime.py` |
 | Full pipeline stress | `experiments/reports/n100/stress/integration_stress.json` | `python experiments/scripts/integration_stress.py 100` |
 | Interaction trials | `experiments/reports/n100/subagent/summary.json` | `python experiments/subagent_trials/run_n100.py --trials 100` |
-| Arm-ladder n=100 ([§10](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry), no Foundry) | [`ladder_revenue_audit_n100/`](../experiments/reports/n100/ladder_revenue_audit_n100/README.md), [`ladder_escrow_n100/`](../experiments/reports/n100/ladder_escrow_n100/README.md) | `python experiments/subagent_trials/aggregate_ladder.py --root <root> --case <case> --out <out>` (emits the `$` column by default; `--no-dollars` to omit, `--price-per-call` to reprice) |
-| Cost of the ladder ([§10 dollar cost](#what-this-reproduction-actually-cost-in-dollars)) | [`COST_ESTIMATE.md`](../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents) | per-trial `subagent_tokens` × [`claude-api`](../experiments/reports/n100/COST_ESTIMATE.md#pricing-used-per-1m-tokens-cached-2026-06-24-from-the-claude-api-skill) list price |
-| Stronger-tier replication (P0b, E3) | [`P0B_MIDTIER_SONNET.md`](../experiments/reports/n100/P0B_MIDTIER_SONNET.md), [`E3_CAPABILITY_SWEEP.md`](../experiments/reports/n100/E3_CAPABILITY_SWEEP.md) | opus-orchestrated, sonnet roles (see reports) |
-| Metering-ready third harness (E7 LangGraph) | [`harness_adapters/README.md`](../experiments/harness_adapters/README.md) | `python experiments/harness_adapters/langgraph_ladder.py --case revenue_audit --arm min_gate` |
+| Arm-ladder n=100 ([§10](#10-the-full-arm-ladder-at-n100-reproduced-without-foundry), no Foundry) | [`ladder_revenue_audit_n100/`](../../experiments/reports/n100/ladder_revenue_audit_n100/README.md), [`ladder_escrow_n100/`](../../experiments/reports/n100/ladder_escrow_n100/README.md) | `python experiments/subagent_trials/aggregate_ladder.py --root <root> --case <case> --out <out>` (emits the `$` column by default; `--no-dollars` to omit, `--price-per-call` to reprice) |
+| Cost of the ladder ([§10 dollar cost](#what-this-reproduction-actually-cost-in-dollars)) | [`COST_ESTIMATE.md`](../../experiments/reports/n100/COST_ESTIMATE.md#whole-suite-cost-if-billed-as-api-subagents) | per-trial `subagent_tokens` × [`claude-api`](../../experiments/reports/n100/COST_ESTIMATE.md#pricing-used-per-1m-tokens-cached-2026-06-24-from-the-claude-api-skill) list price |
+| Stronger-tier replication (P0b, E3) | [`P0B_MIDTIER_SONNET.md`](../../experiments/reports/n100/P0B_MIDTIER_SONNET.md), [`E3_CAPABILITY_SWEEP.md`](../../experiments/reports/n100/E3_CAPABILITY_SWEEP.md) | opus-orchestrated, sonnet roles (see reports) |
+| Metering-ready third harness (E7 LangGraph) | [`harness_adapters/README.md`](../../experiments/harness_adapters/README.md) | `python experiments/harness_adapters/langgraph_ladder.py --case revenue_audit --arm min_gate` |
 | **Full technical write-up** | `experiments/reports/n100/REPORT_N100.md` | — |
 
 The design rationale for each experiment (the deeper "why") is in
@@ -1077,7 +1077,7 @@ instructions that real people actually published?** And **does the answer
 depend on which AI model plays the team members?** Part 3 answers both.
 The short version is below; every number, trace, and honest caveat is in
 the full report,
-[`results/RESULT_09_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_09_REAL_SKILLS_TWO_MODELS.md).
+[`results/RESULT_09_REAL_SKILLS_TWO_MODELS.md`](../results/RESULT_09_REAL_SKILLS_TWO_MODELS.md).
 
 ## 13. Why a third run — the motivation
 

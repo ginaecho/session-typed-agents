@@ -200,9 +200,9 @@ From weakest to strongest support:
 
 | Task | What it tests | Why | Example case |
 |---|---|---|---|
-| **Deadlock-prone** | Claim D (static deadlock check) | A circular dependency hidden in plausible local rules; unchecked specs deadlock, checked specs don't | [`trade_deadlock`](../experiments/cases/trade_deadlock/): Agent A can't give report until Agent B approves, but Agent B won't approve until getting Agent A's report |
-| **Coordination-heavy, always completable** | Claims T/W (token/time savings) | Everyone finishes; we measure cost per delivered result | [`report_pipeline`](../experiments/cases/report_pipeline/): 6 agents in sequence, each adds to a report |
-| **Safety-critical** | Claim I (value-dependent correctness) | An irreversible action (like filing) that must be authorized first; mistakes are disasters, not just slower | [`finance`](../experiments/cases/finance/): Revenue report triggers audit if over $50k |
+| **Deadlock-prone** | Claim D (static deadlock check) | A circular dependency hidden in plausible local rules; unchecked specs deadlock, checked specs don't | [`trade_deadlock`](../../experiments/cases/trade_deadlock/): Agent A can't give report until Agent B approves, but Agent B won't approve until getting Agent A's report |
+| **Coordination-heavy, always completable** | Claims T/W (token/time savings) | Everyone finishes; we measure cost per delivered result | [`report_pipeline`](../../experiments/cases/report_pipeline/): 6 agents in sequence, each adds to a report |
+| **Safety-critical** | Claim I (value-dependent correctness) | An irreversible action (like filing) that must be authorized first; mistakes are disasters, not just slower | [`finance`](../../experiments/cases/finance/): Revenue report triggers audit if over $50k |
 | **Scale** | Claim T at scale | Many roles, deep nesting; does projection's context benefit grow with size? | (Future: 20-role supply chain) |
 
 ---
