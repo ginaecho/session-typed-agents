@@ -6,6 +6,13 @@ data <java> "java.lang.String" from "rt.jar" as String;
 // pay; each Buyer withholds payment until goods arrive -> contention deadlock.
 // FIX (this protocol): Escrow SEQUENCES buyer funding; Seller ships per funded
 // buyer; Escrow releases after each buyer confirms receipt.
+//
+// BeginB is the sequencing message: BuyerB's turn is enforced by having it WAIT
+// to receive BeginB from the Escrow before it funds. Without it, BuyerB's
+// projected local contract lets it fund immediately (nothing precedes its send),
+// so the intended FundEscrowA-before-FundEscrowB order is unenforceable — a
+// non-realizable ordering that Scribble accepts (it is a reordering, not a
+// deadlock) but that fails at runtime. Sequencing needs an explicit message.
 global protocol AgenticPayMultiBuyer(role BuyerA, role BuyerB, role Seller,
                                      role Escrow, role Carrier) {
     FundEscrowA(String) from BuyerA to Escrow;
@@ -14,6 +21,7 @@ global protocol AgenticPayMultiBuyer(role BuyerA, role BuyerB, role Seller,
     DeliverA(String) from Carrier to BuyerA;
     ReceivedA(String) from BuyerA to Escrow;
     ReleaseA(String) from Escrow to Seller;
+    BeginB(String) from Escrow to BuyerB;
     FundEscrowB(String) from BuyerB to Escrow;
     FundsSecuredB(String) from Escrow to Seller;
     ShipB(String) from Seller to Carrier;

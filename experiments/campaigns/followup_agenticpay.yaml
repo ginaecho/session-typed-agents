@@ -1,0 +1,19 @@
+# Follow-up campaign — run AFTER the 5-case campaign drains.
+# Purpose: agenticpay_settlement post-G4-fix re-run (prior runs were graded
+# against the impossible pre-fix G4 goal and are quarantined VOID; the case
+# itself is sound — best real-repo provenance in the benchmark).
+# NOTE: the content_pipeline gpt-5-mini resume (setting 2 only) is done
+# separately BEFORE this campaign, via:
+#   $env:AZURE_OPENAI_DEPLOYMENT="gpt-5-mini"
+#   python scripts/case_runner.py skills_safety/content_pipeline 10 `
+#     --arms bare,unchecked_skills,global_decentralized,min_llmvalid,spec_llmvalid_gate,min_llmvalid_gate,min_llmvalid_gate_nohint,min_llmvalid_sched `
+#     --resume cases/skills_safety/content_pipeline/runs/20260727T182115-gpt-5-mini-p56260-n10-dual
+n: 10
+settings: [bare, unchecked_skills, global_decentralized, min_llmvalid,
+           spec_llmvalid_gate, min_llmvalid_gate, min_llmvalid_gate_nohint,
+           min_llmvalid_sched]
+stall_minutes: 25
+poll_seconds: 60
+deployments:
+  gpt-5-mini: [agenticpay_settlement]
+  gpt-5.4:    [agenticpay_settlement]

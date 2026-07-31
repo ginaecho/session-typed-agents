@@ -19,12 +19,21 @@ global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role 
         PaymentRejected() from Escrow to Carrier;
     }
     
-    // Step 3: Carrier ships goods to Buyer and decides delivery status
+    // Step 3: Carrier ships goods to Buyer and decides delivery status.
+    // FundsResolved notifies the Buyer that the escrow has released (success) or
+    // refunded (failure) the money BEFORE the Buyer may finalize. Without it the
+    // Buyer's projected local contract lets it send SettlementComplete right
+    // after receiving DeliverySuccess — skipping ReleaseFunds entirely (observed
+    // 2026-07-31: ReleaseFunds sent 1/10). This is the same unenforced-ordering
+    // class as agenticpay_multi_buyer's BeginB: to order a role after an event,
+    // send that role a message. (On the failure branch the Buyer was already
+    // notified via RefundInitiated; the success branch lacked the mirror.)
     choice at Carrier {
         DeliverySuccess() from Carrier to Buyer; // Fan-out notification
         DeliverySuccess() from Carrier to Seller;
         DeliverySuccess() from Carrier to Escrow;
         ReleaseFunds(Double) from Escrow to Seller;
+        FundsResolved() from Escrow to Buyer;   // notify Buyer AFTER release
     } or {
         DeliveryFailure(String) from Carrier to Buyer; // Fan-out notification
         DeliveryFailure(String) from Carrier to Seller;
@@ -32,7 +41,8 @@ global protocol AgenticPaySettlement(role Buyer, role Seller, role Escrow, role 
         RefundInitiated(Double) from Escrow to Buyer;
     }
 
-    // Step 4: Final confirmation of settlement
+    // Step 4: Final confirmation of settlement (Buyer waits for the funds-
+    // resolution message on either branch before finalizing)
     SettlementComplete() from Buyer to Seller;
     SettlementComplete() from Buyer to Carrier;
     SettlementComplete() from Buyer to Escrow;

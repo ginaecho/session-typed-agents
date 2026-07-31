@@ -130,24 +130,23 @@ Symmetric by construction: one row per claim × campaign.
 | Claim | 6_RUN campaigns (engine/subagents, Claude models) | 7_RUN campaign (Azure Foundry API, GPT models) | Status |
 |---|---|---|---|
 | 1 Composition failure | R-orig 0% (n=10 Haiku); unchecked 75% GCR but 50% CGC + 100 disasters (n=100 Sonnet) | Setting 2 = 0/10 (code_execution), 0/10 (booking_saga), 0–1/10 (airline, rerun pending); worse than intent-only on code_execution | **PROVEN, both stacks** |
-| 2 Design-time detection | compiler rejects all 4 composed real-skill protocols; E1 mutation 100/84/100% | pr_review_merge + loop cases validate True under BOTH backends (sound); but on circular_wait mutants BOTH catch 0 (comparable set) and nuscr can't analyse 19/30 — coinductive backend does NOT close the gap (Part 3c) | **Cross-validated sound for our cases; static detection INCOMPLETE for both backends → the gate is the guarantee** |
+| 2 Design-time detection | compiler rejects all 4 composed real-skill protocols; E1 mutation 100/84/100% | pr_review_merge + loop cases validate True under BOTH backends; on circular_wait mutants BOTH catch 0 (3c). NEW (2026-07-30/31): TWO Scribble-VALID protocols I authored (multi_buyer, agenticpay_settlement) had unenforced-ordering holes — a role acts before a prerequisite it was never messaged about; deadlock-free so Scribble AND the runtime gate both accept the reordered run. Caught by the suspicion audit (STJP-fails red flag) + trace, fixed by one notification message each; spawned `protocol_entry_audit.py` (catches the first-action subclass) | **Static detection INCOMPLETE (both backends); the deadlock-free guarantee does NOT imply intended-ordering — needs realizability lint + suspicion auditing on top** |
 | 3 Enforcement → zero harm | STJP rows: 0 disasters at n=10, n=100, all cases; E2 hostile-agent gate 0→42→92→100% blocked as layers add | settings 5–8: 0 violations, 0 disaster trials in every completed n=10 table | **PROVEN, both stacks** |
-| 4 Cheapest-safe | 13.3k vs 120k tokens (finance §2); 1.52–1.67k vs 2.75–4.9k (real skills); E6 scaling: savings grow 9×→17× from 2→10 roles | booking_saga: STJP 3,839 tok vs 38k intent-only; MAF appendix: 5,092 vs 17–45k; BUT see 3e — at 3–4 roles/linear STJP ties within noise (complexity-dependent) | **PROVEN at n=10; finance-on-Foundry n=10 RUNNING to close the loop** |
-| 5 Model-independence | Haiku vs Sonnet: failures move, STJP flat 100%/0 (Part 3, 120 trials) | gpt-5-mini vs gpt-5.4: same shape (booking 0/10 both no-protocol settings on BOTH models); GPT curve = mini vs 5.4 (2 tiers; sol blocked from ladder) | **PROVEN on 2 Claude tiers + 2 GPT tiers (mini, 5.4)** |
+| 4 Cheapest-safe | 13.3k vs 120k tokens (finance §2); 1.52–1.67k vs 2.75–4.9k (real skills); E6 scaling: savings grow 9×→17× from 2→10 roles | finance FINAL both models; 5 complex cases FINAL both models (CASES 6–10). STJP cheapest where coordination is non-trivial: gem (7r branch+loop) ONLY STJP completes 10/10 both models; multi_seller/multi_buyer STJP 12–24 calls vs 44–73. HONEST limits (3d/3e): at 3–4 roles/linear STJP ties within noise; react18 STJP NOT uniquely best (a no-hint gate matches/beats it — CASE 9) | **PROVEN where coordination cost is real; complexity-dependent (ties at ≤4 roles/linear), documented honestly** |
+| 5 Model-independence | Haiku vs Sonnet: failures move, STJP flat 100%/0 (Part 3, 120 trials) | SAFETY is model-independent — 0 violations/disasters on every gated setting, mini AND 5.4, all cases. But COMPLETION of the HARDEST coordination is model-DEPENDENT: sdlc's clean 5.4 result (STJP+verbose-gate 10/10) does NOT reproduce on mini (noisy 7/10, CASE 6); react18's winning settings differ by model (CASE 9). Reported honestly, not smoothed | **Safety+cost model-independent; hardest-case completion is model-dependent — stated openly** |
 | 6 Runtime-independence | engine + E7 portability 59/59 | Foundry Agent Service (hosted agents) + MAF appendix reproduce the pattern; E7 re-run 59/59 | **PROVEN across 3 runtimes** |
 | 7 Measurement validity | instruments 40/40; E5 fidelity 300/300; E4 reliability math: n=100 lifts worst-case pass-ten confidence 17.6× vs n=10 | instruments re-run 40/40; goal-quality tooling (discrimination/mutation/gaming); world-state oracle caught a live race AND a goal false-negative; anti-fabrication: 92/92 recount + verbatim server-thread matches; 2026-07-29 suspicion audit (3e): 0 recount mismatches, all cases goal-audited | **PROVEN, and stronger than in 6_RUN** |
 
-**Open gaps** (the honest to-do list, updated 2026-07-29 — resolved since
-last update: finance-on-Foundry DONE both models; airline re-runs DONE both
-models; content_pipeline unblocked by user decision, gpt-5.4 leg DONE):
-5 new complex/N-party cases RUNNING (gem_dev_team, sdlc_release_gate,
-react18_migration, agenticpay_multi_seller, agenticpay_multi_buyer — n=10, 8
-settings, both models); content_pipeline mini-leg resume (setting 2 only);
-agenticpay_settlement post-G4-fix re-run (NOT yet queued; prior runs
-quarantined VOID); pr_review_merge round-budget rework + G3 anchor check (its
-07-28 n=10 run failed the suspicion audit — see 7_RUN register); memory_race
+**Open gaps** (updated 2026-07-31 — RESOLVED since last update: all 5 complex/
+N-party cases DONE both models + written as CASES 6–10 (gem, sdlc,
+react18, multi_seller, multi_buyer); content_pipeline mini DONE (CASE 4);
+multi_buyer protocol bug found+fixed+re-run; agenticpay_settlement protocol bug
+found+fixed, re-run IN PROGRESS both models). **STILL OPEN:**
+agenticpay_settlement re-run to complete + write as a CASE; pr_review_merge
+round-budget rework (its 07-28 run failed the suspicion audit); memory_race
 delta-semantics fix; E3 GPT-tier curve; E5 live-drafting; n=100 on Foundry
-(cost decision); a non-OpenAI/non-Claude vendor point.
+(cost decision); a non-OpenAI/non-Claude vendor point; sync these docs to the
+`session-typed-agents` repo.
 
 ---
 
@@ -180,7 +179,7 @@ after its module.)
 Reproduce: `docker build -t nuscr-coind -f tools/nuscr/Dockerfile <nuscr-fork>`,
 then `NuscrCompiler().validate(path)`; write mutants to `<module>.scr`.
 
-## 3d. At 7 roles, the scheduler is the only reliable AND cheap way to finish (2026-07-29, FINAL for gpt-5.4)
+## 3d. The complex real-skills cases: three honest shapes (2026-07-31, all 5 FINAL both models)
 
 First case where the EFSM scheduler's completion value (beyond Claim 4's cost
 edge) becomes visible: the smaller cases (1–4 roles) finish for every contract
@@ -203,8 +202,34 @@ to zero. So: enforcement handles SAFETY at every team size (Claim 3 intact),
 but at 7 roles COMPLETION becomes a turn-budget problem and the scheduler is
 the only setting that solves it cheaply — sharpening Claim 4 from "cheapest"
 to "the only reliable-and-cheap option once coordination dominates." Full
-table + mechanism: `7_RUN_REPORTS_FOUNDRY_REAL_CASES.md` CASE 6. gpt-5-mini
-leg still queued.
+table + mechanism: `7_RUN_REPORTS_FOUNDRY_REAL_CASES.md` CASE 6.
+
+**All 5 complex cases are now FINAL on BOTH models (2026-07-31, CASES 6–10) —
+and the honest picture has three shapes, not one:**
+- **Scheduler is NECESSARY (hardest cases): gem_dev_team (7r, branch+LOOP) —
+  the strongest result.** On BOTH models, setting 8 is the ONLY setting that
+  completes 10/10; even the verbose gate fails (unlike sdlc). Radically cheapest
+  (14.5–34 calls vs 80–431) — never enters the replan-loop that burns up to
+  3.18M tok/trial. sdlc is similar on gpt-5.4 (STJP + verbose-gate 10/10) but
+  **does NOT reproduce on mini** (noisy 7/10 for all) — completion is
+  model-dependent for the very hardest coordination.
+- **Scheduler is CHEAPEST-safe (mid cases): multi_seller + multi_buyer (5r
+  escrow).** Most contract settings complete; STJP wins decisively on cost
+  (12–24 calls vs 44–73) with 0 violations. multi_buyer is also the worked
+  example of the suspicion rule: its first STJP-0/10 was a protocol bug I
+  authored, caught, fixed (one `BeginB` message), re-run clean.
+- **Scheduler is NOT uniquely best (honest counter-shape): react18 (6r,
+  phased+loop).** STJP is robust (9–10/10 both models) and cheapest among
+  reliable settings, but a **no-hint gate matches or beats it** — the per-turn
+  liveness hint *backfires* in this loop. Reported as a genuine limit, not
+  smoothed over (CASE 9).
+
+Honest caveat across all: disaster counts are near-zero because failing
+settings mostly never reach the dangerous step, and intent-only's 10/10 on
+weak-model gem is a brute-force fluke (418 violations, 2.1M tok, 1 real
+disaster). Separation on these hard cases is COMPLETION + COST + violations,
+not disaster frequency. (agenticpay_settlement — a 6th complex case — is
+re-running after a second authoring-bug fix; see 7_RUN register.)
 
 ## 3e. SUSPICION AUDIT of the Foundry tables (2026-07-29)
 
