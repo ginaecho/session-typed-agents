@@ -15,11 +15,19 @@ from __future__ import annotations
 import json
 import os
 import random
+import socket
 import sys
 import threading
 import time
 from datetime import datetime
 from pathlib import Path
+
+# Belt-and-braces stall guard: any socket created without an explicit
+# timeout inherits this default, so a dropped TCP read raises within
+# 4 minutes instead of hanging a run forever (11h stall 2026-07-25,
+# 3h stall 2026-07-27). Per-client timeouts in baselines/_foundry_client.py
+# cover the AgentsClient path; this covers everything else.
+socket.setdefaulttimeout(240)
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -629,8 +637,14 @@ def run_case(case_id: str, n_trials: int,
             print(f"  no completed arms found; running all from scratch")
     else:
         completed = set()
+        # Dir name includes the deployment and PID: two jobs launched in the
+        # same second used to collide into ONE dir (observed 2026-07-27,
+        # airline_seat mini vs gpt-5.4 — the gpt-5-mini job's data was lost and
+        # the surviving summary was misattributed). Model in the name also
+        # makes run dirs self-attributing.
         timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
-        run_dir = case.runs_dir / f"{timestamp}-n{n_trials}-dual"
+        dep = os.environ.get("AZURE_OPENAI_DEPLOYMENT", "model").replace(".", "")
+        run_dir = case.runs_dir / f"{timestamp}-{dep}-p{os.getpid()}-n{n_trials}-dual"
         run_dir.mkdir(parents=True, exist_ok=True)
         print(f"  run dir:  {run_dir.relative_to(EXPERIMENTS_DIR)}")
     (case.case_dir / "LATEST").write_text(run_dir.name, encoding="utf-8")
