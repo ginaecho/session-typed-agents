@@ -24,6 +24,28 @@ task. Only the coordination material changes:
 | 7 | **Local contract + gate, no turn hint** | Same as 6, minus the per-turn "you may act now" nudge — isolates pure enforcement. |
 | 8 | **Full STJP** | Lean contract + gate + the scheduler that only prompts whoever the protocol says may act next. |
 
+**About setting 8's scheduler.** The scheduler is not a separate
+intelligence: the protocol is compiled into one finite state machine per role
+(the same machines the gate uses to block wrong messages), and the scheduler
+simply asks, each turn, which role currently has a send enabled — and gives
+the turn to that role instead of polling everyone in a circle. It makes no
+LLM calls of its own; its savings come entirely from never spending a turn on
+a role that cannot act.
+
+**About setting 2 ("Real skills, no protocol") — the threat model.** In this
+setting each agent's instructions are a real, published skill file downloaded
+from a public repository — e.g. the coder/reviewer prompts from
+`microsoft/autogen`, the seat-booking agent from
+`openai/openai-agents-python`, the review-agent files from
+`github/awesome-copilot` — composed into a team with no coordination protocol
+of any kind. This models what practitioners actually do: download well-written
+skills and wire them together, assuming good individual instructions will
+coordinate. Setting 1 differs by having no skill files at all (task
+description only). The verbatim skill files live in each case's
+`unchecked_skills/<Role>.md`; each case's `SOURCES.md` records the exact
+source repository, file, and license (see also
+`reference/MINED_SKILLS_SOURCES.md`).
+
 > **Why raw data folders show more than 8:** the harness also runs extra
 > setups — ablations (e.g. a verbose no-gate variant, an alternative
 > turn-taking heuristic) and the same task hosted on a different runtime
@@ -38,9 +60,12 @@ messages the protocol monitor flagged (wrong order / wrong recipient).
 happened (e.g. code executed without review), per the Critic policies.
 **Cost-to-goal** = tokens ÷ GCR (∞ if GCR = 0).
 
-**Table format.** Every case table reports the same computed columns — GCR,
-Wilson 95% CI, Violations, Disaster trials, Calls/trial, Tokens/trial —
-generated directly from each run's `summary.json`/`summary_policy.json`.
+**Table format.** Every case shows ONE combined table with **both models side
+by side** — the two models ran the same case, the same protocol, the same
+turn limit, n=10 per setting; the exact run folder for each model is named in
+the line above each table. Columns: GCR per model, then Violations,
+Disasters, Calls/trial and Tokens/trial as `mini / 5.4` pairs — all computed
+directly from each run's `summary.json`/`summary_policy.json`.
 **†** marks settings 1–2, which are graded by the label-free `role_pair` rule
 (these settings never see the protocol vocabulary): a † success means the
 right roles exchanged valid payloads under any label, and often does NOT
@@ -49,6 +74,31 @@ strict 10/10 (settings 3–8, whose successes all contain the terminal
 message). Seconds/trial is omitted: settings execute in parallel waves, so
 wall-clock reflects rate-limit contention, not agent time; timing comparisons
 require `--sequential` runs.
+
+**Reading the model columns — why gpt-5.4 usually uses FEWER tokens per trial
+than gpt-5-mini.** Tokens/trial measures the whole trial, and the weaker
+model needs more of everything to get through the same protocol: (a) **more
+retries and loop rounds** — a failed attempt is retried up to 3×, and in
+looping cases gpt-5-mini takes more rounds (gem_dev_team full STJP: 33.7
+calls/trial on mini vs 14.5 on gpt-5.4); (b) **longer messages per call** —
+gpt-5-mini writes more words to say the same thing (finance full STJP: ~1,690
+tokens/call on mini vs ~1,190 on gpt-5.4). These two factors COMPOUND,
+because the model has no memory between calls: every call's input re-sends
+the whole conversation so far, so each message added to the history makes
+every LATER call's input bigger. Long-winded messages therefore tax every
+turn that follows them, and a retried attempt pays for its history all over
+again — which is how a weak-model trial can reach millions of tokens
+(sdlc setting 6 on mini: ~144 calls × ~19k input tokens each ≈ 2.7M, vs the
+same setting on gpt-5.4 at ~105 calls × ~450 each ≈ 47k; in the one mini
+trial where the agents happened to stay brief, the total collapsed to 13k).
+The step-by-step mechanism, with the per-trial evidence, is written out in
+[`8_ANALYSIS_FINDINGS.md`](8_ANALYSIS_FINDINGS.md) Finding 4.
+So the stronger model finishing with fewer total tokens is expected, not an
+anomaly — and cutting the number of turns, as the scheduler does, attacks
+this compounding directly. Note also that tokens
+are not money: the two models have very different per-token prices, so a
+higher token count on the cheaper model does not mean a higher bill — this
+report compares token counts, not currency.
 
 ---
 
@@ -153,34 +203,26 @@ the scheduler has nothing to save and the gate's ~100-token prompt overhead is
 pure insurance premium. In a 3-role straight line, the CONTRACT does all the
 work; the scheduler neither costs nor buys anything measurable.
 
-### gpt-5-mini — n=10 per setting (FINAL, 10 trials each)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260726T211855-n10-dual` · gpt-5.4 run `20260726T211903-n10-dual`.
+
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 7/10 † | [40, 89] | 71 | 2/10 | 18.9 | 23,056 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 52 | 0/10 | 23.0 | 31,787 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 4.4 | 6,901 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 3,902 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 5,424 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 4,029 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 3.3 | 5,031 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 3.2 | 5,486 |
+| 1 | Intent only | 7/10 † | 9/10 † | 71 / 57 | 2 / 0 | 18.9 / 20.2 | 23,056 / 17,958 |
+| 2 | Real skills, no protocol | 0/10 † | 1/10 † | 52 / 60 | 0 / 0 | 23.0 / 28.6 | 31,787 / 44,025 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.4 / 4.3 | 6,901 / 5,411 |
+| 4 | Local contract (not enforced) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 3,902 / 1,734 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 5,424 / 3,883 |
+| 6 | Local contract + gate (lean) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 4,029 / 1,832 |
+| 7 | Local contract + gate, no turn hint | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.3 / 3.0 | 5,031 / 1,737 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.2 / 3.0 | 5,486 / 1,834 |
+
 
 \* Setting 2 commits no disaster only because it never reaches execution at
 all: the skill text mentions serving a "user," so the Executor returns results
 to a hallucinated `User` role (4×) or the Reviewer (15×), never to the Coder.
 Real skills are *worse than no skills* (0/10 vs 7/10).
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260726T211903)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 9/10 † | [60, 98] | 57 | 0/10 | 20.2 | 17,958 |
-| 2 | Real skills, no protocol | 1/10 † | [2, 40] | 60 | 0/10 | 28.6 | 44,025 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 4.3 | 5,411 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,734 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 3,883 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,832 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,737 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,834 |
 
 Same story as mini, sharper: the real skills are the worst AND most expensive
 setting on the stronger model too (1/10 @ 44k tok vs intent-only 9/10 @ 18k).
@@ -206,34 +248,26 @@ and for the same logged reason (3.0 calls/trial everywhere): a short linear
 protocol gives the scheduler nothing to optimize; settings 4/7 win tokens by
 the gate's small premium.
 
-### gpt-5-mini — n=10 per setting (FINAL, re-run 20260727T101238-gpt-5-mini-p57428, collision-proof)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260727T101238-gpt-5-mini-p57428-n10-dual` · gpt-5.4 run `20260727T124317-gpt-54-p52916-n10-dual`.
+
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 10/10 † | [72, 100] | 37 | 0/10 | 6.9 | 11,472 |
-| 2 | Real skills, no protocol | 1/10 † | [2, 40] | 33 | 0/10 | 27.0 | 34,515 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 4,990 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 2,475 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 3,978 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 2,661 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 2,479 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 2,668 |
+| 1 | Intent only | 10/10 † | 10/10 † | 37 / 78 | 0 / 0 | 6.9 / 12.5 | 11,472 / 15,839 |
+| 2 | Real skills, no protocol | 1/10 † | 8/10 † | 33 / 165 | 0 / 0 | 27.0 / 31.5 | 34,515 / 45,016 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 4,990 / 3,924 |
+| 4 | Local contract (not enforced) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 2,475 / 1,698 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 3,978 / 3,970 |
+| 6 | Local contract + gate (lean) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 2,661 / 1,824 |
+| 7 | Local contract + gate, no turn hint | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 2,479 / 1,696 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 3.0 / 3.0 | 2,668 / 1,826 |
+
 
 Real skills (setting 2) at n=10: 1/10 success, 34k tokens/trial — worse AND
 dearer than intent-only (10/10 @ 11k). Every contract setting: 10/10, zero
 violations. (This is the properly-attributed mini re-run after the collision
 incident; gpt-5.4 leg running.)
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260727T124317)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 10/10 † | [72, 100] | 78 | 0/10 | 12.5 | 15,839 |
-| 2 | Real skills, no protocol | 8/10 † | [49, 94] | 165 | 0/10 | 31.5 | 45,016 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 3,924 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,698 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 3,970 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,824 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,696 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 3.0 | 1,826 |
 
 **airline_seat is now COMPLETE at n=10 on both models.** The stronger model
 lifts real-skills completion (8/10 vs mini's 1/10) but at the price of the most
@@ -263,17 +297,20 @@ The one sub-perfect contract row (setting 4 at 9/10 on 5.4 — the contract
 WITHOUT enforcement) previews finance's lesson: projection alone is the
 fragile layer; the gate is what makes it dependable.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260727T080510; gpt-5.4 leg FINAL below)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260727T080510-n10-dual` · gpt-5.4 run `20260727T084001-n10-dual`.
+
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 124 | 8/10 | 24.5 | 38,252 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 25 | 2/10 | 23.9 | 34,734 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 5.0 | 8,136 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 5.3 | 4,853 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 5.0 | 8,360 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 5.0 | 4,805 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 5.3 | 5,007 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 4.0 | 3,839 |
+| 1 | Intent only | 0/10 † | 0/10 † | 124 / 122 | 8 / 0 | 24.5 / 37.1 | 38,252 / 37,962 |
+| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 25 / 0 | 2 / 0 | 23.9 / 24.0 | 34,734 / 22,003 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 5.0 / 5.0 | 8,136 / 6,634 |
+| 4 | Local contract (not enforced) | 10/10 | 9/10 | 0 / 0 | 0 / 0 | 5.3 / 7.0 | 4,853 / 3,911 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 5.0 / 5.0 | 8,360 / 6,767 |
+| 6 | Local contract + gate (lean) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 5.0 / 5.0 | 4,805 / 3,082 |
+| 7 | Local contract + gate, no turn hint | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 5.3 / 6.5 | 5,007 / 3,690 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.0 / 4.0 | 3,839 / 2,457 |
+
 
 The cleanest separation in the benchmark: BOTH no-protocol settings fail all ten
 trials (with 124 and 25 violations); ALL eight contract settings are perfect;
@@ -281,17 +318,6 @@ full STJP is the cheapest and fastest safe setting. The n=1 run's two
 charge-before-hold disasters (see git history) came from this same intent-only
 configuration.
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260727T084001)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 122 | 0/10 | 37.1 | 37,962 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 0 | 0/10 | 24.0 | 22,003 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 5.0 | 6,634 |
-| 4 | Local contract (not enforced) | 9/10 | [60, 98] | 0 | 0/10 | 7.0 | 3,911 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 5.0 | 6,767 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 5.0 | 3,082 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 6.5 | 3,690 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 4.0 | 2,457 |
 
 **booking_saga is now COMPLETE at n=10 on both models**, and the shape is
 identical: every no-protocol setting 0/10 on BOTH models; every enforced setting
@@ -324,29 +350,21 @@ that trust does not generalize.
 > real-skills text as "pattern-inspired by an unlicensed public repo," not as
 > resting on permissively-licensed source.
 
-### gpt-5.4 — n=10 per setting (FINAL, goal-audit clean)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 64 | — | 36.8 | 95,884 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 42 | — | 43.0 | 101,522 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | — | 4.0 | 7,551 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | — | 4.0 | 4,234 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | — | 4.0 | 7,598 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | — | 4.0 | 4,979 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | — | 4.0 | 4,476 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | — | 4.0 | 5,191 |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260727T182115-gpt-5-mini-p56260-n10-dual` · gpt-5.4 run `20260728T080534-gpt-54-p55104-n10-dual`.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260727T182115)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 9/10 † | [60, 98] | 195 | — | 38.8 | 436,677 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 288 | — | 101.2 | 1,317,981 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | — | 4.0 | 12,643 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | — | 4.0 | 9,355 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | — | 4.6 | 15,480 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | — | 4.0 | 9,840 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | — | 4.0 | 9,609 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | — | 4.0 | 8,942 |
+| 1 | Intent only | 9/10 † | 0/10 † | 195 / 64 | — / — | 38.8 / 36.8 | 436,677 / 95,884 |
+| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 288 / 42 | — / — | 101.2 / 43.0 | 1,317,981 / 101,522 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 12,643 / 7,551 |
+| 4 | Local contract (not enforced) | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 9,355 / 4,234 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | — / — | 4.6 / 4.0 | 15,480 / 7,598 |
+| 6 | Local contract + gate (lean) | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 9,840 / 4,979 |
+| 7 | Local contract + gate, no turn hint | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 9,609 / 4,476 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 8,942 / 5,191 |
+
+
 
 Fourth real-skills case, same result on **both models**: the raw real skills
 setting 2 is 0/10 (the most expensive setting — 101k tok on 5.4, 1.3M on mini)
@@ -400,25 +418,19 @@ catastrophe is filing an unaudited high-revenue report. This is the original
 (no "real skills, no protocol" setting; settings 2 and 7 are therefore
 absent from its tables). GCR is the strict goal-achievement rate.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260727T102422)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 359 | 10/10 | 53.4 | 136,262 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 16 | 0/10 | 51.1 | 176,915 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 1 | 0/10 | 112.5 | 160,211 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 102.0 | 237,656 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 97.9 | 135,481 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 28.7 | 48,584 |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260727T102422-gpt-5-mini-p62660-n10-dual` · gpt-5.4 run `20260727T182045-gpt-54-p65284-n10-dual`.
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260727T182045)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 290 | 9/10 | 60.8 | 87,380 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 38.8 | 113,498 |
-| 4 | Local contract (not enforced) | 5/10 | [24, 76] | 0 | 0/10 | 114.3 | 120,807 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 95.0 | 193,220 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 101.2 | 109,004 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 32.8 | 38,955 |
+| 1 | Intent only | 0/10 † | 0/10 † | 359 / 290 | 10 / 9 | 53.4 / 60.8 | 136,262 / 87,380 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 16 / 0 | 0 / 0 | 51.1 / 38.8 | 176,915 / 113,498 |
+| 4 | Local contract (not enforced) | 10/10 | 5/10 | 1 / 0 | 0 / 0 | 112.5 / 114.3 | 160,211 / 120,807 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 102.0 / 95.0 | 237,656 / 193,220 |
+| 6 | Local contract + gate (lean) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 97.9 / 101.2 | 135,481 / 109,004 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 28.7 / 32.8 | 48,584 / 38,955 |
+
+
 
 Readings:
 - **Intent-only fails on both models (0%)**; every gated setting (5,6,8) is
@@ -444,17 +456,20 @@ whole team into another review round; only when all four approve may the code
 be merged and deployed — once, and only after security passed. The final
 `Deployed` message is the finish line.
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260728T171537-gpt-54-2-p64992)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260729T174204-gpt-5-mini-p54552-n10-dual` · gpt-5.4 run `20260728T171537-gpt-54-2-p64992-n10-dual`.
+
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 0 | 0/10 | 112.9 | 70,673 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 829 | 0/10 | 345.4 | 1,985,758 |
-| 3 | Global protocol (as text) | 2/10 | [6, 51] | 0 | 0/10 | 93.3 | 166,791 |
-| 4 | Local contract (not enforced) | 0/10 | [0, 28] | 0 | 0/10 | 76.1 | 23,994 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 56.1 | 103,016 |
-| 6 | Local contract + gate (lean) | 1/10 | [2, 40] | 0 | 0/10 | 105.4 | 46,921 |
-| 7 | Local contract + gate, no turn hint | 1/10 | [2, 40] | 0 | 0/10 | 87.1 | 35,092 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 16.8 | 17,732 |
+| 1 | Intent only | 7/10 † | 0/10 † | 412 / 0 | 2 / 0 | 119.4 / 112.9 | 668,043 / 70,673 |
+| 2 | Real skills, no protocol | 1/10 † | 0/10 † | 1020 / 829 | 1 / 0 | 297.7 / 345.4 | 6,027,176 / 1,985,758 |
+| 3 | Global protocol (as text) | 5/10 | 2/10 | 0 / 0 | 1 / 0 | 76.4 / 93.3 | 199,530 / 166,791 |
+| 4 | Local contract (not enforced) | 3/10 | 0/10 | 16 / 0 | 0 / 0 | 188.6 / 76.1 | 2,033,604 / 23,994 |
+| 5 | Local contract + gate (verbose) | 4/10 | 10/10 | 0 / 0 | 0 / 0 | 82.5 / 56.1 | 408,274 / 103,016 |
+| 6 | Local contract + gate (lean) | 5/10 | 1/10 | 0 / 0 | 0 / 0 | 143.6 / 105.4 | 2,702,158 / 46,921 |
+| 7 | Local contract + gate, no turn hint | 3/10 | 1/10 | 0 / 0 | 0 / 0 | 178.3 / 87.1 | 2,432,421 / 35,092 |
+| 8 | Full STJP | 7/10 | 10/10 | 0 / 0 | 0 / 0 | 113.9 / 16.8 | 2,021,993 / 17,732 |
+
 
 **What the numbers show (plain).** 7 agents must review and deploy code within
 a fixed maximum number of turns (`max_steps`), and only one agent acts at a time. Two settings finish
@@ -481,17 +496,6 @@ visible at all, because the smaller cases (1–4 roles) finish for everyone.
 
 The same 48-turn limit (`max_steps: 48`) applies to every setting.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260729T174204)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 7/10 † | [40, 89] | 412 | 2/10 | 119.4 | 668,043 |
-| 2 | Real skills, no protocol | 1/10 † | [2, 40] | 1020 | 1/10 | 297.7 | 6,027,176 |
-| 3 | Global protocol (as text) | 5/10 | [24, 76] | 0 | 1/10 | 76.4 | 199,530 |
-| 4 | Local contract (not enforced) | 3/10 | [11, 60] | 16 | 0/10 | 188.6 | 2,033,604 |
-| 5 | Local contract + gate (verbose) | 4/10 | [17, 69] | 0 | 0/10 | 82.5 | 408,274 |
-| 6 | Local contract + gate (lean) | 5/10 | [24, 76] | 0 | 0/10 | 143.6 | 2,702,158 |
-| 7 | Local contract + gate, no turn hint | 3/10 | [11, 60] | 0 | 0/10 | 178.3 | 2,432,421 |
-| 8 | Full STJP | 7/10 | [40, 89] | 0 | 0/10 | 113.9 | 2,021,993 |
 
 **Model-dependence — the clean gpt-5.4 result does NOT reproduce on the weak
 model.** On gpt-5-mini the 7-role review loop is
@@ -518,29 +522,21 @@ the browser tests fail, the team replans, re-implements and re-tests — as many
 times as it takes. Deploy is the finish line and is allowed **only after tests
 pass**. The catastrophe is deploying before the tests are green.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260728T171537-gpt-5-mini-p63672)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 10/10 † | [72, 100] | 418 | 1/10 | 100.1 | 2,128,613 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 488 | 0/10 | 228.1 | 1,038,727 |
-| 3 | Global protocol (as text) | 9/10 | [60, 98] | 16 | 0/10 | 105.8 | 618,091 |
-| 4 | Local contract (not enforced) | 6/10 | [31, 83] | 0 | 0/10 | 96.1 | 397,811 |
-| 5 | Local contract + gate (verbose) | 2/10 | [6, 51] | 0 | 0/10 | 123.8 | 886,213 |
-| 6 | Local contract + gate (lean) | 5/10 | [24, 76] | 0 | 0/10 | 194.1 | 3,179,195 |
-| 7 | Local contract + gate, no turn hint | 6/10 | [31, 83] | 0 | 0/10 | 154.0 | 1,233,749 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 33.7 | 836,986 |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260728T171537-gpt-5-mini-p63672-n10-dual` · gpt-5.4 run `20260728T171537-gpt-54-p30044-n10-dual`.
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260728T171537-gpt-54-p30044)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 64 | 0/10 | 80.0 | 57,748 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 1155 | 0/10 | 431.0 | 2,569,032 |
-| 3 | Global protocol (as text) | 3/10 | [11, 60] | 0 | 0/10 | 116.4 | 320,098 |
-| 4 | Local contract (not enforced) | 3/10 | [11, 60] | 0 | 0/10 | 94.5 | 84,323 |
-| 5 | Local contract + gate (verbose) | 3/10 | [11, 60] | 0 | 0/10 | 106.3 | 147,896 |
-| 6 | Local contract + gate (lean) | 0/10 | [0, 28] | 0 | 0/10 | 86.1 | 48,324 |
-| 7 | Local contract + gate, no turn hint | 3/10 | [11, 60] | 0 | 0/10 | 102.0 | 87,622 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 14.5 | 64,558 |
+| 1 | Intent only | 10/10 † | 0/10 † | 418 / 64 | 1 / 0 | 100.1 / 80.0 | 2,128,613 / 57,748 |
+| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 488 / 1155 | 0 / 0 | 228.1 / 431.0 | 1,038,727 / 2,569,032 |
+| 3 | Global protocol (as text) | 9/10 | 3/10 | 16 / 0 | 0 / 0 | 105.8 / 116.4 | 618,091 / 320,098 |
+| 4 | Local contract (not enforced) | 6/10 | 3/10 | 0 / 0 | 0 / 0 | 96.1 / 94.5 | 397,811 / 84,323 |
+| 5 | Local contract + gate (verbose) | 2/10 | 3/10 | 0 / 0 | 0 / 0 | 123.8 / 106.3 | 886,213 / 147,896 |
+| 6 | Local contract + gate (lean) | 5/10 | 0/10 | 0 / 0 | 0 / 0 | 194.1 / 86.1 | 3,179,195 / 48,324 |
+| 7 | Local contract + gate, no turn hint | 6/10 | 3/10 | 0 / 0 | 0 / 0 | 154.0 / 102.0 | 1,233,749 / 87,622 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 33.7 / 14.5 | 836,986 / 64,558 |
+
+
 
 **What the numbers show (plain).** On **both** models, the full STJP scheduler
 (setting 8) is the **only** setting that completes all ten trials. Every
@@ -580,17 +576,20 @@ receipt, and only then does the escrow release each seller's payment. The
 catastrophe is releasing a seller's payment before the buyer has the goods, or
 shipping before the money is secured.
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260729T144246-gpt-54-2-p51828)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260730T144008-gpt-5-mini-p46252-n10-dual` · gpt-5.4 run `20260729T144246-gpt-54-2-p51828-n10-dual`.
+
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 10/10 † | [72, 100] | 145 | 0/10 | 39.8 | 69,573 |
-| 2 | Real skills, no protocol | 4/10 † | [17, 69] | 99 | 0/10 | 61.9 | 85,712 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 39.0 | 111,200 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 39.0 | 45,654 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 52.2 | 98,385 |
-| 6 | Local contract + gate (lean) | 9/10 | [60, 98] | 0 | 0/10 | 59.1 | 60,685 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 39.0 | 45,419 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 18.1 | 14,942 |
+| 1 | Intent only | 10/10 † | 10/10 † | 240 / 145 | 0 / 0 | 53.5 / 39.8 | 399,347 / 69,573 |
+| 2 | Real skills, no protocol | 10/10 † | 4/10 † | 246 / 99 | 0 / 0 | 65.4 / 61.9 | 425,169 / 85,712 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 35.0 / 39.0 | 114,528 / 111,200 |
+| 4 | Local contract (not enforced) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 39.0 / 39.0 | 56,192 / 45,654 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 39.0 / 52.2 | 100,200 / 98,385 |
+| 6 | Local contract + gate (lean) | 10/10 | 9/10 | 0 / 0 | 0 / 0 | 39.0 / 59.1 | 61,818 / 60,685 |
+| 7 | Local contract + gate, no turn hint | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 39.0 / 39.0 | 57,498 / 45,419 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 12.0 / 18.1 | 18,734 / 14,942 |
+
 
 **What the numbers show (plain).** This is a **straight-line** settlement — no
 branch, no loop — so it is much easier than gem, and most settings complete.
@@ -610,17 +609,6 @@ produced an actual pay-before-receipt disaster — the escrow-first ordering
 held even on the chaotic paths — so this case separates on completion,
 violations and cost rather than disasters.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260730T144008)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 10/10 † | [72, 100] | 240 | 0/10 | 53.5 | 399,347 |
-| 2 | Real skills, no protocol | 10/10 † | [72, 100] | 246 | 0/10 | 65.4 | 425,169 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 35.0 | 114,528 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 39.0 | 56,192 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 39.0 | 100,200 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 39.0 | 61,818 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 39.0 | 57,498 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 12.0 | 18,734 |
 
 On the weak model the completion picture is *easier* than 5.4 (even the real
 skills reach settlement, 10/10) — but the safety/cost story is identical and
@@ -640,29 +628,21 @@ tests, and on any regression bounce work back to a surgeon and re-test until
 green (`Migrated` is the finish line). The catastrophe is signing off with
 tests still failing.
 
-### gpt-5.4 — n=10 (FINAL, run 20260729T163558)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 10/10 † | [72, 100] | 71 | 0/10 | 49.2 | 24,455 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 163 | 0/10 | 138.6 | 806,440 |
-| 3 | Global protocol (as text) | 1/10 | [2, 40] | 0 | 0/10 | 69.3 | 88,342 |
-| 4 | Local contract (not enforced) | 0/10 | [0, 28] | 0 | 0/10 | 59.0 | 17,316 |
-| 5 | Local contract + gate (verbose) | 0/10 | [0, 28] | 0 | 0/10 | 57.2 | 30,452 |
-| 6 | Local contract + gate (lean) | 1/10 | [2, 40] | 0 | 0/10 | 77.6 | 70,161 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 65.8 | 214,103 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 54.2 | 147,777 |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260730T111939-gpt-5-mini-p64440-n10-dual` · gpt-5.4 run `20260729T163558-gpt-54-p68616-n10-dual`.
 
-### gpt-5-mini — n=10 (FINAL, run 20260730T111939)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 6/10 † | [31, 83] | 268 | 0/10 | 103.5 | 897,710 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 20 | 0/10 | 48.3 | 235,942 |
-| 3 | Global protocol (as text) | 5/10 | [24, 76] | 0 | 0/10 | 81.0 | 352,626 |
-| 4 | Local contract (not enforced) | 0/10 | [0, 28] | 1 | 0/10 | 84.4 | 313,359 |
-| 5 | Local contract + gate (verbose) | 1/10 | [2, 40] | 0 | 0/10 | 92.8 | 636,376 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 108.8 | 2,503,827 |
-| 7 | Local contract + gate, no turn hint | 6/10 | [31, 83] | 0 | 0/10 | 116.7 | 1,175,722 |
-| 8 | Full STJP | 9/10 | [60, 98] | 0 | 0/10 | 59.4 | 1,281,738 |
+| 1 | Intent only | 6/10 † | 10/10 † | 268 / 71 | 0 / 0 | 103.5 / 49.2 | 897,710 / 24,455 |
+| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 20 / 163 | 0 / 0 | 48.3 / 138.6 | 235,942 / 806,440 |
+| 3 | Global protocol (as text) | 5/10 | 1/10 | 0 / 0 | 0 / 0 | 81.0 / 69.3 | 352,626 / 88,342 |
+| 4 | Local contract (not enforced) | 0/10 | 0/10 | 1 / 0 | 0 / 0 | 84.4 / 59.0 | 313,359 / 17,316 |
+| 5 | Local contract + gate (verbose) | 1/10 | 0/10 | 0 / 0 | 0 / 0 | 92.8 / 57.2 | 636,376 / 30,452 |
+| 6 | Local contract + gate (lean) | 10/10 | 1/10 | 0 / 0 | 0 / 0 | 108.8 / 77.6 | 2,503,827 / 70,161 |
+| 7 | Local contract + gate, no turn hint | 6/10 | 10/10 | 0 / 0 | 0 / 0 | 116.7 / 65.8 | 1,175,722 / 214,103 |
+| 8 | Full STJP | 9/10 | 10/10 | 0 / 0 | 0 / 0 | 59.4 / 54.2 | 1,281,738 / 147,777 |
+
+
 
 **The key insight — not a clean STJP sweep.** On gpt-5.4, the two settings that finish 10/10 are
 **STJP (8)** and **gate-nohint (7)** — while the two *hinted* gate settings
@@ -685,29 +665,21 @@ the fewest calls (54/59 vs 66–117).
 Escrow and Carrier — five agents. The escrow must **sequence** the buyers: B
 funds only after A's whole settlement completes. 
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260730T105005)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 8/10 † | [49, 94] | 102 | 0/10 | 57.2 | 53,937 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 25 | 0/10 | 45.9 | 30,113 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 49.0 | 136,319 |
-| 4 | Local contract (not enforced) | 7/10 | [40, 89] | 0 | 0/10 | 68.7 | 64,525 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 44.0 | 100,796 |
-| 6 | Local contract + gate (lean) | 7/10 | [40, 89] | 0 | 0/10 | 64.6 | 65,211 |
-| 7 | Local contract + gate, no turn hint | 6/10 | [31, 83] | 0 | 0/10 | 70.6 | 65,939 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 23.8 | 22,488 |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260730T161012-gpt-5-mini-p24336-n10-dual` · gpt-5.4 run `20260730T105005-gpt-54-2-p50084-n10-dual`.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260730T161012)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 10/10 † | [72, 100] | 290 | 0/10 | 73.3 | 415,541 |
-| 2 | Real skills, no protocol | 1/10 † | [2, 40] | 197 | 0/10 | 82.5 | 258,416 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | 0/10 | 44.0 | 142,893 |
-| 4 | Local contract (not enforced) | 10/10 | [72, 100] | 0 | 0/10 | 44.0 | 67,268 |
-| 5 | Local contract + gate (verbose) | 10/10 | [72, 100] | 0 | 0/10 | 44.0 | 124,088 |
-| 6 | Local contract + gate (lean) | 10/10 | [72, 100] | 0 | 0/10 | 44.0 | 77,331 |
-| 7 | Local contract + gate, no turn hint | 10/10 | [72, 100] | 0 | 0/10 | 44.0 | 68,143 |
-| 8 | Full STJP | 10/10 | [72, 100] | 0 | 0/10 | 15.0 | 25,437 |
+| 1 | Intent only | 10/10 † | 8/10 † | 290 / 102 | 0 / 0 | 73.3 / 57.2 | 415,541 / 53,937 |
+| 2 | Real skills, no protocol | 1/10 † | 0/10 † | 197 / 25 | 0 / 0 | 82.5 / 45.9 | 258,416 / 30,113 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 44.0 / 49.0 | 142,893 / 136,319 |
+| 4 | Local contract (not enforced) | 10/10 | 7/10 | 0 / 0 | 0 / 0 | 44.0 / 68.7 | 67,268 / 64,525 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 44.0 / 44.0 | 124,088 / 100,796 |
+| 6 | Local contract + gate (lean) | 10/10 | 7/10 | 0 / 0 | 0 / 0 | 44.0 / 64.6 | 77,331 / 65,211 |
+| 7 | Local contract + gate, no turn hint | 10/10 | 6/10 | 0 / 0 | 0 / 0 | 44.0 / 70.6 | 68,143 / 65,939 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 15.0 / 23.8 | 25,437 / 22,488 |
+
+
 
 **The key insight.** STJP is
 **10/10 on both models and decisively the cheapest** — 24 calls/22k tokens on
@@ -731,17 +703,20 @@ sends the Author back for another revision — the protocol loops as many
 rounds as the reviewers demand. `MergeDone` is the finish line; the
 catastrophe is merging before both approvals.
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260728T123456-gpt-54-p52548)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5.4 run `20260728T123456-gpt-54-p52548-n10-dual`. gpt-5-mini run pending.
+
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 4/10 † | [17, 69] | 59 | — | 42.4 | 23,565 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 107 | — | 101.0 | 480,274 |
-| 3 | Global protocol (as text) | 0/10 | [0, 28] | 0 | — | 68.3 | 110,176 |
-| 4 | Local contract (not enforced) | 0/10 | [0, 28] | 0 | — | 49.3 | 20,674 |
-| 5 | Local contract + gate (verbose) | 1/10 | [2, 40] | 0 | — | 44.3 | 34,635 |
-| 6 | Local contract + gate (lean) | 3/10 | [11, 60] | 0 | — | 74.3 | 96,200 |
-| 7 | Local contract + gate, no turn hint | 3/10 | [11, 60] | 0 | — | 66.0 | 81,531 |
-| 8 | Full STJP | **10/10** | [72, 100] | 0 | — | **34.9** | 77,250 |
+| 1 | Intent only | · | 4/10 † | · / 59 | · / — | · / 42.4 | · / 23,565 |
+| 2 | Real skills, no protocol | · | 0/10 † | · / 107 | · / — | · / 101.0 | · / 480,274 |
+| 3 | Global protocol (as text) | · | 0/10 | · / 0 | · / — | · / 68.3 | · / 110,176 |
+| 4 | Local contract (not enforced) | · | 0/10 | · / 0 | · / — | · / 49.3 | · / 20,674 |
+| 5 | Local contract + gate (verbose) | · | 1/10 | · / 0 | · / — | · / 44.3 | · / 34,635 |
+| 6 | Local contract + gate (lean) | · | 3/10 | · / 0 | · / — | · / 74.3 | · / 96,200 |
+| 7 | Local contract + gate, no turn hint | · | 3/10 | · / 0 | · / — | · / 66.0 | · / 81,531 |
+| 8 | Full STJP | · | 10/10 | · / 0 | · / — | · / 34.9 | · / 77,250 |
+
 
 **What the numbers show (plain).** The looping review is the hardest shape
 for coordination: a full round of comments costs several messages, the loop
@@ -775,29 +750,20 @@ way. The protocol contains two branch points (payment confirmed/rejected,
 delivery success/failure). The catastrophe is finalizing a settlement while
 the money is still unresolved.
 
-### gpt-5-mini — n=10 per setting (FINAL, run 20260731T081658-gpt-5-mini-p15040)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
-|---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 276 | — | 74.7 | 97,733 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 9 | — | 29.7 | 51,222 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | — | 36.3 | 147,402 |
-| 4 | Local contract (not enforced) | 4/10 | [17, 69] | 0 | — | 112.8 | 185,165 |
-| 5 | Local contract + gate (verbose) | 1/10 | [2, 40] | 0 | — | 59.9 | 58,825 |
-| 6 | Local contract + gate (lean) | 0/10 | [0, 28] | 0 | — | 57.5 | 30,220 |
-| 7 | Local contract + gate, no turn hint | 1/10 | [2, 40] | 0 | — | 58.4 | 32,480 |
-| 8 | Full STJP | **10/10** | [72, 100] | 0 | — | **15.5** | **18,461** |
+### Results — both models, side by side
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260731T081658-gpt-5-mini-p15040-n10-dual` · gpt-5.4 run `20260731T081658-gpt-54-2-p46420-n10-dual`.
 
-### gpt-5.4 — n=10 per setting (FINAL, run 20260731T081658-gpt-54-2-p46420)
-| # | Setting | GCR | 95% CI | Violations | Disasters | Calls/trial | Tokens/trial |
+| # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | [0, 28] | 306 | — | 57.5 | 72,252 |
-| 2 | Real skills, no protocol | 0/10 † | [0, 28] | 8 | — | 29.2 | 50,156 |
-| 3 | Global protocol (as text) | 10/10 | [72, 100] | 0 | — | 33.0 | 126,084 |
-| 4 | Local contract (not enforced) | 7/10 | [40, 89] | 0 | — | 63.0 | 99,594 |
-| 5 | Local contract + gate (verbose) | 3/10 | [11, 60] | 0 | — | 61.3 | 75,460 |
-| 6 | Local contract + gate (lean) | 4/10 | [17, 69] | 0 | — | 62.5 | 42,638 |
-| 7 | Local contract + gate, no turn hint | 9/10 | [60, 98] | 0 | — | 42.8 | 48,029 |
-| 8 | Full STJP | **10/10** | [72, 100] | 0 | — | **14.2** | **15,683** |
+| 1 | Intent only | 0/10 † | 0/10 † | 276 / 306 | — / — | 74.7 / 57.5 | 97,733 / 72,252 |
+| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 9 / 8 | — / — | 29.7 / 29.2 | 51,222 / 50,156 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | — / — | 36.3 / 33.0 | 147,402 / 126,084 |
+| 4 | Local contract (not enforced) | 4/10 | 7/10 | 0 / 0 | — / — | 112.8 / 63.0 | 185,165 / 99,594 |
+| 5 | Local contract + gate (verbose) | 1/10 | 3/10 | 0 / 0 | — / — | 59.9 / 61.3 | 58,825 / 75,460 |
+| 6 | Local contract + gate (lean) | 0/10 | 4/10 | 0 / 0 | — / — | 57.5 / 62.5 | 30,220 / 42,638 |
+| 7 | Local contract + gate, no turn hint | 1/10 | 9/10 | 0 / 0 | — / — | 58.4 / 42.8 | 32,480 / 48,029 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | — / — | 15.5 / 14.2 | 18,461 / 15,683 |
+
 
 **What the numbers show (plain).** This is the branchiest case in the report
 (two decision points on the way to settlement), and on BOTH models only two
