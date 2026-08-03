@@ -5,7 +5,10 @@ launching runs on both Foundry surfaces to the files the report tables are
 written from. **Two surfaces, kept distinct throughout:** the 8-setting ladder
 runs on the **classic Agent Service** (§2–§5); each case is also deployed and
 invoked as a **hosted agents group** (§6). §7 is the report format; §8 is the
-error-avoidance checklist (every item a real incident — read it before running).
+error-avoidance checklist (every item a real incident — read it before running);
+§9 states the scope of this ladder's results and the fairness rules for the
+big-intent (Level 1) suite — read §9 before citing any ladder number against a
+handbook-sized policy.
 Terms used here are the canonical ones from [`GLOSSARY.md`](GLOSSARY.md):
 **case** (a scenario under `experiments/cases/<case>/`), **setting** (one
 configuration of a case — the harness flag is named `--arms` for historical
@@ -262,9 +265,24 @@ The reports drifted before (three arm vocabularies, mixed metric names,
 6. **No narrative of what was fixed or what went wrong in the report.** The
    report presents the latest verified results cleanly. Fix-history lives in
    git, not in the tables.
-7. **Cost claims compare only completing settings**, and normalize away the
-   shared intent/goals prose (the FAIR COMPARISON method); never subtract a
-   treatment (setting-3 protocol text, setting-2 skills, the contract table).
+7. **Cost claims compare only completing settings.** The PRIMARY reported
+   numbers are always the actual end-to-end totals — every participant,
+   orchestrator, retrieval, summarization, retry, and (Level 1) compilation
+   token. The FAIR COMPARISON normalization (subtracting the shared
+   intent/goals prose) is a SECONDARY robustness check printed beside the
+   raw numbers, never in place of them; and never subtract a treatment
+   (setting-3 protocol text, setting-2 skills, the contract table). The
+   prose subtraction is valid at paragraph-scale intents only — see §9.
+8. **Policy-version provenance.** For any run on a composed or amended
+   protocol, the provenance line (rule 3) additionally carries the
+   **manifest root hash** — one hash committing to the full version:
+   protocol, sidecars (`.refn`/`.fail`), per-role contracts, monitors,
+   safety policies, and oracles (i.e., over both `H_r^runtime` and
+   `H^evaluation` of `HOW_TO_IMPLEMENT_SUBSESSIONS.md` §6) — printed as
+   "policy-version `<root8>`", with the component hashes recorded in run
+   metadata. A table never mixes rows produced under different policy
+   versions — the hold-n-constant rule extended to
+   hold-policy-version-constant (§9 rule 7).
 
 ---
 
@@ -328,3 +346,160 @@ errors that silently corrupt otherwise-good science.
 11. **One job per deployment, exactly one launcher** (§4). Two jobs on one
     deployment starve each other; a stray second launcher treats hand-kills as
     crashes and resurrects them, burning tokens.
+
+---
+
+## 9. Scope of this ladder, and the fairness rules for big-intent (Level 1) benchmarks
+
+Everything in §2–§8 is the **runtime-artifact benchmark** ("Level 2"): every
+WITH setting starts from the same validated, endorsed drafted protocol, and the
+compile step (drafting + validation + goal anchoring) sits outside the measured
+cost, disclosed separately. Those results are valid **for paragraph-scale
+intents only**. The FAIR COMPARISON subtraction of shared intent/goals prose
+(§7 rule 7) is legitimate only because that prose is ~63–115 tokens/call; a
+standing policy of realistic size (HANDBOOK.md scale: 8K–79K tokens) breaks
+both the accounting (the policy would dominate every intent-carrying setting's
+bill, and it is a *treatment*, not background) and the harness itself (the
+classic Agent Service truncates installed prompts at 8,000 chars — settings
+1/3/5 could not even install). Never extend a Level-2 number to a big-intent
+claim; run the Level-1 suite under the rules below.
+
+**Level 1 — the end-to-end compilation benchmark.** Question: starting from
+the same source artifacts, which complete system produces safe, successful
+executions most efficiently? The fairness rule is **equal source information
+and honest accounting of transformations** — never nominal equality
+manufactured by copying the same giant text into every prompt. Each rule below
+is a requirement, not a style preference:
+
+1. **Three recorded objects, never one intent string.** Standing policy P
+   (the long-lived handbook/policy document), immediate request R (this run's
+   task), environment E (files, messages, records, facts discovered during
+   execution). P and R are immutable artifacts stored once with content
+   hashes. E is runtime data — it is never compiled into the protocol.
+2. **Two stages of information ownership — never one shared channel at
+   runtime.** *Compilation stage:* every system starts from the same
+   immutable P+R artifacts (equal source information). *Runtime stage:* each
+   condition receives ONLY the artifact its row in the five-condition matrix
+   (below) specifies — runtime retrieval from P is a treatment feature of
+   the source condition (L1) alone, with a pre-registered budget and
+   strategy and every retrieval/summarization call counted. Conditions that
+   execute from compiled artifacts (L2–L5) must NOT also read P at runtime;
+   letting them would un-isolate the treatment. P is never pasted per-role
+   into system prompts in any condition. The immediate request R is
+   delivered uniformly at session start to every condition.
+3. **Goals never appear in any prompt, and protocol labels never define the
+   shared exam.** Each frozen criterion carries an ARM-INDEPENDENT
+   semantic/world-state verifier as its primary check (right actors, right
+   direction, right ordering, right values, right final world state — under
+   ANY label), plus a secondary protocol mapping used for conformance
+   scoring and compiled runtime guards; exact-label matching applies only to
+   protocol-aware conditions (the existing strict-vs-role_pair discipline,
+   extended). Criteria are distilled from P+R by a recorded step with full
+   provenance — record format in
+   [`HOW_TO_IMPLEMENT_SUBSESSIONS.md`](HOW_TO_IMPLEMENT_SUBSESSIONS.md) §7.
+4. **The grading instruments are the three-part stack of
+   [`GOAL_QUALITY_AUDIT.md`](GOAL_QUALITY_AUDIT.md), never goals alone.**
+   Existential goals cannot express safety (its finding B2): every Level-1
+   case carries (a) achievement goals, (b) safety policies (ordering /
+   at-most-once / prohibited-action, scored by `policy_eval.py`), and (c)
+   world-state oracles where an environment E exists (the `memory_race`
+   `environment.py` precedent), plus the per-goal discrimination gate
+   (`goal_quality.py`). All of it is distilled from the SOURCE, never from
+   the protocol: every condition — including full STJP — is graded against
+   it, so a clause the compiler dropped is a *failed criterion for STJP*,
+   not a vanished one. This is what prevents a system from omitting a hard
+   clause from both its protocol and its goals and then scoring perfectly
+   against its own incomplete interpretation.
+5. **Charge the compile to the right party; show the amortization.** Three
+   ledgers, never merged: (a) *common benchmark cost* — semantic-criterion
+   extraction from P+R, human approval, oracle/verifier authoring: this
+   builds the exam that grades EVERY condition and is charged to no
+   condition; (b) *protocol-compilation cost* — reading P, LLM protocol
+   drafting, validation/repair rounds, endorsement (if measured), projection,
+   guard generation, and mapping the frozen criteria onto protocol events:
+   charged EQUALLY to every condition that consumes the compiled artifacts
+   (L2–L5), never to L5 alone — L2–L4 are MAF conditions, but they run on
+   this pipeline's output; (c)
+   *runtime cost* — execution under each condition. Report (b)+(c) total and
+   the per-run amortized cost at N = 1, 10, 100 plus the break-even N. A
+   standing policy often governs thousands of runs — show it, never assume
+   it.
+6. **Source-visible sections are the DEFAULT decomposition evidence, not a
+   straitjacket.** Real SOP workflows cross-cut sections (a §12 procedure
+   hinging on §4 authorities, §5 channels, §18 templates — the HANDBOOK.md
+   anatomy), so clause↔module↔workflow mappings are many-to-many. The
+   fairness rule: the section structure of P is visible to every setting for
+   free; any merge or split BEYOND that visible structure is compile work —
+   LLM-done, logged in the manifest, and charged to the compile bill (rule
+   5b).
+7. **Version-stamp everything.** Run metadata and every table's provenance
+   line carry the policy version (protocol hash, guard-sidecar hash, goals
+   hash — §7 rule 8). A table never mixes policy versions.
+8. **Cost-of-change runs require the stale-guard canary.** After any policy
+   amendment, include a seeded trial whose payload value falls BETWEEN the
+   old and new thresholds, and refuse to grade unless every layer hash
+   (protocol, sidecars, goals, contracts, monitors) derives from the same
+   module version. An incomplete update must fail loudly — a stale monitor
+   scoring zero violations against the OLD rule is a false-safe result for
+   the treatment arm, the worst corruption this benchmark can produce.
+9. **Three amendment kinds, pre-registered:** (i) *consistent* amendment —
+   measures dependency-scoped recompile cost against the baseline's zero
+   update cost but unchanged full-document per-run cost. (ii) *conflicting*
+   amendment — claim rejection only per detector class: a STRUCTURAL
+   conflict (deadlock, projectability, choice coherence) is rejected by
+   Scribble with a named counterexample at zero run cost; a GUARD/REFINEMENT
+   conflict is rejected only where a specific implemented checker detects it
+   (static SMT discharge is NOT implemented — do not claim it); a SEMANTIC
+   prose conflict escalates to human / equivalence-instrument review. The
+   in-context settings execute on the inconsistent document in all three
+   classes and their violation rates are measured. (iii) *mid-horizon*
+   amendment (an authoritative update arriving during execution) — every
+   amendment declares its pre-registered EFFECTIVE-TIME rule: grandfather
+   running sessions, apply at the next safe boundary (a subprotocol call
+   boundary), or immediate typed abort (E10) plus recompile; immediate
+   in-flight migration is NOT currently supported and must not be claimed.
+   In-context settings may genuinely adapt mid-horizon. Report kind-(iii)
+   losses honestly; do not design them out.
+10. **Additive, never a retrofit.** Level-1 cases live in new case
+    directories with a new `case.yaml` schema version. Existing Level-2
+    cases, runs, and reports are frozen and stay citable with the scope
+    statement above. Nothing in this section changes a case mid-campaign.
+
+### The five-condition matrix (Level 1) — one knob per step
+
+The Level-1 comparison is THIS ladder. L2→L3→L4→L5 are the strict
+single-component ablations (representation → projection → enforcement →
+scheduling); L1→L2 is NOT single-knob — it compares source-policy
+orchestration with compiled-protocol orchestration, changing both the
+representation and when the transformation cost is paid, so it is a valid
+end-to-end treatment comparison but is never cited with the same
+attributional strength as L2→L5. Implementations must not blur adjacent
+rows; every condition is graded by the same frozen source-derived
+instruments (rules 3–4) and gets R at session start (rule 2).
+
+| # | Condition | Controller (orchestrator) input | Participant input | Enforcement / scheduling | Nearest existing arm |
+|---|---|---|---|---|---|
+| L1 | MAF intent (source) | R + retrieval access to P (counted, pre-registered budget) | neutral role prompt (role description only) | MAF LLM orchestrator | `maf_groupchat` |
+| L2 | MAF global | R + validated global protocol G | neutral role prompt | MAF LLM orchestrator | — (new: G moves to the controller, participants stay neutral) |
+| L3 | MAF projected | R + G | projected local contracts | MAF LLM orchestrator | `maf_groupchat_llmvalid_orch` |
+| L4 | MAF projected + gate | R + G | IDENTICAL local contracts as L3 | MAF LLM orchestrator + gate | — (new; local MAF runner only — the gate cannot be interposed in a sealed hosted group, §6) |
+| L5 | Full STJP | — (deterministic) | IDENTICAL local contracts as L3/L4 | gate + EFSM scheduler | `min_llmvalid_sched` |
+
+Deltas: L1→L2 = source-policy orchestration vs compiled-protocol
+orchestration (end-to-end treatment comparison, see above); L2→L3 =
+projection to participants; L3→L4 = enforcement; L4→L5 = LLM orchestrator
+replaced by the deterministic EFSM scheduler — the last three are the
+single-component ablations. Only L1 touches P at runtime (rule 2); L2–L5
+consume compiled artifacts and share the protocol-compilation bill equally
+(rule 5b). The Level-2 everyone-carries-G configuration
+(`maf_groupchat_llmvalid`) is kept only as a comparability row, never mixed
+into this ladder. Prompts must be byte-identical where the matrix says
+IDENTICAL — that is the control that makes L3→L4→L5 attributable to the
+runtime alone.
+
+The compiler machinery Level 1 depends on — modular child protocols,
+incremental recompilation, complete per-role artifact hashing — is specified
+in [`HOW_TO_IMPLEMENT_SUBSESSIONS.md`](HOW_TO_IMPLEMENT_SUBSESSIONS.md). Its
+**Phase 0 gaps must be closed before any Level-1 or cost-of-change run is
+launched** — four of them, verified in code, each capable of silently
+corrupting a result.
