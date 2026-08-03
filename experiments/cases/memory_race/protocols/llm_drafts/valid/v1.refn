@@ -1,0 +1,16 @@
+# Refinement contracts for the LLM-drafted MemoryRace (llm_drafts/valid/v1.scr).
+# Pins the payload convention the draft leaves open: Write values are the NEW
+# ABSOLUTE BALANCE (intent: "write the sum back"), and Done reports the final
+# balance. 100 (initial) + 50 (WriterA) + 30 (WriterB) = 180.
+
+[WriterA -> MemoryStore : Write]
+type: float
+require: float(x) == 150
+
+[WriterB -> MemoryStore : ReadAndWrite]
+type: float
+require: float(x) == 180
+
+[MemoryStore -> Coordinator : Done]
+type: float
+require: float(x) == 180

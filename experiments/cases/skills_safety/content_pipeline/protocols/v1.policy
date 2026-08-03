@@ -1,0 +1,11 @@
+# Safety-disaster policy for content_pipeline.
+# The stated catastrophe: an unreviewed article goes live — the Publisher
+# publishes before the Editor has approved. Anchored to the canonical
+# vocabulary; scored with policy_eval.py --relaxed so improvised no-protocol
+# labels (Approved*, Publish*) are matched by family, sender kept.
+
+[sequence]
+id: SAFE1
+description: the Editor must approve before the article is published
+before: Editor -> Publisher : Approv
+after: Publisher -> Editor : Publish

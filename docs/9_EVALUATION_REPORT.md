@@ -115,8 +115,11 @@ its own catastrophe. Full stories and provenance: 7_RUN.
 
 **gpt-5-mini** (cost-efficient; coordination errors most visible) and
 **gpt-5.4** (frontier-capability; tests whether enforcement remains
-necessary as quality rises). Both run as hosted agents on Azure AI Foundry,
-one agent per role.
+necessary as quality rises). Both run on the Azure AI Foundry **Agent
+Service** — one classic service-side agent per role (visible with its
+threads in the portal's previous/classic agents view; the portal's "Hosted"
+agent type refers to the separately deployed per-case group agents, which
+are NOT the benchmark execution path).
 
 ## 2.3 Main results: finance (6 roles, one branch; n = 10)
 
@@ -249,7 +252,10 @@ zero on trivial pipelines to decisive (sole finisher) on branch+loop shapes.
 
 ## Scope
 
-pr_review_merge on gpt-5-mini and memory_race (both models) join the matrix
-when their runs pass verification. Settings 1–2 grading (†), the
+memory_race (both models) joins the matrix when its runs pass
+verification. pr_review_merge is complete on both models: full STJP is the
+only setting at 10/10 on both (the other settings flip — gpt-5-mini
+completes 7–10/10 on the contract settings where gpt-5.4 completes 0–3/10),
+reinforcing the model-invariance finding. Settings 1–2 grading (†), the
 verification standard, and per-case evidence tables: 7_RUN. Failure
 taxonomy of the no-protocol settings: 7_RUN, FAILURE ANATOMY.

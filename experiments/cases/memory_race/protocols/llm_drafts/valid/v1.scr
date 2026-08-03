@@ -20,5 +20,5 @@ global protocol MemoryRace(role Coordinator, role WriterA, role WriterB, role Me
         // No alternate branches in this controlled flow; redundant branches avoid.
     }
     
-    Done() from MemoryStore to Coordinator; // Terminate by confirming final balance is updated.
+    Done(Int) from MemoryStore to Coordinator; // Confirm final balance (must be 180).
 }

@@ -7,6 +7,13 @@ self-contained.
 
 ## Benchmark campaign — the current results (read in this order)
 
+> **The plan:** [BENCHMARK_PLAN_V3.md](BENCHMARK_PLAN_V3.md) — what runs, where
+> (Foundry hosted groups + classic Agent Service), which toolchains
+> (scribble-java, nuscr, MAF), the 8 settings + MAF kinds, and the evaluation
+> methodology. Read this first if you want the design; the documents below are
+> the results.
+
+
 | Document | What it is |
 |---|---|
 | [6_RUN_REPORTS_V2_CLAIMS_AND_EVIDENCE.md](6_RUN_REPORTS_V2_CLAIMS_AND_EVIDENCE.md) | The claims the benchmark exists to prove, and where the evidence for each stands |

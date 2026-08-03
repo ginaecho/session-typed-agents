@@ -2,7 +2,7 @@
 
 **Date: 2026-07-31.** Same reading approach as
 [`6_RUN_REPORTS_EXPLAINED.md`](guides/6_RUN_REPORTS_EXPLAINED.md), applied to the
-**real public-skill cases** run live on Azure AI Foundry (one hosted Foundry
+**real public-skill cases** run live on Azure AI Foundry (one Agent Service
 agent per role) on a weak model (`gpt-5-mini`) and a stronger one (`gpt-5.4`).
 Every number is generated from the committed `summary.json` + `events_*.jsonl`
 files; disaster counts come from the Critic policies
@@ -31,6 +31,33 @@ simply asks, each turn, which role currently has a send enabled — and gives
 the turn to that role instead of polling everyone in a circle. It makes no
 LLM calls of its own; its savings come entirely from never spending a turn on
 a role that cannot act.
+
+**Name mapping to the earlier evaluation report** (the 5-configuration
+campaign analyzed in `9_EVALUATION_REPORT.md`'s template,
+`reference/sections_eval_results.html`). That report names its arms `bare`,
+`maf`, `min_llmvalid`, `gate`, `sched`; they correspond to:
+
+| Earlier report's arm | This report's setting | Internal key |
+|---|---|---|
+| `bare` | 1 — Intent only | `bare` |
+| `maf` | **none of 1–8** — the MAF group-chat runtime given the full validated global protocol as text, with an LLM picking each speaker; in this report it appears in Appendix A | `maf_groupchat_llmvalid` |
+| `min_llmvalid` | 4 — Local contract (not enforced) | `min_llmvalid` |
+| `gate` | 6 — Local contract + gate (lean) | `min_llmvalid_gate` |
+| `sched` | 8 — Full STJP | `min_llmvalid_sched` |
+
+The 8-setting ladder replaced the `maf` arm with setting 3 (the same
+protocol-as-text on the decentralized round-robin runtime) to separate "what
+the protocol text contributes" from "what the MAF runtime contributes". The
+`maf` configuration itself remains an important benchmark and is being
+re-measured for every case on both models — as three MAF kinds (see Appendix
+A's disclosure): the runtime alone with no protocol (`maf_groupchat` — MAF's
+own emergent coordination), the earlier report's configuration kept
+identical for comparability (`maf_groupchat_llmvalid` — every participant
+carries the full protocol text; the speaker-picking orchestrator never sees
+it), and the natural orchestrated design (`maf_groupchat_llmvalid_orch` —
+the orchestrator holds the protocol; each participant holds only its
+projected local contract). Their per-case rows will be added when those runs
+pass verification.
 
 **About setting 2 ("Real skills, no protocol") — the threat model.** In this
 setting each agent's instructions are a real, published skill file downloaded
@@ -103,6 +130,17 @@ report compares token counts, not currency.
 ---
 
 ## VERIFICATION — how every number in this report is checked
+
+**Where the server-side evidence lives.** Every benchmark trial runs on the
+Azure AI Foundry Agent Service: one classic agent per role per setting
+(named `stjp-<case>-<setting>-<role>`; 727 such agents exist on the project)
+and one thread per role per trial (thousands of threads with completed
+runs). These appear in the portal's previous/classic agents view and NOT in
+the "New Foundry" agents page, which only lists the separately deployed
+per-case group agents (type "Hosted" — a different deliverable, one
+deployment-verification trace each). MAF setups appear only in the Tracing
+tab (see `reference/FOUNDRY_VISIBILITY.md` for deep links and the exact
+visibility rules).
 
 Every table is generated directly from its run's `summary.json` and
 `summary_policy.json`. Independently of that pipeline, every trial verdict is
@@ -430,14 +468,14 @@ Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt
 
 | # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 9/10 † | 0/10 † | 195 / 64 | — / — | 38.8 / 36.8 | 436,677 / 95,884 |
-| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 288 / 42 | — / — | 101.2 / 43.0 | 1,317,981 / 101,522 |
-| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 12,643 / 7,551 |
-| 4 | Local contract (not enforced) | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 9,355 / 4,234 |
-| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | — / — | 4.6 / 4.0 | 15,480 / 7,598 |
-| 6 | Local contract + gate (lean) | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 9,840 / 4,979 |
-| 7 | Local contract + gate, no turn hint | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 9,609 / 4,476 |
-| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | — / — | 4.0 / 4.0 | 8,942 / 5,191 |
+| 1 | Intent only | 9/10 † | 0/10 † | 195 / 64 | 0 / 0 | 38.8 / 36.8 | 436,677 / 95,884 |
+| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 288 / 42 | 0 / 0 | 101.2 / 43.0 | 1,317,981 / 101,522 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.0 / 4.0 | 12,643 / 7,551 |
+| 4 | Local contract (not enforced) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.0 / 4.0 | 9,355 / 4,234 |
+| 5 | Local contract + gate (verbose) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.6 / 4.0 | 15,480 / 7,598 |
+| 6 | Local contract + gate (lean) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.0 / 4.0 | 9,840 / 4,979 |
+| 7 | Local contract + gate, no turn hint | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.0 / 4.0 | 9,609 / 4,476 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 4.0 / 4.0 | 8,942 / 5,191 |
 
 
 
@@ -449,9 +487,14 @@ calls / ~9–15k tokens** while the failing real-skills setting burns 101 calls 
 1.3M tokens for nothing. Content_pipeline is a short linear pipeline, so (as in
 CASES 1–2) the scheduler ties the other contract settings on completion; the
 whole story here is "a validated contract turns 0/10-at-1.3M-tokens into
-10/10-at-9k." Disaster column shows "—": this case has no Critic policy file,
-so publish-before-review is not policy-scored; it is visible instead in the
-violation counts of the no-protocol settings.
+10/10-at-9k." Disaster column reads 0 for every setting on both models. The case's
+catastrophe — an unreviewed article going live (the Publisher publishing
+before the Editor approves) — is scored by `protocols/v1.policy` (relaxed
+matching, so the improvised no-protocol labels are caught by family), and it
+did not occur in any of the 160 trials: even without a protocol, the
+improvising teams kept the Editor in the loop before publishing. Their
+setting-1/2 failures here are non-completion and phantom labels (see FAILURE
+ANATOMY), not premature publication.
 
 ---
 
@@ -752,37 +795,49 @@ rounds as the reviewers demand. `MergeDone` is the finish line; the
 catastrophe is merging before both approvals.
 
 ### Results — both models, side by side
-Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5.4 run `20260728T123456-gpt-54-p52548-n10-dual`. gpt-5-mini run pending.
+Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt-5-mini run `20260731T120425-gpt-5-mini-p63876-n10-dual` · gpt-5.4 run `20260728T123456-gpt-54-p52548-n10-dual`.
 
 | # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | · | 4/10 † | · / 59 | · / — | · / 42.4 | · / 23,565 |
-| 2 | Real skills, no protocol | · | 0/10 † | · / 107 | · / — | · / 101.0 | · / 480,274 |
-| 3 | Global protocol (as text) | · | 0/10 | · / 0 | · / — | · / 68.3 | · / 110,176 |
-| 4 | Local contract (not enforced) | · | 0/10 | · / 0 | · / — | · / 49.3 | · / 20,674 |
-| 5 | Local contract + gate (verbose) | · | 1/10 | · / 0 | · / — | · / 44.3 | · / 34,635 |
-| 6 | Local contract + gate (lean) | · | 3/10 | · / 0 | · / — | · / 74.3 | · / 96,200 |
-| 7 | Local contract + gate, no turn hint | · | 3/10 | · / 0 | · / — | · / 66.0 | · / 81,531 |
-| 8 | Full STJP | · | 10/10 | · / 0 | · / — | · / 34.9 | · / 77,250 |
+| 1 | Intent only | 10/10 † | 4/10 † | 215 / 59 | 0 / 0 | 40.2 / 42.4 | 489,128 / 23,565 |
+| 2 | Real skills, no protocol | 8/10 † | 0/10 † | 364 / 107 | 0 / 0 | 85.2 / 101.0 | 1,548,621 / 480,274 |
+| 3 | Global protocol (as text) | 1/10 | 0/10 | 0 / 0 | 0 / 0 | 75.6 / 68.3 | 245,498 / 110,176 |
+| 4 | Local contract (not enforced) | 10/10 | 0/10 | 26 / 0 | 0 / 0 | 64.6 / 49.3 | 861,563 / 20,674 |
+| 5 | Local contract + gate (verbose) | 9/10 | 1/10 | 0 / 0 | 0 / 0 | 64.4 / 44.3 | 433,144 / 34,635 |
+| 6 | Local contract + gate (lean) | 9/10 | 3/10 | 0 / 0 | 0 / 0 | 54.6 / 74.3 | 445,821 / 96,200 |
+| 7 | Local contract + gate, no turn hint | 7/10 | 3/10 | 0 / 0 | 0 / 0 | 52.3 / 66.0 | 435,255 / 81,531 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 31.3 / 34.9 | 297,214 / 77,250 |
 
 
 **What the numbers show (plain).** The looping review is the hardest shape
 for coordination: a full round of comments costs several messages, the loop
 repeats until both reviewers approve, and the notify-everyone exits multiply
-the traffic. Only **full STJP finishes all ten trials** — the scheduler
-drives each round to completion and reaches `MergeDone` every time, at the
-fewest calls (34.9). Every other setting completes at most 4/10: the raw
-real skills burn 480k tokens/trial (101 calls) and never merge; the gate
-settings follow the rules (0 violations) but rarely reach the merge within
-the turn limit. Disaster column shows "—": this case has no Critic policy
-file, so merge-before-approval is not policy-scored; it is visible in the
-violation counts of the no-protocol settings.
+the traffic. On gpt-5.4, only **full STJP finishes all ten trials** — every
+other setting completes at most 4/10; the gate settings follow the rules
+(0 violations) but rarely reach the merge within the turn limit. On
+gpt-5-mini the picture flips: most contract settings complete (setting 4
+even 10/10 — with 26 off-contract events the observe-only monitor records),
+but at 433k–862k tokens per trial. **Full STJP is the only setting at 10/10
+on both models**, at the fewest calls on both (31.3 / 34.9) and the cheapest
+completing contract run on mini (297k vs 433k+). Disaster column reads 0 for every setting on
+both models — but by manual trace, not the automated scorer. This
+catastrophe (merging before BOTH reviews approve) cannot be policy-scored
+faithfully: the code-side approval appears under two unrelated label families
+in the no-protocol runs ("QualityApproved" and
+"CodeReviewApproved"/"CODE_REVIEW_PASS"), and the relaxed scorer's one-label
+"before" condition cannot require either-of-two without risking false
+disasters, so no policy file is shipped. A hand trace of all 40 no-protocol
+trials (generous approval detection, strict ordering) finds the catastrophe
+in 0 of them: the reviewers always approved before the merge. The failures
+here are non-completion, not premature merges.
 
 **The key insight.** Together with gem_dev_team (CASE 7), this is the
 looping-protocol pattern: when a workflow must iterate until convergence,
 enforcement alone does not deliver completion — the scheduler is what turns
-"follows the rules" into "finishes the job", and it does so at the lowest
-cost. gpt-5-mini table will be added when its run completes.
+"follows the rules" into "finishes the job". And the two models fail in
+OPPOSITE settings (mini: global text 1/10; 5.4: unenforced contract 0/10)
+— another instance of the guidance-settings model-flip that only the
+scheduled, enforced setting escapes.
 
 ---
 
@@ -803,14 +858,14 @@ Same case, same protocol, same turn limit, n=10 per setting per model. Runs: gpt
 
 | # | Setting | GCR mini | GCR 5.4 | Violations mini/5.4 | Disasters mini/5.4 | Calls mini/5.4 | Tokens mini/5.4 |
 |---|---|---|---|---|---|---|---|
-| 1 | Intent only | 0/10 † | 0/10 † | 276 / 306 | — / — | 74.7 / 57.5 | 97,733 / 72,252 |
-| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 9 / 8 | — / — | 29.7 / 29.2 | 51,222 / 50,156 |
-| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | — / — | 36.3 / 33.0 | 147,402 / 126,084 |
-| 4 | Local contract (not enforced) | 4/10 | 7/10 | 0 / 0 | — / — | 112.8 / 63.0 | 185,165 / 99,594 |
-| 5 | Local contract + gate (verbose) | 1/10 | 3/10 | 0 / 0 | — / — | 59.9 / 61.3 | 58,825 / 75,460 |
-| 6 | Local contract + gate (lean) | 0/10 | 4/10 | 0 / 0 | — / — | 57.5 / 62.5 | 30,220 / 42,638 |
-| 7 | Local contract + gate, no turn hint | 1/10 | 9/10 | 0 / 0 | — / — | 58.4 / 42.8 | 32,480 / 48,029 |
-| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | — / — | 15.5 / 14.2 | 18,461 / 15,683 |
+| 1 | Intent only | 0/10 † | 0/10 † | 276 / 306 | 0 / 0 | 74.7 / 57.5 | 97,733 / 72,252 |
+| 2 | Real skills, no protocol | 0/10 † | 0/10 † | 9 / 8 | 0 / 0 | 29.7 / 29.2 | 51,222 / 50,156 |
+| 3 | Global protocol (as text) | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 36.3 / 33.0 | 147,402 / 126,084 |
+| 4 | Local contract (not enforced) | 4/10 | 7/10 | 0 / 0 | 0 / 0 | 112.8 / 63.0 | 185,165 / 99,594 |
+| 5 | Local contract + gate (verbose) | 1/10 | 3/10 | 0 / 0 | 0 / 0 | 59.9 / 61.3 | 58,825 / 75,460 |
+| 6 | Local contract + gate (lean) | 0/10 | 4/10 | 0 / 0 | 0 / 0 | 57.5 / 62.5 | 30,220 / 42,638 |
+| 7 | Local contract + gate, no turn hint | 1/10 | 9/10 | 0 / 0 | 0 / 0 | 58.4 / 42.8 | 32,480 / 48,029 |
+| 8 | Full STJP | 10/10 | 10/10 | 0 / 0 | 0 / 0 | 15.5 / 14.2 | 18,461 / 15,683 |
 
 
 **What the numbers show (plain).** This is the branchiest case in the report
@@ -821,8 +876,14 @@ tokens vs 33–36 / 126–147k). Both no-protocol settings never settle correctl
 (intent-only racks up 276–306 ordering violations). The gate settings follow
 the rules (0 violations) but frequently stop short of the full
 release-then-finalize sequence within the turn limit; the local contract
-without enforcement is erratic (4–7/10). Disaster column shows "—": this case
-has no Critic policy file; its catastrophe is visible in the violation counts.
+without enforcement is erratic (4–7/10). Disaster column reads 0 for every setting on
+both models. The catastrophe — the escrow releasing the seller's payment
+before the buyer confirms receipt — is scored by `protocols/v1.policy` (two
+sequence rules, one per release label family, relaxed matching), and it did
+not occur in any of the 160 trials: a direct trace confirms every payment
+release was preceded by a receipt confirmation, even in the no-protocol
+settings that racked up 276–306 ordering violations. Those violations are
+wrong-order and wrong-label noise, not the release-before-receipt disaster.
 
 **The key insight.** On a branching settlement, an agent needs either the
 whole picture (the full protocol text — expensive, 8× the tokens) or the
@@ -874,6 +935,19 @@ simultaneously reliable and cheap.
 Three models, one pattern: no-protocol MAF is 0–2/10 everywhere; the same group
 with the global protocol is 10/10 on all three (gpt-5.4: 2,343 tok/trial).
 
+**Prompt topology of the "+ global protocol as text" setups (disclosure).**
+In these MAF group-chat runs, EVERY participant agent carries the full global
+protocol text in its prompt, while the orchestrator — the agent that picks
+who speaks next — sees only the role list, the intent and the terminal
+label, never the protocol. That is not how a practitioner would naturally
+structure an orchestrated runtime (the conductor would hold the plan and
+each agent only its own part), so read these rows as "a group whose members
+share the full briefing", not as the best orchestrated configuration; their
+token counts inherit the every-agent-carries-the-rulebook cost described in
+the FAIR COMPARISON section. The natural configuration — orchestrator holds
+the global protocol, each agent holds only its local part — is not yet a
+setup in this report.
+
 **Second case on gpt-5.6-sol — booking_saga MAF setups, n=10** (extends sol
 coverage beyond code_execution, since sol is blocked from the classic ladder):
 | Setup | gpt-5.6-sol |
@@ -885,7 +959,7 @@ coverage beyond code_execution, since sol is blocked from the classic ladder):
 Same signature on a second case: sol without a protocol is 0/10; sol with the
 global protocol is 10/10. sol is now tested on both cases where it can run.
 
-† excluded from cross-model claims: the hosted-agent path rejects `gpt-5.6-sol`
+† excluded from cross-model claims: the Agent Service path rejects `gpt-5.6-sol`
 (platform `top_p` bug, see RESULT_13); shown for completeness only.
 
 The point of this appendix: the same pattern reproduces on someone else's
@@ -934,13 +1008,13 @@ remain pending as in the original. Outputs: `experiments/reports/e1/`, `e2/`,
 
 ## SCOPE — what this report covers
 
-**Included (FINAL, n=10 per setting):** CASES 1–10 and CASE 12 on both
-models (gpt-5-mini and gpt-5.4), and CASE 11 (pr_review_merge) on gpt-5.4.
-Every included table passed the verification described at the top of this
-document.
+**Included (FINAL, n=10 per setting):** CASES 1–12 on both models
+(gpt-5-mini and gpt-5.4). Every included table passed the verification
+described at the top of this document.
 
-**In progress:** the pr_review_merge gpt-5-mini and memory_race (both models)
-runs — their tables will be added when the runs complete and pass
+**In progress:** memory_race (both models), and the MAF group-chat re-runs
+(every case, both models, both prompt topologies — see the name-mapping
+section). Tables are added only when a run completes and passes
 verification.
 
 **Not covered by this report:** memory_race's contract settings

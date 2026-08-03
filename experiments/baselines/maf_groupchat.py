@@ -55,16 +55,32 @@ if TYPE_CHECKING:  # pragma: no cover
     from stjp_core.monitor.stjp_live_emitter import LiveEventEmitter
 
 
-def _build_orchestrator_instructions(case: "Case") -> str:
-    """LLM speaker-selection prompt for the GroupChat orchestrator agent."""
+def _build_orchestrator_instructions(case: "Case",
+                                     protocol_text: str | None = None) -> str:
+    """LLM speaker-selection prompt for the GroupChat orchestrator agent.
+
+    With ``protocol_text`` the orchestrator HOLDS THE PLAN: the validated
+    global protocol is embedded in its prompt so its speaker choices can
+    follow the intended order. Without it (the original topology) the
+    orchestrator sees only roles + intent and picks speakers blind.
+    """
     roles = ", ".join(case.roles)
+    proto_block = ""
+    if protocol_text:
+        proto_block = f"""
+The team must follow this validated coordination protocol. Use the message
+order below to decide which participant is due to act next:
+---
+{protocol_text}
+---
+"""
     return f"""You are the orchestrator of a multi-agent {case.case_id} pipeline.
 
 Participants (you must pick one of these names exactly): {roles}.
 
 User intent:
 {case.intent}
-
+{proto_block}
 Your job: read the most recent message, decide WHICH participant should speak
 next to keep the pipeline progressing toward the goals, and reply with ONLY
 that participant's name. No prose, no explanation, no quotes.
@@ -118,7 +134,8 @@ class MAFGroupChatRunner(BaselineRunner):
                  instructions_builder: Callable = build_bare_instructions,
                  attempt_timeout_s: float = DEFAULT_ATTEMPT_TIMEOUT_S, *,
                  protocol_path_override: Optional[Path] = None,
-                 goals_path_override: Optional[Path] = None):
+                 goals_path_override: Optional[Path] = None,
+                 orchestrator_holds_protocol: bool = False):
         super().__init__(case, scenario_key, scenario_name)
         self._chat_client: Optional[OpenAIChatCompletionClient] = None
         self._participants: dict[str, Agent] = {}
@@ -127,6 +144,7 @@ class MAFGroupChatRunner(BaselineRunner):
         self._attempt_timeout_s = attempt_timeout_s
         self._protocol_override = protocol_path_override
         self._goals_override = goals_path_override
+        self._orchestrator_holds_protocol = orchestrator_holds_protocol
 
     def active_protocol_path(self) -> Path:
         return self._protocol_override or self.case.protocol_path
@@ -184,12 +202,20 @@ class MAFGroupChatRunner(BaselineRunner):
                             f"(MAF GroupChat, {self.scenario_key})",
             )
 
-        orch_instr = _build_orchestrator_instructions(self.case)
+        proto_text = None
+        if self._orchestrator_holds_protocol:
+            proto_text = self.active_protocol_path().read_text(encoding="utf-8")
+        orch_instr = _build_orchestrator_instructions(self.case, proto_text)
         self._role_prompts["__orchestrator__"] = orch_instr
+        # Collision-proof name: gem_dev_team has a ROLE literally named
+        # "Orchestrator", which would duplicate the executor ID otherwise.
+        orch_name = "StjpProtocolOrchestrator"
+        while orch_name in self.case.roles:
+            orch_name = "_" + orch_name
         self._orchestrator = Agent(
             client=self._chat_client,
             instructions=orch_instr,
-            name="Orchestrator",
+            name=orch_name,
             description=f"Speaker selector for {self.case.case_id} GroupChat",
         )
 

@@ -148,6 +148,32 @@ def _make_foundry_llm_drafted_factory(kind: str, scenario_key: str,
 
 _maf_groupchat_llmvalid_factory = _make_maf_llm_drafted_factory(
     "valid", "maf_groupchat_llmvalid", "WITHOUT-maf-gc-llmvalid")
+
+
+def _maf_groupchat_llmvalid_orch_factory(case):
+    """MAF GroupChat, corrected topology: the ORCHESTRATOR holds the full
+    LLM-drafted validated global protocol (it makes the sequencing
+    decisions), and each PARTICIPANT holds only its projected local
+    contract (lean SEND/RECV form) — how a practitioner would naturally
+    structure an orchestrated runtime. No gate: MAF delivers whatever the
+    agents say; the monitor observes against the same drafted protocol.
+    Contrast arm: maf_groupchat_llmvalid (every participant carries the
+    whole protocol text; orchestrator picks speakers blind)."""
+    from baselines.maf_groupchat import MAFGroupChatRunner
+    path = _require_llm_draft(case, "valid", "maf_groupchat_llmvalid_orch")
+    goals_path = _llm_drafted_goals_path(case, "valid")
+
+    def builder(c, role):
+        return build_spec_minimal_instructions(c, role,
+                                               protocol_path_override=path)
+
+    return MAFGroupChatRunner(
+        case, "maf_groupchat_llmvalid_orch", "WITH-maf-gc-orchplan",
+        instructions_builder=builder,
+        protocol_path_override=path,
+        goals_path_override=goals_path,
+        orchestrator_holds_protocol=True,
+    )
 _maf_groupchat_unsafe_factory = _make_maf_llm_drafted_factory(
     "unsafe", "maf_groupchat_unsafe", "WITHOUT-maf-gc-unsafe")
 
@@ -233,6 +259,8 @@ SCENARIOS: list[tuple[str, str, Callable[..., "BaselineRunner"]]] = [
     ("maf_groupchat",          "WITHOUT-maf-groupchat",   _maf_groupchat_factory),
     ("maf_groupchat_unsafe",   "WITHOUT-maf-gc-unsafe",   _maf_groupchat_unsafe_factory),
     ("maf_groupchat_llmvalid", "WITHOUT-maf-gc-llmvalid", _maf_groupchat_llmvalid_factory),
+    ("maf_groupchat_llmvalid_orch", "WITH-maf-gc-orchplan",
+     _maf_groupchat_llmvalid_orch_factory),
     ("unchecked_skills",       "WITHOUT-unchecked-skills", _unchecked_skills_factory),
     ("global_decentralized",   "WITH-global-decentralized", _global_decentralized_factory),
     ("spec_llmvalid",          "WITH-spec-llmvalid",      _spec_llmvalid_factory),

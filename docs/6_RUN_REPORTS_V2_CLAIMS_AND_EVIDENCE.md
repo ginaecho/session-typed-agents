@@ -107,6 +107,22 @@ order; "—" where a runtime cannot honestly measure one):
 
 ---
 
+
+**Name mapping to the earlier 5-configuration report** (the campaign the
+paper template `reference/sections_eval_results.html` analyzes): its `bare` =
+setting 1; its `maf` = the MAF group-chat runtime with the full validated
+global protocol as text and LLM speaker-selection (`maf_groupchat_llmvalid` —
+not one of settings 1–8; Appendix A of 7_RUN); its `min_llmvalid` = setting
+4; its `gate` = setting 6 (`min_llmvalid_gate`); its `sched` = setting 8
+(Full STJP, `min_llmvalid_sched`). The `maf` configuration is being
+re-measured for every case on both models as three MAF kinds — the runtime
+alone with no protocol (`maf_groupchat`), the earlier report's configuration
+kept identical for comparability (`maf_groupchat_llmvalid`: all participants
+carry the protocol text, orchestrator protocol-blind), and the natural
+orchestrated design (`maf_groupchat_llmvalid_orch`: orchestrator holds the
+protocol, each agent its projected local contract) — after the topology
+disclosure in 7_RUN's Appendix A.
+
 ## 3. THE EVIDENCE MATRIX — where each claim stands (2026-07-27)
 
 Symmetric by construction: one row per claim × campaign.
@@ -118,7 +134,7 @@ Symmetric by construction: one row per claim × campaign.
 | 3 Enforcement → zero harm | STJP rows: 0 disasters at n=10, n=100, all cases; E2 hostile-agent gate 0→42→92→100% blocked as layers add | settings 5–8: 0 violations, 0 disaster trials in every completed n=10 table | **PROVEN, both stacks** |
 | 4 Cheapest-safe | 13.3k vs 120k tokens (finance §2); 1.52–1.67k vs 2.75–4.9k (real skills); E6 scaling: savings grow 9×→17× from 2→10 roles | finance FINAL both models; 5 complex cases FINAL both models (CASES 6–10). STJP cheapest where coordination is non-trivial: gem (7r branch+loop) ONLY STJP completes 10/10 both models; multi_seller/multi_buyer STJP 12–24 calls vs 44–73. Limits (3d): at 3–4 roles/linear STJP ties within noise; on react18 a no-hint gate matches it (CASE 9) | **PROVEN where coordination cost is real; complexity-dependent (ties at ≤4 roles/linear)** |
 | 5 Model-independence | Haiku vs Sonnet: failures move, STJP flat 100%/0 (Part 3, 120 trials) | SAFETY is model-independent — 0 violations/disasters on every gated setting, mini AND 5.4, all cases. But COMPLETION of the HARDEST coordination is model-DEPENDENT: sdlc's clean 5.4 result (STJP+verbose-gate 10/10) does NOT reproduce on mini (noisy 7/10, CASE 6); react18's winning settings differ by model (CASE 9). | **Safety+cost model-independent; hardest-case completion is model-dependent** |
-| 6 Runtime-independence | engine + E7 portability 59/59 | Foundry Agent Service (hosted agents) + MAF appendix reproduce the pattern; E7 re-run 59/59 | **PROVEN across 3 runtimes** |
+| 6 Runtime-independence | engine + E7 portability 59/59 | Foundry Agent Service (classic per-role agents) + MAF appendix reproduce the pattern; E7 re-run 59/59 | **PROVEN across 3 runtimes** |
 | 7 Measurement validity | instruments 40/40; E5 fidelity 300/300; E4 reliability math: n=100 lifts worst-case pass-ten confidence 17.6× vs n=10 | instruments re-run 40/40; goal-quality tooling (discrimination/mutation/gaming); world-state oracle caught a live race AND a goal false-negative; anti-fabrication: 92/92 recount + verbatim server-thread matches; independent re-derivation (3e): 144 setting-cells, 0 disagreements | **PROVEN, and stronger than in 6_RUN** |
 
 **Open items:** agenticpay_settlement runs completing (both models) and the
@@ -138,20 +154,22 @@ model families. Stated explicitly:
 |---|---|---|
 | 6_RUN campaigns | Claude: Haiku 4.5, Sonnet (+GPT-5.4 in the §2 finance run) | full ladder |
 | 7_RUN campaign | GPT: gpt-5-mini, gpt-5.4 | full ladder (1–8) |
-| 7_RUN campaign | **gpt-5.6-sol** | ONLY the MAF-runtime setups and the hosted group agents |
+| 7_RUN campaign | **gpt-5.6-sol** | ONLY the MAF-runtime setups and the deployed per-case group agents (the portal's "Hosted" type) |
 
 **Why gpt-5.6-sol cannot run settings 1–8:** the classic Foundry Agent
 Service force-injects a `top_p` parameter that reasoning-family models reject
 (verified live; even a REST PATCH to null it returns 400 — RESULT_13). This is
 a platform limitation, not a design choice. Where sol CAN run, it is tested:
 MAF on TWO cases — code_execution and booking_saga (both: no-protocol 0/10,
-global-protocol 10/10) — and all six hosted group agents.
+global-protocol 10/10) — and all six deployed per-case group agents (the
+portal's "Hosted" agent type; each carries its deployment-verification
+trace, distinct from the benchmark's classic per-role agents and threads).
 
 **Follow-ups this observation opened — current state:**
 finance on the GPT pair is complete (7_RUN CASE 5, both models, n=10);
 sol's second-case coverage is complete (booking_saga MAF setups);
-pr_review_merge is complete on gpt-5.4 (7_RUN CASE 11) with the gpt-5-mini
-run in progress; doc_coauthor_ship has not been run on Foundry. The GPT
+pr_review_merge is complete on both models (7_RUN CASE 11);
+doc_coauthor_ship has not been run on Foundry. The GPT
 capability comparison is the campaign itself — gpt-5-mini vs gpt-5.4 across
 all twelve cases. Claude-tier rows stay labeled as Claude evidence; a claim
 is marked model-independent only where both families show the effect.

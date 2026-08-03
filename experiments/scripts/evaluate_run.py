@@ -74,6 +74,7 @@ from stjp_core.compiler.refinement_checker import Refinement
 VOCABULARY_ARMS = {
     "maf_groupchat_unsafe",   # global type given as text
     "maf_groupchat_llmvalid", # global type given as text
+    "maf_groupchat_llmvalid_orch",  # orchestrator holds global text; agents hold projected local contracts
     "spec_llmvalid",          # projected local types given
     "min_llmvalid",           # projected local types given
     "spec_llmvalid_gate",     # projected local types given + enforcement gate

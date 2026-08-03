@@ -75,14 +75,16 @@ gate (lean) · 7 = Local contract + gate, no turn hint · 8 = Full STJP.
 | react18 | 5→1 | 0→0 | 1→0 | 10→1 | 6→10 | **9→10** |
 | gem_dev_team | 9→3 | 6→3 | 2→3 | 5→0 | 6→3 | **10→10** |
 | sdlc | 5→2 | 3→0 | 4→10 | 5→1 | 3→1 | **7→10** |
-| pr_review (5.4) | 0 | 0 | 1 | 3 | 3 | **10** |
+| pr_review | 1→0 | 10→0 | 9→1 | 9→3 | 7→3 | **10→10** |
 
-STJP is 10/10 in 21 of 23 model-runs and best-or-tied in the other two
+STJP is 10/10 in 22 of 24 model-runs and best-or-tied in the other two
 (sdlc-mini 7/10 where no setting is clean; react18-mini 9/10 vs setting 6's
 10). Every other setting **flips with the model** somewhere — in both
 directions: setting 6 falls 10→1 on react18, setting 7 rises 1→9 on
-settlement, setting 3 falls 9→3 on gem, setting 4 falls 10→5 on finance. Guidance-based settings are
-model-sensitive; the scheduled, enforced setting is not.
+settlement, setting 3 falls 9→3 on gem, setting 4 falls 10→5 on finance and
+10→0 on pr_review (the starkest knowledge-trap drop in the campaign).
+Guidance-based settings are model-sensitive; the scheduled, enforced setting
+is not.
 
 ## Finding 3 — Enforcement buys safety invariantly; safety does not buy progress
 
@@ -180,8 +182,8 @@ Settings 3–8 remove all five by construction.
 
 ## Scope notes
 
-pr_review_merge gpt-5-mini and memory_race (both models) complete this
-matrix when their runs pass verification. n=10 per cell (Wilson 95% CIs in
+memory_race (both models) completes this matrix when its runs pass
+verification. n=10 per cell (Wilson 95% CIs in
 the 7_RUN tables); the earlier 5-arm campaign analyzed in
 `paper-writing/v10/sections_eval_results` provides n=26–30 depth on finance
 with consistent conclusions (scheduler model-invariance, knowledge-only
