@@ -1,6 +1,6 @@
 # experiments/ — project policy
 
-How the STJP benchmark fits together. Read this before answering questions
+How the STJP benchmark is wired together. Read this before answering questions
 about the arm matrix (15 arms), the skills files, or where prompts come from.
 
 ## Menu
@@ -137,8 +137,15 @@ guards** in `protocols/v1.refn` matter: without them compiled into the prompt
    - Then `runs.create_and_process(thread, agent)` is invoked
 
 **Goals** flow through two channels:
-- As prose into the system prompt — every builder in `instructions.py`
-  interpolates `case.goals_text()` into its template
+- As prose into the system prompt — but NOT for every builder.
+  `build_bare_instructions`, `build_global_spec_instructions` and
+  `build_spec_instructions` interpolate `case.goals_text()` (and
+  `case.intent`). `build_unchecked_skills_instructions` includes the intent
+  but NOT the goals. `build_spec_minimal_instructions` (all `min_*` arms,
+  including full STJP) includes NEITHER the intent NOR the goals — its prompt
+  is role descriptions + projected local type + termination + output rules
+  only. Verified against persisted prompts in
+  `cases/agenticpay_multi_buyer/runs/20260730T105005-*/prompts/` (2026-07-31).
 - As executable predicates into the post-trace verifier
   (`summary_eval.json` lifecycle)
 
