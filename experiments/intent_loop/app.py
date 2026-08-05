@@ -161,6 +161,171 @@ def llm_status() -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Server-rendered report (works with JavaScript disabled)
+# ---------------------------------------------------------------------------
+
+_REPORT_CSS = """
+:root{color-scheme:light;--s:#fcfcfb;--p:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;
+ --mut:#898781;--line:#e1e0d9;--good:#0ca30c;--warn:#fab219;--crit:#d03b3b;
+ --acc:#2a78d6}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--s:#1a1a19;
+ --p:#0d0d0d;--ink:#fff;--ink2:#c3c2b7;--line:#2c2c2a;--acc:#3987e5}}
+*{box-sizing:border-box}
+body{margin:0;padding:22px;background:var(--p);color:var(--ink);
+ font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+ max-width:1100px;margin-inline:auto}
+h1{font-size:18px;margin:0 0 4px} h2{font-size:12px;text-transform:uppercase;
+ letter-spacing:.07em;color:var(--mut);margin:24px 0 8px}
+h3{font-size:13px;margin:14px 0 5px}
+a{color:var(--acc)} .sub{color:var(--ink2);font-size:13px}
+pre{font-family:ui-monospace,Consolas,monospace;font-size:12px;background:var(--s);
+ border:1px solid var(--line);border-radius:9px;padding:11px;overflow-x:auto;
+ white-space:pre-wrap;word-break:break-word}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--mut);
+ padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.b{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;
+ border:1px solid rgba(128,128,128,.35);color:var(--ink2);white-space:nowrap}
+.card{border:1px solid var(--line);border-radius:9px;background:var(--s);
+ padding:13px;margin-bottom:10px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px}
+.tile{border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+ background:var(--s)} .tile .v{font-size:21px;font-weight:650}
+.tile .k{font-size:11px;color:var(--mut);text-transform:uppercase}
+.eps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.warn{border:1px solid var(--warn);border-radius:9px;padding:9px 12px;
+ background:var(--s);margin-bottom:12px}
+"""
+
+_COVER_LABEL = {"yes": "covered", "partial": "partial", "no": "missing",
+                "out_of_scope": "policy — not gradable"}
+
+
+def render_report(sessions_dir: Path, session: str | None) -> str:
+    from html import escape as e
+
+    eps = load_episodes(sessions_dir)
+    head = (f"<!doctype html><html><head><meta charset='utf-8'>"
+            f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
+            f"<title>STJP Intent Loop — report</title>"
+            f"<style>{_REPORT_CSS}</style></head><body>")
+    out = [head, "<h1>STJP Intent Loop</h1>",
+           "<div class='sub'>Server-rendered view (no JavaScript). "
+           "The interactive app is at <a href='/'>/</a>.</div>"]
+
+    if not eps:
+        out.append("<div class='card'>No episodes recorded yet.</div>")
+        return "".join(out) + "</body></html>"
+
+    out.append("<h2>Episodes</h2><div class='eps'>")
+    for x in eps:
+        mark = "▸ " if x["session"] == session else ""
+        out.append(
+            f"<a class='b' href='/report?session={e(x['session'])}'>{mark}"
+            f"{e(x['session'])} · {'valid' if x['valid'] else 'invalid'}"
+            f" · {'faithful' if x['faithful'] else 'not faithful'}</a>")
+    out.append("</div>")
+
+    chosen = session or eps[0]["session"]
+    ep = load_episode(sessions_dir, chosen)
+    if ep is None:
+        out.append(f"<div class='card'>No such episode: {e(chosen)}</div>")
+        return "".join(out) + "</body></html>"
+
+    d = ep.get("distilled") or {}
+    f = ep.get("faithfulness") or {}
+    bt = f.get("backtranslation") or {}
+    reqs = d.get("requirements") or []
+    asked = sum(1 for r in reqs if r.get("source") == "answer")
+    pct = (lambda v: "—" if v is None else f"{round(v * 100)}%")
+
+    out.append(f"<h2>{e(chosen)}</h2>")
+    if (ep.get("meter") or {}).get("validator") == "mock":
+        out.append("<div class='warn'><b>validator: mock</b> — this episode "
+                   "used the crude structural check, not Scribble. A "
+                   "development run, never evidence.</div>")
+    out.append(
+        "<div class='tiles'>"
+        f"<div class='tile'><div class='v'>{len(reqs)}</div>"
+        "<div class='k'>Requirements</div></div>"
+        f"<div class='tile'><div class='v'>{asked}</div>"
+        "<div class='k'>Only by asking</div></div>"
+        f"<div class='tile'><div class='v'>{len(ep.get('draft_attempts') or [])}"
+        "</div><div class='k'>Draft attempts</div></div>"
+        f"<div class='tile'><div class='v'>{pct(f.get('recall'))}</div>"
+        "<div class='k'>Coverage recall</div></div>"
+        f"<div class='tile'><div class='v'>{bt.get('score', '—')}</div>"
+        "<div class='k'>Back-translation</div></div>"
+        f"<div class='tile'><div class='v'>{len(f.get('ungrounded') or [])}"
+        "</div><div class='k'>Ungrounded steps</div></div></div>")
+
+    out.append("<h2>Distilled requirements</h2><table><tr><th>ID</th>"
+               "<th>Kind</th><th>Source</th><th>Requirement</th></tr>")
+    for r in reqs:
+        out.append(f"<tr><td>{e(r.get('rid', ''))}</td>"
+                   f"<td><span class='b'>{e(r.get('kind', ''))}</span></td>"
+                   f"<td><span class='b'>{e(r.get('source', ''))}</span></td>"
+                   f"<td>{e(r.get('text', ''))}</td></tr>")
+    out.append("</table>")
+    if d.get("open_questions"):
+        out.append("<h3>Open questions (left unresolved, not invented)</h3><ul>")
+        out += [f"<li>{e(q)}</li>" for q in d["open_questions"]]
+        out.append("</ul>")
+
+    out.append("<h2>Interrogation</h2>")
+    for t in ep.get("transcript") or []:
+        out.append(f"<div class='card'><h3>Round {t.get('round')} — asks</h3>"
+                   f"<pre>{e(t.get('question', ''))}</pre>"
+                   f"<h3>Stakeholder answers</h3>"
+                   f"<pre>{e(t.get('answer', ''))}</pre></div>")
+
+    if ep.get("final_protocol"):
+        out.append("<h2>Validated protocol</h2>"
+                   f"<pre>{e(ep['final_protocol'])}</pre>")
+
+    out.append("<h2>Draft attempts</h2>")
+    for a in ep.get("draft_attempts") or []:
+        verdict = "accepted" if a.get("valid") else "rejected"
+        out.append(f"<div class='card'><h3>Attempt {a.get('k')} — {verdict}"
+                   "</h3>")
+        if a.get("validator_msg"):
+            out.append(f"<div class='sub'>validator: "
+                       f"{e(a['validator_msg'])}</div>")
+        out.append(f"<pre>{e(a.get('text', ''))}</pre></div>")
+
+    if f:
+        out.append(f"<h2>Faithfulness</h2><div class='card'>{e(f.get('rule', ''))}"
+                   "</div><table><tr><th>ID</th><th>Verdict</th>"
+                   "<th>Evidence</th></tr>")
+        for c in f.get("coverage") or []:
+            label = _COVER_LABEL.get(c.get("covered"), c.get("covered", ""))
+            out.append(f"<tr><td>{e(c.get('rid', ''))}</td>"
+                       f"<td><span class='b'>{e(label)}</span></td>"
+                       f"<td>{e(c.get('evidence', ''))}</td></tr>")
+        out.append("</table>")
+        if f.get("ungrounded"):
+            out.append("<h3>Ungrounded structure — in the protocol, required "
+                       "by nothing</h3><ul>")
+            out += [f"<li>{e(u)}</li>" for u in f["ungrounded"]]
+            out.append("</ul>")
+        if bt:
+            out.append("<h3>Back-translation (reconstructed from the protocol "
+                       f"alone) — score {bt.get('score', '—')}</h3>")
+            for key, title in (("missing", "Lost in translation"),
+                               ("added", "Added by the protocol")):
+                if bt.get(key):
+                    out.append(f"<h3>{title}</h3><ul>")
+                    out += [f"<li>{e(m)}</li>" for m in bt[key]]
+                    out.append("</ul>")
+            out.append(f"<pre>{e(bt.get('reconstructed', ''))}</pre>")
+
+    out.append("<h2>Intent document</h2>"
+               f"<pre>{e(ep.get('document', ''))}</pre>")
+    return "".join(out) + "</body></html>"
+
+
+# ---------------------------------------------------------------------------
 # App factory
 # ---------------------------------------------------------------------------
 
@@ -187,6 +352,17 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
     @app.get("/")
     def index():
         return send_from_directory(HERE, "ui.html")
+
+    @app.get("/report")
+    def report():
+        """Server-rendered, JavaScript-free view of the same episodes.
+
+        Embedded viewers sometimes sandbox scripts (VS Code's Simple
+        Browser can), which leaves the single-page UI blank with no
+        explanation. This route renders everything server-side so the
+        framework is always inspectable, whatever the viewer allows."""
+        return render_report(app.config["SESSIONS"],
+                             request.args.get("session"))
 
     # -- discovery --------------------------------------------------------
     @app.get("/api/health")
