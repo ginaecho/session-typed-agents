@@ -76,3 +76,4 @@ foundry_hosted_agents/**/.azure/
 experiments/cases/**/runs/
 experiments/cases/skills_safety/**/LATEST
 
+scribble-java/

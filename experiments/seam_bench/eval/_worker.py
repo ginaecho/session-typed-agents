@@ -52,7 +52,19 @@ def _strip_jvm_banner(msg: str) -> str:
 
 def _cmd_validate(text: str) -> dict:
     stem = _module_stem(text)
-    with tempfile.TemporaryDirectory() as td:
+    # The scratch file must live UNDER SCRIBBLE_PATH. validator.py invokes
+    # the CLI with cwd=SCRIBBLE_PATH and a path relative to it (so a space
+    # in the repo's parent never reaches Scribble). The system temp dir is
+    # on a different branch of the tree, so on Windows that relative path
+    # becomes `..\..\..\..\..\..\TZUCHU~1\AppData\Local\Temp\...` and
+    # Scribble rejects it with "Bad module arg" — every validation failing
+    # for a reason that has nothing to do with the protocol. Keeping the
+    # file inside the toolchain directory keeps the relative path short and
+    # clean. (Same trap the setup script documents for symlinked lib/.)
+    from stjp_core.config import SCRIBBLE_PATH
+    scratch = Path(SCRIBBLE_PATH) / ".scratch"
+    scratch.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=str(scratch)) as td:
         p = Path(td) / f"{stem}.scr"
         p.write_text(text, encoding="utf-8")
         ok, err = ScribbleValidator().validate_protocol(p)

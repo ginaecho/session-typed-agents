@@ -52,6 +52,27 @@ KNOWN_ERROR_LESSONS: list[tuple[str, str]] = [
     (r"(?i)unguarded|guardedness|continue",
      "Inside `rec X { ... }`, at least one message must occur before any "
      "`continue X;` (recursion must be guarded)."),
+    # The single most common REAL rejection observed against scribble-java
+    # on live drafts: "Source role not enabled: X" / "Subject not enabled:
+    # X". It is the classic MPST projection failure — X acts inside a
+    # branch it was never told about — and it is exactly the deadlock this
+    # whole pipeline exists to prevent, so the lesson is stated in the
+    # validator's own words to make it recognisable next time.
+    (r"(?i)not enabled|enabling|unenabled",
+     "\"Source/Subject role not enabled: X\" means X sends or is required "
+     "to act inside a `choice` branch without having been told the "
+     "decision. Fix: as the FIRST statement of every branch, have the "
+     "deciding role send a distinct notification message to every role "
+     "that acts later in that branch — including roles that only act in "
+     "one branch."),
+    (r"(?i)disambiguate name",
+     "\"Cannot disambiguate name: x\" means the payload sort was never "
+     "declared. Declare every sort in the preamble (`data <java> "
+     "\"java.lang.String\" from \"rt.jar\" as String;`) and use the "
+     "CAPITALISED declared name in messages."),
+    (r"(?i)MODULE_KW|missing module",
+     "The file must begin with `module <Name>;` before any data "
+     "declaration or protocol."),
     (r"(?i)merge|project|mergeable|branch",
      "After a `choice at R`, every role whose later behavior differs by "
      "branch must RECEIVE a message inside each branch telling it which "

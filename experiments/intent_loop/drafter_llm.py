@@ -33,7 +33,18 @@ from experiments.seam_bench.t0.drafter import (Drafter, UsageInfo,
 
 # Kept deliberately small: a syntax reminder, not a tutorial. The validator
 # is the authority; the primer only reduces round-1 syntax rejections.
-SCRIBBLE_PRIMER = """Scribble global protocol syntax reminder:
+SCRIBBLE_PRIMER = """Scribble global protocol syntax reminder. Start EVERY
+protocol with exactly this preamble — the real validator rejects a file
+without the module line, and rejects any payload sort that was not declared
+("Cannot disambiguate name: string"):
+
+  module Example;
+
+  data <java> "java.lang.String" from "rt.jar" as String;
+  data <java> "java.lang.Integer" from "rt.jar" as Int;
+  data <java> "java.lang.Boolean" from "rt.jar" as Bool;
+  data <java> "java.lang.Double" from "rt.jar" as Double;
+
   global protocol Name(role A, role B, role C) {
       Label1(string) from A to B;          // message: Label(payload sort)
       choice at B {                        // decision made by B
@@ -48,10 +59,14 @@ SCRIBBLE_PRIMER = """Scribble global protocol syntax reminder:
           continue LOOP;
       }
   }
-Payload sorts: int, string, bool, double, unit. Every branch of a choice
-must inform any role whose later behavior depends on the decision
+Payload sorts are the CAPITALISED names declared above — String, Int, Bool,
+Double — one per message, written `Label(String)`, never `Label(string)`,
+never `Label(Int,String)`, never a sort you did not declare. Every branch of a
+choice must inform any role whose later behavior depends on the decision
 (otherwise projection rejects the protocol). Every role declared must
-appear in at least one message."""
+appear in at least one message. A role never sends to itself — work inside
+one role is not an interaction. Every `rec` loop must have at least one
+branch that does NOT `continue`, or the session can never end."""
 
 _DRAFT_SYSTEM = """You translate a distilled task specification into ONE \
 Scribble global protocol.

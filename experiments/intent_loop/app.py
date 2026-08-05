@@ -765,6 +765,30 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         payload["from_valid_draft"] = bool(ep.get("final_protocol"))
         return jsonify(payload)
 
+    @app.get("/api/episodes/<path:session>/checks")
+    def episode_checks(session: str):
+        """Deadlock precursors + the turn order.
+
+        Fast, JVM-free, pre-validator signals: which join can starve, and
+        whose move it is at each step. The real Scribble checker remains
+        the authority on deadlock-freedom; a clean result here proves
+        nothing on its own, and the payload says so."""
+        ep = load_partial(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such episode"}), 404
+        protocol = ep.get("final_protocol")
+        if not protocol:
+            atts = ep.get("draft_attempts") or []
+            protocol = atts[-1].get("text") if atts else None
+        if not protocol:
+            return jsonify({"error": "no protocol to check yet"}), 404
+        joins = [i for i in (ep.get("distilled") or {}).get("interactions", [])
+                 if len(i.get("waits_for") or []) > 1]
+        from experiments.intent_loop.protocol_checks import check_protocol
+        out = check_protocol(protocol, declared_joins=joins)
+        out["validator"] = (ep.get("meter") or {}).get("validator", "?")
+        return jsonify(out)
+
     @app.post("/api/episodes/<path:session>/explain")
     def episode_explain(session: str):
         """Per-message rationale: which requirement each message realizes
