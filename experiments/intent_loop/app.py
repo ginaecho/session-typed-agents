@@ -952,10 +952,26 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
             attempts = ep.get("draft_attempts") or []
             protocol = attempts[-1].get("text") if attempts else None
         if not protocol:
-            return jsonify({"error": "this episode has no protocol to draw"}), 404
+            # Fall back to the DECLARED interactions. An understanding-only
+            # episode has no protocol by design, and showing nothing made the
+            # app look broken when it was in fact working as intended.
+            distilled = ep.get("distilled") or {}
+            if distilled.get("interactions"):
+                from experiments.intent_loop.protocol_graph import (
+                    intent_graph_payload)
+                payload = intent_graph_payload(distilled)
+                payload["source"] = ("the interactions you endorsed — no "
+                                     "protocol has been drafted yet")
+                payload["from_valid_draft"] = False
+                payload["fsm_steps"] = {}
+                payload["svg"]["fsm"] = {}
+                return jsonify(payload)
+            return jsonify({"error": "nothing to draw yet — no protocol and "
+                                     "no declared interactions"}), 404
         from experiments.intent_loop.protocol_graph import graph_payload
         payload = graph_payload(protocol)
         payload["from_valid_draft"] = bool(ep.get("final_protocol"))
+        payload["source"] = "the drafted protocol"
         return jsonify(payload)
 
     @app.get("/api/episodes/<path:session>/checks")
@@ -1042,6 +1058,55 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         (app.config["SESSIONS"] / session / "repair_questions.json").write_text(
             json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
         return jsonify(out)
+
+    @app.post("/api/episodes/<path:session>/formalize")
+    def episode_formalize(session: str):
+        """Phase 2: the understanding you endorsed becomes a checked protocol.
+
+        Separate from the run on purpose — Scribble is only meaningful once a
+        person agrees the understanding is right. This is where the validator
+        choice belongs, and it defaults to the real one."""
+        ep = load_partial(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such episode"}), 404
+        if not (ep.get("distilled") or {}).get("requirements"):
+            return jsonify({"error": "this episode has no understanding to "
+                                     "formalise yet"}), 400
+        body = request.get_json(silent=True) or {}
+        validator = str(body.get("validator") or "real").lower()
+        if validator == "real":
+            status = toolchain_status()
+            if not status["available"]:
+                return jsonify({"error": "real validator unavailable",
+                                "detail": status["detail"]}), 409
+            validate_fn, label = loop_mod.real_validate(), "scribble-java"
+        else:
+            validate_fn, label = loop_mod.mock_validate, "mock"
+        from experiments.intent_loop import settings as settings_mod
+        cfg = settings_mod.load()
+        rounds = int(body.get("max_repair_rounds") or cfg.max_repair_rounds)
+        sdir = app.config["SESSIONS"] / session
+        params = {"session": session, "validator": label,
+                  "max_repair_rounds": rounds, "phase": "formalize"}
+
+        def _work(job: Job) -> dict:
+            from experiments.intent_loop.llm import build_chat
+            from experiments.intent_loop.loop import formalize_episode
+            record = formalize_episode(
+                build_chat(role="learner"), sdir,
+                validate_fn=validate_fn, validator_label=label,
+                max_repair_rounds=rounds,
+                eval_llm=build_chat(role="judge"),
+                corpus_path=app.config["CORPUS"],
+                progress=lambda st, d: job.emit(st, d))
+            faith = record.faithfulness or {}
+            return {"session": session, "valid": record.valid,
+                    "faithful": bool(faith.get("faithful")),
+                    "recall": faith.get("recall"),
+                    "attempts": len(record.draft_attempts)}
+
+        job = registry.submit("formalize", params, _work)
+        return jsonify({"job_id": job.id, "session": session}), 202
 
     @app.get("/api/episodes/<path:session>/skill")
     def episode_skill(session: str):

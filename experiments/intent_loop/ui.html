@@ -277,6 +277,7 @@ async function showEpisode(session){
 
   $("#main").innerHTML = `
     <div class="row" style="margin-bottom:4px">
+      <button id="backnew">← New run</button>
       <h1 style="font-size:15px">${esc(ep.session)}</h1>
       ${badge(ep.valid?"good":"bad", ep.valid?"validator accepted":"never validated")}
       ${graded?badge(f.faithful?"good":"warn", f.faithful?"faithful":"not faithful")
@@ -335,8 +336,24 @@ async function showEpisode(session){
       </div>`).join("") : `<div class="empty">No questions were asked.</div>`,
 
     Protocol: ()=>`
-      ${ep.final_protocol?`<h2>Validated protocol</h2>
-        <pre>${esc(ep.final_protocol)}</pre>`:""}
+      ${ep.final_protocol?`<h2>Validated protocol
+        <span class="sub">— accepted by the real Scribble checker</span></h2>
+        <pre>${esc(ep.final_protocol)}</pre>`
+       : `<div class="card">
+        <b>No Scribble yet — and that is deliberate.</b>
+        <p class="note">This episode stopped after the UNDERSTANDING so you
+        could check it first. Review the Requirements and Graph tabs; when
+        the roles, interactions and goals look right, formalise them and the
+        real checker runs.</p>
+        <div class="row">
+          <button class="primary" id="formalize">Formalise into Scribble
+            &amp; check it</button>
+          <label style="margin:0;text-transform:none;letter-spacing:0">
+            <input type="checkbox" id="fmock" style="width:auto"> use the
+            crude validator (dev only)</label>
+          <span class="sub" id="fstatus"></span>
+        </div>
+        <div id="flog"></div></div>`}
       <h2>Attempts</h2>
       ${(ep.draft_attempts||[]).map(a=>`
         <details ${a.valid?"":"open"}>
@@ -379,10 +396,13 @@ async function showEpisode(session){
     Raw: ()=>`<h2>Meter</h2><pre class="wrap">${esc(JSON.stringify(ep.meter,null,2))}</pre>
       <h2>Record</h2><pre class="wrap">${esc(JSON.stringify(ep,null,2).slice(0,20000))}</pre>`,
   };
+  const back = $("#backnew");
+  if(back) back.onclick = showRunForm;
   const paint = name => {
     $("#tabbody").innerHTML = tabs[name]();
     if(name==="Graph") loadGraph(session);
     if(name==="Refine") loadRefine(session, ep);
+    if(name==="Protocol") wireFormalize(session);
   };
   document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
     document.querySelectorAll(".tab").forEach(x=>
@@ -619,6 +639,63 @@ function forceGraph(host, roles, edges, mode){
   };
 }
 
+/* ---------- phase 2: formalise an endorsed understanding ---------- */
+async function wireFormalize(session){
+  const btn = $("#formalize"); if(!btn) return;      // already has a protocol
+  btn.onclick = async ()=>{
+    btn.disabled = true;
+    $("#fstatus").textContent = "drafting and checking…";
+    const r = await api(
+      `/api/episodes/${encodeURIComponent(session)}/formalize`,
+      {method:"POST", headers:{"Content-Type":"application/json"},
+       body: JSON.stringify({validator: $("#fmock").checked?"mock":"real"})});
+    if(r.error){
+      btn.disabled=false;
+      $("#fstatus").innerHTML = badge("bad", esc(r.error));
+      if(r.detail) $("#flog").innerHTML =
+        `<p class="note">${esc(r.detail)}</p>`;
+      return;
+    }
+    $("#fstatus").innerHTML = badge("info","job "+r.job_id);
+    pollFormalize(r.job_id, session);
+  };
+}
+
+async function pollFormalize(id, session){
+  clearInterval(state.poll);
+  state.poll = setInterval(async ()=>{
+    const j = await api("/api/runs/"+id);
+    if(j.error || !j.state){
+      clearInterval(state.poll);
+      $("#flog").innerHTML = `<div class="warnbar">${badge("bad","job lost")}
+        ${esc(j.error||"no state")} — reload and check the episode.</div>`;
+      return;
+    }
+    $("#flog").innerHTML = `<div class="card" style="margin-top:10px">
+      <div class="row">${badge(j.state==="succeeded"?"good":
+        j.state==="failed"?"bad":"info", j.state)}
+        <span class="sub">${esc(j.stage||"")}</span></div>
+      <table style="margin-top:8px"><tbody>${(j.events||[]).map(e=>{
+        const {stage,at,...rest}=e;
+        return `<tr><td class="rid">${esc(stage)}</td>
+          <td><code>${esc(JSON.stringify(rest).slice(0,220))}</code></td>
+          </tr>`;}).join("")}</tbody></table>
+      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
+    if(j.state==="succeeded"||j.state==="failed"){
+      clearInterval(state.poll);
+      if(j.result) $("#flog").innerHTML += `<div class="card">
+        <b>${j.result.valid?"Scribble ACCEPTED it":"Scribble rejected every attempt"}</b>
+        <p class="note">${j.result.attempts} attempt(s) ·
+          faithful: ${j.result.faithful} · recall
+          ${pct(j.result.recall)}</p>
+        <button class="primary" id="reopen">Reload this episode</button>
+        </div>`;
+      const b = $("#reopen"); if(b) b.onclick = ()=>showEpisode(session);
+      await loadEpisodesKeepView();
+    }
+  }, 2500);
+}
+
 /* ---------- graph tab ---------- */
 async function loadGraph(session){
   const g = await api(`/api/episodes/${encodeURIComponent(session)}/graph`);
@@ -633,9 +710,8 @@ async function loadGraph(session){
       <div class="tile"><div class="v">${s.loops}</div><div class="k">Loops</div></div>
       <div class="tile"><div class="v">${s.branched_messages}</div><div class="k">Conditional msgs</div></div>
     </div>
-    ${g.from_valid_draft?"":`<div class="warnbar">${badge("warn","rejected draft")}
-      This is the last attempt, which the validator rejected — drawn so you
-      can see why.</div>`}
+    <div class="warnbar">${badge("info","source")}
+      Drawn from <b>${esc(g.source||"the drafted protocol")}</b>.</div>
     ${(g.unparsed||[]).length?`<div class="warnbar">${badge("warn","unread lines")}
       ${g.unparsed.length} line(s) could not be read and are NOT in the
       diagrams: ${g.unparsed.map(u=>`<code>${esc(u.text.slice(0,80))}</code>`).join(" ")}
@@ -662,7 +738,7 @@ async function loadGraph(session){
     "when NOT to do it" lives.</p>
     <div class="card" style="overflow-x:auto">${g.svg.sequence}</div>
 
-    <h2>One role's own contract</h2>
+    ${Object.keys(g.svg.fsm||{}).length?`<h2>One role's own contract</h2>
     <p class="note">Each role's obligations in order — <code>!</code> it must
     send, <code>?</code> it waits to receive. This is the projection idea:
     the role sees only its own boundary.</p>
@@ -671,7 +747,7 @@ async function loadGraph(session){
         aria-selected="${i===0}">${esc(r)}</button>`).join("")}
     </div>
     <div class="card" style="overflow-x:auto" id="fsmbox">
-      ${g.svg.fsm[g.roles[0]]||""}</div>
+      ${g.svg.fsm[g.roles[0]]||""}</div>`:""}
 
     <h2>Why is it presented this way?</h2>
     <div class="row"><button class="primary" id="explain">Explain each
