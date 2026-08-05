@@ -1,5 +1,7 @@
 # Run Reports — Real-skills cases on Azure AI Foundry (8 settings, two models)
 
+> **Historical (pre-2026-08-05).** Uses the earlier arm names. Current campaign arm names and their mapping: see BENCHMARK_PLAN_V3.md §10.8.
+
 **Date: 2026-07-31.** Same reading approach as
 [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md), applied to the
 **real public-skill cases** run live on Azure AI Foundry (one hosted Foundry

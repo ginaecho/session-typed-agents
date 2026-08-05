@@ -1,5 +1,7 @@
 # Run Reports Explained
 
+> **Historical (pre-2026-08-05).** Uses the earlier arm names. Current campaign arm names and their mapping: see BENCHMARK_PLAN_V3.md §10.8.
+
 Reading the benchmark results in plain English: what the numbers mean, why they matter, and what they prove.
 
 **Updated: 2026-07-07** (added the real-skills ladder in Part 1 — a
@@ -1148,8 +1150,8 @@ attempt. The structure, not the model, did the work.
 
 ## 16. What to read next
 
-- **To understand how this benchmark is designed:** Read `3_BENCHMARK_DESIGN_EXPLAINED.md`
-- **To learn about testing strategies:** Read `2_TESTING_STRATEGIES.md`
+- **To understand how this benchmark is designed:** Read `archive/3_BENCHMARK_DESIGN_EXPLAINED.md`
+- **To learn about testing strategies:** Read `archive/2_TESTING_STRATEGIES.md`
 - **To see why safety cases matter:** Read `7_USE_CASE_DEADLOCK_SAFETY.md`
 - **To see the earlier component-validation run (n=10, live model):** Read `results/RESULT_05_SUBAGENT_VALIDATION.md`
 - **For the n=100 technical detail and honest caveats:** Read `results/RESULT_07_N100_SCALE.md`

@@ -62,7 +62,10 @@ if hasattr(sys.stdout, "reconfigure"):
 
 from stjp_core.foundry.llm_client import LLMClient
 from case_loader import Case
-from baselines.registry import SCENARIOS, make_runner
+# ALL_SCENARIOS (default matrix + legacy), aliased: evaluation iterates over
+# whatever events files exist in a run dir, and pre-consolidation run dirs
+# contain legacy-arm events that must remain evaluable.
+from baselines.registry import ALL_SCENARIOS as SCENARIOS, make_runner
 from stjp_core.compiler.refinement_checker import Refinement
 
 
@@ -72,8 +75,31 @@ from stjp_core.compiler.refinement_checker import Refinement
 # ---------------------------------------------------------------------------
 
 VOCABULARY_ARMS = {
+    # -- 2026-08-05 arm rename (BENCHMARK_PLAN_V3 §10.8): globalvalid /
+    # maf_globalvalid / localvalid* / maf_localvalid* all saw the protocol
+    # vocabulary -> strict. skills / maf_skills (real skill files, no
+    # protocol) are deliberately NOT in this set -> role_pair, same as
+    # their unchecked_skills / bare / maf_groupchat predecessors. ----------
+    "globalvalid",             # global type text, decentralized runner (ex global_decentralized)
+    "maf_globalvalid",         # global type given as text (ex maf_groupchat_llmvalid)
+    "localvalid",              # projected local types given (ex min_llmvalid)
+    "maf_localvalid",          # participants hold projected local types (min
+                               # format); orchestrator holds the global type
+                               # (ex maf_groupchat_llmvalid_orch)
+    "localvalid_gate",         # lean projected local types + enforcement gate (ex min_llmvalid_gate)
+    "maf_localvalid_gate",     # same local contracts + pre-broadcast gate on MAF
+    "localvalid_sched",        # lean projected + gate + EFSM scheduler (ex min_llmvalid_sched)
+    "maf_localvalid_sched",    # same local contracts, MAF + EFSM-driven speaker selection (new)
+    # -- pre-2026-08-05-rename aliases (identical prompts, old keys; kept so
+    # pre-rename run dirs still evaluate under the strict rule) ------------
     "maf_groupchat_unsafe",   # global type given as text
-    "maf_groupchat_llmvalid", # global type given as text
+    "maf_groupchat_llmvalid", # global type given as text (repaired: brief +
+                              # protocol text; pre-repair: intent + protocol)
+    "maf_groupchat_llmvalid_legacy",  # pre-repair broadcast twin — same text
+    "maf_groupchat_llmvalid_orch",  # participants hold projected local types
+                                    # (min format), so they saw the labels;
+                                    # the orchestrator holds the global type
+    "global_decentralized_legacy",  # pre-repair broadcast twin — same text
     "spec_llmvalid",          # projected local types given
     "min_llmvalid",           # projected local types given
     "spec_llmvalid_gate",     # projected local types given + enforcement gate

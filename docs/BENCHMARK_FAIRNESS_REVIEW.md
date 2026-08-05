@@ -1,9 +1,11 @@
 # Is the STJP Benchmark Fair? — A Review in Plain English
 
+> **Historical (pre-2026-08-05).** Uses the earlier arm names. Current campaign arm names and their mapping: see BENCHMARK_PLAN_V3.md §10.8.
+
 **Date: 2026-07-17.** This review checked whether the benchmark behind the
 headline results ("bare agents: 0% success; full STJP: 100% success, 9×
 cheaper, 4× faster") is a fair comparison, by reading both the documentation
-(`docs/2_TESTING_STRATEGIES.md`, `docs/3_BENCHMARK_DESIGN_EXPLAINED.md`) and
+(`docs/archive/2_TESTING_STRATEGIES.md`, `docs/archive/3_BENCHMARK_DESIGN_EXPLAINED.md`) and
 the code that actually produces the numbers (`experiments/scripts/case_runner.py`,
 `experiments/baselines/`, `experiments/scripts/evaluate_run.py`).
 

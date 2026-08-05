@@ -359,7 +359,7 @@ Protocol + Gate:
 
 Each pattern below is labeled with the claim it tests — **D** (deadlock-freedom),
 **I** (interaction correctness), **T** (token savings), or **W** (time savings).
-These four claims are defined in [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md#1-what-are-we-testing-four-separate-claims).
+These four claims are defined in [`archive/2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md#1-what-are-we-testing-four-separate-claims).
 
 ### Pattern 1: Deadlock-prone (tests Claim D)
 
@@ -460,6 +460,6 @@ Result: 13.3k tokens with protocol + gate + scheduler vs 120.3k with global text
 
 ## 12. What to read next
 
-- **To understand the testing framework:** Read `2_TESTING_STRATEGIES.md`
-- **To understand benchmark metrics:** Read `3_BENCHMARK_DESIGN_EXPLAINED.md`
+- **To understand the testing framework:** Read `archive/2_TESTING_STRATEGIES.md`
+- **To understand benchmark metrics:** Read `archive/3_BENCHMARK_DESIGN_EXPLAINED.md`
 - **To see real results:** Read `6_RUN_REPORTS_EXPLAINED.md`

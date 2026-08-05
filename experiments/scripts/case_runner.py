@@ -56,7 +56,8 @@ from stjp_core.evaluation.goal_elicitor import verify_goals_against_trace
 from stjp_core.monitor.stjp_live_emitter import LiveEventEmitter
 
 from case_loader import Case
-from baselines import SCENARIOS, make_runner
+from baselines import (SCENARIOS, ABLATION_SCENARIOS, ALL_SCENARIOS,
+                       make_runner)
 from baselines.base import BaselineRunner
 
 import evaluate_run  # Set B (goal-achievement) metrics, run at end of each run
@@ -86,7 +87,12 @@ PROMPT_INSTALL_LIMIT_FOUNDRY = 8000
 # Per-arm install behaviour: Foundry-stack arms truncate at the limit above;
 # MAF arms install the full string. Used only for the `truncated` flag in
 # prompts/<arm>/index.json — does not affect runtime behaviour.
-_FOUNDRY_INSTALL_KEYS = {"bare", "spec_llmvalid", "min_llmvalid", "spec_llmvalid_gate", "min_llmvalid_gate", "min_llmvalid_gate_nohint", "min_llmvalid_gate_lastrecv", "min_llmvalid_sched", "global_decentralized", "unchecked_skills"}
+# 2026-08-05 arm rename (BENCHMARK_PLAN_V3 §10.8): skills/globalvalid/
+# localvalid/localvalid_gate/localvalid_sched are the new-named round-robin
+# Foundry-stack arms; their pre-rename keys (bare/global_decentralized/
+# min_llmvalid/min_llmvalid_gate/min_llmvalid_sched/unchecked_skills) stay
+# listed too so pre-rename run dirs still get the right truncation flag.
+_FOUNDRY_INSTALL_KEYS = {"skills", "bare", "bare_legacy", "spec_llmvalid", "localvalid", "min_llmvalid", "spec_llmvalid_gate", "localvalid_gate", "min_llmvalid_gate", "min_llmvalid_gate_nohint", "min_llmvalid_gate_lastrecv", "localvalid_sched", "min_llmvalid_sched", "globalvalid", "global_decentralized", "global_decentralized_legacy", "unchecked_skills"}
 
 
 def _persist_prompts(runner: "BaselineRunner", run_dir: Path) -> None:
@@ -149,10 +155,54 @@ def _persist_prompts(runner: "BaselineRunner", run_dir: Path) -> None:
     (out_dir / "index.json").write_text(
         json.dumps({"arm_key": arm_key,
                     "scenario_name": runner.scenario_name,
+                    # v1 = pre-2026-08-05 broadcast-intent prompt policy;
+                    # v2 = repaired fair intent-carrying policy (same arm
+                    # keys, different prompt semantics — never compare a
+                    # v1 row with a v2 row under the same key).
+                    "prompts_schema_version": 2,
                     "install_truncates": install_truncates,
                     "install_limit": limit,
                     "roles": index_roles}, indent=2),
         encoding="utf-8")
+
+
+def _persist_intent(case: "Case", run_dir: Path) -> None:
+    """Write the EXACT user-intent text this run used to run_dir/intent.md.
+
+    Required by BENCHMARK_PLAN_V3 §V3.1: the per-role prompts alone do not
+    pin down the intent under the fair intent-carrying policy (workers may
+    carry only distilled briefs), so every run persists the intent itself as
+    one standalone .md with a provenance header — source (case.yaml vs
+    intent/intent.md; git-quoted vs llm_authored), scale, sha256, size.
+    Also copies intent_distilled.md + role_briefs.yaml into the run dir when
+    the distillation front-end has produced them, so the run directory is
+    self-contained evidence of everything any arm was derived from.
+    """
+    import hashlib
+
+    text = case.intent_effective
+    sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    prov = case.intent_provenance or {}
+    source_file = ("intent/intent.md" if case.intent_scale == "doc"
+                   else "case.yaml (intent:)")
+    header = [
+        "---",
+        f"case: {case.case_id}",
+        f"intent_scale: {case.intent_scale}",
+        f"source_file: {source_file}",
+        f"source: {prov.get('source', 'case.yaml')}",
+        f"sha256: {sha}",
+        f"chars: {len(text)}",
+        "---",
+        "",
+    ]
+    (run_dir / "intent.md").write_text("\n".join(header) + text + "\n",
+                                       encoding="utf-8")
+    for src in (case.intent_distilled_path,
+                case.intent_dir / "role_briefs.yaml"):
+        if src.exists():
+            (run_dir / src.name).write_text(
+                src.read_text(encoding="utf-8"), encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -453,7 +503,10 @@ def summarize_run(run_dir: Path) -> dict:
 
     summary = {"run_dir": str(run_dir), "execution_mode": execution_mode,
                "scenarios": {}}
-    for key, name, _factory in SCENARIOS:
+    # ALL_SCENARIOS (not the default matrix): run dirs produced before the
+    # 2026-08-05 consolidation contain legacy-arm events files and must stay
+    # summarizable; arms with no events file are skipped below anyway.
+    for key, name, _factory in ALL_SCENARIOS:
         agg = _aggregate(run_dir / f"events_{key}.jsonl")
         n = agg["n_trials"]
         succ = agg["succeeded"]
@@ -507,7 +560,7 @@ def print_summary(case: Case, summary: dict) -> None:
     print("\n" + "=" * 110)
     print(f"  CASE: {case.case_id}   n_trials={n_trials}   MAX_ATTEMPTS={MAX_ATTEMPTS}")
     print("=" * 110)
-    cols = [(k, n) for k, n, _ in SCENARIOS if k in scs]
+    cols = [(k, n) for k, n, _ in ALL_SCENARIOS if k in scs]
     header_cols = "  ".join(f"{n:>20s}" for _, n in cols)
     print(f"  {'metric':28s}  {header_cols}")
     print(f"  {'-'*28}  " + "  ".join("-" * 20 for _ in cols))
@@ -583,7 +636,7 @@ def _completed_arm_keys(run_dir: Path, n_trials: int) -> set[str]:
     on resume — LiveEventEmitter truncates the JSONL at the start of run.
     """
     done: set[str] = set()
-    for key, _, _ in SCENARIOS:
+    for key, _, _ in ALL_SCENARIOS:
         p = run_dir / f"events_{key}.jsonl"
         if not p.exists():
             continue
@@ -605,14 +658,17 @@ def _completed_arm_keys(run_dir: Path, n_trials: int) -> set[str]:
 def run_case(case_id: str, n_trials: int,
              resume_dir: Optional[Path] = None,
              semantic: bool = False,
-             sequential: bool = False) -> dict:
+             sequential: bool = False,
+             intent_scale: str = "short") -> dict:
     case_dir = CASES_DIR / case_id
-    case = Case.load(case_dir)
+    case = Case.load(case_dir, intent_scale=intent_scale)
     print("=" * 72)
     print(f"  CASE {case.case_id}   v{case.version}   n_trials={n_trials}")
     print(f"  protocol: {case.protocol_path.name}")
     print(f"  roles:    {case.roles}")
-    print(f"  intent:   {case.intent[:120]}...")
+    print(f"  intent:   [{case.intent_scale}, "
+          f"{len(case.intent_effective)} chars] "
+          f"{case.intent_effective[:120]}...")
     print(f"  scenarios: {[k for k, _, _ in SCENARIOS]}")
     print("=" * 72)
 
@@ -635,6 +691,15 @@ def run_case(case_id: str, n_trials: int,
         print(f"  run dir:  {run_dir.relative_to(EXPERIMENTS_DIR)}")
     (case.case_dir / "LATEST").write_text(run_dir.name, encoding="utf-8")
 
+    # Persist the exact intent text this run uses (one standalone .md with
+    # provenance) — required alongside the per-role prompts; see
+    # _persist_intent. Written on fresh AND resume runs (idempotent).
+    try:
+        _persist_intent(case, run_dir)
+    except Exception as e:
+        print(f"  intent persistence FAILED: {type(e).__name__}: {e}",
+              flush=True)
+
     # Wave-based execution to avoid Azure OpenAI gpt-4o TPM throttling:
     #   wave 1: Foundry-only arms in parallel (use Agent Service, which
     #           handles 429s internally — no cross-arm contention surfaced)
@@ -642,7 +707,11 @@ def run_case(case_id: str, n_trials: int,
     #           (MAF's OpenAIChatCompletionClient surfaces 429s as errors
     #            that count as no-progress — so any concurrency among MAF
     #            arms causes spurious "deadlock" signals)
-    FOUNDRY_KEYS = {"bare", "spec_llmvalid", "min_llmvalid", "spec_llmvalid_gate", "min_llmvalid_gate", "min_llmvalid_gate_nohint", "min_llmvalid_gate_lastrecv", "min_llmvalid_sched", "global_decentralized", "unchecked_skills"}
+    # 2026-08-05 arm rename (BENCHMARK_PLAN_V3 §10.8): same key set as
+    # _FOUNDRY_INSTALL_KEYS above (new names + pre-rename aliases) — every
+    # arm NOT in this set (maf_skills, maf_globalvalid, maf_localvalid,
+    # maf_localvalid_sched, and their pre-rename aliases) runs the MAF wave.
+    FOUNDRY_KEYS = {"skills", "bare", "bare_legacy", "spec_llmvalid", "localvalid", "min_llmvalid", "spec_llmvalid_gate", "localvalid_gate", "min_llmvalid_gate", "min_llmvalid_gate_nohint", "min_llmvalid_gate_lastrecv", "localvalid_sched", "min_llmvalid_sched", "globalvalid", "global_decentralized", "global_decentralized_legacy", "unchecked_skills"}
 
     def _run_one(idx: int, runner_):
         print(f"\n[experiment {idx+1}] {runner_.scenario_name} "
@@ -739,8 +808,26 @@ def main():
         print("  --sequential: run every arm one at a time (no shared "
               "rate-limit contention). Required for any wall-clock/speed "
               "claim; the default parallel mode is fine for token metrics.")
-        print("  --arms: comma-separated scenario keys to run (default: all "
-              f"registered arms: {[k for k, _, _ in SCENARIOS]})")
+        core_keys = [k for k, _, _ in SCENARIOS]
+        ablation_keys = [k for k, _, _ in ABLATION_SCENARIOS]
+        other = set(core_keys) | set(ablation_keys)
+        legacy_keys = [k for k, _, _ in ALL_SCENARIOS if k not in other]
+        print(f"  --arms: comma-separated scenario keys to run.")
+        print(f"    default = the 9-arm CORE matrix: {core_keys}")
+        print(f"    ablations (opt-in, run only where their question is "
+              f"live): {ablation_keys}")
+        print(f"    legacy (reproduction of pre-repair prompts): "
+              f"{legacy_keys}")
+        print("  --intent-scale: short (default; case.yaml paragraph) or doc "
+              "(cases/<case>/intent/intent.md document-scale intent). "
+              "PREREQUISITE: the intent package (intent.md, role_briefs.yaml, "
+              "auto-approved distillation) is a separate preprocessing "
+              "stage — run `python experiments/scripts/intent_pipeline.py "
+              "synth --all` once before a campaign; the repaired "
+              "brief-carrying legacy-alias arms (bare, global_decentralized, "
+              "maf_groupchat, maf_groupchat_llmvalid) fail fast without it. "
+              "The 9-arm core matrix's globalvalid / maf_globalvalid also "
+              "carry a role brief and share the same prerequisite.")
         sys.exit(2)
 
     # --semantic: opt into the LLM-judged Set B metric (costs LLM calls).
@@ -751,14 +838,29 @@ def main():
     sequential = "--sequential" in args
     args = [a for a in args if a != "--sequential"]
 
+    # --intent-scale: short (case.yaml paragraph, default — legacy prompts
+    # stay byte-identical) or doc (cases/<case>/intent/intent.md document;
+    # requires intent_pipeline.py author to have produced it).
+    intent_scale = "short"
+    if "--intent-scale" in args:
+        idx = args.index("--intent-scale")
+        if idx + 1 >= len(args) or args[idx + 1] not in ("short", "doc"):
+            print("--intent-scale requires 'short' or 'doc'")
+            sys.exit(2)
+        intent_scale = args[idx + 1]
+        args = args[:idx] + args[idx + 2:]
+
     # --arms: restrict the run to a subset of registered scenario keys.
+    # Accepts LEGACY keys too (bare, maf_groupchat, ...) — that is the only
+    # way a legacy arm runs since the 2026-08-05 consolidation removed them
+    # from the default matrix.
     if "--arms" in args:
         idx = args.index("--arms")
         if idx + 1 >= len(args):
             print("--arms requires a comma-separated list of scenario keys")
             sys.exit(2)
         chosen = [a.strip() for a in args[idx + 1].split(",") if a.strip()]
-        known = {k for k, _, _ in SCENARIOS}
+        known = {k for k, _, _ in ALL_SCENARIOS}
         unknown = [a for a in chosen if a not in known]
         if unknown:
             print(f"--arms: unknown scenario keys {unknown} "
@@ -766,7 +868,8 @@ def main():
             sys.exit(2)
         # Slice-assign so every module holding a reference to the registry
         # list (run_case's wave split, summarize, persisters) sees the filter.
-        SCENARIOS[:] = [s for s in SCENARIOS if s[0] in chosen]
+        # Sourced from ALL_SCENARIOS so explicitly chosen legacy arms run.
+        SCENARIOS[:] = [s for s in ALL_SCENARIOS if s[0] in chosen]
         args = args[:idx] + args[idx + 2:]
 
     # --summarize-only: shortcut, no runner work, just re-aggregate.
@@ -808,12 +911,13 @@ def main():
                     if p.is_dir() and (p / "case.yaml").exists()]
         print(f"running all cases at n={n}: {case_ids}")
         for cid in case_ids:
-            run_case(cid, n, semantic=semantic, sequential=sequential)
+            run_case(cid, n, semantic=semantic, sequential=sequential,
+                     intent_scale=intent_scale)
     else:
         case_id = args[0]
         n = int(args[1]) if len(args) > 1 and args[1].isdigit() else 10
         run_case(case_id, n, resume_dir=resume_dir, semantic=semantic,
-                 sequential=sequential)
+                 sequential=sequential, intent_scale=intent_scale)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,18 @@
+{
+  "workflow_name": "stjp-sdlc-release-gate",
+  "graph_signature_hash": "671ade50f00d5629488ab59f6576931d0f87bcdb81f2292985a1b22a6ae9786b",
+  "checkpoint_id": "d6cf9db4-b67d-4888-9023-f7e92bfc6999",
+  "previous_checkpoint_id": "71c8efc0-c814-4939-a52c-d5e8d9314580",
+  "timestamp": "2026-08-05T15:33:17.281355+00:00",
+  "messages": {},
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "sdlc-release-gate-coordinator": {}
+    }
+  },
+  "pending_request_info_events": {},
+  "iteration_count": 1,
+  "metadata": {},
+  "version": "1.0"
+}

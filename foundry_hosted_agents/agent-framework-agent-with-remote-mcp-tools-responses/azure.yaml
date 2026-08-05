@@ -91,5 +91,105 @@ services:
             - protocol: responses
               version: 2.0.0
         startupCommand: python main.py
+    stjp-sdlc-release-gate-group-sol:
+        project: agents/sdlc_release_gate
+        host: azure.ai.agent
+        language: docker
+        docker:
+            remoteBuild: true
+        uses:
+            - firstProject
+        container:
+            resources:
+                cpu: "0.5"
+                memory: 1Gi
+        environmentVariables:
+            - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+              value: gpt-5.6-sol
+            - name: STJP_CHAT_API
+              value: responses
+        kind: hosted
+        name: stjp-sdlc-release-gate-group-sol
+        protocols:
+            - protocol: responses
+              version: 2.0.0
+        startupCommand: python main.py
+    stjp-sdlc-release-gate-group-mini:
+        project: agents/sdlc_release_gate
+        host: azure.ai.agent
+        language: docker
+        docker:
+            remoteBuild: true
+        uses:
+            - firstProject
+        container:
+            resources:
+                cpu: "0.5"
+                memory: 1Gi
+        environmentVariables:
+            - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+              value: gpt-5-mini
+            - name: STJP_CHAT_API
+              value: responses
+        kind: hosted
+        name: stjp-sdlc-release-gate-group-mini
+        protocols:
+            - protocol: responses
+              version: 2.0.0
+        startupCommand: python main.py
+    stjp-sdlc-release-gate-group-v4pro:
+        project: agents/sdlc_release_gate
+        host: azure.ai.agent
+        language: docker
+        docker:
+            remoteBuild: true
+        uses:
+            - firstProject
+        container:
+            resources:
+                cpu: "0.5"
+                memory: 1Gi
+        environmentVariables:
+            - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+              value: DeepSeek-V4-Pro
+            - name: STJP_CHAT_API
+              value: chat
+            - name: AZURE_OPENAI_ENDPOINT
+              value: https://foundary-tzuc06.openai.azure.com/
+            - name: AZURE_OPENAI_API_VERSION
+              value: 2024-12-01-preview
+        kind: hosted
+        name: stjp-sdlc-release-gate-group-v4pro
+        protocols:
+            - protocol: responses
+              version: 2.0.0
+        startupCommand: python main.py
+    stjp-sdlc-release-gate-group-v4flash:
+        project: agents/sdlc_release_gate
+        host: azure.ai.agent
+        language: docker
+        docker:
+            remoteBuild: true
+        uses:
+            - firstProject
+        container:
+            resources:
+                cpu: "0.5"
+                memory: 1Gi
+        environmentVariables:
+            - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+              value: DeepSeek-V4-Flash
+            - name: STJP_CHAT_API
+              value: chat
+            - name: AZURE_OPENAI_ENDPOINT
+              value: https://foundary-tzuc06.openai.azure.com/
+            - name: AZURE_OPENAI_API_VERSION
+              value: 2024-12-01-preview
+        kind: hosted
+        name: stjp-sdlc-release-gate-group-v4flash
+        protocols:
+            - protocol: responses
+              version: 2.0.0
+        startupCommand: python main.py
 infra:
     provider: microsoft.foundry

@@ -79,3 +79,7 @@ experiments/cases/skills_safety/**/LATEST
 scribble-java/
 experiments/intent_loop/.settings.json
 experiments/intent_loop/lessons.json
+
+# Local benchmark run logs (large, machine-specific; evidence lives in experiments/cases/*/runs/)
+foundry_hosted_agents/**/.localcheck-logs/
+foundry_hosted_agents/**/.localsmoke2-logs/

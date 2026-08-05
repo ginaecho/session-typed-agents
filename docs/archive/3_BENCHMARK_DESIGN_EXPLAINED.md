@@ -1,5 +1,7 @@
 # Benchmark Design Explained
 
+> **ARCHIVED 2026-08-05.** This explained the earlier benchmark's metrics and design. The current design lives in [`../BENCHMARK_PLAN_V3.md`](../BENCHMARK_PLAN_V3.md); the plain-English entry point is [`../BENCHMARK_HANDOFF.md`](../BENCHMARK_HANDOFF.md).
+
 How we measure STJP's impact, why the measurements matter, and what makes a fair comparison.
 
 **Date: 2026-07-03**

@@ -6,6 +6,29 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
 
 ---
 
+## ⭐ The benchmark campaign (current work — start here)
+
+If you are here for the **benchmark campaign** (comparing our approach
+against baselines and Microsoft's multi-agent tool, on 9 setups × 4 AI
+models), start with these six documents — they are the current set, all
+named `BENCHMARK_*`, all in plain English:
+
+| read in this order | what it gives you |
+|---|---|
+| [`BENCHMARK_HANDOFF.md`](BENCHMARK_HANDOFF.md) | **Start here.** The whole picture: what we measure, the 9 setups, the 4 models, the fairness reasoning, every document, and the run steps. |
+| [`BENCHMARK_PLAN_V3.md`](BENCHMARK_PLAN_V3.md) | The full design and reasoning. §10.8 = the authoritative setup names. Top banner explains which parts are history. |
+| [`BENCHMARK_IMPLEMENTATION_STEPS.md`](BENCHMARK_IMPLEMENTATION_STEPS.md) | Step-by-step how to run it. §0a = the setup traps a fresh machine will hit. |
+| [`BENCHMARK_CASE_RANKING.md`](BENCHMARK_CASE_RANKING.md) | Which test cases to run, in what order, and why. |
+| [`BENCHMARK_TIMELOG.md`](BENCHMARK_TIMELOG.md) | Measured timings for estimating future work. |
+| [`BENCHMARK_FAIRNESS_REVIEW.md`](BENCHMARK_FAIRNESS_REVIEW.md) | The original fairness audit (historical names; the mapping is in PLAN_V3 §10.8). |
+
+Older benchmark guides (`2_TESTING_STRATEGIES`, `3_BENCHMARK_DESIGN_EXPLAINED`,
+`5_ARMS_EXPLAINED`, `CAMPAIGN_STATUS`) were **moved to [`archive/`](archive/)**
+on 2026-08-05 — they describe superseded versions and each carries a banner
+pointing here.
+
+---
+
 <!-- MENU:START (auto-generated — edit headings, then regenerate) -->
 ## Menu
 
@@ -40,14 +63,14 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
 ## 🚀 Quick navigation
 
 - **New to STJP?** → Start with [`1_TECH_SETUP.md`](1_TECH_SETUP.md)
-- **Want to understand the testing?** → Read [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md)
+- **Want to understand the testing?** → Read [`2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md)
 - **Need to run STJP locally?** → See [`1_TECH_SETUP.md`](1_TECH_SETUP.md) section 5 ("Running STJP with Azure AI Foundry")
 - **Creating your own use case?** → Follow [`4_HOW_TO_CREATE_USE_CASES.md`](4_HOW_TO_CREATE_USE_CASES.md) step by step
 - **Reading the benchmark results?** → Start with [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md)
 - **Understanding why safety matters?** → See [`7_USE_CASE_DEADLOCK_SAFETY.md`](7_USE_CASE_DEADLOCK_SAFETY.md)
 - **How does intent → protocol drafting get machine-learned?** → See [`8_INTENT_TO_PROTOCOL_TRAINING.md`](8_INTENT_TO_PROTOCOL_TRAINING.md)
 - **WHY do we need STJP at all? The whole story, with demos** → [`results/README.md`](results/README.md) — four acts (Situation → Task → Action → Result) ending in the nine-real-case scoreboard, every act backed by a runnable demo and a numbered report
-- **What exactly is an "arm" / a "setting"?** → See [`5_ARMS_EXPLAINED.md`](5_ARMS_EXPLAINED.md) (every configuration drawn as one flow line, plus which test cases fit STJP)
+- **What exactly is an "arm" / a "setting"?** → See [`5_ARMS_EXPLAINED.md`](archive/5_ARMS_EXPLAINED.md) (every configuration drawn as one flow line, plus which test cases fit STJP)
 - **Real Anthropic + GitHub Copilot skills, run by two different models?** → See [`results/RESULT_09_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_09_REAL_SKILLS_TWO_MODELS.md)
 - **Running the nuscr / nuscribble compiler backend?** → See [`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md) (install routes + `STJP_COMPILER_BACKEND=nuscr`)
 - **Verifying the results from the raw traces?** → See [`reference/HOW_TO_USE_TRACES.md`](reference/HOW_TO_USE_TRACES.md) (re-derive every metric; read a trace by eye)
@@ -86,7 +109,7 @@ What you'll learn:
 - The fairness rules (one variable per comparison, no confounding)
 - Two axes and four task shapes (how to design an unconfounded benchmark)
 - How we grade results (GCR, CGC, cost-to-goal)
-- The benchmark arms and what changed between them (the registry has since grown to 15 arms — see [`5_ARMS_EXPLAINED.md`](5_ARMS_EXPLAINED.md) for the current set)
+- The benchmark arms and what changed between them (the registry has since grown to 15 arms — see [`5_ARMS_EXPLAINED.md`](archive/5_ARMS_EXPLAINED.md) for the current set)
 
 **Read time:** 20 minutes
 
@@ -223,10 +246,10 @@ a human doing it by hand.
 | Document | Purpose |
 |---|---|
 | [`1_TECH_SETUP.md`](1_TECH_SETUP.md) | **Foundation.** What is Scribble? How does STJP work? How do I run it? |
-| [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md) | **Methodology.** How do we benchmark STJP fairly? What are the fairness rules? |
-| [`3_BENCHMARK_DESIGN_EXPLAINED.md`](3_BENCHMARK_DESIGN_EXPLAINED.md) | **Metrics.** What do we measure? How do we interpret results? |
+| [`2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md) | **Methodology.** How do we benchmark STJP fairly? What are the fairness rules? |
+| [`3_BENCHMARK_DESIGN_EXPLAINED.md`](archive/3_BENCHMARK_DESIGN_EXPLAINED.md) | **Metrics.** What do we measure? How do we interpret results? |
 | [`4_HOW_TO_CREATE_USE_CASES.md`](4_HOW_TO_CREATE_USE_CASES.md) | **Build guide.** How do I create my own test case? |
-| [`5_ARMS_EXPLAINED.md`](5_ARMS_EXPLAINED.md) | **The settings ("arms").** Every benchmark configuration as one flow line; the case-fit table. |
+| [`5_ARMS_EXPLAINED.md`](archive/5_ARMS_EXPLAINED.md) | **The settings ("arms").** Every benchmark configuration as one flow line; the case-fit table. |
 | [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) | **Results.** How do I read benchmark results? What do the numbers mean? |
 | [`7_USE_CASE_DEADLOCK_SAFETY.md`](7_USE_CASE_DEADLOCK_SAFETY.md) | **Safety cases.** Why do protocols matter? Real examples. |
 | [`8_INTENT_TO_PROTOCOL_TRAINING.md`](8_INTENT_TO_PROTOCOL_TRAINING.md) | **Training the front door.** How does intent → protocol drafting get machine-learned? What exists today, and how do I run it? |
@@ -331,14 +354,14 @@ Each archived file is also indexed, with what superseded it, in
 
 | Document | Why archived |
 |---|---|
-| `TESTING_STRATEGY.md` | Superseded by [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md) (same content, plain English) |
-| `BENCHMARK_DESIGN_V3_CRITICALITY.md` | Superseded by [`3_BENCHMARK_DESIGN_EXPLAINED.md`](3_BENCHMARK_DESIGN_EXPLAINED.md) for readers; technical original of the C1/C2/C3 design |
-| `BENCHMARK_DESIGN.md` | v2 scoring spec — content absorbed into [`3_BENCHMARK_DESIGN_EXPLAINED.md`](3_BENCHMARK_DESIGN_EXPLAINED.md) |
+| `TESTING_STRATEGY.md` | Superseded by [`2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md) (same content, plain English) |
+| `BENCHMARK_DESIGN_V3_CRITICALITY.md` | Superseded by [`3_BENCHMARK_DESIGN_EXPLAINED.md`](archive/3_BENCHMARK_DESIGN_EXPLAINED.md) for readers; technical original of the C1/C2/C3 design |
+| `BENCHMARK_DESIGN.md` | v2 scoring spec — content absorbed into [`3_BENCHMARK_DESIGN_EXPLAINED.md`](archive/3_BENCHMARK_DESIGN_EXPLAINED.md) |
 | `BENCHMARK_DESIGN_V2_FROZEN.md` | Frozen snapshot behind the grand n=10 run (revert point) |
 | `EXPERIMENT_DESIGN.md` | v1 (4-scenario) design |
 | `EXPERIMENT_DESIGN_v2.md` | The 8-arm design (superseded by v3 execution design) |
 | `EXPERIMENT_DESIGN_V3_EXECUTION.md` | The pre-registered design graded by [`results/RESULT_04_FULL_STACK.md`](results/RESULT_04_FULL_STACK.md) |
-| `WHY_B_MATCHES_C_ANALYSIS.md` | The honest confound analysis — its conclusions now live in [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md) |
+| `WHY_B_MATCHES_C_ANALYSIS.md` | The honest confound analysis — its conclusions now live in [`2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md) |
 | `RUN_REPORT_2026-07-02.md` | Technical original of the 2026-07-02 run — rewritten in plain English as [`results/RESULT_04_FULL_STACK.md`](results/RESULT_04_FULL_STACK.md) |
 | `RESULTS_finance_n10.md` | Technical original of the n=10 finance run — rewritten as [`results/RESULT_03_PROTOCOL_LADDER.md`](results/RESULT_03_PROTOCOL_LADDER.md) |
 | `DEADLOCK_DEMO.md` | Technical original of the deadlock demo — rewritten as [`results/RESULT_01_DEADLOCK.md`](results/RESULT_01_DEADLOCK.md) |
@@ -357,7 +380,7 @@ Each archived file is also indexed, with what superseded it, in
 ### "I'm new to STJP"
 1. [`1_TECH_SETUP.md`](1_TECH_SETUP.md) (understand the foundation)
 2. [`7_USE_CASE_DEADLOCK_SAFETY.md`](7_USE_CASE_DEADLOCK_SAFETY.md) (see why it matters)
-3. [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md) (learn how we measure it)
+3. [`2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md) (learn how we measure it)
 4. [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) (see real results)
 
 ### "I want to run STJP"
@@ -367,14 +390,14 @@ Each archived file is also indexed, with what superseded it, in
 
 ### "I want to create a new use case"
 1. [`1_TECH_SETUP.md`](1_TECH_SETUP.md) sections 1–3 (understand the basics)
-2. [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md) (understand fairness rules)
+2. [`2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md) (understand fairness rules)
 3. [`4_HOW_TO_CREATE_USE_CASES.md`](4_HOW_TO_CREATE_USE_CASES.md) (step-by-step guide)
-4. [`3_BENCHMARK_DESIGN_EXPLAINED.md`](3_BENCHMARK_DESIGN_EXPLAINED.md) (understand metrics)
+4. [`3_BENCHMARK_DESIGN_EXPLAINED.md`](archive/3_BENCHMARK_DESIGN_EXPLAINED.md) (understand metrics)
 
 ### "I'm reviewing the results"
-1. [`3_BENCHMARK_DESIGN_EXPLAINED.md`](3_BENCHMARK_DESIGN_EXPLAINED.md) (how we measure)
+1. [`3_BENCHMARK_DESIGN_EXPLAINED.md`](archive/3_BENCHMARK_DESIGN_EXPLAINED.md) (how we measure)
 2. [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) (what the numbers mean)
-3. [`2_TESTING_STRATEGIES.md`](2_TESTING_STRATEGIES.md) (what was controlled/varied)
+3. [`2_TESTING_STRATEGIES.md`](archive/2_TESTING_STRATEGIES.md) (what was controlled/varied)
 
 ### "I'm a researcher"
 1. [`reference/GLOSSARY.md`](reference/GLOSSARY.md) (terms)

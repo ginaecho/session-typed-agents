@@ -1,5 +1,9 @@
 # The settings ("arms"), drawn out — what each configuration actually is
 
+> **ARCHIVED 2026-08-05.** This explained the earlier 15-arm matrix under the old arm names. The current 9 arms, with plain meanings and the old-to-new name mapping, are in [`../BENCHMARK_PLAN_V3.md`](../BENCHMARK_PLAN_V3.md) §10.8 and [`../BENCHMARK_HANDOFF.md`](../BENCHMARK_HANDOFF.md) §3.
+
+> **Historical (pre-2026-08-05).** Uses the earlier arm names. Current campaign arm names and their mapping: see BENCHMARK_PLAN_V3.md §10.8.
+
 STJP (Session-Typed Judge Panel) is this project's system for machine-checking
 a team of AI agents' coordination plan before the agents run, then enforcing
 it while they run. Every benchmark in this project compares **settings**: configurations that

@@ -1,0 +1,25 @@
+{
+  "workflow_name": "stjp-sdlc-release-gate",
+  "graph_signature_hash": "671ade50f00d5629488ab59f6576931d0f87bcdb81f2292985a1b22a6ae9786b",
+  "checkpoint_id": "e44a6cb4-5c78-4575-bbd4-17c6346bd14f",
+  "previous_checkpoint_id": "1f61e5ff-f843-4a6c-a34e-e6661fa792c9",
+  "timestamp": "2026-08-05T16:27:05.282915+00:00",
+  "messages": {
+    "internal:sdlc-release-gate-coordinator": [
+      {
+        "__pickled__": "gAWVcAQAAAAAAACMKmFnZW50X2ZyYW1ld29yay5fd29ya2Zsb3dzLl9ydW5uZXJfY29udGV4dJSMD1dvcmtmbG93TWVzc2FnZZSTlCmBlH2UKIwEZGF0YZRdlIwWYWdlbnRfZnJhbWV3b3JrLl90eXBlc5SMB01lc3NhZ2WUk5QpgZR9lCiMBHJvbGWUjElhenVyZS5haS5hZ2VudHNlcnZlci5yZXNwb25zZXMubW9kZWxzLl9nZW5lcmF0ZWQuc2RrLm1vZGVscy5tb2RlbHMuX2VudW1zlIwLTWVzc2FnZVJvbGWUk5SMBHVzZXKUhZRSlIwIY29udGVudHOUXZRoB4wHQ29udGVudJSTlCmBlH2UKIwEdHlwZZSMBHRleHSUjAthbm5vdGF0aW9uc5ROjBVhZGRpdGlvbmFsX3Byb3BlcnRpZXOUfZSMEnJhd19yZXByZXNlbnRhdGlvbpROaBqMUnsic3RqcF9hcm0iOiAibWFmX3NraWxscyIsICJ0cmlhbCI6IDAsICJicmFuY2hfaGludCI6ICJzdGFuZGFyZCIsICJtYXhfc3RlcHMiOiA0OH2UjA5wcm90ZWN0ZWRfZGF0YZROjAN1cmmUTowKbWVkaWFfdHlwZZROjAdtZXNzYWdllE6MCmVycm9yX2NvZGWUTowNZXJyb3JfZGV0YWlsc5ROjA11c2FnZV9kZXRhaWxzlE6MB2NhbGxfaWSUTowEbmFtZZROjAlhcmd1bWVudHOUTowJZXhjZXB0aW9ulE6MEmluZm9ybWF0aW9uYWxfb25seZSJjAZyZXN1bHSUTowFaXRlbXOUTowHZmlsZV9pZJROjA92ZWN0b3Jfc3RvcmVfaWSUTowGaW5wdXRzlE6MB291dHB1dHOUTowIaW1hZ2VfaWSUTowIY29tbWFuZHOUTowKdGltZW91dF9tc5ROjBFtYXhfb3V0cHV0X2xlbmd0aJROjAZzdGF0dXOUTowGc3Rkb3V0lE6MBnN0ZGVycpROjAlleGl0X2NvZGWUTowJdGltZWRfb3V0lE6MCXRvb2xfbmFtZZROjAtzZXJ2ZXJfbmFtZZROjAZvdXRwdXSUTowCaWSUTowNZnVuY3Rpb25fY2FsbJROjBJ1c2VyX2lucHV0X3JlcXVlc3SUTowIYXBwcm92ZWSUTowMY29uc2VudF9saW5rlE51YmGMC2F1dGhvcl9uYW1llE6MCm1lc3NhZ2VfaWSUTmgcfZRoHk51YmGMCXNvdXJjZV9pZJSMJmludGVybmFsOnNkbGMtcmVsZWFzZS1nYXRlLWNvb3JkaW5hdG9ylIwJdGFyZ2V0X2lklIwdc2RsYy1yZWxlYXNlLWdhdGUtY29vcmRpbmF0b3KUaBloAIwLTWVzc2FnZVR5cGWUk5SMCHN0YW5kYXJklIWUUpSMDnRyYWNlX2NvbnRleHRzlE6MD3NvdXJjZV9zcGFuX2lkc5ROjBtvcmlnaW5hbF9yZXF1ZXN0X2luZm9fZXZlbnSUTnViLg==",
+        "__type__": "agent_framework._workflows._runner_context:WorkflowMessage"
+      }
+    ]
+  },
+  "state": {
+    "_workflow_run_kwargs": {},
+    "_executor_state": {
+      "sdlc-release-gate-coordinator": {}
+    }
+  },
+  "pending_request_info_events": {},
+  "iteration_count": 0,
+  "metadata": {},
+  "version": "1.0"
+}

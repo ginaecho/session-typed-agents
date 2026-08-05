@@ -1,0 +1,410 @@
+{
+  "Author": {
+    "role": "Author",
+    "protocol_name": "SdlcReleaseGate",
+    "states": [
+      "5",
+      "6",
+      "7"
+    ],
+    "initial": "5",
+    "accepting": [
+      "6"
+    ],
+    "transitions": [
+      {
+        "source": "5",
+        "target": "7",
+        "direction": "send",
+        "label": "Submit",
+        "peer": "QualityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "7",
+        "target": "5",
+        "direction": "receive",
+        "label": "ReviseAuthor",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "7",
+        "target": "6",
+        "direction": "receive",
+        "label": "ApprovedAuthor",
+        "peer": "Merger",
+        "payload_type": "String"
+      }
+    ]
+  },
+  "QualityReviewer": {
+    "role": "QualityReviewer",
+    "protocol_name": "SdlcReleaseGate",
+    "states": [
+      "15",
+      "16",
+      "17",
+      "18"
+    ],
+    "initial": "15",
+    "accepting": [
+      "16"
+    ],
+    "transitions": [
+      {
+        "source": "15",
+        "target": "17",
+        "direction": "receive",
+        "label": "Submit",
+        "peer": "Author",
+        "payload_type": "String"
+      },
+      {
+        "source": "17",
+        "target": "18",
+        "direction": "send",
+        "label": "ToSecurity",
+        "peer": "SecurityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "18",
+        "target": "15",
+        "direction": "receive",
+        "label": "AgainQuality",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "18",
+        "target": "16",
+        "direction": "receive",
+        "label": "StopQuality",
+        "peer": "Merger",
+        "payload_type": "String"
+      }
+    ]
+  },
+  "SecurityReviewer": {
+    "role": "SecurityReviewer",
+    "protocol_name": "SdlcReleaseGate",
+    "states": [
+      "26",
+      "27",
+      "28",
+      "29"
+    ],
+    "initial": "26",
+    "accepting": [
+      "27"
+    ],
+    "transitions": [
+      {
+        "source": "26",
+        "target": "28",
+        "direction": "receive",
+        "label": "ToSecurity",
+        "peer": "QualityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "28",
+        "target": "29",
+        "direction": "send",
+        "label": "ToArch",
+        "peer": "ArchReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "29",
+        "target": "26",
+        "direction": "receive",
+        "label": "AgainSecurity",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "29",
+        "target": "27",
+        "direction": "receive",
+        "label": "StopSecurity",
+        "peer": "Merger",
+        "payload_type": "String"
+      }
+    ]
+  },
+  "ArchReviewer": {
+    "role": "ArchReviewer",
+    "protocol_name": "SdlcReleaseGate",
+    "states": [
+      "37",
+      "38",
+      "39",
+      "40"
+    ],
+    "initial": "37",
+    "accepting": [
+      "38"
+    ],
+    "transitions": [
+      {
+        "source": "37",
+        "target": "39",
+        "direction": "receive",
+        "label": "ToArch",
+        "peer": "SecurityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "39",
+        "target": "40",
+        "direction": "send",
+        "label": "ToRai",
+        "peer": "ResponsibleAIReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "40",
+        "target": "37",
+        "direction": "receive",
+        "label": "AgainArch",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "40",
+        "target": "38",
+        "direction": "receive",
+        "label": "StopArch",
+        "peer": "Merger",
+        "payload_type": "String"
+      }
+    ]
+  },
+  "ResponsibleAIReviewer": {
+    "role": "ResponsibleAIReviewer",
+    "protocol_name": "SdlcReleaseGate",
+    "states": [
+      "48",
+      "49",
+      "50",
+      "51"
+    ],
+    "initial": "48",
+    "accepting": [
+      "49"
+    ],
+    "transitions": [
+      {
+        "source": "48",
+        "target": "50",
+        "direction": "receive",
+        "label": "ToRai",
+        "peer": "ArchReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "51",
+        "target": "48",
+        "direction": "receive",
+        "label": "AgainRai",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "51",
+        "target": "49",
+        "direction": "receive",
+        "label": "StopRai",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "50",
+        "target": "51",
+        "direction": "send",
+        "label": "ToMerger",
+        "peer": "Merger",
+        "payload_type": "String"
+      }
+    ]
+  },
+  "Merger": {
+    "role": "Merger",
+    "protocol_name": "SdlcReleaseGate",
+    "states": [
+      "69",
+      "70",
+      "71",
+      "72",
+      "73",
+      "74",
+      "75",
+      "76",
+      "77",
+      "78",
+      "79",
+      "80",
+      "81",
+      "82"
+    ],
+    "initial": "69",
+    "accepting": [
+      "70"
+    ],
+    "transitions": [
+      {
+        "source": "69",
+        "target": "71",
+        "direction": "receive",
+        "label": "ToMerger",
+        "peer": "ResponsibleAIReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "71",
+        "target": "72",
+        "direction": "send",
+        "label": "ReviseAuthor",
+        "peer": "Author",
+        "payload_type": "String"
+      },
+      {
+        "source": "71",
+        "target": "77",
+        "direction": "send",
+        "label": "ApprovedAuthor",
+        "peer": "Author",
+        "payload_type": "String"
+      },
+      {
+        "source": "72",
+        "target": "73",
+        "direction": "send",
+        "label": "AgainQuality",
+        "peer": "QualityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "73",
+        "target": "74",
+        "direction": "send",
+        "label": "AgainSecurity",
+        "peer": "SecurityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "74",
+        "target": "75",
+        "direction": "send",
+        "label": "AgainArch",
+        "peer": "ArchReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "75",
+        "target": "76",
+        "direction": "send",
+        "label": "AgainRai",
+        "peer": "ResponsibleAIReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "76",
+        "target": "69",
+        "direction": "send",
+        "label": "AgainDevOps",
+        "peer": "DevOps",
+        "payload_type": "String"
+      },
+      {
+        "source": "77",
+        "target": "78",
+        "direction": "send",
+        "label": "StopQuality",
+        "peer": "QualityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "78",
+        "target": "79",
+        "direction": "send",
+        "label": "StopSecurity",
+        "peer": "SecurityReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "79",
+        "target": "80",
+        "direction": "send",
+        "label": "StopArch",
+        "peer": "ArchReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "80",
+        "target": "81",
+        "direction": "send",
+        "label": "StopRai",
+        "peer": "ResponsibleAIReviewer",
+        "payload_type": "String"
+      },
+      {
+        "source": "81",
+        "target": "82",
+        "direction": "send",
+        "label": "Deploy",
+        "peer": "DevOps",
+        "payload_type": "String"
+      },
+      {
+        "source": "82",
+        "target": "70",
+        "direction": "receive",
+        "label": "Deployed",
+        "peer": "DevOps",
+        "payload_type": "String"
+      }
+    ]
+  },
+  "DevOps": {
+    "role": "DevOps",
+    "protocol_name": "SdlcReleaseGate",
+    "states": [
+      "89",
+      "90",
+      "91"
+    ],
+    "initial": "89",
+    "accepting": [
+      "90"
+    ],
+    "transitions": [
+      {
+        "source": "89",
+        "target": "89",
+        "direction": "receive",
+        "label": "AgainDevOps",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "89",
+        "target": "91",
+        "direction": "receive",
+        "label": "Deploy",
+        "peer": "Merger",
+        "payload_type": "String"
+      },
+      {
+        "source": "91",
+        "target": "90",
+        "direction": "send",
+        "label": "Deployed",
+        "peer": "Merger",
+        "payload_type": "String"
+      }
+    ]
+  }
+}

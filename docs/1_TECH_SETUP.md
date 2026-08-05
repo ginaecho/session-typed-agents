@@ -294,8 +294,8 @@ Full details: `reference/STJP_V3_PLAN.md`.
 
 ## 8. What to read next
 
-- **To understand how STJP is tested:** Read `2_TESTING_STRATEGIES.md`
-- **To understand how benchmarks measure STJP:** Read `3_BENCHMARK_DESIGN_EXPLAINED.md`
+- **To understand how STJP is tested:** Read `archive/2_TESTING_STRATEGIES.md`
+- **To understand how benchmarks measure STJP:** Read `archive/3_BENCHMARK_DESIGN_EXPLAINED.md`
 - **To create your own protocols:** Read `4_HOW_TO_CREATE_USE_CASES.md`
 - **To see real results:** Read `6_RUN_REPORTS_EXPLAINED.md`
 - **To see why safety matters:** Read `7_USE_CASE_DEADLOCK_SAFETY.md`
