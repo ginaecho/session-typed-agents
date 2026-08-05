@@ -36,9 +36,26 @@ REQUIREMENT_KINDS = (
     "value",          # a payload constraint (threshold, non-empty, enum)
     "branch",         # a decision point and who decides it
     "termination",    # how the session ends / who learns the outcome
-    "policy",         # NOT expressible as a protocol — see POLICY_KIND below
+    "invariant",      # a counter/budget that must hold across the session
+    "policy",         # NOT expressible as a protocol — see POLICY_KIND
+    "interior",       # deliberately NOT protocol — see INTERIOR_KIND
     "other",
 )
+
+#: Work that happens INSIDE one role and crosses no boundary: reading a
+#: traceback, editing a file, choosing which cell to fix. It is real and
+#: often most of a document, but it is the untyped interior of an agent —
+#: the `dyn` participant of gradual session typing — and a protocol has
+#: nothing to say about it.
+#:
+#: This kind exists because grading it was making the faithfulness number a
+#: lie in the opposite direction from the old policy bug: a checklist full
+#: of intra-role procedure can never be "realized" by any protocol, so
+#: recall was reporting a failure of the drafter where the honest reading is
+#: "most of this document is not coordination at all". Forcing it into the
+#: protocol would be over-protocolization; scoring the protocol on it is
+#: simply wrong. Reported, never graded.
+INTERIOR_KIND = "interior"
 
 #: Requirements a multiparty session type structurally CANNOT express, and
 #: which must therefore be enforced outside the protocol layer (deployment,
@@ -80,6 +97,65 @@ class Requirement:
                    source=str(d.get("source", "document")))
 
 
+#: What a named entity in the document turns out to be. The test: does the
+#: document describe a message crossing INTO or OUT OF it? If yes it is a
+#: role — including tool roles (a validator that emits a verdict is a role,
+#: not scenery). If no, it is a resource, and its rules are access
+#: constraints rather than protocol structure.
+ROLE_KINDS = ("agent", "tool", "orchestrator", "user")
+
+
+@dataclass
+class Resource:
+    """A named thing that is written or read but never sends or receives.
+
+    Config files, tables, clusters. They fail the role test, so they are
+    not participants — but their rules are load-bearing: "two workers must
+    not edit this file at once" is mutual exclusion between sessions, which
+    no single global type expresses. Recording them separately keeps them
+    out of the protocol AND stops them being forgotten.
+    """
+    name: str
+    kind: str = "file"          # file | table | cluster | service | other
+    access: str = "read"        # read | shared-write | exclusive-write
+    rule: str = ""              # the constraint in plain language
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "Resource":
+        return cls(name=str(d.get("name", "")).strip(),
+                   kind=str(d.get("kind", "file")).strip() or "file",
+                   access=str(d.get("access", "read")).strip() or "read",
+                   rule=str(d.get("rule", "")).strip())
+
+
+@dataclass
+class SessionInvariant:
+    """A counter or budget that must hold for the whole session.
+
+    "At most three repair rounds", "stop after six calls with no artifact".
+    These are not orderings — they are stateful properties over the session
+    history, checked against a ledger as it evolves. A document full of
+    them is a document whose author kept hitting non-termination.
+    """
+    name: str
+    bound: str                  # "<= 3", "<= 6 calls without an artifact"
+    resets_on: str = ""         # the event that clears the counter
+    on_breach: str = ""         # what must happen when it trips
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "SessionInvariant":
+        return cls(name=str(d.get("name", "")).strip(),
+                   bound=str(d.get("bound", "")).strip(),
+                   resets_on=str(d.get("resets_on", "")).strip(),
+                   on_breach=str(d.get("on_breach", "")).strip())
+
+
 @dataclass
 class Goal:
     """An outcome the session exists to achieve, with the observable that
@@ -90,6 +166,9 @@ class Goal:
     gid: str
     text: str
     evidence: str = ""          # how you would know this goal was met
+    marker: str = ""            # the interaction id that signals it (I3)
+    predicate: str = ""         # what its payload must satisfy
+    final: bool = False         # the goal that ends the session
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -97,13 +176,50 @@ class Goal:
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> "Goal":
         return cls(gid=str(d.get("gid", "G?")), text=str(d.get("text", "")),
-                   evidence=str(d.get("evidence", "")))
+                   evidence=str(d.get("evidence", "")),
+                   marker=str(d.get("marker", "")).strip(),
+                   predicate=str(d.get("predicate", "")).strip(),
+                   final=bool(d.get("final", False)))
+
+
+@dataclass
+class Field:
+    """One item of data a handover carries.
+
+    `constraint` is the reason this exists. A protocol that types a payload
+    as `string` says nothing about whether the amount exceeds a threshold
+    or the justification is non-empty — and "wrong value, right shape" is a
+    failure no structural type can catch. These constraints are what
+    compile into the refinement-guard sidecar (`.refn`) beside the
+    protocol, so the monitor can reject a legal-looking message carrying an
+    illegal value.
+    """
+    name: str
+    type: str = "string"        # string | int | bool | double | unit
+    constraint: str = ""        # e.g. "greater than 500", "non-empty"
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "Field":
+        return cls(name=str(d.get("name", "")).strip(),
+                   type=str(d.get("type", "string")).strip() or "string",
+                   constraint=str(d.get("constraint", "")).strip())
+
+
+#: How many times an interaction may occur. Free text on purpose — real
+#: answers are things like "once per pair" or "at most 3 repair rounds",
+#: which no small enum captures — but these are the shapes that matter, and
+#: an unbounded repeat is the one that turns into a non-terminating session.
+CARDINALITY_HINTS = ("exactly once", "at most once", "once per <thing>",
+                     "one or more", "at most N times", "unbounded")
 
 
 @dataclass
 class Interaction:
     """One intended exchange, in business terms — who hands what to whom,
-    and when.
+    what data it carries, when, and how many times.
 
     First-class on purpose. Without it the drafter has to invent the entire
     message structure from prose, and the reviewer cannot see the intended
@@ -118,9 +234,25 @@ class Interaction:
     what: str                   # the information carried, plain language
     when: str = ""              # trigger / precondition
     optional: bool = False      # only on some branch?
+    carries: list[Field] = field(default_factory=list)
+    cardinality: str = ""       # see CARDINALITY_HINTS
+    #: Interaction ids that must ALL have completed first. A join — the
+    #: construct where informal coordination documents deadlock, because
+    #: prose says "after both finish" and nobody notices that one branch
+    #: can never produce its half. Explicit here so the drafter has to
+    #: realize it and a reader can see it.
+    waits_for: list[str] = field(default_factory=list)
+
+    def carries_text(self) -> str:
+        return ", ".join(
+            f"{f.name}: {f.type}" + (f" ({f.constraint})" if f.constraint
+                                     else "")
+            for f in self.carries)
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        d = asdict(self)
+        d["carries"] = [f.to_dict() for f in self.carries]
+        return d
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> "Interaction":
@@ -128,7 +260,12 @@ class Interaction:
                    sender=str(d.get("from") or d.get("sender", "")),
                    receiver=str(d.get("to") or d.get("receiver", "")),
                    what=str(d.get("what", "")), when=str(d.get("when", "")),
-                   optional=bool(d.get("optional", False)))
+                   optional=bool(d.get("optional", False)),
+                   carries=[Field.from_dict(f) for f in d.get("carries", [])
+                            if str(f.get("name", "")).strip()],
+                   cardinality=str(d.get("cardinality", "")).strip(),
+                   waits_for=[str(w).strip() for w in d.get("waits_for", [])
+                              if str(w).strip()])
 
 
 @dataclass
@@ -140,6 +277,8 @@ class DistilledIntent:
     completion_signal: str
     goals: list[Goal] = field(default_factory=list)
     interactions: list[Interaction] = field(default_factory=list)
+    resources: list[Resource] = field(default_factory=list)
+    invariants: list[SessionInvariant] = field(default_factory=list)
     non_goals: list[str] = field(default_factory=list)
     open_questions: list[str] = field(default_factory=list)
     provenance: dict[str, Any] = field(default_factory=dict)
@@ -154,13 +293,58 @@ class DistilledIntent:
             for r in self.requirements
             if kinds is None or r.kind in kinds)
 
+    #: Kinds that are reported but never graded against the protocol, each
+    #: for its own reason: POLICY cannot be expressed by any session type;
+    #: INTERIOR is deliberately left untyped inside a role.
+    UNGRADED_KINDS = (POLICY_KIND, INTERIOR_KIND)
+
     def protocol_requirements(self) -> list[Requirement]:
-        """Requirements the protocol layer can actually realize."""
-        return [r for r in self.requirements if r.kind != POLICY_KIND]
+        """Requirements the protocol layer can actually realize — the only
+        ones it is honest to score a protocol against."""
+        return [r for r in self.requirements
+                if r.kind not in self.UNGRADED_KINDS]
 
     def policy_requirements(self) -> list[Requirement]:
         """Requirements handed to the deployment layer (see POLICY_KIND)."""
         return [r for r in self.requirements if r.kind == POLICY_KIND]
+
+    def interior_requirements(self) -> list[Requirement]:
+        """Intra-role procedure, untyped by design (see INTERIOR_KIND)."""
+        return [r for r in self.requirements if r.kind == INTERIOR_KIND]
+
+    def typed_surface_ratio(self) -> float:
+        """Fraction of the checklist that is genuinely coordination.
+
+        A low number is a finding about the DOCUMENT, not a failure of the
+        drafter: most of a procedure manual is usually intra-role work."""
+        n = len(self.requirements)
+        return (len(self.protocol_requirements()) / n) if n else 0.0
+
+    def joins(self) -> list["Interaction"]:
+        """Interactions gated on more than one predecessor — the deadlock
+        candidates."""
+        return [i for i in self.interactions if len(i.waits_for) > 1]
+
+    def shared_write_resources(self) -> list["Resource"]:
+        """Resources two participants may write — mutual exclusion that no
+        single global type can express."""
+        return [r for r in self.resources if "write" in r.access]
+
+    def value_constraints(self) -> list[tuple[str, "Field"]]:
+        """(interaction id, field) for every payload field carrying a
+        constraint — the raw material of the refinement-guard sidecar."""
+        return [(i.iid, f) for i in self.interactions for f in i.carries
+                if f.constraint]
+
+    def unbounded_repeats(self) -> list["Interaction"]:
+        """Interactions declared to repeat without a stated bound.
+
+        Surfaced rather than silently accepted: an unbounded repeat is how
+        a session fails to terminate, and the honest moment to notice it is
+        while the checklist is still being reviewed."""
+        return [i for i in self.interactions
+                if "unbounded" in i.cardinality.lower()
+                or "one or more" in i.cardinality.lower()]
 
     def to_markdown(self, include_policy: bool = True) -> str:
         """`include_policy=False` renders the protocol-scoped view — what a
@@ -171,24 +355,71 @@ class DistilledIntent:
         a limit of the formalism."""
         lines = ["# Distilled intent", "", "## Mission", self.mission, "",
                  "## Roles"]
-        lines += [f"- **{r['name']}** — {r.get('description', '')}"
+        lines += [f"- **{r['name']}**"
+                  + (f" ({r['kind']})" if r.get("kind") else "")
+                  + f" — {r.get('description', '')}"
+                  + (f"\n    MUST NOT: {'; '.join(r['must_not'])}"
+                     if r.get("must_not") else "")
                   for r in self.roles]
+        if self.resources:
+            lines += ["", "## Shared resources (not participants — nothing "
+                          "sends or receives here)"]
+            lines += [f"- **{r.name}** ({r.kind}, {r.access})"
+                      + (f" — {r.rule}" if r.rule else "")
+                      for r in self.resources]
+        if self.invariants:
+            lines += ["", "## Session invariants (must hold across the whole "
+                          "run)"]
+            lines += [f"- **{v.name}**: {v.bound}"
+                      + (f" — resets on {v.resets_on}" if v.resets_on else "")
+                      + (f" — on breach: {v.on_breach}" if v.on_breach else "")
+                      for v in self.invariants]
         if self.goals:
             lines += ["", "## Goals — what must be true at the end"]
-            lines += [f"- [{g.gid}] {g.text}"
-                      + (f" (evidence: {g.evidence})" if g.evidence else "")
+            lines += [f"- [{g.gid}]{' FINAL' if g.final else ''} {g.text}"
+                      + (f"\n    signalled by: {g.marker}" if g.marker else "")
+                      + (f"\n    payload must satisfy: {g.predicate}"
+                         if g.predicate else "")
+                      + (f"\n    evidence: {g.evidence}" if g.evidence else "")
                       for g in self.goals]
         if self.interactions:
             lines += ["", "## Intended interactions — who hands what to whom"]
             lines += [f"- [{i.iid}] {i.sender} → {i.receiver}: {i.what}"
-                      + (f" (when: {i.when})" if i.when else "")
-                      + (" [only on some branch]" if i.optional else "")
+                      + (f"\n    carries: {i.carries_text()}"
+                         if i.carries else "")
+                      + (f"\n    when: {i.when}" if i.when else "")
+                      + (f"\n    how often: {i.cardinality}"
+                         if i.cardinality else "")
+                      + (f"\n    waits for ALL of: {', '.join(i.waits_for)}"
+                         if i.waits_for else "")
+                      + ("\n    only on some branch" if i.optional else "")
                       for i in self.interactions]
+            joins = self.joins()
+            if joins:
+                lines += ["", "### Joins — every one of these must be "
+                              "reachable on every branch, or the session "
+                              "deadlocks"]
+                lines += [f"- {i.iid} waits for "
+                          f"{', '.join(i.waits_for)}" for i in joins]
+            guards = self.value_constraints()
+            if guards:
+                lines += ["", "### Value constraints these payloads must "
+                              "satisfy (compile to refinement guards)"]
+                lines += [f"- {iid}.{f.name} ({f.type}): {f.constraint}"
+                          for iid, f in guards]
         lines += ["", "## Requirements",
                   self.requirements_text(
                       kinds=[k for k in REQUIREMENT_KINDS
                              if k != POLICY_KIND]),
                   "", "## Completion signal", self.completion_signal]
+        interior = self.interior_requirements()
+        if interior:
+            lines += ["", "## Intra-role procedure — untyped interior, NOT "
+                          "part of the protocol",
+                      "These describe work inside a single role. They are "
+                      "real, but no protocol expresses them; do not try to "
+                      "encode them as messages."]
+            lines += [f"- [{r.rid}] {r.text}" for r in interior]
         if self.non_goals:
             lines += ["", "## Out of scope (do NOT build these)"]
             lines += [f"- {n}" for n in self.non_goals]
@@ -267,13 +498,19 @@ class FaithfulnessReport:
     gold_equivalent: Optional[bool]   # E5 verdict when a gold protocol exists
     faithful: bool
     rule: str                     # human-readable statement of the verdict rule
+    #: How much of the checklist was in scope at all: graded vs policy vs
+    #: intra-role interior, plus the typed-surface ratio. Recall alone
+    #: invites the wrong conclusion when most of a document is not
+    #: coordination.
+    scope: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {"coverage": [c.to_dict() for c in self.coverage],
                 "recall": self.recall, "ungrounded": self.ungrounded,
                 "backtranslation": self.backtranslation,
                 "gold_equivalent": self.gold_equivalent,
-                "faithful": self.faithful, "rule": self.rule}
+                "faithful": self.faithful, "rule": self.rule,
+                "scope": self.scope}
 
 
 @dataclass

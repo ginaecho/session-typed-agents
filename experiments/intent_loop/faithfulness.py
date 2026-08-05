@@ -104,6 +104,11 @@ def check_requirement_coverage(
         evidence="policy requirement — not expressible as a session type; "
                  "enforced by the deployment/identity layer")
         for r in distilled.policy_requirements()]
+    verdicts += [CoverageVerdict(
+        rid=r.rid, covered="out_of_scope",
+        evidence="intra-role procedure — the untyped interior of one agent; "
+                 "no protocol expresses it, so it is not graded")
+        for r in distilled.interior_requirements()]
     ungrounded = [str(u) for u in obj.get("ungrounded", [])]
     return verdicts, ungrounded
 
@@ -148,6 +153,7 @@ def evaluate_faithfulness(
     # requirements are reported, never scored (schema.POLICY_KIND).
     n = len(distilled.protocol_requirements())
     n_policy = len(distilled.policy_requirements())
+    n_interior = len(distilled.interior_requirements())
     covered = sum(1 for v in verdicts if v.covered == "yes")
     recall = (covered / n) if n else 0.0
 
@@ -163,17 +169,30 @@ def evaluate_faithfulness(
 
     faithful = (n > 0 and recall == 1.0 and not ungrounded
                 and backtranslation["score"] >= backtranslation_threshold)
+    excluded = []
+    if n_policy:
+        excluded.append(f"{n_policy} policy (no session type can express "
+                        f"them)")
+    if n_interior:
+        excluded.append(f"{n_interior} intra-role interior (untyped by "
+                        f"design)")
     rule = (f"faithful iff all {n} protocol-expressible requirements covered "
             f"'yes' (got {covered}), no ungrounded interactions "
             f"(got {len(ungrounded)}), and back-translation score >= "
             f"{backtranslation_threshold} (got {backtranslation['score']})"
-            + (f"; {n_policy} policy requirement(s) reported but NOT scored "
-               f"— no session type can express them"
-               if n_policy else ""))
-    return FaithfulnessReport(
+            + (f". Reported but NOT scored: " + "; ".join(excluded)
+               if excluded else ""))
+    report = FaithfulnessReport(
         coverage=verdicts, recall=recall, ungrounded=ungrounded,
         backtranslation=backtranslation, gold_equivalent=gold_equivalent,
         faithful=faithful, rule=rule)
+    # The share of the checklist that is genuinely coordination. A low
+    # figure is a fact about the DOCUMENT, not a failure of the drafter,
+    # and reporting recall without it invites the wrong conclusion.
+    report.scope = {"graded": n, "policy": n_policy, "interior": n_interior,
+                    "typed_surface_ratio":
+                        round(distilled.typed_surface_ratio(), 3)}
+    return report
 
 
 def run_seam_panel(intent_text: str, protocol_text: str, cache_dir=None):

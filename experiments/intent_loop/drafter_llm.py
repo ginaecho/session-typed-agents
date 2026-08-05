@@ -28,7 +28,8 @@ from __future__ import annotations
 from typing import Optional, Sequence
 
 from experiments.intent_loop.llm import ChatLLM, approx_tokens
-from experiments.seam_bench.t0.drafter import Drafter, UsageInfo
+from experiments.seam_bench.t0.drafter import (Drafter, UsageInfo,
+                                               GUARD_SIDECAR_SENTINEL)
 
 # Kept deliberately small: a syntax reminder, not a tutorial. The validator
 # is the authority; the primer only reduces round-1 syntax rejections.
@@ -63,8 +64,26 @@ Hard rules:
 authorizations as an approval message BEFORE the act it authorizes, \
 branches as `choice at <deciding role>`, termination as a final message \
 that reaches whoever the completion signal names.
-- Use ONLY the listed roles. Invent clear CamelCase message labels.
-{rulebook_block}{exemplars_block}"""
+- If the specification lists INTENDED INTERACTIONS, each one becomes a \
+message: same sender, same receiver, a label naming what it carries. Add no \
+message that no interaction or requirement calls for.
+- Honour the declared CARDINALITY. "exactly once" is a plain message; \
+"at most once" belongs in a choice branch; a bounded repeat ("at most 3 \
+times") is a `rec` loop whose exit branch is reachable at every iteration. \
+Never write a loop that cannot terminate.
+{guards_block}{rulebook_block}{exemplars_block}"""
+
+_GUARDS_BLOCK = """- The specification lists VALUE CONSTRAINTS. Structural \
+types cannot express them, so emit a refinement-guard sidecar after the \
+protocol: a line containing exactly `{sentinel}`, then one guard per line \
+in the form
+
+    <MessageLabel>.<field> :: <predicate over the value>
+
+covering every listed constraint. Example: `HighRevenue.amount :: amount > \
+50000`. The protocol above the sentinel must remain valid Scribble on its \
+own.
+"""
 
 _REPAIR_SYSTEM = """You repair a Scribble global protocol that the real \
 Scribble validator rejected. You will be given the task specification, the \
@@ -129,8 +148,14 @@ class ChatDrafter(Drafter):
     def draft(self, intent: str, k: int,
               exemplars: Optional[Sequence[tuple[str, str]]] = None
               ) -> list[str]:
+        # Ask for guards only when the spec actually carries value
+        # constraints — an unconditional instruction invites invented
+        # guards, which are worse than none: they enforce a rule nobody
+        # agreed to.
+        guards = (_GUARDS_BLOCK.format(sentinel=GUARD_SIDECAR_SENTINEL)
+                  if "compile to refinement guards" in intent else "")
         system = _DRAFT_SYSTEM.format(
-            primer=SCRIBBLE_PRIMER,
+            primer=SCRIBBLE_PRIMER, guards_block=guards,
             rulebook_block=_rulebook_block(self.rulebook),
             exemplars_block=_exemplars_block(exemplars))
         user = f"=== TASK SPECIFICATION ===\n{intent}\n\nWrite the protocol."
@@ -145,7 +170,11 @@ class ChatDrafter(Drafter):
     def repair(self, intent: str, broken: str, counterexample: str) -> str:
         system = _REPAIR_SYSTEM.format(
             primer=SCRIBBLE_PRIMER,
-            rulebook_block=_rulebook_block(self.rulebook))
+            rulebook_block=_rulebook_block(self.rulebook)
+            + (f"\n- The broken draft carries a `{GUARD_SIDECAR_SENTINEL}` "
+               f"guard sidecar; keep it, and keep it consistent with the "
+               f"labels you end up using.\n"
+               if GUARD_SIDECAR_SENTINEL in broken else ""))
         user = (f"=== TASK SPECIFICATION ===\n{intent}\n\n"
                 f"=== BROKEN PROTOCOL ===\n{broken}\n\n"
                 f"=== VALIDATOR ERROR (verbatim) ===\n{counterexample}\n\n"

@@ -1007,6 +1007,34 @@ function subEvent(j){
   return "";
 }
 
+/* Two things worth calling out from the interaction list, because both
+   turn into runtime failures a structural type cannot catch: value
+   constraints (become refinement guards) and unbounded repeats (become
+   non-terminating sessions). */
+function guardNote(d){
+  const guards = [];
+  const unbounded = [];
+  (d.interactions||[]).forEach(i=>{
+    (i.carries||[]).forEach(f=>{ if(f.constraint)
+      guards.push(`${i.iid}.${f.name} — ${f.constraint}`); });
+    const c = (i.cardinality||"").toLowerCase();
+    if(c.includes("unbounded")||c.includes("one or more")) unbounded.push(i.iid);
+  });
+  let out = "";
+  if(guards.length) out += `<div class="card">
+    <b>${guards.length} value constraint(s) → refinement guards</b>
+    <p class="note">A structural type cannot express these; they compile
+    into the guard sidecar so the monitor can reject a legal-looking
+    message carrying an illegal value.</p>
+    <ul>${guards.map(g=>`<li><code>${esc(g)}</code></li>`).join("")}</ul>
+    </div>`;
+  if(unbounded.length) out += `<div class="warnbar">
+    ${badge("warn","unbounded repeat")} ${unbounded.map(esc).join(", ")}
+    declared to repeat with no stated bound — that is how a session fails
+    to terminate. Worth pinning down in Refine.</div>`;
+  return out;
+}
+
 function renderLive(p){
   const el = $("#livebody"); if(!el) return;
   const d = p.distilled||{}, reqs = d.requirements||[];
@@ -1027,14 +1055,22 @@ function renderLive(p){
         ${g.evidence?`<span class="sub">— evidence: ${esc(g.evidence)}</span>`
         :""}</li>`).join("")}</ul>`:""}
     ${(d.interactions||[]).length?`<h2>Intended interactions
-      <span class="sub">— who hands what to whom</span></h2>
+      <span class="sub">— who hands what to whom, carrying what, how
+      often</span></h2>
       <table><thead><tr><th>ID</th><th>From → To</th><th>What</th>
-        <th>When</th></tr></thead><tbody>
+        <th>Carries</th><th>How often</th></tr></thead><tbody>
         ${d.interactions.map(i=>`<tr><td class="rid">${esc(i.iid)}</td>
           <td>${esc(i.sender||i.from||"")} → ${esc(i.receiver||i.to||"")}
             ${i.optional?badge("warn","conditional"):""}</td>
-          <td>${esc(i.what)}</td><td class="sub">${esc(i.when||"")}</td>
-          </tr>`).join("")}</tbody></table>`:""}
+          <td>${esc(i.what)}${i.when?`<div class="sub">when:
+            ${esc(i.when)}</div>`:""}</td>
+          <td class="sub">${(i.carries||[]).map(f=>
+            `<div><code>${esc(f.name)}</code>: ${esc(f.type||"string")}
+             ${f.constraint?badge("warn",esc(f.constraint)):""}</div>`)
+            .join("")||"—"}</td>
+          <td class="sub">${esc(i.cardinality||"—")}</td>
+          </tr>`).join("")}</tbody></table>
+      ${guardNote(d)}`:""}
     <h2>Distilled so far <span class="sub">— ${reqs.length} requirements,
       ${asked} recovered by asking</span></h2>
     <table><thead><tr><th>ID</th><th>Kind</th><th>Source</th>

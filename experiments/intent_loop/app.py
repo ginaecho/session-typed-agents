@@ -315,6 +315,60 @@ def render_report(sessions_dir: Path, session: str | None) -> str:
         f"<div class='tile'><div class='v'>{len(f.get('ungrounded') or [])}"
         "</div><div class='k'>Ungrounded steps</div></div></div>")
 
+    goals = d.get("goals") or []
+    if goals:
+        out.append("<h2>Goals — what must be true at the end</h2><ul>")
+        out += [f"<li><b>{e(g.get('gid', ''))}</b> {e(g.get('text', ''))}"
+                + (f" <span class='sub'>— evidence: "
+                   f"{e(g.get('evidence', ''))}</span>"
+                   if g.get("evidence") else "") + "</li>" for g in goals]
+        out.append("</ul>")
+
+    inters = d.get("interactions") or []
+    if inters:
+        out.append("<h2>Intended interactions — who hands what to whom, "
+                   "carrying what, how often</h2><table><tr><th>ID</th>"
+                   "<th>From → To</th><th>What</th><th>Carries</th>"
+                   "<th>How often</th></tr>")
+        for i in inters:
+            carries = "<br>".join(
+                f"<code>{e(f.get('name', ''))}</code>: "
+                f"{e(f.get('type', 'string'))}"
+                + (f" <span class='b'>{e(f.get('constraint'))}</span>"
+                   if f.get("constraint") else "")
+                for f in i.get("carries", [])) or "—"
+            out.append(
+                f"<tr><td>{e(i.get('iid', ''))}</td>"
+                f"<td>{e(i.get('sender', ''))} → {e(i.get('receiver', ''))}"
+                + (" <span class='b'>conditional</span>"
+                   if i.get("optional") else "") + "</td>"
+                f"<td>{e(i.get('what', ''))}"
+                + (f"<div class='sub'>when: {e(i.get('when'))}</div>"
+                   if i.get("when") else "") + "</td>"
+                f"<td class='sub'>{carries}</td>"
+                f"<td class='sub'>{e(i.get('cardinality', '') or '—')}</td>"
+                "</tr>")
+        out.append("</table>")
+        guards = [(i.get("iid"), f) for i in inters
+                  for f in i.get("carries", []) if f.get("constraint")]
+        if guards:
+            out.append("<h3>Value constraints → refinement guards</h3><ul>")
+            out += [f"<li><code>{e(iid)}.{e(f.get('name'))}</code> — "
+                    f"{e(f.get('constraint'))}</li>" for iid, f in guards]
+            out.append("</ul>")
+        unbounded = [i.get("iid") for i in inters
+                     if "unbounded" in str(i.get("cardinality", "")).lower()
+                     or "one or more" in str(i.get("cardinality", "")).lower()]
+        if unbounded:
+            out.append(f"<div class='warn'>Unbounded repeat declared for "
+                       f"{e(', '.join(unbounded))} — no stated bound, which "
+                       f"is how a session fails to terminate.</div>")
+
+    if d.get("non_goals"):
+        out.append("<h3>Out of scope (do NOT build)</h3><ul>")
+        out += [f"<li>{e(n)}</li>" for n in d["non_goals"]]
+        out.append("</ul>")
+
     out.append("<h2>Distilled requirements</h2><table><tr><th>ID</th>"
                "<th>Kind</th><th>Source</th><th>Requirement</th></tr>")
     for r in reqs:

@@ -27,7 +27,9 @@ from __future__ import annotations
 from experiments.intent_loop.llm import ChatLLM, Meter
 from experiments.intent_loop.schema import (DistilledIntent, Goal,
                                             Interaction, InterrogationResult,
-                                            QA, Requirement, parse_json_block)
+                                            QA, Requirement, Resource,
+                                            SessionInvariant,
+                                            parse_json_block)
 from experiments.intent_loop.stakeholder import StakeholderSim
 
 DEFAULT_MAX_ROUNDS = 5
@@ -37,13 +39,29 @@ _DISTILLED_JSON_SPEC = """{
   "action": "done",
   "distilled": {
     "mission": "<one-paragraph mission statement>",
-    "roles": [{"name": "<RoleName>", "description": "<the job this role \
-does — its responsibilities, in one or two sentences>"}],
+    "roles": [{"name": "<RoleName>", "kind": "agent|tool|orchestrator|user",
+       "description": "<the job this role does — its responsibilities>",
+       "must_not": ["<something this role is forbidden to do>"]}],
+    "resources": [{"name": "<file/table/cluster>", "kind": "file|table|\
+cluster|service", "access": "read|shared-write|exclusive-write",
+       "rule": "<the constraint on using it>"}],
+    "invariants": [{"name": "<counter or budget>", "bound": "<e.g. <= 3 \
+rounds>", "resets_on": "<event that clears it>", "on_breach": "<what must \
+happen when it trips>"}],
     "goals": [{"gid": "G1", "text": "<an outcome that must be TRUE when \
-the work is finished>", "evidence": "<how you would know it happened>"}],
+the work is finished>", "evidence": "<how you would know it happened>",
+       "marker": "<the interaction id that signals it, e.g. I7>",
+       "predicate": "<what that message's payload must satisfy>",
+       "final": false}],
     "interactions": [{"iid": "I1", "from": "<RoleName>", "to": "<RoleName>",
        "what": "<the information handed over, in plain language>",
-       "when": "<the trigger or precondition>", "optional": false}],
+       "when": "<the trigger or precondition>", "optional": false,
+       "carries": [{"name": "<field>", "type": "string|int|bool|double",
+                    "constraint": "<the rule this VALUE must satisfy, or \
+empty>"}],
+       "cardinality": "<exactly once | at most once | once per <thing> | \
+one or more | at most N times | unbounded>",
+       "waits_for": ["<interaction ids that must ALL complete first>"]}],
     "non_goals": ["<something explicitly OUT of scope>"],
     "requirements": [
       {"rid": "R1",
@@ -81,10 +99,53 @@ DOES (role descriptions — the job), WHO HANDS WHAT TO WHOM (interactions), \
 WHAT CONSTRAINS them (requirements), and WHAT MUST BE TRUE AT THE END \
 (goals). A goal is an outcome; a requirement constrains how you get there. \
 Do not merge them.
+- THE ROLE TEST. Something is a role only if the document describes a \
+message crossing INTO or OUT OF it. A tool counts: a checker that emits a \
+verdict is a role (kind "tool"), and the branch on that verdict is a choice \
+made BY it. A person who only receives escalations is a role (kind "user"). \
+A file, table or cluster is NOT a role — nothing is sent to it — so put it \
+in `resources` with its access mode, and its "two people must not edit this \
+at once" rule as the `rule`. Getting this wrong invents participants that \
+cannot act.
+- `must_not` is how a prohibition should be recorded: rather than "never \
+edit the pipeline" as prose, say that the role must not do it, so the \
+capability can simply be absent rather than forbidden in bold.
+- `invariants` capture budgets and counters that hold across the whole run \
+("at most 3 repair rounds", "stop after 6 calls with no artifact"). These \
+are NOT orderings — they are properties of the history — and a document \
+full of them is usually a document whose author kept hitting runs that \
+never terminated.
+- `waits_for` marks a JOIN: this handover may not happen until ALL the \
+listed ones have. Prose like "only after both finish" is exactly where \
+these documents deadlock, so make it explicit rather than leaving it in \
+`when`.
+- A goal should name the `marker` interaction that signals it and the \
+`predicate` its payload must satisfy, and exactly one goal should be \
+`final: true` — the one whose achievement ends the session.
+- USE KIND "interior" for any requirement describing work INSIDE one role \
+that crosses no boundary: reading a traceback, editing a file, which cell \
+to fix, how to phrase a commit. This is usually MOST of a procedure \
+document. It is real work, but no protocol expresses it and nothing will be \
+graded on it. Do not discard it and do not inflate it into messages — label \
+it "interior". Only what governs WHO UNBLOCKS WHOM, ON WHAT EVIDENCE, is \
+protocol.
 - `interactions` must list EVERY handover the work needs, including the \
 unhappy paths (rejection, retry, escalation). Mark `optional: true` when it \
 only happens on some branch. These become the messages of the protocol, so \
 an interaction you omit is a message nobody will build.
+- `carries` names the DATA each handover moves, one entry per field, and \
+`constraint` states the rule that VALUE must satisfy ("above 500", \
+"non-empty", "one of approved/rejected"). Leave `constraint` empty when the \
+value is unrestricted. This matters because a payload typed only as text \
+still permits the wrong number: the constraints become the runtime guards, \
+so a rule you leave out is a rule nothing enforces. If the stakeholder has \
+not given a threshold, ASK — a number you invent here becomes an enforced \
+rule nobody agreed to.
+- `cardinality` says how many times the handover may occur: "exactly once", \
+"at most once", "once per pair", "at most 3 times", "unbounded". Be precise \
+about retries and repeats — an unbounded repeat is how a session fails to \
+terminate, so if a loop has a bound, state it, and if you do not know the \
+bound, ask for it rather than guessing.
 - `non_goals` is what must NOT be built. It is how a reader can tell an \
 invented step from a required one, so state anything the document rules \
 out or deliberately leaves alone.
@@ -232,9 +293,16 @@ def _parse_distilled(raw: dict) -> DistilledIntent:
     return DistilledIntent(
         mission=str(raw.get("mission", "")).strip(),
         roles=[{"name": str(r.get("name", "")),
-                "description": str(r.get("description", ""))}
+                "description": str(r.get("description", "")),
+                "kind": str(r.get("kind", "agent")),
+                "must_not": [str(m) for m in r.get("must_not", [])]}
                for r in raw.get("roles", [])],
         requirements=reqs, goals=goals, interactions=interactions,
+        resources=[Resource.from_dict(x) for x in raw.get("resources", [])
+                   if str(x.get("name", "")).strip()],
+        invariants=[SessionInvariant.from_dict(x)
+                    for x in raw.get("invariants", [])
+                    if str(x.get("name", "")).strip()],
         non_goals=[str(n) for n in raw.get("non_goals", [])],
         completion_signal=str(raw.get("completion_signal", "")).strip(),
         open_questions=[str(q) for q in raw.get("open_questions", [])])
