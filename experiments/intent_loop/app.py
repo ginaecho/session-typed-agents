@@ -681,9 +681,13 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         #   human    a person, live, turn by turn — the run WAITS
         #   expert   the stronger model (watch two models converse)
         #   document a strict quoting stakeholder (says NOT SPECIFIED)
-        answered_by = str(body.get("answered_by") or "expert").lower()
-        if answered_by not in ("expert", "document", "human"):
-            answered_by = "expert"
+        #   expert_reviewed  the expert DRAFTS, you approve or rewrite
+        #                    (default: an unreviewed model decision becomes a
+        #                    requirement, and the checker cannot tell)
+        answered_by = str(body.get("answered_by") or "expert_reviewed").lower()
+        if answered_by not in ("expert", "document", "human",
+                              "expert_reviewed"):
+            answered_by = "expert_reviewed"
 
         # Guard against a double-click launching two runs of the same
         # document against one deployment: they contend for the same rate
@@ -702,6 +706,11 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                     "session": existing.params.get("session"),
                     "hint": "watch that job, or change the document"}), 409
 
+        # Phase gate: stop after the understanding by default so a human
+        # endorses it BEFORE any protocol is written or checked.
+        stop_after = ("all" if str(body.get("stop_after", "")).lower()
+                      == "all" else "understanding")
+
         label_prefix = "mock" if mock else "live"
         out_dir = (app.config["SESSIONS"]
                    / f"{label_prefix}_{_now_stamp()}")
@@ -714,6 +723,7 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                   "max_rounds": int(body.get("max_rounds", 5)),
                   "max_repair_rounds": repair_rounds,
                   "pack": body.get("pack"), "session": out_dir.name,
+                  "stop_after": stop_after,
                   "answered_by": answered_by, "doc_sha": doc_sha,
                   "learner": cfg.model,
                   "expert": cfg.expert_model if answered_by == "expert"
@@ -740,6 +750,18 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 kwargs = dict(llm=build_chat(role="learner"))
                 if answered_by == "expert":
                     kwargs["stakeholder_llm"] = build_chat(role="expert")
+                elif answered_by == "expert_reviewed":
+                    # The expert drafts; the human approves or rewrites.
+                    from experiments.intent_loop.stakeholder import (
+                        ReviewedStakeholder, StakeholderSim)
+                    expert = StakeholderSim(build_chat(role="expert"),
+                                            document,
+                                            hidden_notes=hidden,
+                                            mode="expert")
+                    reviewed = ReviewedStakeholder(
+                        expert, on_propose=lambda q, p: job.ask(q, p))
+                    job.answer_sink = reviewed.submit
+                    kwargs["stakeholder_obj"] = reviewed
                 elif answered_by == "human":
                     # The run BLOCKS on each question until the person
                     # replies through /api/runs/<id>/answer.
@@ -756,7 +778,9 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 validate_fn=validate_fn, validator_label=label,
                 max_repair_rounds=repair_rounds,
                 corpus_path=app.config["CORPUS"], progress=progress,
-                stakeholder_mode=("expert" if answered_by == "expert"
+                stop_after=stop_after,
+                stakeholder_mode=("expert" if answered_by in
+                                  ("expert", "expert_reviewed")
                                   and not mock else "document"),
                 **kwargs)
             faith = record.faithfulness or {}

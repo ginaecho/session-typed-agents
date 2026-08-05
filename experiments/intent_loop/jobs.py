@@ -44,10 +44,16 @@ class Job:
         self.awaiting: Optional[str] = None
         self.answer_sink: Optional[Callable[[str], None]] = None
 
-    def ask(self, questions: str) -> None:
+    def ask(self, questions: str, proposal: Optional[str] = None) -> None:
+        """Block for a human. `proposal` is the expert model's draft answer
+        when the mode is propose-then-approve — shown pre-filled so the
+        human edits or accepts rather than writing from nothing."""
+        payload = {"questions": questions, "proposal": proposal}
         with self._lock:
-            self.awaiting = questions
-        self.emit("awaiting_answer", {"questions": questions})
+            self.awaiting = payload
+        self.emit("awaiting_answer",
+                  {"questions": questions,
+                   "has_proposal": proposal is not None})
 
     def answer(self, text: str) -> bool:
         """Deliver a human reply. False if nothing was waiting for one."""

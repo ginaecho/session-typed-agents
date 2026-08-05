@@ -25,7 +25,9 @@ def client(tmp_path: Path):
 
 
 def _run_mock(client, **body) -> dict:
-    r = client.post("/api/runs", json={"mock": True, **body})
+    r = client.post("/api/runs",
+                    json={"mock": True, "stop_after": "all",
+                          **body})
     assert r.status_code == 202, r.get_json()
     job_id = r.get_json()["job_id"]
     for _ in range(200):

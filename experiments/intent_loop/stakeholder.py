@@ -135,6 +135,59 @@ class HumanStakeholder:
         self._inbox.put(text)
 
 
+class ReviewedStakeholder:
+    """The expert model DRAFTS the answer; the human approves or rewrites it.
+
+    Observed failure that motivates this: asked who the participants are and
+    what marks completion, gpt-5.6-sol produced five separate "(decision)"
+    claims — a role taxonomy, an inspector verdict enum, a terminal message
+    shape — none of which were in the document and none of which anyone had
+    agreed to. Fluent, specific, and wrong. Those decisions then become
+    requirements, the protocol is built on them, and Scribble happily
+    certifies the result: a precise formalisation of something the user
+    never said.
+
+    A stand-in that can DECIDE is therefore only safe if a person signs off
+    on what it decided. So the draft is shown, the run blocks, and whatever
+    text the human returns is what the interrogator hears. Approving
+    unchanged is one click; the point is that it is a click.
+    """
+
+    def __init__(self, expert: "StakeholderSim",
+                 timeout_s: float = 1800.0,
+                 on_propose: Optional[Callable[[str, str], None]] = None):
+        self.expert = expert
+        self._inbox: "queue.Queue[str]" = queue.Queue()
+        self.pending: Optional[str] = None
+        self.proposal: Optional[str] = None
+        self.timeout_s = timeout_s
+        self.on_propose = on_propose
+        self.mode = "expert_reviewed"
+
+    def answer(self, questions: str) -> str:
+        proposed = self.expert.answer(questions)
+        self.pending, self.proposal = questions, proposed
+        if self.on_propose:
+            self.on_propose(questions, proposed)
+        try:
+            approved = self._inbox.get(timeout=self.timeout_s)
+        except queue.Empty:
+            # Nobody reviewed it. Do NOT quietly accept the draft: an
+            # unreviewed decision is exactly what this class exists to
+            # prevent, so the interrogator is told the answer is unconfirmed
+            # and must treat it as an open question.
+            approved = (f"{NOT_SPECIFIED} A draft answer was proposed but "
+                        f"nobody reviewed it within "
+                        f"{int(self.timeout_s)}s, so it must not be treated "
+                        f"as agreed. Record this as an open question.")
+        finally:
+            self.pending = self.proposal = None
+        return approved
+
+    def submit(self, text: str) -> None:
+        self._inbox.put(text)
+
+
 class StakeholderSim:
     """Answers interrogator question batches, keeping full dialogue history
     so later answers stay consistent with earlier ones."""

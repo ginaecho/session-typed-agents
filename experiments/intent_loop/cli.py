@@ -89,7 +89,8 @@ def cmd_run(args: argparse.Namespace) -> int:
             eval_llm=MockChat(mockdata.EVAL_SCRIPT, meter=meter),
             prompt_pack=pack, max_rounds=args.max_rounds,
             validate_fn=validate_fn, validator_label=validator_label,
-            gold_protocol=gold, corpus_path=corpus_path)
+            gold_protocol=gold, corpus_path=corpus_path,
+            stop_after="all")
     else:
         if not args.intent_file:
             print("error: --intent-file is required without --mock")
@@ -108,7 +109,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             validate_fn=validate_fn, validator_label=validator_label,
             gold_protocol=gold,
             bisim_fn=(_real_bisim() if gold else None),
-            corpus_path=corpus_path)
+            corpus_path=corpus_path, stop_after="all")
 
     faith = record.faithfulness or {}
     print(f"episode:   {record.episode_id}")

@@ -32,8 +32,22 @@ from experiments.intent_loop.schema import (DistilledIntent, Goal,
                                             parse_json_block)
 from experiments.intent_loop.stakeholder import StakeholderSim
 
-DEFAULT_MAX_ROUNDS = 5
-DEFAULT_MAX_QUESTIONS_PER_ROUND = 4
+#: ONE question per turn, and more turns to compensate.
+#:
+#: Batching three questions into a single window is not a conversation: the
+#: asker cannot use your first answer to choose its second, and you face a
+#: wall of text. Asking one, hearing the answer, and then deciding what to
+#: ask next is the whole mechanism — and it is how a person interrogates.
+DEFAULT_MAX_ROUNDS = 8
+DEFAULT_MAX_QUESTIONS_PER_ROUND = 1
+
+#: How many times we insist on questions before accepting a refusal. An
+#: UNBOUNDED insistence is a hang — the same failure the user hit when a
+#: dead job polled forever — so a model that will not ask is recorded as
+#: having asked nothing rather than looped over. `forced_finish` on the
+#: result marks those episodes so they are never mistaken for a real
+#: interrogation.
+MAX_PUSHBACKS = 2
 
 _DISTILLED_JSON_SPEC = """{
   "action": "done",
@@ -100,8 +114,17 @@ message signals it?
 Everything else (how a role does its internal work) is not worth a \
 question: it never becomes part of the protocol.
 
-To ask (max {max_q} questions, numbered, only questions the document does \
-NOT already answer — check carefully first):
+You MUST ask at least one round of questions before you finish. A document \
+written for humans always leaves something to judgement, and finding what \
+that is is your job — not deciding you already know.
+
+Ask ONE question at a time. You will be given the answer before you choose \
+your next question, so use it: this is a conversation, not a questionnaire. \
+Put exactly {max_q} question(s) in the list, and make it the single most \
+valuable thing you do not yet know.
+
+To ask (only about what the document does NOT already answer — check \
+carefully first):
 {{"action": "ask", "questions": ["1. ...", "2. ..."]}}
 
 When you have enough to specify the protocol (or nothing useful remains to \
@@ -196,7 +219,8 @@ def run_interrogation(llm: ChatLLM, stakeholder: StakeholderSim,
                       max_rounds: int = DEFAULT_MAX_ROUNDS,
                       max_questions_per_round: int = DEFAULT_MAX_QUESTIONS_PER_ROUND,
                       meter: Meter | None = None,
-                      progress=None) -> InterrogationResult:
+                      progress=None,
+                      min_rounds: int = 1) -> InterrogationResult:
     """Drive interrogator <-> stakeholder until 'done' or max_rounds.
 
     On hitting max_rounds without a 'done', one final forced call demands
@@ -221,6 +245,7 @@ def run_interrogation(llm: ChatLLM, stakeholder: StakeholderSim,
                     "if the document already answers everything."}]
     transcript: list[QA] = []
     rounds = 0
+    pushbacks = 0
     forced = False
     distilled_raw: dict | None = None
 
@@ -245,7 +270,46 @@ def run_interrogation(llm: ChatLLM, stakeholder: StakeholderSim,
             obj = parse_json_block(reply)
 
         action = obj.get("action")
+        if action == "done" and rounds < min_rounds and pushbacks < MAX_PUSHBACKS:
+            # Finishing without asking anything is the one outcome that
+            # defeats the purpose. Observed repeatedly on a 64k-char
+            # document: gpt-5.4 read it, judged that it knew enough, and
+            # went straight to the checklist — 0 Q&A rounds, 47
+            # requirements, and the worst faithfulness of any run. The
+            # prompt invited it ("finish immediately if the document
+            # already answers everything"), so the invitation is withdrawn
+            # here rather than left to the model's confidence.
+            pushbacks += 1
+            _emit("pushback", round=rounds + 1, attempt=pushbacks,
+                  note="tried to finish without asking — questions required")
+            history.append({
+                "role": "user",
+                "content":
+                    "You may not finish yet. No document of this kind is "
+                    "complete: it was written for humans who fill the gaps "
+                    "with judgement. Ask your questions now — at least one "
+                    "round — and make them count on the three things that "
+                    "decide whether a protocol can be written at all:\n"
+                    "  1. ROLES: which named participants actually send or "
+                    "receive, and which are tools or files that nobody "
+                    "talks to?\n"
+                    "  2. INTERACTIONS: who hands what to whom on the "
+                    "UNHAPPY paths — rejection, retry, escalation — and who "
+                    "is told when a decision is taken?\n"
+                    "  3. GOALS: what must be true for the work to be "
+                    "finished, and which message says so?\n"
+                    "Reply with the action=ask envelope."})
+            continue
+
         if action == "done":
+            if rounds == 0:
+                # It refused to ask even after being told to. Recorded, not
+                # hidden: an episode with no interrogation is a different
+                # kind of evidence and must be visible as such.
+                forced = True
+                _emit("no_questions_asked", pushbacks=pushbacks,
+                      note="finished without asking anything — the "
+                           "checklist rests on the document alone")
             _emit("distilling", round=rounds,
                   note="questions exhausted — writing the checklist")
             distilled_raw = obj.get("distilled", {})
@@ -256,15 +320,23 @@ def run_interrogation(llm: ChatLLM, stakeholder: StakeholderSim,
                 f"interrogator round {rounds + 1}: unrecognized envelope "
                 f"{obj!r} (expected action ask|done)")
 
-        rounds += 1
-        questions = [str(q) for q in obj["questions"]][:max_questions_per_round]
-        _emit("asked", round=rounds, questions=questions)
-        answers = stakeholder.answer(_questions_block(questions))
-        transcript.append(QA(round=rounds,
-                             question=_questions_block(questions),
-                             answer=answers))
-        _emit("answered", round=rounds,
-              transcript=[qa.to_dict() for qa in transcript])
+        # One question, one answer, one turn — even if the model proposed
+        # several. Delivering them singly keeps it a conversation and lets
+        # the NEXT question depend on this answer.
+        questions = [str(q).strip() for q in obj["questions"]
+                     if str(q).strip()][:max_questions_per_round]
+        answers_parts: list[str] = []
+        for q in questions:
+            rounds += 1
+            _emit("asked", round=rounds, questions=[q])
+            reply = stakeholder.answer(q)
+            transcript.append(QA(round=rounds, question=q, answer=reply))
+            answers_parts.append(f"Q: {q}\nA: {reply}")
+            _emit("answered", round=rounds,
+                  transcript=[qa.to_dict() for qa in transcript])
+            if rounds >= max_rounds:
+                break
+        answers = "\n\n".join(answers_parts)
         if rounds >= max_rounds:
             forced = True
             history.append({"role": "user",

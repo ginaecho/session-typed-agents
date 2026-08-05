@@ -96,6 +96,65 @@ def learn_from_attempts(attempts: list[dict], *,
     return merged
 
 
+def formalize_episode(llm: ChatLLM, session_dir: Path, *,
+                      validate_fn: ValidateFn,
+                      validator_label: str = "scribble-java",
+                      prompt_pack=None, exemplar_k: int = 3,
+                      max_repair_rounds: int = MAX_REPAIR_ROUNDS,
+                      faithfulness_rounds: int = 3,
+                      eval_llm: Optional[ChatLLM] = None,
+                      gold_protocol: Optional[str] = None, bisim_fn=None,
+                      corpus_path: Path = DEFAULT_CORPUS_PATH,
+                      progress=None) -> LoopRecord:
+    """Phase 2: turn an ENDORSED understanding into a checked protocol.
+
+    Deliberately a separate call from `run_episode`, because the endorsement
+    between them is the point: Scribble is only meaningful once a person has
+    agreed that the understanding is right. Running it earlier answers a
+    question nobody asked ("is this grammatical?") and reads as if it had
+    answered the one that matters ("is this what I meant?").
+
+    Reads the understanding from the session directory, so a human may edit
+    `understanding.json` by hand between the phases and this will honour it.
+    """
+    from experiments.intent_loop.interrogator import run_interrogation  # noqa
+    rec_path = session_dir / "record.json"
+    und_path = session_dir / "understanding.json"
+    if not rec_path.exists() and not und_path.exists():
+        raise FileNotFoundError(
+            f"{session_dir} holds no understanding to formalise — run the "
+            f"interrogation phase first.")
+    src = json.loads((und_path if und_path.exists() else rec_path)
+                     .read_text(encoding="utf-8"))
+    distilled = DistilledIntent.from_dict(src["distilled"])
+    base = json.loads(rec_path.read_text(encoding="utf-8")) \
+        if rec_path.exists() else {}
+
+    document = _read_document(session_dir)
+    # Same pipeline, interrogation skipped: the understanding is supplied,
+    # so phase 2 is not reimplemented anywhere.
+    return run_episode(
+        llm, document, out_dir=session_dir,
+        distilled_override=distilled,
+        transcript_override=[QA(**qa) for qa in base.get("transcript", [])],
+        episode_id=base.get("episode_id"),
+        validate_fn=validate_fn, validator_label=validator_label,
+        prompt_pack=prompt_pack, exemplar_k=exemplar_k,
+        max_repair_rounds=max_repair_rounds,
+        faithfulness_rounds=faithfulness_rounds,
+        eval_llm=eval_llm, gold_protocol=gold_protocol, bisim_fn=bisim_fn,
+        corpus_path=corpus_path, progress=progress, stop_after="all")
+
+
+def _read_document(session_dir: Path) -> str:
+    try:
+        text = (session_dir / "document.md").read_text(encoding="utf-8")
+    except OSError:
+        return ""
+    return text.split("-->", 1)[1].lstrip("\n") if text.startswith("<!--") \
+        else text
+
+
 def _faithfulness_complaints(report, structural: dict) -> str:
     """Turn the grading into instructions the drafter can act on.
 
@@ -218,6 +277,9 @@ def run_episode(
     stakeholder_mode: str = "document",
     faithfulness_rounds: int = 3,
     stakeholder_obj=None,
+    stop_after: str = "understanding",
+    distilled_override=None,
+    transcript_override=None,
 ) -> LoopRecord:
     """Run one episode end-to-end and persist everything under out_dir.
 
@@ -235,12 +297,15 @@ def run_episode(
     validate = validate_fn if validate_fn is not None else real_validate()
     meter = getattr(llm, "meter", None) or Meter()
 
-    (out_dir / "document.md").write_text(
-        f"<!-- episode: {episode_id} | sha256: {sha} | "
-        f"chars: {len(document)} -->\n" + document, encoding="utf-8")
+    if distilled_override is None:
+        (out_dir / "document.md").write_text(
+            f"<!-- episode: {episode_id} | sha256: {sha} | "
+            f"chars: {len(document)} -->\n" + document, encoding="utf-8")
 
     _emit("start", episode_id=episode_id, intent_chars=len(document),
-          validator=validator_label)
+          validator=validator_label,
+          phase=("formalize" if distilled_override is not None
+                 else "understand"))
 
     # ── 1. interrogation ────────────────────────────────────────────────
     # Sub-events are forwarded AND the transcript is flushed to disk after
@@ -278,6 +343,43 @@ def run_episode(
         encoding="utf-8")
     (out_dir / "intent_distilled.md").write_text(distilled.to_markdown(),
                                                  encoding="utf-8")
+
+    # ── ENDORSEMENT CHECKPOINT ──────────────────────────────────────────
+    # Stop here by default and let a human confirm that this IS what they
+    # meant, BEFORE any Scribble enters the picture.
+    #
+    # Why: the type checker cannot tell a faithful protocol from a
+    # plausible misreading — it accepts both. So "valid" produced straight
+    # off an unreviewed understanding is a guarantee about grammar dressed
+    # up as a guarantee about intent. Formalising an understanding nobody
+    # has agreed to is the expensive way to be precisely wrong; the honest
+    # order is understand -> endorse -> formalise -> check.
+    if stop_after == "understanding":
+        record = LoopRecord(
+            episode_id=episode_id, intent_sha256=sha,
+            intent_chars=len(document), distilled=distilled.to_dict(),
+            transcript=[qa.to_dict() for qa in interro.transcript],
+            draft_attempts=[], final_protocol=None, valid=False,
+            faithfulness=None,
+            meter={**(meter.to_dict() if isinstance(meter, Meter) else {}),
+                   "phase": "understood", "validator": None},
+            ts=_utcnow())
+        (out_dir / "understanding.json").write_text(
+            json.dumps({"distilled": distilled.to_dict(),
+                        "transcript": [qa.to_dict()
+                                       for qa in interro.transcript],
+                        "endorsed": False, "ts": _utcnow()},
+                       ensure_ascii=False, indent=2), encoding="utf-8")
+        (out_dir / "record.json").write_text(
+            json.dumps({**record.to_dict(), "phase": "understood"},
+                       ensure_ascii=False, indent=2), encoding="utf-8")
+        _emit("understood", roles=len(distilled.roles),
+              interactions=len(distilled.interactions),
+              goals=len(distilled.goals),
+              requirements=len(distilled.requirements),
+              note="waiting for you to confirm this is what you meant — no "
+                   "protocol has been written and Scribble has not run")
+        return record
 
     # ── 2. draft -> validate -> repair (t0 production loop, unchanged) ──
     # The rulebook is what the learner already knows: lessons harvested

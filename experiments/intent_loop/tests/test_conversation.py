@@ -113,6 +113,7 @@ def test_job_reports_the_open_question_and_stage_age(client):
     job = reg.submit("run", {}, lambda j: (done.wait(2), {"ok": True})[1])
     job.ask("1. Who decides?")
     d = job.to_dict()
-    assert d["awaiting"] == "1. Who decides?"
+    assert d["awaiting"]["questions"] == "1. Who decides?"
+    assert d["awaiting"]["proposal"] is None
     assert d["stage"] == "awaiting_answer" and d["stage_since"]
     done.set()

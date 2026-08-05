@@ -954,10 +954,12 @@ function showRunForm(){
 document-scale intent is the point; a handbook is fine."></textarea>
       <label>Who answers the learner's questions?</label>
       <select id="answeredby">
-        <option value="expert">Watch two models talk — gpt-5.4 asks,
-          gpt-5.6-sol answers</option>
-        <option value="human">I answer myself — a live conversation with
-          gpt-5.4</option>
+        <option value="expert_reviewed">gpt-5.6-sol drafts, I approve —
+          one question at a time (recommended)</option>
+        <option value="human">I answer myself — nothing drafted for
+          me</option>
+        <option value="expert">Let gpt-5.6-sol answer unreviewed — watch
+          only</option>
         <option value="document">Strict document quoting — replies NOT
           SPECIFIED when the text is silent</option>
       </select>
@@ -993,12 +995,15 @@ document-scale intent is the point; a handbook is fine."></textarea>
   $("#mock").onchange = syncMock; syncMock();
 
   const NOTES = {
-    expert: "gpt-5.4 reads your document, asks about roles, interactions "
-      + "and goals, and gpt-5.6-sol answers as the stakeholder. You watch "
-      + "the exchange as it happens.",
-    human: "gpt-5.4 asks; the run PAUSES and waits for you. Each round "
-      + "appears below with a box to reply in — this is a real "
-      + "conversation, so it will sit there until you answer.",
+    expert_reviewed: "gpt-5.4 asks ONE question; gpt-5.6-sol drafts an "
+      + "answer; you edit or approve it. Nothing counts until you send — "
+      + "the expert states things your document never said, and an "
+      + "unreviewed decision becomes a requirement the checker cannot "
+      + "question.",
+    human: "gpt-5.4 asks one question at a time and the run PAUSES for you. "
+      + "Nothing is drafted — the answers are yours.",
+    expert: "gpt-5.6-sol answers unreviewed and you only watch. Fast, but "
+      + "its inventions go straight into the requirements.",
     document: "The stakeholder may only quote your document, and says NOT "
       + "SPECIFIED otherwise. Use this to measure what the document alone "
       + "supports.",
@@ -1177,14 +1182,24 @@ const firstPending = reached => STAGE_ORDER.find(s=>!reached.has(s));
 /* The learner's open question, with a box to answer it. The run thread is
    blocked on exactly this, so the conversation continues the moment you
    send — nothing is queued or replayed later. */
-function askBox(jobId, questions){
+function askBox(jobId, awaiting){
+  const q = typeof awaiting === "string" ? awaiting : (awaiting.questions||"");
+  const proposal = (awaiting && awaiting.proposal) || "";
   return `<div class="warnbar" style="margin:10px 0 0">
-    <b>gpt-5.4 is asking you:</b>
-    <pre class="wrap" style="margin:8px 0">${esc(questions)}</pre>
-    <textarea id="ansbox" style="min-height:90px"
-      placeholder="Answer in your own words. The run is paused until you send."></textarea>
+    <b>gpt-5.4 asks:</b>
+    <pre class="wrap" style="margin:8px 0">${esc(q)}</pre>
+    ${proposal?`<div class="row" style="gap:6px">
+      ${badge("warn","drafted by gpt-5.6-sol — review before it counts")}
+      </div>
+      <p class="note">Nothing here is agreed until you send it. The expert
+      states things the document never said; edit anything you disagree with,
+      or delete it and answer yourself.</p>`:""}
+    <textarea id="ansbox" style="min-height:${proposal?"200px":"90px"}"
+      placeholder="Answer in your own words. The run is paused until you send."
+      >${esc(proposal)}</textarea>
     <div class="row" style="margin-top:8px">
-      <button class="primary" id="ansbtn">Send answer</button>
+      <button class="primary" id="ansbtn">${proposal
+        ? "Approve &amp; send" : "Send answer"}</button>
       <span class="sub" id="anssent"></span>
     </div></div>`;
 }
