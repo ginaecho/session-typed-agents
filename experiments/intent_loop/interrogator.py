@@ -40,7 +40,7 @@ _DISTILLED_JSON_SPEC = """{
     "roles": [{"name": "<RoleName>", "description": "<what it does>"}],
     "requirements": [
       {"rid": "R1",
-       "kind": "role|ordering|authorization|value|branch|termination|other",
+       "kind": "role|ordering|authorization|value|branch|termination|policy|other",
        "text": "<ONE atomic, checkable sentence>",
        "who": ["<RoleName>", ...],
        "source": "document|answer|assumption"}
@@ -70,6 +70,15 @@ ask), finish with the full distilled output:
 
 Distillation rules:
 - Requirements must be ATOMIC (one checkable fact each) and TYPED.
+- Use kind "policy" for any requirement that constrains WHO may inhabit a \
+role, or otherwise cannot be expressed as "which role sends which message \
+in which order" — separation of duties ("the approver and the payer must \
+be different people"), identity, access control, data retention, staffing. \
+These are real requirements, but they are enforced by the deployment and \
+identity layer, NOT by the interaction protocol, and they are recorded \
+separately so nobody grades the protocol on them. Requirements about \
+message ORDER, AUTHORIZATION-before-an-act, payload VALUES, BRANCHING and \
+TERMINATION are protocol requirements — never label those "policy".
 - Every requirement carries its source: "document" (stated in the \
 document), "answer" (learned from a stakeholder answer), "assumption" \
 (you chose it because the stakeholder said NOT SPECIFIED — keep these \

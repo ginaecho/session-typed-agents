@@ -36,8 +36,26 @@ REQUIREMENT_KINDS = (
     "value",          # a payload constraint (threshold, non-empty, enum)
     "branch",         # a decision point and who decides it
     "termination",    # how the session ends / who learns the outcome
+    "policy",         # NOT expressible as a protocol — see POLICY_KIND below
     "other",
 )
+
+#: Requirements a multiparty session type structurally CANNOT express, and
+#: which must therefore be enforced outside the protocol layer (deployment,
+#: identity/IAM, retention, org policy). The canonical example, observed on
+#: the first live episode: "the FinanceApprover and the PaymentProcessor
+#: must be distinct people." A session type constrains ROLES and the
+#: messages between them; which principal inhabits a role is invisible to
+#: it. Grading such a requirement against the protocol would be a category
+#: error — the honest verdict is "no protocol can satisfy this", not "the
+#: drafter failed".
+#:
+#: The classification is made at DISTILL time, by the interrogator, before
+#: any protocol exists — so it can never be used post-hoc to excuse a bad
+#: draft. faithfulness.py scores recall over the expressible requirements
+#: and reports the policy ones separately, as obligations handed to the
+#: deployment layer.
+POLICY_KIND = "policy"
 
 
 @dataclass
@@ -75,19 +93,42 @@ class DistilledIntent:
     def role_names(self) -> list[str]:
         return [r["name"] for r in self.roles]
 
-    def requirements_text(self) -> str:
+    def requirements_text(self, kinds: Optional[list[str]] = None) -> str:
         return "\n".join(
             f"- [{r.rid}][{r.kind}] {r.text}"
             + (f" (roles: {', '.join(r.who)})" if r.who else "")
-            for r in self.requirements)
+            for r in self.requirements
+            if kinds is None or r.kind in kinds)
 
-    def to_markdown(self) -> str:
+    def protocol_requirements(self) -> list[Requirement]:
+        """Requirements the protocol layer can actually realize."""
+        return [r for r in self.requirements if r.kind != POLICY_KIND]
+
+    def policy_requirements(self) -> list[Requirement]:
+        """Requirements handed to the deployment layer (see POLICY_KIND)."""
+        return [r for r in self.requirements if r.kind == POLICY_KIND]
+
+    def to_markdown(self, include_policy: bool = True) -> str:
+        """`include_policy=False` renders the protocol-scoped view — what a
+        faithful protocol could possibly encode. That is the fair reference
+        for back-translation comparison: a reconstruction derived from the
+        protocol alone cannot recover constraints the protocol cannot
+        express, so scoring it against them would penalize the drafter for
+        a limit of the formalism."""
         lines = ["# Distilled intent", "", "## Mission", self.mission, "",
                  "## Roles"]
         lines += [f"- **{r['name']}** — {r.get('description', '')}"
                   for r in self.roles]
-        lines += ["", "## Requirements", self.requirements_text(),
+        lines += ["", "## Requirements",
+                  self.requirements_text(
+                      kinds=[k for k in REQUIREMENT_KINDS
+                             if k != POLICY_KIND]),
                   "", "## Completion signal", self.completion_signal]
+        policy = self.policy_requirements() if include_policy else []
+        if policy:
+            lines += ["", "## Policy requirements (enforced OUTSIDE the "
+                          "protocol — not expressible as message ordering)"]
+            lines += [f"- [{r.rid}] {r.text}" for r in policy]
         if self.open_questions:
             lines += ["", "## Open questions (explicitly unresolved)"]
             lines += [f"- {q}" for q in self.open_questions]

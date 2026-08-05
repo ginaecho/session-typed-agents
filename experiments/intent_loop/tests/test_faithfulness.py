@@ -6,7 +6,7 @@ from experiments.intent_loop import mockdata
 from experiments.intent_loop.faithfulness import (back_translate,
                                                   evaluate_faithfulness)
 from experiments.intent_loop.llm import MockChat
-from experiments.intent_loop.schema import DistilledIntent
+from experiments.intent_loop.schema import DistilledIntent, Requirement
 
 
 def _distilled() -> DistilledIntent:
@@ -56,6 +56,41 @@ def test_back_translator_never_sees_the_intent():
     # back-translator was shown (the J-back isolation property).
     assert "quarterly report workflow" not in combined.lower()
     assert "mission" not in combined.lower()
+
+
+def test_policy_requirements_are_reported_not_scored():
+    """A separation-of-duties rule ("the approver and the payer must be
+    different people") cannot be expressed as a session type. It must not
+    be sent to the coverage checker, must not drag recall down, and must
+    still appear in the report as a deployment-layer obligation."""
+    distilled = _distilled()
+    distilled.requirements.append(Requirement(
+        rid="R6", kind="policy",
+        text="The Approver and the Analyst must be different people.",
+        who=["Approver", "Analyst"], source="answer"))
+    llm = MockChat(mockdata.EVAL_SCRIPT)
+    report = evaluate_faithfulness(llm, distilled, mockdata.FIXED_DRAFT)
+
+    # The checker never saw the policy requirement.
+    _stage, _system, coverage_user = llm.calls[0]
+    assert "different people" not in coverage_user
+    # It is reported, but excluded from recall — so the verdict still stands.
+    r6 = next(v for v in report.coverage if v.rid == "R6")
+    assert r6.covered == "out_of_scope"
+    assert report.recall == 1.0
+    assert report.faithful
+    assert "policy requirement(s) reported but NOT scored" in report.rule
+
+
+def test_policy_requirements_excluded_from_backtranslation_reference():
+    distilled = _distilled()
+    distilled.requirements.append(Requirement(
+        rid="R6", kind="policy",
+        text="The Approver and the Analyst must be different people.",
+        who=[], source="answer"))
+    md = distilled.to_markdown(include_policy=False)
+    assert "different people" not in md
+    assert "different people" in distilled.to_markdown()
 
 
 def test_gold_equivalence_uses_injected_bisim():

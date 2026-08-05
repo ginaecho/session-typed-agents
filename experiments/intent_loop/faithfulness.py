@@ -75,11 +75,20 @@ made>", ...]}"""
 def check_requirement_coverage(
         llm: ChatLLM, distilled: DistilledIntent, protocol_text: str
 ) -> tuple[list[CoverageVerdict], list[str]]:
-    user = (f"=== REQUIREMENTS ===\n{distilled.requirements_text()}\n\n"
+    """Audit the PROTOCOL-EXPRESSIBLE requirements only. Policy requirements
+    (POLICY_KIND) are never sent to the checker: asking whether a session
+    type enforces "the approver and payer must be different people" invites
+    a meaningless verdict either way."""
+    scored = distilled.protocol_requirements()
+    reqs_text = "\n".join(
+        f"- [{r.rid}][{r.kind}] {r.text}"
+        + (f" (roles: {', '.join(r.who)})" if r.who else "")
+        for r in scored)
+    user = (f"=== REQUIREMENTS ===\n{reqs_text}\n\n"
             f"=== PROTOCOL ===\n{protocol_text}")
     obj = parse_json_block(llm.complete(_COVERAGE_SYSTEM, user,
                                         stage="coverage"))
-    known = {r.rid for r in distilled.requirements}
+    known = {r.rid for r in scored}
     verdicts = [CoverageVerdict(rid=str(v.get("rid")),
                                 covered=str(v.get("covered", "no")).lower(),
                                 evidence=str(v.get("evidence", "")))
@@ -89,7 +98,12 @@ def check_requirement_coverage(
     seen = {v.rid for v in verdicts}
     verdicts += [CoverageVerdict(rid=r.rid, covered="no",
                                  evidence="checker returned no verdict")
-                 for r in distilled.requirements if r.rid not in seen]
+                 for r in scored if r.rid not in seen]
+    verdicts += [CoverageVerdict(
+        rid=r.rid, covered="out_of_scope",
+        evidence="policy requirement — not expressible as a session type; "
+                 "enforced by the deployment/identity layer")
+        for r in distilled.policy_requirements()]
     ungrounded = [str(u) for u in obj.get("ungrounded", [])]
     return verdicts, ungrounded
 
@@ -130,12 +144,15 @@ def evaluate_faithfulness(
     """
     verdicts, ungrounded = check_requirement_coverage(llm, distilled,
                                                       protocol_text)
-    n = len(distilled.requirements)
+    # Recall is over PROTOCOL-EXPRESSIBLE requirements only; policy
+    # requirements are reported, never scored (schema.POLICY_KIND).
+    n = len(distilled.protocol_requirements())
+    n_policy = len(distilled.policy_requirements())
     covered = sum(1 for v in verdicts if v.covered == "yes")
     recall = (covered / n) if n else 0.0
 
     reconstructed = back_translate(llm, protocol_text)
-    original_md = distilled.to_markdown()
+    original_md = distilled.to_markdown(include_policy=False)
     comparison = (compare_fn(original_md, reconstructed) if compare_fn
                   else compare_intents(llm, original_md, reconstructed))
     backtranslation = {"reconstructed": reconstructed, **comparison}
@@ -146,10 +163,13 @@ def evaluate_faithfulness(
 
     faithful = (n > 0 and recall == 1.0 and not ungrounded
                 and backtranslation["score"] >= backtranslation_threshold)
-    rule = (f"faithful iff all {n} requirements covered 'yes' "
-            f"(got {covered}), no ungrounded interactions "
+    rule = (f"faithful iff all {n} protocol-expressible requirements covered "
+            f"'yes' (got {covered}), no ungrounded interactions "
             f"(got {len(ungrounded)}), and back-translation score >= "
-            f"{backtranslation_threshold} (got {backtranslation['score']})")
+            f"{backtranslation_threshold} (got {backtranslation['score']})"
+            + (f"; {n_policy} policy requirement(s) reported but NOT scored "
+               f"— no session type can express them"
+               if n_policy else ""))
     return FaithfulnessReport(
         coverage=verdicts, recall=recall, ungrounded=ungrounded,
         backtranslation=backtranslation, gold_equivalent=gold_equivalent,

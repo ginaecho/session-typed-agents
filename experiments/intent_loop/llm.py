@@ -60,29 +60,63 @@ class ChatLLM(Protocol):
         ...
 
 
+#: Completion budget per call. Reasoning models (gpt-5 family, o-series)
+#: count REASONING tokens against this same budget, so a budget sized for
+#: the visible answer alone comes back empty — the model spent it all
+#: thinking. Every stage here (distillation, drafting, coverage auditing)
+#: is reasoning-heavy over a long input, so the default is generous.
+DEFAULT_MAX_TOKENS = 16384
+
+
+class EmptyReplyError(RuntimeError):
+    """The model returned no visible text — on reasoning models this means
+    the completion budget was exhausted by reasoning tokens."""
+
+
 class FoundryChat:
     """Foundry-first adapter (lazy import: constructing one is the moment
-    Azure config becomes required, never module import)."""
+    Azure config becomes required, never module import).
+
+    Retries once with a doubled budget when a call comes back empty, then
+    fails loudly: a silent empty reply becomes an unparseable-JSON error
+    three frames away otherwise, which is a miserable thing to debug.
+    """
 
     def __init__(self, meter: Optional[Meter] = None,
-                 deployment: Optional[str] = None):
+                 deployment: Optional[str] = None,
+                 max_tokens: int = DEFAULT_MAX_TOKENS):
         from stjp_core.foundry.llm_client import LLMClient
         self._client = LLMClient(deployment) if deployment else LLMClient()
         self.meter = meter if meter is not None else Meter()
+        self.max_tokens = max_tokens
         self.label = f"foundry:{deployment or 'default'}"
 
-    def complete(self, system: str, user: str, *, stage: str = "misc") -> str:
-        reply = self._client.generate(system, user)
-        self.meter.add(stage, len(system) + len(user), len(reply))
+    def _guarded(self, call, stage: str, prompt_chars: int) -> str:
+        reply = call(self.max_tokens) or ""
+        if not reply.strip():
+            reply = call(self.max_tokens * 2) or ""
+        if not reply.strip():
+            raise EmptyReplyError(
+                f"stage={stage}: model returned no visible text even at "
+                f"{self.max_tokens * 2} completion tokens — on a reasoning "
+                f"model this means reasoning consumed the whole budget. "
+                f"Raise FoundryChat(max_tokens=...) or shorten the input.")
+        self.meter.add(stage, prompt_chars, len(reply))
         return reply
+
+    def complete(self, system: str, user: str, *, stage: str = "misc") -> str:
+        return self._guarded(
+            lambda mt: self._client.generate(system, user, max_tokens=mt),
+            stage, len(system) + len(user))
 
     def complete_with_history(self, system: str,
                               messages: list[dict[str, str]], *,
                               stage: str = "misc") -> str:
-        reply = self._client.generate_with_history(system, messages)
         chars = len(system) + sum(len(m["content"]) for m in messages)
-        self.meter.add(stage, chars, len(reply))
-        return reply
+        return self._guarded(
+            lambda mt: self._client.generate_with_history(system, messages,
+                                                          max_tokens=mt),
+            stage, chars)
 
 
 class MockChat:

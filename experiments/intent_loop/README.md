@@ -56,10 +56,27 @@ verdict:
 | 2 | **Back-translation** (the round-trip idea) | one call sees ONLY the protocol and reconstructs the intent (`back_translate()` has no intent parameter — that signature is the isolation mechanism); a separate comparator scores the reconstruction 0–100 with missing/added lists | global drift, mis-emphasis |
 | 3 | **Gold E5 equivalence** (exact, optional) | `eval/validity.bisim_equivalent` against a known-correct reference | everything, mechanically — but only for benchmark cases that have a gold protocol |
 
-Verdict rule (stated inside every report): *faithful iff all requirements
-covered "yes" AND no ungrounded interactions AND back-translation score ≥
-70.* `partial` counts as a miss — conservative on purpose; the per-item
-evidence is kept so a human can overrule.
+Verdict rule (stated inside every report): *faithful iff all
+protocol-expressible requirements covered "yes" AND no ungrounded
+interactions AND back-translation score ≥ 70.* `partial` counts as a miss —
+conservative on purpose; the per-item evidence is kept so a human can
+overrule.
+
+### Policy requirements are reported, never scored
+
+Some real requirements **cannot be expressed as a session type at all**: a
+protocol constrains *roles* and the messages between them, but says nothing
+about which *principal* inhabits a role. The first live episode produced the
+canonical example — "the FinanceApprover and the PaymentProcessor must be
+distinct people." Grading a protocol on that is a category error, and left
+uncorrected it makes `faithful=True` unreachable for any realistic intent
+and teaches the drafter to fake compliance.
+
+So the interrogator tags these `kind: policy` **at distill time, before any
+protocol exists** (it therefore cannot be used afterwards to excuse a weak
+draft). They are excluded from the coverage checker's input, from recall,
+and from the back-translation reference, and are reported separately as
+obligations handed to the deployment/identity layer.
 
 An external similarity scorer (e.g. `azure-ai-evaluation`'s
 `SimilarityEvaluator`) can replace the comparator seat via the `compare_fn`
@@ -98,6 +115,10 @@ python -m experiments.intent_loop run --mock
 # real episode (Foundry-first LLM calls, real Scribble validator; az login first)
 python -m experiments.intent_loop run --intent-file docs/handbook_markdown.md \
     --out experiments/intent_loop/sessions/handbook_01
+
+# live LLM on a machine without the Scribble toolchain (development only —
+# every artifact is stamped `validator: mock` and is never evidence)
+python -m experiments.intent_loop run --intent-file intent.md --validator mock
 
 # with a known-correct reference protocol (adds the E5 check)
 python -m experiments.intent_loop run --intent-file intent.md \

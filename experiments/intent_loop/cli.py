@@ -44,14 +44,38 @@ def _ts() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
 
 
+def _resolve_validator(args: argparse.Namespace):
+    """(validate_fn, label) — the LLM seam and the validator are independent
+    choices. Default: mock under --mock, real Scribble otherwise. A live-LLM
+    run on a machine without the Scribble toolchain is legitimate for
+    development (`--validator mock`), and every artifact it writes carries
+    `validator: mock` so it can never be mistaken for a validated result."""
+    choice = args.validator or ("mock" if args.mock else "real")
+    if choice == "mock":
+        return loop_mod.mock_validate, "mock"
+    try:
+        from experiments.seam_bench.eval.validity import require_toolchain
+        require_toolchain()
+    except Exception as e:
+        print(f"error: real validator unavailable — {e}\n"
+              f"       wire it with `bash tools/setup_scribble_cloud.sh`, "
+              f"or pass --validator mock for a development run.")
+        return None, None
+    return loop_mod.real_validate(), "scribble-java"
+
+
 def cmd_run(args: argparse.Namespace) -> int:
     out_dir = Path(args.out) if args.out else SESSIONS_DIR / _ts()
     pack = PromptPack.load(Path(args.pack)) if args.pack else None
     gold = Path(args.gold).read_text(encoding="utf-8") if args.gold else None
+    validate_fn, validator_label = _resolve_validator(args)
+    if validate_fn is None:
+        return 2
+    corpus_path = Path(args.corpus) if args.corpus else DEFAULT_CORPUS_PATH
 
     if args.mock:
-        print("MODE: --mock (scripted MockChat + mock validator; NOT "
-              "evidence).")
+        print(f"MODE: --mock (scripted MockChat + {validator_label} "
+              f"validator; NOT evidence).")
         document = (Path(args.intent_file).read_text(encoding="utf-8")
                     if args.intent_file else mockdata.DEMO_DOCUMENT)
         hidden = (Path(args.hidden_notes).read_text(encoding="utf-8")
@@ -64,9 +88,8 @@ def cmd_run(args: argparse.Namespace) -> int:
             drafter_chat=MockChat(mockdata.DRAFTER_SCRIPT, meter=meter),
             eval_llm=MockChat(mockdata.EVAL_SCRIPT, meter=meter),
             prompt_pack=pack, max_rounds=args.max_rounds,
-            validate_fn=loop_mod.mock_validate, validator_label="mock",
-            gold_protocol=gold,
-            corpus_path=Path(args.corpus) if args.corpus else DEFAULT_CORPUS_PATH)
+            validate_fn=validate_fn, validator_label=validator_label,
+            gold_protocol=gold, corpus_path=corpus_path)
     else:
         if not args.intent_file:
             print("error: --intent-file is required without --mock")
@@ -76,12 +99,16 @@ def cmd_run(args: argparse.Namespace) -> int:
                   if args.hidden_notes else None)
         from experiments.intent_loop.llm import FoundryChat
         llm = FoundryChat()
+        print(f"MODE: live ({llm.label}) + {validator_label} validator"
+              + ("  [DEV RUN — mock validator, not evidence]"
+                 if validator_label == "mock" else ""))
         record = loop_mod.run_episode(
             llm, document, out_dir=out_dir, hidden_notes=hidden,
             prompt_pack=pack, max_rounds=args.max_rounds,
+            validate_fn=validate_fn, validator_label=validator_label,
             gold_protocol=gold,
             bisim_fn=(_real_bisim() if gold else None),
-            corpus_path=Path(args.corpus) if args.corpus else DEFAULT_CORPUS_PATH)
+            corpus_path=corpus_path)
 
     faith = record.faithfulness or {}
     print(f"episode:   {record.episode_id}")
@@ -150,6 +177,13 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--mock", action="store_true",
                    help="offline scripted episode (demo/smoke; never "
                         "evidence)")
+    r.add_argument("--validator", choices=("real", "mock"), default=None,
+                   help="protocol validator, independent of the LLM seam: "
+                        "'real' = Scribble-java (default for live runs), "
+                        "'mock' = crude structural check (default under "
+                        "--mock; use for a live-LLM development run where "
+                        "the Scribble toolchain is not wired — every "
+                        "artifact is labeled validator: mock)")
     r.set_defaults(fn=cmd_run)
 
     o = sub.add_parser("optimize", help="mine the corpus into a prompt pack")
