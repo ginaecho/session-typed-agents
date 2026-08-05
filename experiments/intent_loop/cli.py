@@ -198,7 +198,53 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("show-corpus", help="list corpus episodes")
     s.add_argument("--corpus")
     s.set_defaults(fn=cmd_show_corpus)
+
+    w = sub.add_parser("web", help="serve the Flask app (UI + agent API)")
+    w.add_argument("--port", type=int, default=8765)
+    w.add_argument("--host", default="127.0.0.1")
+    w.add_argument("--sessions")
+    w.add_argument("--corpus")
+    w.add_argument("--debug", action="store_true")
+    w.set_defaults(fn=cmd_web)
+
+    e = sub.add_parser("export-sft",
+                       help="write fine-tuning JSONL from the corpus")
+    e.add_argument("--corpus")
+    e.add_argument("--sessions")
+    e.add_argument("--out")
+    e.add_argument("--validation-fraction", type=float, default=0.0)
+    e.set_defaults(fn=cmd_export_sft)
     return p
+
+
+def cmd_web(args: argparse.Namespace) -> int:
+    from experiments.intent_loop.app import main as app_main
+    argv = ["--port", str(args.port), "--host", args.host]
+    if args.sessions:
+        argv += ["--sessions", args.sessions]
+    if args.corpus:
+        argv += ["--corpus", args.corpus]
+    if args.debug:
+        argv += ["--debug"]
+    return app_main(argv)
+
+
+def cmd_export_sft(args: argparse.Namespace) -> int:
+    from experiments.intent_loop.export import build_dataset, write_dataset
+    corpus = Path(args.corpus) if args.corpus else DEFAULT_CORPUS_PATH
+    sessions = Path(args.sessions) if args.sessions else SESSIONS_DIR
+    ds = build_dataset(corpus, sessions_dir=sessions,
+                       validation_fraction=args.validation_fraction)
+    out = Path(args.out) if args.out else HERE / "exports" / f"sft_{_ts()}"
+    written = write_dataset(ds, out)
+    print(json.dumps(ds["stats"], indent=2))
+    for k, v in written.items():
+        print(f"{k:12s} {v}")
+    if not ds["train"]:
+        print("\nNo training examples yet — an episode must be BOTH valid "
+              "and faithful to become a drafting example.")
+        return 1
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STJP Intent Loop</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface:#fcfcfb; --plane:#f9f9f7; --raised:#ffffff;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --line:#e1e0d9; --ring:rgba(11,11,11,.10);
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --accent:#2a78d6; --accent-soft:#cde2fb;
+  --mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface:#1a1a19; --plane:#0d0d0d; --raised:#222220;
+    --ink:#fff; --ink-2:#c3c2b7; --muted:#898781;
+    --line:#2c2c2a; --ring:rgba(255,255,255,.10);
+    --accent:#3987e5; --accent-soft:#184f95;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--accent)}
+header{padding:18px 22px;border-bottom:1px solid var(--line);
+  background:var(--surface);display:flex;gap:16px;align-items:baseline;
+  flex-wrap:wrap;position:sticky;top:0;z-index:5}
+h1{font-size:17px;margin:0;letter-spacing:-.01em}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);margin:26px 0 10px;font-weight:600}
+h3{font-size:14px;margin:16px 0 6px}
+.sub{color:var(--ink-2);font-size:13px}
+.grow{flex:1}
+.layout{display:grid;grid-template-columns:288px 1fr;min-height:calc(100vh - 61px)}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+aside{border-right:1px solid var(--line);background:var(--surface);
+  padding:14px;overflow-y:auto;max-height:calc(100vh - 61px)}
+main{padding:20px 24px;overflow-x:hidden;min-width:0}
+
+/* pipeline */
+.pipe{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 18px}
+.stage{flex:1 1 130px;min-width:130px;border:1px solid var(--line);
+  border-radius:9px;padding:9px 11px;background:var(--surface)}
+.stage .n{font-size:10px;color:var(--muted);letter-spacing:.08em;
+  text-transform:uppercase}
+.stage .t{font-weight:600;margin-top:2px}
+.stage .d{color:var(--ink-2);font-size:12px;margin-top:3px;
+  font-variant-numeric:tabular-nums}
+.stage.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:10px;margin-bottom:6px}
+.tile{border:1px solid var(--line);border-radius:9px;padding:11px 13px;
+  background:var(--surface)}
+.tile .v{font-size:23px;font-weight:650;letter-spacing:-.02em}
+.tile .k{font-size:11px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.06em;margin-top:2px}
+
+/* episode list */
+.ep{display:block;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:9px;padding:9px 11px;margin-bottom:7px;cursor:pointer;
+  background:var(--surface);color:inherit;font:inherit}
+.ep:hover{border-color:var(--accent)}
+.ep[aria-current="true"]{border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent) inset}
+.ep .id{font-family:var(--mono);font-size:11px;color:var(--ink-2);
+  word-break:break-all}
+.ep .meta{font-size:11px;color:var(--muted);margin-top:3px;
+  font-variant-numeric:tabular-nums}
+
+/* badges: status colour NEVER alone — always icon + label */
+.b{display:inline-flex;align-items:center;gap:4px;font-size:11px;
+  padding:1px 7px;border-radius:999px;border:1px solid var(--ring);
+  background:var(--plane);color:var(--ink-2);white-space:nowrap;
+  font-weight:500}
+.b .dot{width:7px;height:7px;border-radius:50%;flex:none}
+.b.good .dot{background:var(--good)} .b.warn .dot{background:var(--warning)}
+.b.bad .dot{background:var(--critical)} .b.oos .dot{background:var(--muted)}
+.b.info .dot{background:var(--accent)}
+
+pre{font-family:var(--mono);font-size:12px;line-height:1.5;
+  background:var(--surface);border:1px solid var(--line);border-radius:9px;
+  padding:12px;overflow-x:auto;white-space:pre;margin:0}
+pre.wrap{white-space:pre-wrap;word-break:break-word}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);font-weight:600;
+  padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.rid{font-family:var(--mono);font-size:12px;color:var(--ink-2);
+  white-space:nowrap}
+details{border:1px solid var(--line);border-radius:9px;background:var(--surface);
+  padding:10px 12px;margin-bottom:9px}
+summary{cursor:pointer;font-weight:600;font-size:13px}
+details[open] summary{margin-bottom:9px}
+.qa{border-left:2px solid var(--accent-soft);padding-left:12px;margin:12px 0}
+.qa .role{font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);margin-bottom:3px}
+button{font:inherit;padding:7px 13px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--ring);background:var(--surface);color:var(--ink)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,textarea,select{font:inherit;width:100%;padding:7px 9px;
+  border-radius:8px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink)}
+textarea{min-height:120px;font-family:var(--mono);font-size:12px;resize:vertical}
+label{display:block;font-size:11px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);margin:10px 0 4px;font-weight:600}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.card{border:1px solid var(--line);border-radius:9px;background:var(--surface);
+  padding:14px;margin-bottom:12px}
+.empty{color:var(--muted);padding:26px;text-align:center;
+  border:1px dashed var(--line);border-radius:9px}
+.note{font-size:12px;color:var(--ink-2);margin:6px 0 0}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:6px 0 14px;
+  flex-wrap:wrap}
+.tab{border:none;background:none;padding:8px 12px;border-radius:0;
+  border-bottom:2px solid transparent;color:var(--ink-2)}
+.tab[aria-selected="true"]{border-bottom-color:var(--accent);color:var(--ink);
+  font-weight:600}
+code{font-family:var(--mono);font-size:12px;background:var(--plane);
+  padding:1px 5px;border-radius:4px}
+.warnbar{border:1px solid var(--warning);border-radius:9px;padding:9px 12px;
+  margin-bottom:12px;font-size:13px;background:var(--surface)}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>STJP Intent Loop</h1>
+    <div class="sub">Interrogate → distil → draft → validate → grade faithfulness → train</div>
+  </div>
+  <div class="grow"></div>
+  <div id="health" class="row"></div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="row" style="margin-bottom:10px">
+      <button class="primary" id="btn-new">New run</button>
+      <button id="btn-refresh">Refresh</button>
+    </div>
+    <h2 style="margin-top:6px">Episodes</h2>
+    <div id="eplist"></div>
+  </aside>
+  <main id="main"><div class="empty">Loading…</div></main>
+</div>
+
+<script>
+const $ = (s,r=document)=>r.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>(
+  {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const api = async (p,o) => {
+  const r = await fetch(p, o); const j = await r.json().catch(()=>({}));
+  if(!r.ok && !j.error) j.error = "HTTP "+r.status; return j;
+};
+const badge=(cls,label)=>`<span class="b ${cls}"><span class="dot"></span>${esc(label)}</span>`;
+const pct = v => v==null ? "—" : Math.round(v*100)+"%";
+let state={episodes:[],current:null,view:"episode",poll:null};
+
+/* ---------- health ---------- */
+async function loadHealth(){
+  const h = await api("/api/health");
+  const v = h.validator||{}, l = h.llm||{};
+  $("#health").innerHTML =
+    badge(v.available?"good":"warn", v.available?"Scribble validator":"no Scribble toolchain")
+    + badge(l.configured?"good":"warn", l.configured?("LLM: "+(l.deployment||l.backend)):"LLM not configured")
+    + badge("info", (h.episodes||0)+" episodes");
+}
+
+/* ---------- episode list ---------- */
+async function loadEpisodes(select){
+  const d = await api("/api/episodes");
+  state.episodes = d.episodes||[];
+  $("#eplist").innerHTML = state.episodes.length ? state.episodes.map(e=>`
+    <button class="ep" data-s="${esc(e.session)}"
+      aria-current="${e.session===state.current}">
+      <div class="row" style="gap:5px">
+        ${badge(e.valid?"good":"bad", e.valid?"valid":"invalid")}
+        ${e.graded?badge(e.faithful?"good":"warn", e.faithful?"faithful":"unfaithful")
+                  :badge("oos","ungraded")}
+      </div>
+      <div class="id" style="margin-top:5px">${esc(e.session)}</div>
+      <div class="meta">${e.requirements} reqs · ${e.qa_rounds} Q&amp;A ·
+        ${e.attempts} attempt${e.attempts===1?"":"s"} · ${esc(e.validator)}</div>
+    </button>`).join("") : `<div class="empty">No episodes yet.<br>Run one →</div>`;
+  document.querySelectorAll(".ep").forEach(b=>
+    b.onclick=()=>showEpisode(b.dataset.s));
+  const pick = select || state.current ||
+    (state.episodes[0] && state.episodes[0].session);
+  if(pick && state.view==="episode") showEpisode(pick);
+}
+
+/* ---------- pipeline strip ---------- */
+function pipeline(ep){
+  const f = ep.faithfulness||{}, d = ep.distilled||{};
+  const reqs = d.requirements||[];
+  const asked = reqs.filter(r=>r.source==="answer").length;
+  const s = [
+    ["01","Interrogate",`${(ep.transcript||[]).length} round(s)`],
+    ["02","Distil",`${reqs.length} requirements · ${asked} from asking`],
+    ["03","Draft",`${(ep.draft_attempts||[]).length} attempt(s)`],
+    ["04","Validate",ep.valid?"accepted":"never validated"],
+    ["05","Grade",Object.keys(f).length?`recall ${pct(f.recall)}`:"not graded"],
+  ];
+  return `<div class="pipe">${s.map(([n,t,dd])=>`
+    <div class="stage on"><div class="n">${n}</div><div class="t">${t}</div>
+      <div class="d">${esc(dd)}</div></div>`).join("")}</div>`;
+}
+
+/* ---------- episode view ---------- */
+const COVER = {yes:["good","covered"],partial:["warn","partial"],
+  no:["bad","missing"],out_of_scope:["oos","policy — not gradable"]};
+
+async function showEpisode(session){
+  state.current=session; state.view="episode";
+  document.querySelectorAll(".ep").forEach(b=>
+    b.setAttribute("aria-current", b.dataset.s===session));
+  const ep = await api("/api/episodes/"+encodeURIComponent(session));
+  if(ep.error){ $("#main").innerHTML=`<div class="empty">${esc(ep.error)}</div>`; return; }
+  const d = ep.distilled||{}, f = ep.faithfulness||{}, bt = f.backtranslation||{};
+  const reqs = d.requirements||[];
+  const asked = reqs.filter(r=>r.source==="answer").length;
+  const graded = Object.keys(f).length>0;
+  const mock = (ep.meter||{}).validator==="mock";
+
+  $("#main").innerHTML = `
+    <div class="row" style="margin-bottom:4px">
+      <h1 style="font-size:15px">${esc(ep.session)}</h1>
+      ${badge(ep.valid?"good":"bad", ep.valid?"validator accepted":"never validated")}
+      ${graded?badge(f.faithful?"good":"warn", f.faithful?"faithful":"not faithful")
+              :badge("oos","not graded")}
+      <span class="sub">${esc(ep.ts||"")}</span>
+    </div>
+    ${mock?`<div class="warnbar">${badge("warn","validator: mock")}
+      This episode used the crude structural check, not Scribble — a
+      development run, never evidence.</div>`:""}
+    ${pipeline(ep)}
+
+    <div class="tiles">
+      <div class="tile"><div class="v">${reqs.length}</div><div class="k">Requirements</div></div>
+      <div class="tile"><div class="v">${asked}</div><div class="k">Only by asking</div></div>
+      <div class="tile"><div class="v">${(ep.draft_attempts||[]).length}</div><div class="k">Draft attempts</div></div>
+      <div class="tile"><div class="v">${pct(f.recall)}</div><div class="k">Coverage recall</div></div>
+      <div class="tile"><div class="v">${bt.score??"—"}</div><div class="k">Back-translation</div></div>
+      <div class="tile"><div class="v">${(f.ungrounded||[]).length}</div><div class="k">Ungrounded steps</div></div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      ${["Requirements","Interrogation","Protocol","Faithfulness","Intent","Raw"]
+        .map((t,i)=>`<button class="tab" role="tab" data-t="${t}"
+          aria-selected="${i===0}">${t}</button>`).join("")}
+    </div>
+    <div id="tabbody"></div>`;
+
+  const tabs = {
+    Requirements: ()=>`
+      <h2>Distilled requirements</h2>
+      <p class="note">Provenance is tracked per item: <b>document</b> = stated in
+      the brief, <b>answer</b> = recovered only by interrogating,
+      <b>assumption</b> = chosen because the stakeholder could not say.
+      <code>policy</code> requirements are reported but never graded — no
+      session type can express who may inhabit a role.</p>
+      <table><thead><tr><th>ID</th><th>Kind</th><th>Source</th>
+        <th>Requirement</th></tr></thead><tbody>
+        ${reqs.map(r=>`<tr><td class="rid">${esc(r.rid)}</td>
+          <td>${badge(r.kind==="policy"?"oos":"info", r.kind)}</td>
+          <td>${badge(r.source==="answer"?"good":r.source==="assumption"?"warn":"oos", r.source)}</td>
+          <td>${esc(r.text)}</td></tr>`).join("")}
+      </tbody></table>
+      ${(d.open_questions||[]).length?`<h3>Open questions (left unresolved, not invented)</h3>
+        <ul>${d.open_questions.map(q=>`<li>${esc(q)}</li>`).join("")}</ul>`:""}
+      <h3>Completion signal</h3><p>${esc(d.completion_signal||"—")}</p>`,
+
+    Interrogation: ()=>(ep.transcript||[]).length ? (ep.transcript||[]).map(t=>`
+      <div class="card"><h3 style="margin-top:0">Round ${t.round}</h3>
+        <div class="qa"><div class="role">Interrogator asks</div>
+          <pre class="wrap">${esc(t.question)}</pre></div>
+        <div class="qa"><div class="role">Stakeholder answers</div>
+          <pre class="wrap">${esc(t.answer)}</pre></div>
+      </div>`).join("") : `<div class="empty">No questions were asked.</div>`,
+
+    Protocol: ()=>`
+      ${ep.final_protocol?`<h2>Validated protocol</h2>
+        <pre>${esc(ep.final_protocol)}</pre>`:""}
+      <h2>Attempts</h2>
+      ${(ep.draft_attempts||[]).map(a=>`
+        <details ${a.valid?"":"open"}>
+          <summary>Attempt ${a.k} ${a.valid?"— accepted":"— rejected"}
+            ${badge(a.valid?"good":"bad", a.valid?"valid":"invalid")}</summary>
+          ${a.validator_msg?`<p class="note"><b>Validator:</b>
+            <code>${esc(a.validator_msg)}</code></p>`:""}
+          <pre>${esc(a.text||"(text not on disk)")}</pre>
+        </details>`).join("")}`,
+
+    Faithfulness: ()=>!graded ? `<div class="empty">Not graded — a protocol
+      must validate before it can be checked for faithfulness.</div>` : `
+      <div class="card"><b>Verdict rule.</b>
+        <p class="note">${esc(f.rule||"")}</p></div>
+      <h2>Per-requirement coverage</h2>
+      <table><thead><tr><th>ID</th><th>Verdict</th><th>Evidence</th></tr></thead>
+      <tbody>${(f.coverage||[]).map(c=>{
+        const [cls,label]=COVER[c.covered]||["oos",c.covered];
+        return `<tr><td class="rid">${esc(c.rid)}</td>
+          <td>${badge(cls,label)}</td><td>${esc(c.evidence)}</td></tr>`;
+      }).join("")}</tbody></table>
+      ${(f.ungrounded||[]).length?`<h2>Ungrounded structure
+        <span class="sub">— in the protocol, required by nothing</span></h2>
+        <ul>${f.ungrounded.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>`:""}
+      <h2>Back-translation <span class="sub">— reconstructed from the protocol
+        alone, then compared</span></h2>
+      <div class="card"><div class="row">
+        ${badge(bt.score>=70?"good":"warn","score "+(bt.score??"—"))}</div>
+        ${(bt.missing||[]).length?`<h3>Lost in translation</h3>
+          <ul>${bt.missing.map(m=>`<li>${esc(m)}</li>`).join("")}</ul>`:""}
+        ${(bt.added||[]).length?`<h3>Added by the protocol</h3>
+          <ul>${bt.added.map(m=>`<li>${esc(m)}</li>`).join("")}</ul>`:""}
+        <h3>Reconstruction</h3><pre class="wrap">${esc(bt.reconstructed||"")}</pre>
+      </div>`,
+
+    Intent: ()=>`<h2>Intent document
+      <span class="sub">${ep.intent_chars} chars</span></h2>
+      <pre class="wrap">${esc(ep.document||"")}</pre>`,
+
+    Raw: ()=>`<h2>Meter</h2><pre class="wrap">${esc(JSON.stringify(ep.meter,null,2))}</pre>
+      <h2>Record</h2><pre class="wrap">${esc(JSON.stringify(ep,null,2).slice(0,20000))}</pre>`,
+  };
+  const paint = name => { $("#tabbody").innerHTML = tabs[name](); };
+  document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(x=>
+      x.setAttribute("aria-selected", x===b));
+    paint(b.dataset.t);
+  });
+  paint("Requirements");
+}
+
+/* ---------- new run ---------- */
+function showRunForm(){
+  state.view="run";
+  $("#main").innerHTML = `
+    <h1 style="font-size:15px">New episode</h1>
+    <p class="sub">The same endpoint an agent calls:
+      <code>POST /api/runs</code>. Discovery: <code>GET /api/manifest</code>.</p>
+    <div class="card">
+      <div class="row">
+        <label style="margin:0"><input type="checkbox" id="mock" checked
+          style="width:auto"> scripted mock (offline, free)</label>
+      </div>
+      <label>Intent document</label>
+      <textarea id="intent" placeholder="Paste the stakeholder's brief…"></textarea>
+      <label>Hidden stakeholder facts (not in the document — tests whether
+        interrogation recovers them)</label>
+      <textarea id="hidden" style="min-height:80px"></textarea>
+      <div class="row" style="margin-top:12px">
+        <div><label>Validator</label>
+          <select id="validator"><option value="mock">mock (dev)</option>
+          <option value="real">real Scribble</option></select></div>
+        <div><label>Max rounds</label>
+          <input id="rounds" type="number" value="5" min="1" max="10"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" id="go">Run episode</button>
+        <span id="runstatus" class="sub"></span>
+      </div>
+    </div>
+    <div id="joblog"></div>`;
+  $("#go").onclick = startRun;
+}
+
+async function startRun(){
+  $("#go").disabled = true;
+  const body = {
+    mock: $("#mock").checked,
+    validator: $("#validator").value,
+    max_rounds: +$("#rounds").value,
+  };
+  if($("#intent").value.trim()) body.intent_text = $("#intent").value;
+  if($("#hidden").value.trim()) body.hidden_notes_text = $("#hidden").value;
+  const r = await api("/api/runs",{method:"POST",
+    headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  if(r.error){
+    $("#runstatus").innerHTML = badge("bad","failed")+" "+esc(r.error)
+      +(r.detail?` — ${esc(r.detail)}`:"");
+    $("#go").disabled=false; return;
+  }
+  $("#runstatus").innerHTML = badge("info","job "+r.job_id);
+  pollJob(r.job_id);
+}
+
+async function pollJob(id){
+  clearInterval(state.poll);
+  state.poll = setInterval(async ()=>{
+    const j = await api("/api/runs/"+id);
+    $("#joblog").innerHTML = `<div class="card">
+      <div class="row">${badge(
+        j.state==="succeeded"?"good":j.state==="failed"?"bad":"info", j.state)}
+        <span class="sub">${esc(j.stage||"")}</span></div>
+      <table style="margin-top:9px"><thead><tr><th>Stage</th><th>Detail</th>
+        </tr></thead><tbody>${(j.events||[]).map(e=>{
+          const {stage,at,...rest}=e;
+          return `<tr><td class="rid">${esc(stage)}</td>
+            <td><code>${esc(JSON.stringify(rest))}</code></td></tr>`;
+        }).join("")}</tbody></table>
+      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
+    if(j.state==="succeeded"||j.state==="failed"){
+      clearInterval(state.poll); $("#go").disabled=false;
+      await loadHealth();
+      if(j.state==="succeeded" && j.result){
+        const s=j.result.session;
+        await loadEpisodesKeepView();
+        $("#joblog").innerHTML += `<div class="card">
+          <button class="primary" id="open">Open ${esc(s)}</button></div>`;
+        $("#open").onclick=()=>showEpisode(s);
+      }
+    }
+  }, 1200);
+}
+async function loadEpisodesKeepView(){
+  const v=state.view; await loadEpisodes(); state.view=v;
+}
+
+/* ---------- boot ---------- */
+$("#btn-new").onclick = showRunForm;
+$("#btn-refresh").onclick = async ()=>{ await loadHealth(); await loadEpisodes(); };
+loadHealth(); loadEpisodes();
+</script>
+</body>
+</html>

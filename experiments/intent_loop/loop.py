@@ -78,8 +78,18 @@ def run_episode(
     bisim_fn=None,
     corpus_path: Path = DEFAULT_CORPUS_PATH,
     episode_id: Optional[str] = None,
+    progress: Optional[Callable[[str, dict], None]] = None,
 ) -> LoopRecord:
-    """Run one episode end-to-end and persist everything under out_dir."""
+    """Run one episode end-to-end and persist everything under out_dir.
+
+    `progress(stage, detail)` is called at each stage boundary (stages:
+    start, interrogated, drafted, evaluated, done) so a UI or an agent can
+    follow a long episode instead of waiting blind on one call.
+    """
+    def _emit(stage: str, **detail) -> None:
+        if progress is not None:
+            progress(stage, detail)
+
     out_dir.mkdir(parents=True, exist_ok=True)
     sha = hashlib.sha256(document.encode("utf-8")).hexdigest()
     episode_id = episode_id or f"ep-{sha[:10]}"
@@ -90,12 +100,21 @@ def run_episode(
         f"<!-- episode: {episode_id} | sha256: {sha} | "
         f"chars: {len(document)} -->\n" + document, encoding="utf-8")
 
+    _emit("start", episode_id=episode_id, intent_chars=len(document),
+          validator=validator_label)
+
     # ── 1. interrogation ────────────────────────────────────────────────
     stakeholder = StakeholderSim(stakeholder_llm or llm, document,
                                  hidden_notes=hidden_notes)
     interro = run_interrogation(llm, stakeholder, document,
                                 max_rounds=max_rounds)
     distilled = interro.distilled
+    _emit("interrogated", rounds=interro.rounds_used,
+          forced_finish=interro.forced_finish,
+          requirements=len(distilled.requirements),
+          from_answers=sum(1 for r in distilled.requirements
+                           if r.source == "answer"),
+          open_questions=len(distilled.open_questions))
     (out_dir / "transcript.json").write_text(
         json.dumps(interro.to_dict(), ensure_ascii=False, indent=2),
         encoding="utf-8")
@@ -138,6 +157,8 @@ def run_episode(
     if valid:
         (out_dir / "protocol.scr").write_text(final_protocol,
                                               encoding="utf-8")
+    _emit("drafted", valid=valid, attempts=len(attempts),
+          repair_rounds=max(0, len(attempts) - 1))
 
     # ── 3. faithfulness (only a valid protocol can be faithful) ─────────
     faith_dict = None
@@ -150,6 +171,9 @@ def run_episode(
         (out_dir / "faithfulness.json").write_text(
             json.dumps(faith_dict, ensure_ascii=False, indent=2),
             encoding="utf-8")
+        _emit("evaluated", faithful=report.faithful, recall=report.recall,
+              backtranslation=report.backtranslation.get("score"),
+              ungrounded=len(report.ungrounded))
 
     # ── 4. corpus row (failures included — see corpus.py) ───────────────
     meter_dict = meter.to_dict() if isinstance(meter, Meter) else {}
@@ -165,4 +189,7 @@ def run_episode(
     (out_dir / "record.json").write_text(
         json.dumps(record.to_dict(), ensure_ascii=False, indent=2),
         encoding="utf-8")
+    _emit("done", valid=valid,
+          faithful=bool((faith_dict or {}).get("faithful")),
+          out_dir=str(out_dir))
     return record

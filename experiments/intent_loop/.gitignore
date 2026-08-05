@@ -3,3 +3,7 @@
 # runs/ evidence policy).
 sessions/
 .panel_cache/
+# Generated training artifacts — reproducible from the corpus at any time.
+packs/
+exports/
+corpus/

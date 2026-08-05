@@ -106,6 +106,62 @@ corpus records all three. When prompt-level gains plateau, the same corpus
 is the SFT dataset; weight tuning (SEAM_TRAINING_EXECUTION_PLAN.md) is the
 escalation path, not the starting point.
 
+## The app (humans + agents, one API)
+
+```bash
+python -m experiments.intent_loop web          # http://127.0.0.1:8765
+```
+
+In VS Code: `Ctrl+Shift+P` → **Simple Browser: Show** → paste the URL.
+
+The browser UI is a thin client over exactly the endpoints an agent calls —
+there are no private routes, so anything a person can do here an agent can
+do headlessly. Agents discover the surface with `GET /api/manifest`.
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/health` | readiness: is an LLM configured, is the real Scribble toolchain wired |
+| `GET /api/manifest` | self-describing endpoint catalog (agent entry point) |
+| `GET /api/episodes` · `/api/episodes/<session>` | episode summaries · one episode in full |
+| `POST /api/runs` → `{job_id}` | start an episode (async — a live one is 8–15 LLM calls) |
+| `GET /api/runs/<job_id>` | job state + stage events: `start → interrogated → drafted → evaluated → done` |
+| `GET /api/corpus` | corpus statistics |
+| `POST /api/packs` | mine a prompt pack — **prompt-level training** |
+| `GET /api/training/stats` | how many fine-tuning examples exist, and what was dropped |
+| `POST /api/training/export` | write train/validation JSONL — **weight-level training** |
+
+Runs are asynchronous because a live episode takes minutes; poll the job
+rather than holding a request open. **Security:** the API binds to
+127.0.0.1, has no authentication, and can spend LLM budget — do not expose
+it. `--host` exists for devcontainers; put an authenticating proxy in front.
+
+## Fine-tuning the target model
+
+Two levels, same corpus, in the order you should try them:
+
+1. **Prompt level** (`POST /api/packs`, or `optimize`) — few-shot exemplars
+   + validator-error rulebook. Zero GPU cost, auditable, transferable
+   across models. Start here.
+2. **Weight level** (`POST /api/training/export`, or `export-sft`) — emits
+   chat-format JSONL that Azure OpenAI / OpenAI fine-tuning accepts as-is:
+   - *drafting* examples: distilled spec → a protocol that was **both
+     valid and faithful** (a valid-but-unfaithful protocol is exactly the
+     failure this project exists to prevent — training on it teaches the
+     model to produce more);
+   - *repair* examples: (spec, broken draft, the validator's verbatim
+     error) → the draft that validated next, mined from consecutive real
+     attempts rather than synthetic corruption.
+
+   Splitting is **by intent hash, never by row**, so two episodes on the
+   same document cannot straddle train/validation — the leak that makes a
+   fine-tune look better than it is. The training prompts are the
+   *zero-shot* forms: a fine-tune should internalize what the prompt pack
+   carries, so the served model needs a shorter prompt than the baseline.
+
+Measure a pack or a checkpoint the same way: re-run the same intents and
+diff validity-first-try, mean repair rounds, and faithfulness rate — the
+corpus records all three.
+
 ## Usage
 
 ```bash
