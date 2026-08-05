@@ -968,14 +968,16 @@ document-scale intent is the point; a handbook is fine."></textarea>
         interrogation recovers them)</label>
       <textarea id="hidden" style="min-height:80px"></textarea>
       <div class="row" style="margin-top:12px">
-        <div><label>Validator</label>
-          <select id="validator"><option value="mock">mock (dev)</option>
-          <option value="real">real Scribble</option></select></div>
-        <div><label>Max rounds</label>
-          <input id="rounds" type="number" value="5" min="1" max="10"></div>
+        <div style="max-width:220px"><label>Interrogation turns (max)</label>
+          <input id="rounds" type="number" value="8" min="1" max="20"></div>
       </div>
+      <p class="note">This run does the UNDERSTANDING only: gpt-5.4
+      questions you, then shows the roles, interactions and goals it
+      arrived at. No protocol is written and Scribble is not run — you
+      decide whether the understanding is right first, because the checker
+      cannot tell a faithful protocol from a plausible misreading.</p>
       <div class="row" style="margin-top:14px">
-        <button class="primary" id="go">Run episode</button>
+        <button class="primary" id="go">Start the interrogation</button>
         <span id="runstatus" class="sub"></span>
       </div>
     </div>
@@ -1018,10 +1020,15 @@ async function startRun(){
   $("#go").disabled = true;
   const body = {
     mock: $("#mock").checked,
-    validator: $("#validator").value,
+    // No validator here on purpose: this phase writes no protocol, so
+    // there is nothing to check yet. The validator is chosen when you
+    // formalise an understanding you have endorsed.
     max_rounds: +$("#rounds").value,
     answered_by: $("#answeredby").value,
   };
+  // The scripted demo runs the whole pipeline as a smoke check, so it does
+  // need a validator — the crude one, since it is not evidence anyway.
+  if(body.mock){ body.validator = "mock"; body.stop_after = "all"; }
   if($("#intent").value.trim()) body.intent_text = $("#intent").value;
   if($("#hidden").value.trim()) body.hidden_notes_text = $("#hidden").value;
   const r = await api("/api/runs",{method:"POST",
