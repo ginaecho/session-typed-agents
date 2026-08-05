@@ -85,6 +85,25 @@ def test_answer_endpoint_rejects_when_nothing_is_waiting(client):
                        json={"answer": "  "}).status_code == 400
 
 
+def test_unfinished_sessions_are_still_listed(client, tmp_path):
+    """A run killed mid-flight leaves real work on disk. Listing only
+    completed sessions made that work unreachable — the user could not even
+    see what survived."""
+    sess = tmp_path / "sessions" / "live_killed"
+    sess.mkdir(parents=True)
+    (sess / "document.md").write_text("an intent", encoding="utf-8")
+    (sess / "transcript.json").write_text(
+        '{"transcript": [], "distilled": {"requirements": '
+        '[{"rid": "R1", "kind": "ordering", "text": "A then B", '
+        '"who": [], "source": "document"}]}}', encoding="utf-8")
+
+    eps = client.get("/api/episodes").get_json()["episodes"]
+    killed = next(e for e in eps if e["session"] == "live_killed")
+    assert killed["complete"] is False
+    assert killed["requirements"] == 1
+    assert killed["ts"]                      # sortable even without a record
+
+
 def test_job_reports_the_open_question_and_stage_age(client):
     """The UI needs both: what is being asked, and how long this step has
     been running, so a slow model call never looks frozen."""

@@ -225,9 +225,11 @@ async function loadEpisodes(select){
     <button class="ep" data-s="${esc(e.session)}"
       aria-current="${e.session===state.current}">
       <div class="row" style="gap:5px">
-        ${badge(e.valid?"good":"bad", e.valid?"valid":"invalid")}
-        ${e.graded?badge(e.faithful?"good":"warn", e.faithful?"faithful":"unfaithful")
-                  :badge("oos","ungraded")}
+        ${e.complete===false ? badge("warn","unfinished")
+          : badge(e.valid?"good":"bad", e.valid?"valid":"invalid")}
+        ${e.complete===false ? "" : (e.graded
+          ? badge(e.faithful?"good":"warn", e.faithful?"faithful":"unfaithful")
+          : badge("oos","ungraded"))}
       </div>
       <div class="id" style="margin-top:5px">${esc(e.session)}</div>
       <div class="meta">${e.requirements} reqs · ${e.qa_rounds} Q&amp;A ·
@@ -797,6 +799,16 @@ async function pollRefine(id){
   clearInterval(state.poll);
   state.poll = setInterval(async ()=>{
     const j = await api("/api/runs/"+id);
+    if(j.error || !j.state){          // same lost-job case as pollJob
+      clearInterval(state.poll); $("#dorefine").disabled=false;
+      $("#refinelog").innerHTML = `<div class="card">
+        ${badge("bad","run record lost")}
+        <p class="note">${esc(j.error||"no state")} — the server was
+        probably restarted mid-run. Check the episode list for a new
+        <code>refine_…</code> session.</p></div>`;
+      await loadEpisodesKeepView();
+      return;
+    }
     $("#refinelog").innerHTML = `<div class="card">
       <div class="row">${badge(j.state==="succeeded"?"good":
         j.state==="failed"?"bad":"info", j.state)}
@@ -1035,6 +1047,42 @@ async function pollJob(id, session){
   let drewGraph = false, drewIntent = false;
   state.poll = setInterval(async ()=>{
     const j = await api("/api/runs/"+id);
+
+    // The job record is gone — the server restarted, or the job was
+    // evicted. Job state is in memory by design; the DURABLE record is the
+    // session directory. Polling a 404 forever is what made a dead run
+    // look like a running one, so stop, say so, and recover whatever
+    // reached disk.
+    if(j.error || !j.state){
+      clearInterval(state.poll); $("#go").disabled=false;
+      const sess = session || "";
+      const p = sess ? await api(
+        `/api/episodes/${encodeURIComponent(sess)}/partial`) : {error:"none"};
+      const salvage = !p.error;
+      $("#joblog").innerHTML = `<div class="card">
+        ${badge("bad","run record lost")}
+        <p class="note">This job is no longer known to the server
+        (${esc(j.error||"no state")}) — it was most likely restarted while
+        the run was in flight. Job tracking is in memory; anything the run
+        finished is on disk.</p>
+        ${salvage?`<p class="note">Recovered from
+          <code>${esc(sess)}</code>: ${(p.transcript||[]).length} Q&amp;A
+          round(s), ${((p.distilled||{}).requirements||[]).length}
+          requirements, ${(p.draft_attempts||[]).length} draft attempt(s)
+          ${p.complete?"— the episode COMPLETED":"— the episode did NOT finish"}.
+          </p>
+          <button class="primary" id="salvage">Open ${esc(sess)}</button>`
+         : `<p class="note">Nothing was recovered for this session.</p>`}
+        </div>`;
+      if(salvage){
+        renderLive(p);
+        const b = $("#salvage");
+        if(b) b.onclick = ()=>showEpisode(sess);
+        await loadEpisodesKeepView();
+      }
+      return;
+    }
+
     const done = j.state==="succeeded"||j.state==="failed";
     const secs = Math.round((Date.now()-t0)/1000);
     const reached = new Set((j.events||[]).map(e=>e.stage));

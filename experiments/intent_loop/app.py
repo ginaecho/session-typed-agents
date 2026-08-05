@@ -88,20 +88,34 @@ def load_episodes(sessions_dir: Path) -> list[dict]:
     if not sessions_dir.is_dir():
         return out
     for d in sorted(sessions_dir.iterdir()):
+        if not d.is_dir():
+            continue
         rec_path = d / "record.json"
-        if not d.is_dir() or not rec_path.exists():
-            continue
-        try:
-            rec = json.loads(rec_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            continue
+        if rec_path.exists():
+            try:
+                rec = json.loads(rec_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                continue
+            complete = True
+        else:
+            # An UNFINISHED session — killed mid-run, or still going. It has
+            # real work on disk (transcript, distilled checklist, drafts)
+            # and listing only completed sessions made that work
+            # unreachable: the user could not even see what survived.
+            partial = load_partial(sessions_dir, d.name)
+            if not partial or not (partial.get("distilled")
+                                   or partial.get("transcript")):
+                continue
+            rec = partial
+            complete = False
         faith = rec.get("faithfulness") or {}
         dist = rec.get("distilled") or {}
         reqs = dist.get("requirements") or []
         out.append({
             "session": d.name,
+            "complete": complete,
             "episode_id": rec.get("episode_id", d.name),
-            "ts": rec.get("ts", ""),
+            "ts": rec.get("ts", "") or _mtime_iso(d),
             "valid": bool(rec.get("valid")),
             "faithful": bool(faith.get("faithful")),
             "graded": bool(faith),
@@ -117,6 +131,17 @@ def load_episodes(sessions_dir: Path) -> list[dict]:
         })
     out.sort(key=lambda e: e["ts"], reverse=True)
     return out
+
+
+def _mtime_iso(path: Path) -> str:
+    """A timestamp for an unfinished session, which has no `ts` yet — so the
+    list can still sort newest-first instead of dumping it at the bottom."""
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime,
+                                      timezone.utc).isoformat(
+                                          timespec="seconds")
+    except OSError:
+        return ""
 
 
 def load_partial(sessions_dir: Path, session: str) -> dict | None:
