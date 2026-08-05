@@ -154,6 +154,10 @@ class ChatDrafter(Drafter):
         self.rulebook = list(rulebook)
         self.model_label = model_label
         self._usage: dict[str, UsageInfo] = {}
+        #: Every rejection this drafter has seen in this episode, with the
+        #: structural diagnosis. Fed back into every later repair — see
+        #: `_attempt_history`.
+        self._rejections: list[dict] = []
 
     def _record_usage(self, prompt: str, reply: str) -> None:
         self._usage[reply] = UsageInfo(
@@ -182,6 +186,48 @@ class ChatDrafter(Drafter):
             out.append(reply)
         return out
 
+    def _attempt_history(self) -> str:
+        """Everything already tried and why the checker refused it.
+
+        The production loop hands the repairer only the LATEST
+        counterexample, so a model can — and does — oscillate between two
+        wrong shapes, "fixing" error A into error B and back, burning the
+        whole budget. Carrying the full history makes each round strictly
+        more informed than the last: this is the learning that happens
+        WITHIN an episode.
+        """
+        if not self._rejections:
+            return ""
+        lines = ["\n=== WHAT YOU HAVE ALREADY TRIED (do not repeat these) ==="]
+        for i, r in enumerate(self._rejections, start=1):
+            lines.append(f"\nAttempt {i} was REJECTED with:\n  "
+                         f"{r['error'].strip()[:400]}")
+            if r.get("diagnosis"):
+                lines.append(f"  Structural diagnosis: {r['diagnosis']}")
+        lines.append("\nEach attempt above failed. Do not produce any of "
+                     "them again, and do not merely swap one of these "
+                     "errors for another — fix the cause.")
+        return "\n".join(lines)
+
+    @staticmethod
+    def _diagnose(broken: str) -> str:
+        """Name the exact role and branch at fault.
+
+        Scribble says "Source role not enabled: Inspector". True, but it
+        does not say WHICH branch left Inspector uninformed. The structural
+        checker does, and a repairer told the specific branch fixes it in
+        one round instead of guessing across several."""
+        try:
+            from experiments.intent_loop.protocol_checks import (
+                check_deadlock_precursors)
+            from experiments.intent_loop.protocol_graph import parse_protocol
+            findings = check_deadlock_precursors(parse_protocol(broken))
+        except Exception:
+            return ""
+        blockers = [f for f in findings if f.severity == "blocker"]
+        return " | ".join(f"{f.kind} at {f.where}: {f.detail}"
+                          for f in blockers[:4])[:900]
+
     def repair(self, intent: str, broken: str, counterexample: str) -> str:
         system = _REPAIR_SYSTEM.format(
             primer=SCRIBBLE_PRIMER,
@@ -190,11 +236,18 @@ class ChatDrafter(Drafter):
                f"guard sidecar; keep it, and keep it consistent with the "
                f"labels you end up using.\n"
                if GUARD_SIDECAR_SENTINEL in broken else ""))
+        diagnosis = self._diagnose(broken)
         user = (f"=== TASK SPECIFICATION ===\n{intent}\n\n"
                 f"=== BROKEN PROTOCOL ===\n{broken}\n\n"
-                f"=== VALIDATOR ERROR (verbatim) ===\n{counterexample}\n\n"
-                f"Output the corrected protocol.")
+                f"=== VALIDATOR ERROR (verbatim) ===\n{counterexample}\n"
+                + (f"\n=== STRUCTURAL DIAGNOSIS (which role, which branch) "
+                   f"===\n{diagnosis}\n" if diagnosis else "")
+                + self._attempt_history()
+                + "\n\nOutput the corrected protocol.")
         reply = strip_fences(self.llm.complete(system, user, stage="repair"))
+        # Remember this rejection so the NEXT round is better informed.
+        self._rejections.append({"error": counterexample,
+                                 "diagnosis": diagnosis})
         self._record_usage(system + user, reply)
         return reply
 

@@ -41,23 +41,14 @@ from experiments.seam_bench.t0.exemplars import (ExemplarCandidate,
 # appear in the corpus (harvest_rulebook prints unmatched families so they
 # are visible, not silently generic).
 
+#: ORDER MATTERS: first match wins, so the SPECIFIC families must precede
+#: the generic ones. "missing PROTOCOL_KW at 'global'" also contains the
+#: word "mismatched", and a generic "check your syntax" lesson taught the
+#: drafter nothing about the real cause (a missing `module` line).
 KNOWN_ERROR_LESSONS: list[tuple[str, str]] = [
-    (r"(?i)syntax|parse|mismatched|token recognition|extraneous input",
-     "Emit strictly the grammar in the primer: every message is "
-     "`Label(sort) from RoleA to RoleB;`, braces balanced, one statement "
-     "per line, no comments the validator may not accept."),
-    (r"(?i)unknown role|undeclared|not declared",
-     "Declare every role in the protocol header and use exactly those "
-     "spellings in every message line."),
-    (r"(?i)unguarded|guardedness|continue",
-     "Inside `rec X { ... }`, at least one message must occur before any "
-     "`continue X;` (recursion must be guarded)."),
-    # The single most common REAL rejection observed against scribble-java
-    # on live drafts: "Source role not enabled: X" / "Subject not enabled:
-    # X". It is the classic MPST projection failure — X acts inside a
-    # branch it was never told about — and it is exactly the deadlock this
-    # whole pipeline exists to prevent, so the lesson is stated in the
-    # validator's own words to make it recognisable next time.
+    (r"(?i)MODULE_KW|missing module",
+     "The file must begin with `module <Name>;` before any data "
+     "declaration or protocol."),
     (r"(?i)not enabled|enabling|unenabled",
      "\"Source/Subject role not enabled: X\" means X sends or is required "
      "to act inside a `choice` branch without having been told the "
@@ -70,9 +61,22 @@ KNOWN_ERROR_LESSONS: list[tuple[str, str]] = [
      "declared. Declare every sort in the preamble (`data <java> "
      "\"java.lang.String\" from \"rt.jar\" as String;`) and use the "
      "CAPITALISED declared name in messages."),
-    (r"(?i)MODULE_KW|missing module",
-     "The file must begin with `module <Name>;` before any data "
-     "declaration or protocol."),
+    (r"(?i)safety violation|unfinished role",
+     "A safety violation with a trace means some role is left UNFINISHED "
+     "when the session ends on that path — it is still waiting, or was "
+     "never told the work stopped. Fix: on every terminating branch, make "
+     "sure each role that is still active receives a final message before "
+     "the session ends."),
+    (r"(?i)syntax|parse|mismatched|token recognition|extraneous input",
+     "Emit strictly the grammar in the primer: every message is "
+     "`Label(sort) from RoleA to RoleB;`, braces balanced, one statement "
+     "per line, no comments the validator may not accept."),
+    (r"(?i)unknown role|undeclared|not declared",
+     "Declare every role in the protocol header and use exactly those "
+     "spellings in every message line."),
+    (r"(?i)unguarded|guardedness|continue",
+     "Inside `rec X { ... }`, at least one message must occur before any "
+     "`continue X;` (recursion must be guarded)."),
     (r"(?i)merge|project|mergeable|branch",
      "After a `choice at R`, every role whose later behavior differs by "
      "branch must RECEIVE a message inside each branch telling it which "

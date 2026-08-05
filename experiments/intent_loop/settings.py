@@ -60,6 +60,13 @@ class Settings:
     expert_model: str = DEFAULT_EXPERT_MODEL   # the ORACLE it interrogates
     api_version: str = DEFAULT_API_VERSION
     max_tokens: int = 16384
+    #: Repair rounds per episode. The old default of 3 came from the
+    #: seam-bench production loop, which mirrors a live 4-reject->pass
+    #: trace on SMALL protocols. On a document-scale intent an early
+    #: rejection is normal and expected — it is the training signal, not a
+    #: failure — so the budget has to be large enough for the drafter to
+    #: work through a real error sequence (syntax -> projection -> safety).
+    max_repair_rounds: int = 12
 
     # -- views ----------------------------------------------------------
     def key_fingerprint(self) -> str:
@@ -157,6 +164,11 @@ def update(patch: dict[str, Any], path: Path = SETTINGS_PATH) -> Settings:
         data["max_tokens"] = max(1024, int(data.get("max_tokens") or 16384))
     except (TypeError, ValueError):
         data["max_tokens"] = 16384
+    try:
+        data["max_repair_rounds"] = max(
+            1, int(data.get("max_repair_rounds") or 12))
+    except (TypeError, ValueError):
+        data["max_repair_rounds"] = 12
     settings = Settings(**{k: data[k] for k in Settings.__dataclass_fields__})
     save(settings, path)
     return settings

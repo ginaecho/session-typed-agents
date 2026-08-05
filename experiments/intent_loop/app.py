@@ -660,9 +660,12 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                    / f"{label_prefix}_{_now_stamp()}")
         from experiments.intent_loop import settings as settings_mod
         cfg = settings_mod.load()
+        repair_rounds = int(body.get("max_repair_rounds")
+                            or cfg.max_repair_rounds)
         params = {"mock": mock, "validator": label,
                   "intent_chars": len(document),
                   "max_rounds": int(body.get("max_rounds", 5)),
+                  "max_repair_rounds": repair_rounds,
                   "pack": body.get("pack"), "session": out_dir.name,
                   "answered_by": answered_by,
                   "learner": cfg.model,
@@ -696,6 +699,7 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 llm, document, out_dir=out_dir, hidden_notes=hidden,
                 prompt_pack=pack, max_rounds=params["max_rounds"],
                 validate_fn=validate_fn, validator_label=label,
+                max_repair_rounds=repair_rounds,
                 corpus_path=app.config["CORPUS"], progress=progress,
                 stakeholder_mode=("expert" if answered_by == "expert"
                                   and not mock else "document"),

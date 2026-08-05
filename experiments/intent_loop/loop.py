@@ -40,6 +40,61 @@ from experiments.seam_bench.t0.repair_loop import (MAX_REPAIR_ROUNDS,
 ValidateFn = Callable[[str], tuple[bool, str]]
 
 
+#: Lessons the learner carries between episodes — the persistent half of
+#: "learn from the interactions". Within an episode ChatDrafter remembers
+#: every rejection it has seen; this file is how that survives the episode,
+#: so run N+1 begins already knowing what run N was taught.
+LESSONS_PATH = Path(__file__).resolve().parent / "lessons.json"
+
+
+def standing_lessons(path: Path = LESSONS_PATH) -> list[str]:
+    try:
+        return list(json.loads(path.read_text(encoding="utf-8"))["lessons"])
+    except (OSError, json.JSONDecodeError, KeyError, TypeError):
+        return []
+
+
+def learn_from_attempts(attempts: list[dict], *,
+                        path: Path = LESSONS_PATH,
+                        max_lessons: int = 12) -> list[str]:
+    """Fold this episode's REAL rejections into the standing lessons.
+
+    Only the validator's own verdicts are used — never an inference about
+    why a draft "probably" failed — so a lesson always traces to something
+    the checker actually said. Deduplicated by error family, newest first,
+    capped so the drafter's prompt cannot grow without bound.
+    """
+    from experiments.intent_loop.optimize import (KNOWN_ERROR_LESSONS,
+                                                  _error_family)
+    import re
+
+    existing = standing_lessons(path)
+    learned: list[str] = []
+    for att in attempts:
+        if att.get("valid"):
+            continue
+        msg = str(att.get("validator_msg", "")).strip()
+        if not msg:
+            continue
+        lesson = next((text for pat, text in KNOWN_ERROR_LESSONS
+                       if re.search(pat, msg)), None)
+        if lesson is None:
+            lesson = (f"A draft was rejected with: \"{_error_family(msg)}\" "
+                      f"— avoid re-creating that condition.")
+        if lesson not in learned:
+            learned.append(lesson)
+
+    merged = learned + [l for l in existing if l not in learned]
+    merged = merged[:max_lessons]
+    try:
+        path.write_text(json.dumps({"lessons": merged,
+                                    "updated": _utcnow()}, indent=2),
+                        encoding="utf-8")
+    except OSError:
+        pass
+    return merged
+
+
 def mock_validate(text: str) -> tuple[bool, str]:
     """Offline stand-in used ONLY when the caller explicitly opts in
     (--mock / tests). Checks the crudest structural facts so the repair
@@ -139,7 +194,11 @@ def run_episode(
                                                  encoding="utf-8")
 
     # ── 2. draft -> validate -> repair (t0 production loop, unchanged) ──
-    rulebook = list(prompt_pack.rulebook) if prompt_pack else []
+    # The rulebook is what the learner already knows: lessons harvested
+    # from every REAL rejection in past episodes. Without an explicit pack
+    # we still load the standing one, so each run starts where the last one
+    # left off instead of re-learning the same syntax from scratch.
+    rulebook = list(prompt_pack.rulebook) if prompt_pack else standing_lessons()
     drafter = ChatDrafter(drafter_chat or llm, rulebook=rulebook,
                           model_label=getattr(llm, "label", "chat"))
     spec_text = distilled.to_markdown()
@@ -174,8 +233,13 @@ def run_episode(
     if valid:
         (out_dir / "protocol.scr").write_text(final_protocol,
                                               encoding="utf-8")
+    # Learn from THIS episode's rejections regardless of the outcome — a
+    # run that never validated is the most instructive kind, which is the
+    # whole reason a false verdict is a signal rather than a failure.
+    lessons = learn_from_attempts(attempts)
     _emit("drafted", valid=valid, attempts=len(attempts),
-          repair_rounds=max(0, len(attempts) - 1))
+          repair_rounds=max(0, len(attempts) - 1),
+          lessons_known=len(lessons))
 
     # ── 3. faithfulness (only a valid protocol can be faithful) ─────────
     faith_dict = None
