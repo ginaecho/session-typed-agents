@@ -153,6 +153,24 @@ def compare_intents(llm: ChatLLM, original: str, reconstructed: str) -> dict:
             "added": [str(a) for a in obj.get("added", [])]}
 
 
+def _by_priority(verdicts, distilled) -> dict:
+    """covered/partial/missing per priority, so "what did we fail" is
+    answerable at a glance rather than by reading twenty rows."""
+    by_rid = {r.rid: r for r in distilled.requirements}
+    out: dict[str, dict[str, int]] = {}
+    for v in verdicts:
+        r = by_rid.get(v.rid)
+        if r is None or r.kind in distilled.UNGRADED_KINDS:
+            continue
+        d = out.setdefault(r.priority, {"yes": 0, "partial": 0, "no": 0})
+        d[v.covered if v.covered in d else "no"] += 1
+    for d in out.values():
+        t = sum(d.values()) or 1
+        d["total"] = sum(d.values())
+        d["recall_pct"] = round(d["yes"] / t * 100)
+    return out
+
+
 def evaluate_faithfulness(
         llm: ChatLLM, distilled: DistilledIntent, protocol_text: str, *,
         gold_protocol: Optional[str] = None,
@@ -193,7 +211,24 @@ def evaluate_faithfulness(
     if gold_protocol is not None and bisim_fn is not None:
         gold_equivalent, _reason = bisim_fn(protocol_text, gold_protocol)
 
-    faithful = (n > 0 and recall == 1.0 and not ungrounded
+    # THE VERDICT TURNS ON "MUST", not on everything. A protocol with every
+    # obligation covered and some conveniences blurred is sound; one missing
+    # an authorization guard is not, however high its overall percentage.
+    # No priorities assigned at all (an older episode, or a distiller that
+    # skipped them) means we cannot tell obligations from conveniences — so
+    # hold EVERYTHING to the obligation bar rather than quietly certifying a
+    # protocol against an empty set of requirements.
+    musts = distilled.must_requirements() or distilled.protocol_requirements()
+    must_ids = {r.rid for r in musts}
+    by_id = {v.rid: v for v in verdicts}
+    must_yes = sum(1 for r in musts
+                   if by_id.get(r.rid) and by_id[r.rid].covered == "yes")
+    must_unmet = [r.rid for r in musts
+                  if not (by_id.get(r.rid)
+                          and by_id[r.rid].covered == "yes")]
+    must_recall = (must_yes / len(musts)) if musts else None
+
+    faithful = (bool(musts) and not must_unmet and not ungrounded
                 and backtranslation["score"] >= backtranslation_threshold)
     excluded = []
     if n_policy:
@@ -202,8 +237,14 @@ def evaluate_faithfulness(
     if n_interior:
         excluded.append(f"{n_interior} intra-role interior (untyped by "
                         f"design)")
-    rule = (f"faithful iff all {n} protocol-expressible requirements covered "
-            f"'yes' (got {covered}), no ungrounded interactions "
+    graded_all = len(musts) == len(distilled.protocol_requirements())
+    rule = (f"faithful iff every "
+            + ("requirement (no priorities were assigned, so all count as "
+               "obligations)" if graded_all else "MUST requirement")
+            + f" is covered 'yes' "
+            f"({must_yes} of {len(musts)}"
+            + (f"; unmet: {', '.join(must_unmet)}" if must_unmet else "")
+            + f"), no ungrounded interactions "
             f"(got {len(ungrounded)}), and back-translation score >= "
             f"{backtranslation_threshold} (got {backtranslation['score']})"
             + (f". Reported but NOT scored: " + "; ".join(excluded)
@@ -251,7 +292,13 @@ def evaluate_faithfulness(
     report.scope = {"graded": n, "policy": n_policy, "interior": n_interior,
                     "typed_surface_ratio":
                         round(distilled.typed_surface_ratio(), 3),
+                    "must_total": len(musts), "must_covered": must_yes,
+                    "must_unmet": must_unmet,
+                    "must_recall_pct": (round(must_recall * 100)
+                                        if must_recall is not None else None),
+                    "all_recall_pct": round(recall * 100),
                     "dimensions": dims, "per_kind": per_kind,
+                    "by_priority": _by_priority(verdicts, distilled),
                     "guards_emitted": bool(guards_text),
                     "note": "`dimensions` splits what the protocol SHAPE can "
                             "express from what only a refinement guard can. "

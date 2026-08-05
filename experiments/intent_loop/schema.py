@@ -57,6 +57,26 @@ REQUIREMENT_KINDS = (
 #: simply wrong. Reported, never graded.
 INTERIOR_KIND = "interior"
 
+#: How much it matters that the protocol realizes this.
+#:
+#: Demanding 100% of a 20-item checklist is the wrong bar: a real document
+#: mixes obligations that MUST hold (the act a role may not perform without
+#: approval; the evidence a verdict may not be issued without) with detail
+#: that is merely desirable (which structured fields a payload carries).
+#: Scoring them equally produced "3 of 19" — a number that says a protocol
+#: is 16% right when it might have every obligation covered and be missing
+#: only conveniences, or the reverse, which is a catastrophe. So the verdict
+#: turns on MUST alone, and the rest is reported.
+#:
+#:   must    an obligation or a hard constraint. If this is unmet the
+#:           protocol is wrong — an unauthorized act becomes possible, or a
+#:           decision can be taken on absent evidence.
+#:   should  intended and expected, but its absence does not make the
+#:           protocol unsafe (a field left opaque, a distinction blurred).
+#:   nice    detail, elaboration, convenience.
+PRIORITIES = ("must", "should", "nice")
+DEFAULT_PRIORITY = "should"
+
 #: Requirements a multiparty session type structurally CANNOT express, and
 #: which must therefore be enforced outside the protocol layer (deployment,
 #: identity/IAM, retention, org policy). The canonical example, observed on
@@ -83,6 +103,7 @@ class Requirement:
     text: str                     # one sentence, plain language
     who: list[str] = field(default_factory=list)   # role names involved
     source: str = "document"      # "document" | "answer" | "assumption"
+    priority: str = DEFAULT_PRIORITY              # see PRIORITIES
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -92,9 +113,13 @@ class Requirement:
         kind = d.get("kind", "other")
         if kind not in REQUIREMENT_KINDS:
             kind = "other"
+        prio = str(d.get("priority", DEFAULT_PRIORITY)).lower()
+        if prio not in PRIORITIES:
+            prio = DEFAULT_PRIORITY
         return cls(rid=str(d["rid"]), kind=kind, text=str(d["text"]),
                    who=[str(w) for w in d.get("who", [])],
-                   source=str(d.get("source", "document")))
+                   source=str(d.get("source", "document")),
+                   priority=prio)
 
 
 #: What a named entity in the document turns out to be. The test: does the
@@ -307,6 +332,17 @@ class DistilledIntent:
     def policy_requirements(self) -> list[Requirement]:
         """Requirements handed to the deployment layer (see POLICY_KIND)."""
         return [r for r in self.requirements if r.kind == POLICY_KIND]
+
+    def must_requirements(self) -> list[Requirement]:
+        """The obligations — the verdict turns on these alone.
+
+        A protocol with every obligation covered and a few conveniences
+        blurred is sound; one missing an authorization guard is not, however
+        high its overall percentage. Scoring both equally is what produced
+        "3 of 19" and told the reader nothing about whether the thing was
+        safe."""
+        return [r for r in self.protocol_requirements()
+                if r.priority == "must"]
 
     def interior_requirements(self) -> list[Requirement]:
         """Intra-role procedure, untyped by design (see INTERIOR_KIND)."""

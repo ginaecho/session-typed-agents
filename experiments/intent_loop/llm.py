@@ -32,19 +32,80 @@ class Meter:
     approx_tokens_out: int = 0
     by_stage: dict[str, int] = field(default_factory=dict)
 
-    def add(self, stage: str, prompt_chars: int, reply_chars: int) -> None:
+    #: REAL usage, when the provider reports it (the OpenAI SDK does). The
+    #: chars/4 figures are kept only as a fallback for paths that cannot
+    #: know — a run must never present an estimate as a measurement.
+    tokens_in: int = 0
+    tokens_out: int = 0
+    measured_calls: int = 0
+    by_model: dict = field(default_factory=dict)
+
+    def add(self, stage: str, prompt_chars: int, reply_chars: int,
+            usage=None, model: str = "") -> None:
         self.calls += 1
         self.approx_tokens_in += max(1, prompt_chars // 4)
         self.approx_tokens_out += max(1, reply_chars // 4)
         self.by_stage[stage] = self.by_stage.get(stage, 0) + 1
+        if usage is not None:
+            pin = int(getattr(usage, "prompt_tokens", 0) or 0)
+            pout = int(getattr(usage, "completion_tokens", 0) or 0)
+            self.tokens_in += pin
+            self.tokens_out += pout
+            self.measured_calls += 1
+            m = self.by_model.setdefault(model or "?",
+                                         {"calls": 0, "in": 0, "out": 0})
+            m["calls"] += 1
+            m["in"] += pin
+            m["out"] += pout
+
+    def cost(self) -> dict:
+        """USD, but ONLY from prices you configured.
+
+        Model prices change and differ per region and agreement, so
+        inventing them would produce a confident number that is wrong. With
+        no prices configured this reports the tokens and says the cost is
+        unknown."""
+        from experiments.intent_loop import settings as settings_mod
+        prices = getattr(settings_mod.load(), "prices", None) or {}
+        if not prices:
+            return {"usd": None,
+                    "note": "no prices configured — set `prices` in Settings "
+                            "(USD per 1M tokens per deployment) to see cost; "
+                            "token counts above are real API usage"}
+        total, priced, unpriced = 0.0, [], []
+        for model, m in self.by_model.items():
+            pr = prices.get(model)
+            if not pr:
+                unpriced.append(model)
+                continue
+            total += (m["in"] / 1e6) * float(pr.get("in", 0))
+            total += (m["out"] / 1e6) * float(pr.get("out", 0))
+            priced.append(model)
+        return {"usd": round(total, 4), "priced": priced,
+                "unpriced": unpriced,
+                "note": ("prices you configured, USD per 1M tokens"
+                         + (f"; NO price for {', '.join(unpriced)}, so the "
+                            f"total excludes them" if unpriced else ""))}
 
     def to_dict(self) -> dict[str, Any]:
+        measured = self.measured_calls > 0
         return {"calls": self.calls,
+                "measured_calls": self.measured_calls,
+                "tokens_in": self.tokens_in if measured else None,
+                "tokens_out": self.tokens_out if measured else None,
+                "tokens_total": (self.tokens_in + self.tokens_out)
+                                if measured else None,
                 "approx_tokens_in": self.approx_tokens_in,
                 "approx_tokens_out": self.approx_tokens_out,
                 "by_stage": dict(self.by_stage),
-                "note": "tokens are chars/4 approximations (Foundry utility "
-                        "path exposes no usage counts)"}
+                "by_model": dict(self.by_model),
+                "cost": self.cost(),
+                "note": ("tokens_* are REAL usage reported by the API for "
+                         f"{self.measured_calls} of {self.calls} calls; "
+                         "approx_* are chars/4 fallbacks for calls that "
+                         "reported none") if measured else
+                        "no call reported usage; approx_* are chars/4 "
+                        "estimates, not measurements"}
 
 
 class ChatLLM(Protocol):
@@ -168,10 +229,15 @@ class ApiChat:
     def _call(self, messages: list[dict], stage: str,
               prompt_chars: int) -> str:
         for budget in (self.max_tokens, self.max_tokens * 2):
-            reply = (self._create(messages, budget)
-                     .choices[0].message.content) or ""
+            resp = self._create(messages, budget)
+            reply = resp.choices[0].message.content or ""
+            # Record usage even for an EMPTY reply: a reasoning model that
+            # burned the budget thinking still cost money, and a cost report
+            # that omitted it would understate what the run spent.
+            self.meter.add(stage, prompt_chars, len(reply),
+                           usage=getattr(resp, "usage", None),
+                           model=self.settings.model)
             if reply.strip():
-                self.meter.add(stage, prompt_chars, len(reply))
                 return reply
         raise EmptyReplyError(
             f"stage={stage}: {self.label} returned no visible text even at "

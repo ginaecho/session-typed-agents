@@ -85,6 +85,13 @@ class Settings:
     #: failure — so the budget has to be large enough for the drafter to
     #: work through a real error sequence (syntax -> projection -> safety).
     max_repair_rounds: int = 12
+    #: USD per 1M tokens per deployment, e.g.
+    #:   {"gpt-5.4": {"in": 1.25, "out": 10.0}}
+    #: Empty by default and never guessed: list prices change, differ by
+    #: region and by agreement, so a fabricated figure would be a confident
+    #: number that is wrong. With none set, runs report real token counts
+    #: and say the cost is unknown.
+    prices: dict = field(default_factory=dict)
 
     # -- views ----------------------------------------------------------
     def key_fingerprint(self) -> str:

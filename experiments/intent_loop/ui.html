@@ -371,6 +371,7 @@ async function showEpisode(session){
         <p class="note">All three must hold, and <b>partial counts as a
         miss</b> — deliberately strict, because the per-item evidence below
         is there for you to overrule it.</p></div>
+      ${mustPanel(f)}
       ${dimsPanel(f)}
       <h2>Per-requirement coverage</h2>
       <table><thead><tr><th>ID</th><th>Verdict</th><th>Evidence</th></tr></thead>
@@ -397,7 +398,8 @@ async function showEpisode(session){
       <span class="sub">${ep.intent_chars} chars</span></h2>
       <pre class="wrap">${esc(ep.document||"")}</pre>`,
 
-    Raw: ()=>`<h2>Meter</h2><pre class="wrap">${esc(JSON.stringify(ep.meter,null,2))}</pre>
+    Raw: ()=>`${meterPanel(ep.meter||{})}
+      <h2>Meter (raw)</h2><pre class="wrap">${esc(JSON.stringify(ep.meter,null,2))}</pre>
       <h2>Record</h2><pre class="wrap">${esc(JSON.stringify(ep,null,2).slice(0,20000))}</pre>`,
   };
   const back = $("#backnew");
@@ -703,6 +705,77 @@ async function pollFormalize(id, session){
 /* Structure and values are satisfied by DIFFERENT parts of the artifact —
    the protocol's shape, and the refinement-guard sidecar. One blended
    percentage hid the actual finding, so both are shown. */
+/* The headline is MUST, not the blended average: a protocol can be 30%
+   "covered" and still hold every obligation, or 90% and be missing an
+   authorization guard. */
+/* What the run actually cost. Real API usage where the provider reported
+   it; cost only from prices YOU configured, never a guessed list price. */
+function meterPanel(m){
+  const measured = (m.measured_calls||0) > 0;
+  const cost = m.cost||{};
+  return `<h2>What this run cost</h2>
+    <div class="tiles">
+      <div class="tile"><div class="v">${m.calls||0}</div>
+        <div class="k">Model calls</div></div>
+      <div class="tile"><div class="v">${measured
+        ? (m.tokens_total||0).toLocaleString() : "—"}</div>
+        <div class="k">Tokens (real)</div></div>
+      <div class="tile"><div class="v">${measured
+        ? (m.tokens_in||0).toLocaleString() : "—"}</div>
+        <div class="k">In</div></div>
+      <div class="tile"><div class="v">${measured
+        ? (m.tokens_out||0).toLocaleString() : "—"}</div>
+        <div class="k">Out</div></div>
+      <div class="tile"><div class="v">${cost.usd!=null
+        ? "$"+cost.usd : "—"}</div><div class="k">Cost (USD)</div></div>
+    </div>
+    ${Object.keys(m.by_model||{}).length?`<table style="margin-top:10px">
+      <thead><tr><th>Deployment</th><th>Calls</th><th>In</th><th>Out</th>
+      </tr></thead><tbody>${Object.entries(m.by_model).map(([k,v])=>
+        `<tr><td class="rid">${esc(k)}</td><td>${v.calls}</td>
+         <td>${v.in.toLocaleString()}</td>
+         <td>${v.out.toLocaleString()}</td></tr>`).join("")}
+      </tbody></table>`:""}
+    ${Object.keys(m.by_stage||{}).length?`<p class="note">Calls per stage:
+      ${Object.entries(m.by_stage).map(([k,v])=>`${esc(k)} ${v}`).join(" · ")}
+      </p>`:""}
+    ${cost.usd==null?`<div class="warnbar" style="margin-top:8px">
+      ${badge("warn","cost unknown")} ${esc(cost.note||"")}</div>`
+      :`<p class="note">${esc(cost.note||"")}</p>`}
+    <p class="note">${esc(m.note||"")}</p>`;
+}
+
+function mustPanel(f){
+  const sc = f.scope||{};
+  if(sc.must_total==null) return "";
+  const ok = (sc.must_unmet||[]).length===0;
+  return `<div class="tiles" style="margin-bottom:12px">
+    <div class="tile"><div class="v">${sc.must_covered}/${sc.must_total}</div>
+      <div class="k">MUST covered</div></div>
+    <div class="tile"><div class="v">${sc.must_recall_pct}%</div>
+      <div class="k">Obligation recall</div></div>
+    <div class="tile"><div class="v">${sc.all_recall_pct}%</div>
+      <div class="k">All requirements</div></div>
+    </div>
+    ${ok?`<div class="card">${badge("good","every obligation covered")}
+      <p class="note">What remains unmet is desirable detail, not an
+      obligation.</p></div>`
+      :`<div class="warnbar">${badge("bad","obligations unmet")}
+      <b>${(sc.must_unmet||[]).join(", ")}</b> are marked MUST and are not
+      covered. These decide whether the protocol is safe; the rest is
+      polish.</div>`}
+    ${Object.keys(sc.by_priority||{}).length?`<table><thead><tr>
+      <th>Priority</th><th>Covered</th><th>Detail</th></tr></thead><tbody>
+      ${["must","should","nice"].filter(k=>sc.by_priority[k]).map(k=>{
+        const v = sc.by_priority[k];
+        return `<tr><td><b>${k.toUpperCase()}</b></td>
+          <td>${badge(k==="must"?(v.recall_pct===100?"good":"bad")
+                      :v.recall_pct===100?"good":"warn", v.recall_pct+"%")}</td>
+          <td class="sub">${v.yes} covered · ${v.partial} partial ·
+            ${v.no} missing (of ${v.total})</td></tr>`;}).join("")}
+      </tbody></table>`:""}`;
+}
+
 function dimsPanel(f){
   const sc = f.scope||{}, dims = sc.dimensions||{};
   if(!Object.keys(dims).length) return "";

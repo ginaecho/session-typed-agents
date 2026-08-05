@@ -79,7 +79,8 @@ one or more | at most N times | unbounded>",
     "non_goals": ["<something explicitly OUT of scope>"],
     "requirements": [
       {"rid": "R1",
-       "kind": "role|ordering|authorization|value|branch|termination|policy|other",
+       "kind": "role|ordering|authorization|value|branch|termination|policy|interior|other",
+       "priority": "must|should|nice",
        "text": "<ONE atomic, checkable sentence>",
        "who": ["<RoleName>", ...],
        "source": "document|answer|assumption"}
@@ -187,6 +188,7 @@ bound, ask for it rather than guessing.
 - `non_goals` is what must NOT be built. It is how a reader can tell an \
 invented step from a required one, so state anything the document rules \
 out or deliberately leaves alone.
+- Give every requirement a PRIORITY, and be strict about "must". "must" = an obligation or hard constraint whose absence makes the system WRONG: an act that may not happen without prior approval, evidence a verdict may not be issued without, a threshold that decides a branch, the message that ends the session. "should" = intended but not unsafe if blurred (which fields a payload carries, a distinction between two similar messages). "nice" = elaboration. If everything is "must" the priority tells nobody anything; typically a handful are.
 - Requirements must be ATOMIC (one checkable fact each) and TYPED.
 - Use kind "policy" for any requirement that constrains WHO may inhabit a \
 role, or otherwise cannot be expressed as "which role sends which message \

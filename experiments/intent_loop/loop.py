@@ -197,6 +197,21 @@ def _faithfulness_complaints(report, structural: dict) -> str:
         lines.append("\nStructure no requirement justifies (remove it, or "
                      "it was a handover we failed to capture):")
         lines += [f"  - {u[:200]}" for u in report.ungrounded[:8]]
+    # The most common real failure: value requirements unmet because no
+    # guard sidecar was emitted. Say so explicitly — "R6 missing" alone left
+    # the reviser adding messages, which can never satisfy a value rule.
+    scope = getattr(report, "scope", {}) or {}
+    dims = scope.get("dimensions") or {}
+    vals = dims.get("values")
+    if vals and vals.get("no"):
+        lines.insert(0,
+            f"VALUE CONSTRAINTS ({vals['no']} of {vals['total']} unmet). "
+            f"These CANNOT be fixed by adding messages — they need a "
+            f"refinement-guard sidecar. Emit a line containing exactly "
+            f"`=== REFN ===` after the protocol, then one guard per line as "
+            f"`<MessageLabel>.<field> :: <predicate>` covering every value "
+            f"requirement below. Keep the protocol above the sentinel valid "
+            f"Scribble.\n")
     bt = report.backtranslation or {}
     if bt.get("missing"):
         lines.append("\nLost when the protocol is read back on its own:")
