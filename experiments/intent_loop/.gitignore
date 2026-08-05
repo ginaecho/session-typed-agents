@@ -1,0 +1,5 @@
+# Per-episode artifact dirs — reviewable locally, committed selectively
+# (force-add a session dir when it backs a citable result, mirroring the
+# runs/ evidence policy).
+sessions/
+.panel_cache/
