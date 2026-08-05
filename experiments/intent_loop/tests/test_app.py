@@ -50,11 +50,31 @@ def test_run_episode_emits_stage_events(client):
     job = _run_mock(client)
     assert job["state"] == "succeeded", job.get("error")
     stages = [e["stage"] for e in job["events"]]
-    assert stages == ["start", "interrogated", "drafted", "evaluated", "done"]
-    interrogated = job["events"][1]
+
+    # The five phases still occur, in order — but they are no longer the
+    # only events: interrogation reports every round as it happens, because
+    # a phase that only speaks when it finishes looks hung for minutes.
+    phases = [s for s in stages
+              if s in ("start", "interrogated", "drafted", "evaluated",
+                       "done")]
+    assert phases == ["start", "interrogated", "drafted", "evaluated", "done"]
+    assert "asked" in stages and "answered" in stages
+
+    interrogated = next(e for e in job["events"]
+                        if e["stage"] == "interrogated")
     assert interrogated["requirements"] == 5
     assert interrogated["from_answers"] == 2      # recovered by asking
     assert job["result"]["valid"] and job["result"]["faithful"]
+
+
+def test_transcript_is_flushed_during_interrogation(client, tmp_path):
+    """The Q&A must be readable while the run is still going."""
+    job = _run_mock(client)
+    session = job["result"]["session"]
+    partial = client.get(f"/api/episodes/{session}/partial").get_json()
+    assert partial["complete"] is True          # finished by now
+    # The per-round flush wrote the transcript file before the record.
+    assert (tmp_path / "sessions" / session / "transcript.json").exists()
 
 
 def test_episode_listing_and_detail(client):

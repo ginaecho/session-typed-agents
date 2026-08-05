@@ -104,13 +104,28 @@ def run_episode(
           validator=validator_label)
 
     # ── 1. interrogation ────────────────────────────────────────────────
+    # Sub-events are forwarded AND the transcript is flushed to disk after
+    # every round, so a caller polling the session directory sees the Q&A
+    # while the interrogation is still going. Interrogating a 20k-character
+    # document is minutes of model time; without this it looks hung.
+    def _interro_progress(stage: str, detail: dict) -> None:
+        if stage == "answered" and detail.get("transcript"):
+            (out_dir / "transcript.json").write_text(
+                json.dumps({"transcript": detail["transcript"],
+                            "in_progress": True}, ensure_ascii=False,
+                           indent=2), encoding="utf-8")
+        _emit(stage, **{k: v for k, v in detail.items() if k != "transcript"})
+
     stakeholder = StakeholderSim(stakeholder_llm or llm, document,
                                  hidden_notes=hidden_notes)
     interro = run_interrogation(llm, stakeholder, document,
-                                max_rounds=max_rounds)
+                                max_rounds=max_rounds,
+                                progress=_interro_progress)
     distilled = interro.distilled
     _emit("interrogated", rounds=interro.rounds_used,
           forced_finish=interro.forced_finish,
+          roles=len(distilled.roles), goals=len(distilled.goals),
+          interactions=len(distilled.interactions),
           requirements=len(distilled.requirements),
           from_answers=sum(1 for r in distilled.requirements
                            if r.source == "answer"),

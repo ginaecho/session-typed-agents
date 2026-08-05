@@ -905,7 +905,7 @@ const STAGE_LABEL = {start:"Reading the document",
 async function pollJob(id, session){
   clearInterval(state.poll);
   const t0 = Date.now();
-  let drewGraph = false;
+  let drewGraph = false, drewIntent = false;
   state.poll = setInterval(async ()=>{
     const j = await api("/api/runs/"+id);
     const done = j.state==="succeeded"||j.state==="failed";
@@ -922,8 +922,10 @@ async function pollJob(id, session){
         ${STAGE_ORDER.map(s=>`<div class="stage${reached.has(s)?" on":""}">
           <div class="t">${STAGE_LABEL[s]}</div>
           <div class="d">${reached.has(s)?"done":
-            (s===nextOf(cur)?"in progress…":"waiting")}</div></div>`).join("")}
+            (s===firstPending(reached)?"in progress…":"waiting")}</div>
+          </div>`).join("")}
       </div>
+      ${subEvent(j)}
       <table style="margin-top:10px"><tbody>${(j.events||[]).map(e=>{
         const {stage,at,...rest}=e;
         return `<tr><td class="rid">${esc(stage)}</td>
@@ -932,11 +934,23 @@ async function pollJob(id, session){
       ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>
       <div id="livebody"></div>`;
 
-    // Partial artifacts — show them the moment they exist.
+    // Partial artifacts — show them the moment they exist. The Q&A lands
+    // round by round, long before the phase ends.
     const sess = session || (j.params||{}).session;
-    if(sess && (reached.has("interrogated")||done)){
+    if(sess){
       const p = await api(`/api/episodes/${encodeURIComponent(sess)}/partial`);
       if(!p.error) renderLive(p);
+      if(!drewIntent && reached.has("interrogated")){
+        const ig = await api(
+          `/api/episodes/${encodeURIComponent(sess)}/intent-graph`);
+        if(!ig.error){
+          drewIntent = true;
+          $("#livebody").innerHTML += `
+            <h2>Intended interactions <span class="sub">— from the
+              checklist, before any protocol was written</span></h2>
+            <div class="card" style="overflow-x:auto">${ig.svg.roles}</div>`;
+        }
+      }
       if(!drewGraph && (reached.has("drafted")||done)){
         const g = await api(`/api/episodes/${encodeURIComponent(sess)}/graph`);
         if(!g.error){
@@ -964,8 +978,34 @@ async function pollJob(id, session){
     }
   }, 2000);
 }
-const nextOf = s => STAGE_ORDER[Math.min(STAGE_ORDER.indexOf(s)+1,
-  STAGE_ORDER.length-1)];
+// The first phase not yet reached is the one in progress. Derived from the
+// reached-set rather than from the last event, because the loop also emits
+// SUB-events (asked/answered/thinking) that are not phases — reading the
+// last event alone used to mark a running phase "waiting".
+const firstPending = reached => STAGE_ORDER.find(s=>!reached.has(s));
+
+// The newest sub-event, in words: what the model is doing right now.
+function subEvent(j){
+  const evs = j.events||[];
+  for(let i=evs.length-1;i>=0;i--){
+    const e = evs[i];
+    if(STAGE_ORDER.includes(e.stage)) break;
+    if(e.stage==="thinking")
+      return `<p class="note">Round ${e.round}: ${esc(e.note||"")} —
+        one model call over your whole document, typically 40–120s.</p>`;
+    if(e.stage==="asked")
+      return `<p class="note">Round ${e.round}: asked
+        ${(e.questions||[]).length} question(s); waiting for the
+        stakeholder to answer.</p>`;
+    if(e.stage==="answered")
+      return `<p class="note">Round ${e.round} answered — deciding whether
+        to ask more or finish.</p>`;
+    if(e.stage==="distilling")
+      return `<p class="note">Writing the checklist: roles, goals,
+        interactions, requirements.</p>`;
+  }
+  return "";
+}
 
 function renderLive(p){
   const el = $("#livebody"); if(!el) return;
@@ -982,6 +1022,19 @@ function renderLive(p){
         <pre class="wrap">${esc(x.question)}</pre></div>
       <div class="qa"><div class="role">Answered</div>
         <pre class="wrap">${esc(x.answer)}</pre></div></div>`).join("")}
+    ${(d.goals||[]).length?`<h2>Goals — what must be true at the end</h2>
+      <ul>${d.goals.map(g=>`<li><b>${esc(g.gid)}</b> ${esc(g.text)}
+        ${g.evidence?`<span class="sub">— evidence: ${esc(g.evidence)}</span>`
+        :""}</li>`).join("")}</ul>`:""}
+    ${(d.interactions||[]).length?`<h2>Intended interactions
+      <span class="sub">— who hands what to whom</span></h2>
+      <table><thead><tr><th>ID</th><th>From → To</th><th>What</th>
+        <th>When</th></tr></thead><tbody>
+        ${d.interactions.map(i=>`<tr><td class="rid">${esc(i.iid)}</td>
+          <td>${esc(i.sender||i.from||"")} → ${esc(i.receiver||i.to||"")}
+            ${i.optional?badge("warn","conditional"):""}</td>
+          <td>${esc(i.what)}</td><td class="sub">${esc(i.when||"")}</td>
+          </tr>`).join("")}</tbody></table>`:""}
     <h2>Distilled so far <span class="sub">— ${reqs.length} requirements,
       ${asked} recovered by asking</span></h2>
     <table><thead><tr><th>ID</th><th>Kind</th><th>Source</th>

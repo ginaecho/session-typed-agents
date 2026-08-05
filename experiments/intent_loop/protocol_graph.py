@@ -518,6 +518,55 @@ def render_role_fsm(ir: ProtocolIR, role: str, width: int = 900) -> str:
     return "".join(out)
 
 
+def intent_graph_payload(distilled: dict) -> dict[str, Any]:
+    """The INTENDED interaction graph, from the distilled checklist alone.
+
+    Available as soon as interrogation ends — before a single line of
+    protocol exists. That ordering matters: the reviewer gets to see, and
+    argue with, the intended shape of the conversation while it is still
+    cheap to change, instead of reverse-engineering it from a protocol
+    afterwards.
+
+    It also gives the drafted protocol something to be compared against:
+    a message matching no declared interaction is visibly invented.
+    """
+    roles = [str(r.get("name", "")) for r in distilled.get("roles", [])
+             if r.get("name")]
+    edges: dict[tuple[str, str], dict] = {}
+    for ix in distilled.get("interactions", []):
+        s = str(ix.get("sender") or ix.get("from") or "")
+        t = str(ix.get("receiver") or ix.get("to") or "")
+        if not s or not t:
+            continue
+        for r in (s, t):
+            if r not in roles:
+                roles.append(r)      # declared in an interaction, not listed
+        e = edges.setdefault((s, t), {"from": s, "to": t, "labels": [],
+                                      "conditional": False, "count": 0})
+        what = str(ix.get("what", "")).strip() or str(ix.get("iid", ""))
+        if what not in e["labels"]:
+            e["labels"].append(what)
+        e["count"] += 1
+        if ix.get("optional"):
+            e["conditional"] = True
+
+    ir = ProtocolIR(name="intended", roles=roles)
+    # Synthesise messages so the shared renderers can draw this too.
+    ir.body = [Message(label=(str(ix.get("what", ""))[:28] or "…"),
+                       payload="", sender=str(ix.get("sender") or ix.get("from") or ""),
+                       receivers=[str(ix.get("receiver") or ix.get("to") or "")],
+                       line=0, path=("optional",) if ix.get("optional") else ())
+               for ix in distilled.get("interactions", [])
+               if (ix.get("sender") or ix.get("from"))
+               and (ix.get("receiver") or ix.get("to"))]
+    return {"roles": roles, "edges": list(edges.values()),
+            "stats": {"roles": len(roles),
+                      "interactions": len(ir.body),
+                      "optional": sum(1 for m in ir.body if m.path)},
+            "svg": {"roles": render_role_graph(ir),
+                    "sequence": render_sequence(ir)}}
+
+
 def graph_payload(protocol_text: str) -> dict[str, Any]:
     """Everything the UI and the report need for one protocol."""
     ir = parse_protocol(protocol_text)

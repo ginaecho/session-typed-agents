@@ -665,6 +665,25 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
             return jsonify({"error": "no such session"}), 404
         return jsonify(p)
 
+    @app.get("/api/episodes/<path:session>/intent-graph")
+    def episode_intent_graph(session: str):
+        """The INTENDED interaction graph, from the distilled checklist.
+
+        Available as soon as interrogation ends — minutes before a
+        protocol exists — so the intended shape can be reviewed while it
+        is still cheap to change."""
+        ep = load_partial(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such session"}), 404
+        distilled = ep.get("distilled") or {}
+        if not distilled.get("interactions"):
+            return jsonify({"error": "no interactions distilled yet",
+                            "hint": "this episode predates the interactions "
+                                    "field, or interrogation is still "
+                                    "running"}), 404
+        from experiments.intent_loop.protocol_graph import intent_graph_payload
+        return jsonify(intent_graph_payload(distilled))
+
     @app.get("/api/episodes/<path:session>/graph")
     def episode_graph(session: str):
         """Role graph, sequence view and per-role state machines, as SVG.

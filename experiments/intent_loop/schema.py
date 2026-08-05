@@ -81,12 +81,66 @@ class Requirement:
 
 
 @dataclass
+class Goal:
+    """An outcome the session exists to achieve, with the observable that
+    tells you it happened. Distinct from a requirement: a requirement
+    constrains HOW the work proceeds, a goal states WHAT must be true at
+    the end. A protocol can satisfy every requirement and still achieve
+    nothing — type safety and progress are different properties."""
+    gid: str
+    text: str
+    evidence: str = ""          # how you would know this goal was met
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "Goal":
+        return cls(gid=str(d.get("gid", "G?")), text=str(d.get("text", "")),
+                   evidence=str(d.get("evidence", "")))
+
+
+@dataclass
+class Interaction:
+    """One intended exchange, in business terms — who hands what to whom,
+    and when.
+
+    First-class on purpose. Without it the drafter has to invent the entire
+    message structure from prose, and the reviewer cannot see the intended
+    shape until a protocol exists. With it, the interaction graph is
+    drawable the moment interrogation ends, and any message in the drafted
+    protocol that matches no declared interaction is visibly invented
+    rather than merely "ungrounded" after the fact.
+    """
+    iid: str
+    sender: str
+    receiver: str
+    what: str                   # the information carried, plain language
+    when: str = ""              # trigger / precondition
+    optional: bool = False      # only on some branch?
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "Interaction":
+        return cls(iid=str(d.get("iid", "I?")),
+                   sender=str(d.get("from") or d.get("sender", "")),
+                   receiver=str(d.get("to") or d.get("receiver", "")),
+                   what=str(d.get("what", "")), when=str(d.get("when", "")),
+                   optional=bool(d.get("optional", False)))
+
+
+@dataclass
 class DistilledIntent:
     """The interrogation's structured output — the drafter's actual input."""
     mission: str
     roles: list[dict[str, str]]            # [{"name":..., "description":...}]
     requirements: list[Requirement]
     completion_signal: str
+    goals: list[Goal] = field(default_factory=list)
+    interactions: list[Interaction] = field(default_factory=list)
+    non_goals: list[str] = field(default_factory=list)
     open_questions: list[str] = field(default_factory=list)
     provenance: dict[str, Any] = field(default_factory=dict)
 
@@ -119,11 +173,25 @@ class DistilledIntent:
                  "## Roles"]
         lines += [f"- **{r['name']}** — {r.get('description', '')}"
                   for r in self.roles]
+        if self.goals:
+            lines += ["", "## Goals — what must be true at the end"]
+            lines += [f"- [{g.gid}] {g.text}"
+                      + (f" (evidence: {g.evidence})" if g.evidence else "")
+                      for g in self.goals]
+        if self.interactions:
+            lines += ["", "## Intended interactions — who hands what to whom"]
+            lines += [f"- [{i.iid}] {i.sender} → {i.receiver}: {i.what}"
+                      + (f" (when: {i.when})" if i.when else "")
+                      + (" [only on some branch]" if i.optional else "")
+                      for i in self.interactions]
         lines += ["", "## Requirements",
                   self.requirements_text(
                       kinds=[k for k in REQUIREMENT_KINDS
                              if k != POLICY_KIND]),
                   "", "## Completion signal", self.completion_signal]
+        if self.non_goals:
+            lines += ["", "## Out of scope (do NOT build these)"]
+            lines += [f"- {n}" for n in self.non_goals]
         policy = self.policy_requirements() if include_policy else []
         if policy:
             lines += ["", "## Policy requirements (enforced OUTSIDE the "
