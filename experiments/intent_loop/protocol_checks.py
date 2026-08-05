@@ -24,6 +24,7 @@ work while a draft is still being written.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
@@ -74,6 +75,107 @@ def _messages(body: list[Any]) -> list[Message]:
         elif isinstance(node, Recursion):
             found.extend(_messages(node.body))
     return found
+
+
+#: A label that is an identifier rather than a name — `I1`, `R3`,
+#: `I3Score`, `M12`. Observed on a protocol that PASSED the real checker:
+#: the drafter satisfied Scribble by transcribing interaction ids, and the
+#: result says nothing about what the messages mean. Scribble cannot object
+#: — it type-checks structure, not meaning — which is exactly why
+#: acceptance is a floor and not the goal.
+_ID_LABEL = re.compile(r"^(?:[IRGM]\d+|[A-Z]\d+)([A-Z][a-z]+)?$")
+
+
+def check_label_quality(ir: ProtocolIR) -> list[Finding]:
+    """Do the message names say what the messages mean?
+
+    This is the cheapest possible faithfulness signal and it needs no LLM:
+    a protocol whose labels are `I1, I2, I3` is structurally fine and
+    semantically empty. Reported as a warning per label plus one blocker
+    when it is the dominant style, because at that point the protocol has
+    stopped describing the user's intent altogether.
+    """
+    findings: list[Finding] = []
+    labels = [m.label for m in ir.messages()]
+    if not labels:
+        return findings
+    idish = [l for l in labels if _ID_LABEL.match(l)]
+    for lab in sorted(set(idish)):
+        findings.append(Finding(
+            "warning", "id-as-label", lab,
+            f"`{lab}` is an identifier, not a name. The checker accepts it, "
+            f"but a reader cannot tell what is being sent. Name the message "
+            f"after the thing it carries (e.g. PreflightVerdict, "
+            f"ApprovalGranted)."))
+    if len(idish) >= max(2, len(labels) // 2):
+        findings.append(Finding(
+            "blocker", "meaningless-vocabulary", "protocol",
+            f"{len(idish)} of {len(labels)} message labels are identifiers "
+            f"({', '.join(sorted(set(idish))[:6])}…). This protocol passes "
+            f"the type checker while saying nothing about the user's "
+            f"intent — valid is not the same as faithful."))
+    return findings
+
+
+def _norm_role(name: str) -> str:
+    """Compare role names the way a reader would, not byte-for-byte.
+
+    The distilled intent names roles in prose ("EDA Notebook Runner",
+    "Preflight Checker") but a Scribble identifier cannot contain spaces,
+    so the drafter MUST rename them (`EDARunner`, `PreflightChecker`). A
+    literal comparison therefore reported every single handover as dropped
+    — seven false blockers on a real run. Normalising to alphanumerics
+    fixes the common case; a genuine rename to a different word still shows
+    up, which is what we want.
+    """
+    return re.sub(r"[^a-z0-9]", "", name.lower())
+
+
+def check_grounding(ir: ProtocolIR, interactions: list[dict]) -> list[Finding]:
+    """Every message should trace to a declared interaction, and every
+    declared interaction should appear as a message.
+
+    Mechanical, no LLM: match on the (sender, receiver) pair, compared by
+    normalised role name. A message between a pair the intent never
+    mentions is invented structure; a declared handover with no message is
+    a requirement silently dropped — and Scribble cannot see either,
+    because both protocols type-check equally well.
+    """
+    findings: list[Finding] = []
+    if not interactions:
+        return findings
+    declared: dict[tuple[str, str], tuple[str, str]] = {}
+    for i in interactions:
+        s = str(i.get("sender") or i.get("from") or "")
+        t = str(i.get("receiver") or i.get("to") or "")
+        if not s or not t:
+            continue
+        # A self-handover is intra-role work, not a message; the protocol
+        # is right to omit it (see the interior/boundary distinction).
+        if _norm_role(s) == _norm_role(t):
+            continue
+        declared[(_norm_role(s), _norm_role(t))] = (s, t)
+
+    seen: set[tuple[str, str]] = set()
+    for m in ir.messages():
+        for rcv in m.receivers:
+            pair = (_norm_role(m.sender), _norm_role(rcv))
+            seen.add(pair)
+            if pair not in declared:
+                findings.append(Finding(
+                    "warning", "ungrounded-message", m.label,
+                    f"{m.sender} → {rcv} is not a handover the intent "
+                    f"declares. Either it is invented, or an interaction "
+                    f"was missed during interrogation."))
+    for pair in sorted(set(declared) - seen):
+        s, t = declared[pair]
+        findings.append(Finding(
+            "blocker", "dropped-interaction", f"{s} → {t}",
+            f"the intent declares this handover but the protocol has no "
+            f"message for it — a requirement silently dropped. The type "
+            f"checker cannot see this: the protocol without it validates "
+            f"just as well."))
+    return findings
 
 
 def check_deadlock_precursors(ir: ProtocolIR) -> list[Finding]:
@@ -279,11 +381,20 @@ def turn_order(ir: ProtocolIR, max_steps: int = 120) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 def check_protocol(protocol_text: str,
-                   declared_joins: Optional[list[dict]] = None
+                   declared_joins: Optional[list[dict]] = None,
+                   interactions: Optional[list[dict]] = None
                    ) -> dict[str, Any]:
-    """Both checks plus join realization, in one payload for the UI/API."""
+    """Structure AND meaning, in one payload for the UI/API.
+
+    Passing the type checker is a floor, not the goal: a protocol of
+    `I1, I2, I3` between the right roles is accepted by Scribble and tells
+    the user nothing. So the label-quality and grounding checks sit beside
+    the deadlock ones, and both can raise blockers.
+    """
     ir = parse_protocol(protocol_text)
     findings = check_deadlock_precursors(ir)
+    findings += check_label_quality(ir)
+    findings += check_grounding(ir, interactions or [])
 
     # Declared joins (from the distilled checklist) must actually appear as
     # an ordering in the protocol. A join the drafter dropped is precisely

@@ -82,6 +82,12 @@ that reaches whoever the completion signal names.
 - If the specification lists INTENDED INTERACTIONS, each one becomes a \
 message: same sender, same receiver, a label naming what it carries. Add no \
 message that no interaction or requirement calls for.
+- NAME EVERY MESSAGE AFTER ITS MEANING, never after its identifier. \
+`PreflightVerdict`, `ApprovalGranted`, `PaymentConfirmed` — never `I1`, \
+`I3Score`, `M12`. The interaction ids in the specification are references \
+for you, not names for the protocol. A protocol whose labels are \
+identifiers passes the type checker and communicates nothing; passing the \
+checker is the floor, not the goal.
 - Honour the declared CARDINALITY. "exactly once" is a plain message; \
 "at most once" belongs in a choice branch; a bounded repeat ("at most 3 \
 times") is a `rec` loop whose exit branch is reachable at every iteration. \
@@ -248,6 +254,40 @@ class ChatDrafter(Drafter):
         # Remember this rejection so the NEXT round is better informed.
         self._rejections.append({"error": counterexample,
                                  "diagnosis": diagnosis})
+        self._record_usage(system + user, reply)
+        return reply
+
+    def refaithful(self, intent: str, protocol: str, complaints: str) -> str:
+        """Redraft a protocol that VALIDATES but does not say what the user
+        meant.
+
+        A separate entry point from `repair` because the failure is a
+        different kind: nothing here is structurally wrong, so the model
+        must not be nudged toward "fix the error" — it must be told that
+        the type checker is satisfied and the READER is not. Keeping the
+        accepted structure while renaming and re-grounding is usually a
+        small edit; redrafting from scratch tends to reintroduce the
+        structural errors already paid for.
+        """
+        system = (
+            "You revise a Scribble global protocol that the type checker "
+            "ALREADY ACCEPTS but which does not faithfully express what the "
+            "user asked for.\n\n" + SCRIBBLE_PRIMER + "\n\n"
+            "The structure is sound — keep it. Change names, add the "
+            "missing handovers, and remove the invented ones so the "
+            "protocol says what the specification says. Every message must "
+            "be traceable to a requirement or a declared interaction, and "
+            "named after what it carries. Output ONLY the corrected "
+            "protocol text, no prose, no fences."
+            + _rulebook_block(self.rulebook))
+        user = (f"=== TASK SPECIFICATION ===\n{intent}\n\n"
+                f"=== THE ACCEPTED BUT UNFAITHFUL PROTOCOL ===\n{protocol}\n\n"
+                f"=== WHY IT IS NOT FAITHFUL ===\n{complaints}\n\n"
+                f"Output the revised protocol. It must still type-check: "
+                f"keep the preamble, keep every branch informing the roles "
+                f"that act in it.")
+        reply = strip_fences(self.llm.complete(system, user,
+                                               stage="refaithful"))
         self._record_usage(system + user, reply)
         return reply
 

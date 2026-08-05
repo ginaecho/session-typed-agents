@@ -31,6 +31,7 @@ from experiments.intent_loop.faithfulness import evaluate_faithfulness
 from experiments.intent_loop.interrogator import (DEFAULT_MAX_ROUNDS,
                                                   run_interrogation)
 from experiments.intent_loop.llm import ChatLLM, Meter
+from experiments.intent_loop.protocol_checks import check_protocol
 from experiments.intent_loop.schema import LoopRecord
 from experiments.intent_loop.stakeholder import StakeholderSim
 from experiments.seam_bench.t0.drafter import split_guard_sidecar
@@ -95,6 +96,86 @@ def learn_from_attempts(attempts: list[dict], *,
     return merged
 
 
+def _faithfulness_complaints(report, structural: dict) -> str:
+    """Turn the grading into instructions the drafter can act on.
+
+    Concrete and quotable: which requirement is missing, which message is
+    invented, which label is an identifier. "Be more faithful" is not
+    actionable; "R7 is not realized; PairWorker → Ledger is not a declared
+    handover; I3Score is an identifier" is.
+    """
+    lines: list[str] = []
+    missing = [c for c in report.coverage
+               if c.covered in ("no", "partial")]
+    if missing:
+        lines.append("Requirements not realized:")
+        lines += [f"  - {c.rid} ({c.covered}): {c.evidence[:200]}"
+                  for c in missing[:12]]
+    if report.ungrounded:
+        lines.append("\nStructure no requirement justifies (remove it, or "
+                     "it was a handover we failed to capture):")
+        lines += [f"  - {u[:200]}" for u in report.ungrounded[:8]]
+    bt = report.backtranslation or {}
+    if bt.get("missing"):
+        lines.append("\nLost when the protocol is read back on its own:")
+        lines += [f"  - {m[:200]}" for m in bt["missing"][:6]]
+    for f in structural.get("findings", []):
+        if f.get("kind") in ("id-as-label", "meaningless-vocabulary",
+                             "dropped-interaction", "ungrounded-message"):
+            lines.append(f"  - [{f['kind']}] {f['where']}: "
+                         f"{f['detail'][:180]}")
+    return "\n".join(lines) or "The protocol does not express the intent."
+
+
+def learn_from_faithfulness(faith: dict, *,
+                            path: Path = None,
+                            max_lessons: int = 12) -> list[str]:
+    """Faithfulness failures become standing lessons too.
+
+    Rejections by the type checker were already taught; a protocol that
+    passes the checker and still misses the point is the harder lesson and
+    the one the user actually cares about. Only observed failures produce
+    lessons — never a general exhortation to "be faithful".
+    """
+    path = path or LESSONS_PATH
+    learned: list[str] = []
+    structural = (faith or {}).get("structural") or {}
+    kinds = {f.get("kind") for f in structural.get("findings", [])}
+    if "meaningless-vocabulary" in kinds or "id-as-label" in kinds:
+        learned.append(
+            "Message labels must name what the message CARRIES "
+            "(PreflightVerdict, ApprovalGranted), never the interaction id "
+            "(I1, I3Score). A protocol of identifiers type-checks and "
+            "communicates nothing.")
+    if "dropped-interaction" in kinds:
+        learned.append(
+            "Every declared interaction must appear as a message. Dropping "
+            "one satisfies the checker and silently loses a requirement.")
+    if (faith or {}).get("ungrounded") or "ungrounded-message" in kinds:
+        learned.append(
+            "Do not add messages that no requirement or declared "
+            "interaction calls for — invented structure is as unfaithful "
+            "as missing structure.")
+    recall = (faith or {}).get("recall")
+    if isinstance(recall, (int, float)) and recall < 0.5:
+        learned.append(
+            "Work through the requirement checklist item by item and make "
+            "each one visible in the protocol as an ordering, an approval "
+            "before the act it authorizes, a branch, or a terminating "
+            "message — a protocol that realizes under half the checklist "
+            "is not a translation of the intent.")
+    if not learned:
+        return standing_lessons(path)
+    existing = standing_lessons(path)
+    merged = (learned + [l for l in existing if l not in learned])[:max_lessons]
+    try:
+        path.write_text(json.dumps({"lessons": merged, "updated": _utcnow()},
+                                   indent=2), encoding="utf-8")
+    except OSError:
+        pass
+    return merged
+
+
 def mock_validate(text: str) -> tuple[bool, str]:
     """Offline stand-in used ONLY when the caller explicitly opts in
     (--mock / tests). Checks the crudest structural facts so the repair
@@ -135,6 +216,7 @@ def run_episode(
     episode_id: Optional[str] = None,
     progress: Optional[Callable[[str, dict], None]] = None,
     stakeholder_mode: str = "document",
+    faithfulness_rounds: int = 3,
 ) -> LoopRecord:
     """Run one episode end-to-end and persist everything under out_dir.
 
@@ -241,20 +323,65 @@ def run_episode(
           repair_rounds=max(0, len(attempts) - 1),
           lessons_known=len(lessons))
 
-    # ── 3. faithfulness (only a valid protocol can be faithful) ─────────
+    # ── 3. faithfulness — and a second loop, because VALID IS A FLOOR ───
+    # Scribble type-checks structure, not meaning: a protocol of `I1, I2,
+    # I3` between the right roles is accepted and says nothing. So a
+    # protocol that validates is graded, and if it does not express the
+    # intent it is sent back to be revised and RE-VALIDATED. Convergence
+    # here is two-dimensional; stopping at the checker's verdict is what
+    # produced an accepted protocol nobody could read.
     faith_dict = None
     if valid:
-        protocol_only, _refn = split_guard_sidecar(final_protocol)
-        report = evaluate_faithfulness(
-            eval_llm or llm, distilled, protocol_only,
-            gold_protocol=gold_protocol, bisim_fn=bisim_fn)
-        faith_dict = report.to_dict()
+        for round_no in range(faithfulness_rounds + 1):
+            protocol_only, _refn = split_guard_sidecar(final_protocol)
+            report = evaluate_faithfulness(
+                eval_llm or llm, distilled, protocol_only,
+                gold_protocol=gold_protocol, bisim_fn=bisim_fn)
+            faith_dict = report.to_dict()
+            structural = check_protocol(
+                protocol_only,
+                interactions=[i.to_dict() for i in distilled.interactions])
+            faith_dict["structural"] = structural
+            _emit("evaluated", round=round_no, faithful=report.faithful,
+                  recall=report.recall,
+                  backtranslation=report.backtranslation.get("score"),
+                  ungrounded=len(report.ungrounded),
+                  meaning_blockers=structural["blockers"])
+
+            meaning_ok = report.faithful and structural["blockers"] == 0
+            if meaning_ok or round_no >= faithfulness_rounds:
+                break
+
+            complaints = _faithfulness_complaints(report, structural)
+            revised = drafter.refaithful(spec_text, final_protocol,
+                                         complaints)
+            rev_only, _r = split_guard_sidecar(revised)
+            ok, msg = validate(rev_only)
+            k = len(attempts) + 1
+            (drafts_dir / f"attempt_{k}.scr").write_text(revised,
+                                                          encoding="utf-8")
+            (drafts_dir / f"attempt_{k}.verdict.txt").write_text(
+                f"valid: {ok}\nvalidator: {validator_label}\n"
+                f"(faithfulness revision {round_no + 1})\n\n{msg}",
+                encoding="utf-8")
+            attempts.append({"k": k, "valid": ok, "validator_msg": msg,
+                             "chars": len(revised),
+                             "faithfulness_revision": round_no + 1})
+            if not ok:
+                # The revision broke the structure. Keep the accepted one:
+                # a valid-but-poor protocol beats an invalid one, and the
+                # rejection is recorded so the next run learns from it.
+                _emit("revision_rejected", round=round_no + 1,
+                      validator_msg=msg[:200])
+                break
+            final_protocol = revised
+            (out_dir / "protocol.scr").write_text(final_protocol,
+                                                  encoding="utf-8")
+
         (out_dir / "faithfulness.json").write_text(
             json.dumps(faith_dict, ensure_ascii=False, indent=2),
             encoding="utf-8")
-        _emit("evaluated", faithful=report.faithful, recall=report.recall,
-              backtranslation=report.backtranslation.get("score"),
-              ungrounded=len(report.ungrounded))
+        learn_from_faithfulness(faith_dict)
 
     # ── 4. corpus row (failures included — see corpus.py) ───────────────
     meter_dict = meter.to_dict() if isinstance(meter, Meter) else {}
