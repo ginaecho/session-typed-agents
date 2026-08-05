@@ -32,7 +32,8 @@ from experiments.intent_loop.interrogator import (DEFAULT_MAX_ROUNDS,
                                                   run_interrogation)
 from experiments.intent_loop.llm import ChatLLM, Meter
 from experiments.intent_loop.protocol_checks import check_protocol
-from experiments.intent_loop.schema import LoopRecord
+from experiments.intent_loop.schema import (DistilledIntent, QA,
+                                            LoopRecord)
 from experiments.intent_loop.stakeholder import StakeholderSim
 from experiments.seam_bench.t0.drafter import split_guard_sidecar
 from experiments.seam_bench.t0.repair_loop import (MAX_REPAIR_ROUNDS,
@@ -345,26 +346,40 @@ def run_episode(
     # A caller may supply the answerer — a HumanStakeholder when a person
     # is in the conversation, or a simulated one driven by the expert model
     # when they would rather watch two models talk.
-    stakeholder = stakeholder_obj or StakeholderSim(
-        stakeholder_llm or llm, document, hidden_notes=hidden_notes,
-        mode=stakeholder_mode)
-    interro = run_interrogation(llm, stakeholder, document,
-                                max_rounds=max_rounds,
-                                progress=_interro_progress)
-    distilled = interro.distilled
-    _emit("interrogated", rounds=interro.rounds_used,
-          forced_finish=interro.forced_finish,
-          roles=len(distilled.roles), goals=len(distilled.goals),
-          interactions=len(distilled.interactions),
-          requirements=len(distilled.requirements),
-          from_answers=sum(1 for r in distilled.requirements
-                           if r.source == "answer"),
-          open_questions=len(distilled.open_questions))
-    (out_dir / "transcript.json").write_text(
-        json.dumps(interro.to_dict(), ensure_ascii=False, indent=2),
-        encoding="utf-8")
-    (out_dir / "intent_distilled.md").write_text(distilled.to_markdown(),
-                                                 encoding="utf-8")
+    if distilled_override is not None:
+        # PHASE 2: the understanding was already endorsed, so it must not be
+        # re-derived. Re-interrogating here would ask the questions again,
+        # produce a DIFFERENT understanding from the one the human approved,
+        # and silently formalise that instead — the endorsement would mean
+        # nothing.
+        from experiments.intent_loop.schema import InterrogationResult
+        distilled = distilled_override
+        interro = InterrogationResult(
+            distilled=distilled, transcript=list(transcript_override or []),
+            rounds_used=len(transcript_override or []), forced_finish=False,
+            meter={})
+    else:
+        stakeholder = stakeholder_obj or StakeholderSim(
+            stakeholder_llm or llm, document, hidden_notes=hidden_notes,
+            mode=stakeholder_mode)
+        interro = run_interrogation(llm, stakeholder, document,
+                                    max_rounds=max_rounds,
+                                    progress=_interro_progress)
+        distilled = interro.distilled
+    if distilled_override is None:
+        _emit("interrogated", rounds=interro.rounds_used,
+              forced_finish=interro.forced_finish,
+              roles=len(distilled.roles), goals=len(distilled.goals),
+              interactions=len(distilled.interactions),
+              requirements=len(distilled.requirements),
+              from_answers=sum(1 for r in distilled.requirements
+                               if r.source == "answer"),
+              open_questions=len(distilled.open_questions))
+        (out_dir / "transcript.json").write_text(
+            json.dumps(interro.to_dict(), ensure_ascii=False, indent=2),
+            encoding="utf-8")
+        (out_dir / "intent_distilled.md").write_text(
+            distilled.to_markdown(), encoding="utf-8")
 
     # ── ENDORSEMENT CHECKPOINT ──────────────────────────────────────────
     # Stop here by default and let a human confirm that this IS what they
