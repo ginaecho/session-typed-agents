@@ -995,7 +995,8 @@ document-scale intent is the point; a handbook is fine."></textarea>
       ? `<div class="warnbar" style="margin:9px 0 0">${badge("warn","scripted")}
          Your document is ignored in this mode — the run replays a fixed
          demo. Untick it to send your text to the model.</div>` : "";
-    $("#go").textContent = on ? "Run scripted demo" : "Run live episode";
+    $("#go").textContent = on ? "Run scripted demo"
+                              : "Start the interrogation";
   };
   $("#mock").onchange = syncMock; syncMock();
 
@@ -1039,6 +1040,28 @@ async function startRun(){
   if(r.error){
     $("#runstatus").innerHTML = badge("bad","failed")+" "+esc(r.error)
       +(r.detail?` — ${esc(r.detail)}`:"");
+    // A run already in flight is recoverable: open it, or abandon it. A
+    // conversation waiting for an answer waits forever, so refusing
+    // without an escape hatch is a dead end.
+    if(r.job_id){
+      $("#askpanel").innerHTML = `<div class="card">
+        <b>There is already a run of this document.</b>
+        <p class="note">${esc(r.hint||"")}</p>
+        <div class="row">
+          <button class="primary" id="resume">Open that run</button>
+          <button id="killrun">Cancel it and start fresh</button>
+          <span class="sub" id="killstatus"></span>
+        </div></div>`;
+      $("#resume").onclick = ()=>{ $("#askpanel").innerHTML="";
+        state.askKey=""; pollJob(r.job_id, r.session); };
+      $("#killrun").onclick = async ()=>{
+        $("#killstatus").textContent = "cancelling…";
+        const c = await api(`/api/runs/${encodeURIComponent(r.job_id)}/cancel`,
+          {method:"POST"});
+        $("#killstatus").innerHTML = c.error ? badge("bad", esc(c.error))
+          : badge("good","cancelled — press the button again");
+      };
+    }
     $("#go").disabled=false; return;
   }
   $("#runstatus").innerHTML = badge("info","job "+r.job_id)

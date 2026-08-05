@@ -41,8 +41,9 @@ class Job:
         #: blocks and these carry the open question to the UI and the reply
         #: back. A conversation needs the run to WAIT, not to finish and be
         #: read afterwards.
-        self.awaiting: Optional[str] = None
+        self.awaiting: Optional[dict] = None
         self.answer_sink: Optional[Callable[[str], None]] = None
+        self.cancelled = False
 
     def ask(self, questions: str, proposal: Optional[str] = None) -> None:
         """Block for a human. `proposal` is the expert model's draft answer
@@ -54,6 +55,27 @@ class Job:
         self.emit("awaiting_answer",
                   {"questions": questions,
                    "has_proposal": proposal is not None})
+
+    def cancel(self, reason: str = "cancelled by the user") -> None:
+        """Abandon this run.
+
+        A run blocked waiting for a human answer waits FOREVER by design, so
+        without this an abandoned conversation holds its document hostage:
+        the duplicate-run guard keeps refusing new runs of the same intent
+        and there is no way out but restarting the server. Marking it
+        cancelled releases the guard immediately, and if a thread is blocked
+        on an answer it is unblocked with an explicit statement that nobody
+        answered — never a fabricated one.
+        """
+        with self._lock:
+            self.cancelled = True
+            self.params = {**self.params, "cancelled": True}
+            sink, waiting = self.answer_sink, self.awaiting
+            self.awaiting = None
+        self.emit("cancelled", {"reason": reason})
+        if sink is not None and waiting is not None:
+            sink("NOT SPECIFIED. The session was cancelled before this "
+                 "question was answered; treat it as unresolved.")
 
     def answer(self, text: str) -> bool:
         """Deliver a human reply. False if nothing was waiting for one."""
@@ -76,6 +98,7 @@ class Job:
                  "params": self.params, "created": self.created,
                  "finished": self.finished, "result": self.result,
                  "error": self.error, "awaiting": self.awaiting,
+                 "cancelled": self.cancelled,
                  "stage": (self.events[-1]["stage"] if self.events
                            else None),
                  "stage_since": (self.events[-1]["at"] if self.events

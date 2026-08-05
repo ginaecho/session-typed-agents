@@ -696,6 +696,7 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         doc_sha = hashlib.sha256(document.encode("utf-8")).hexdigest()
         for existing in registry.list():
             if (existing.state in ("queued", "running")
+                    and not getattr(existing, "cancelled", False)
                     and existing.params.get("doc_sha") == doc_sha):
                 return jsonify({
                     "error": "a run of this same document is already in "
@@ -704,7 +705,11 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                              "slower.",
                     "job_id": existing.id,
                     "session": existing.params.get("session"),
-                    "hint": "watch that job, or change the document"}), 409
+                    "cancel_url": f"/api/runs/{existing.id}/cancel",
+                    "hint": "open that job to answer it, or "
+                            "cancel it and start again — a run "
+                            "waiting for an answer waits "
+                            "forever."}), 409
 
         # Phase gate: stop after the understanding by default so a human
         # endorses it BEFORE any protocol is written or checked.
@@ -806,6 +811,19 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         if job is None:
             return jsonify({"error": "no such job"}), 404
         return jsonify(job.to_dict())
+
+    @app.post("/api/runs/<job_id>/cancel")
+    def cancel_run(job_id: str):
+        """Abandon a run. Needed because a conversation blocked on a human
+        answer blocks forever, and until now that held the document hostage
+        behind the duplicate-run guard with no way out but a restart."""
+        job = registry.get(job_id)
+        if job is None:
+            return jsonify({"error": "no such job"}), 404
+        job.cancel()
+        return jsonify({"ok": True, "job_id": job_id,
+                        "note": "the guard is released; you can start a "
+                                "new run of this document now"})
 
     @app.post("/api/runs/<job_id>/answer")
     def answer_run(job_id: str):
