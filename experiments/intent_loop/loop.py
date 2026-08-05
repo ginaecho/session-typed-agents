@@ -217,6 +217,7 @@ def run_episode(
     progress: Optional[Callable[[str, dict], None]] = None,
     stakeholder_mode: str = "document",
     faithfulness_rounds: int = 3,
+    stakeholder_obj=None,
 ) -> LoopRecord:
     """Run one episode end-to-end and persist everything under out_dir.
 
@@ -254,9 +255,12 @@ def run_episode(
                            indent=2), encoding="utf-8")
         _emit(stage, **{k: v for k, v in detail.items() if k != "transcript"})
 
-    stakeholder = StakeholderSim(stakeholder_llm or llm, document,
-                                 hidden_notes=hidden_notes,
-                                 mode=stakeholder_mode)
+    # A caller may supply the answerer — a HumanStakeholder when a person
+    # is in the conversation, or a simulated one driven by the expert model
+    # when they would rather watch two models talk.
+    stakeholder = stakeholder_obj or StakeholderSim(
+        stakeholder_llm or llm, document, hidden_notes=hidden_notes,
+        mode=stakeholder_mode)
     interro = run_interrogation(llm, stakeholder, document,
                                 max_rounds=max_rounds,
                                 progress=_interro_progress)

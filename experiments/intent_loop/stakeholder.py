@@ -20,7 +20,8 @@ may say, and both exist for benchmark honesty:
 """
 from __future__ import annotations
 
-from typing import Optional
+import queue
+from typing import Callable, Optional
 
 from experiments.intent_loop.llm import ChatLLM
 
@@ -89,6 +90,49 @@ must be true for the work to be done.
 === THE INTENT DOCUMENT ===
 {document}
 {hidden_block}"""
+
+
+class HumanStakeholder:
+    """A real person answers the interrogation, turn by turn.
+
+    The learner's questions are the point of this app, so the human must be
+    able to BE the one answering rather than only reading a transcript
+    afterwards. `answer()` blocks the run thread until the answer arrives
+    through the API, which turns the interrogation into an actual
+    conversation without restructuring the loop: from the interrogator's
+    side a blocking call that returns text is exactly what the simulated
+    stakeholder already was.
+
+    On timeout it returns NOT SPECIFIED rather than hanging forever or
+    inventing content — the same discipline the simulated stakeholder
+    follows, so an abandoned session degrades into "nobody answered", which
+    is true, instead of a fabricated requirement.
+    """
+
+    def __init__(self, timeout_s: float = 1800.0,
+                 on_ask: Optional[Callable[[str], None]] = None):
+        self._inbox: "queue.Queue[str]" = queue.Queue()
+        self.pending: Optional[str] = None
+        self.timeout_s = timeout_s
+        self.on_ask = on_ask
+        self.mode = "human"
+
+    def answer(self, questions: str) -> str:
+        self.pending = questions
+        if self.on_ask:
+            self.on_ask(questions)
+        try:
+            reply = self._inbox.get(timeout=self.timeout_s)
+        except queue.Empty:
+            reply = (f"{NOT_SPECIFIED} (nobody answered within "
+                     f"{int(self.timeout_s)}s)")
+        finally:
+            self.pending = None
+        return reply
+
+    def submit(self, text: str) -> None:
+        """Called from the HTTP thread when the human replies."""
+        self._inbox.put(text)
 
 
 class StakeholderSim:

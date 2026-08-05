@@ -940,6 +940,16 @@ function showRunForm(){
       <label>Intent document</label>
       <textarea id="intent" placeholder="Paste the stakeholder's brief — a
 document-scale intent is the point; a handbook is fine."></textarea>
+      <label>Who answers the learner's questions?</label>
+      <select id="answeredby">
+        <option value="expert">Watch two models talk — gpt-5.4 asks,
+          gpt-5.6-sol answers</option>
+        <option value="human">I answer myself — a live conversation with
+          gpt-5.4</option>
+        <option value="document">Strict document quoting — replies NOT
+          SPECIFIED when the text is silent</option>
+      </select>
+      <p class="note" id="answeredby-note"></p>
       <label>Hidden stakeholder facts (not in the document — tests whether
         interrogation recovers them)</label>
       <textarea id="hidden" style="min-height:80px"></textarea>
@@ -969,6 +979,22 @@ document-scale intent is the point; a handbook is fine."></textarea>
     $("#go").textContent = on ? "Run scripted demo" : "Run live episode";
   };
   $("#mock").onchange = syncMock; syncMock();
+
+  const NOTES = {
+    expert: "gpt-5.4 reads your document, asks about roles, interactions "
+      + "and goals, and gpt-5.6-sol answers as the stakeholder. You watch "
+      + "the exchange as it happens.",
+    human: "gpt-5.4 asks; the run PAUSES and waits for you. Each round "
+      + "appears below with a box to reply in — this is a real "
+      + "conversation, so it will sit there until you answer.",
+    document: "The stakeholder may only quote your document, and says NOT "
+      + "SPECIFIED otherwise. Use this to measure what the document alone "
+      + "supports.",
+  };
+  const syncAnswered = ()=>{
+    $("#answeredby-note").textContent = NOTES[$("#answeredby").value] || "";
+  };
+  $("#answeredby").onchange = syncAnswered; syncAnswered();
 }
 
 async function startRun(){
@@ -977,6 +1003,7 @@ async function startRun(){
     mock: $("#mock").checked,
     validator: $("#validator").value,
     max_rounds: +$("#rounds").value,
+    answered_by: $("#answeredby").value,
   };
   if($("#intent").value.trim()) body.intent_text = $("#intent").value;
   if($("#hidden").value.trim()) body.hidden_notes_text = $("#hidden").value;
@@ -1013,11 +1040,20 @@ async function pollJob(id, session){
     const reached = new Set((j.events||[]).map(e=>e.stage));
     const cur = j.stage||"start";
 
+    // Seconds on the CURRENT stage. A single model call over a large
+    // document can take minutes; without this the run reads as frozen.
+    const since = j.stage_since ? Math.round(
+      (Date.now() - new Date(j.stage_since).getTime())/1000) : null;
+    const chars = (j.params||{}).intent_chars || 0;
     $("#joblog").innerHTML = `<div class="card">
-      <div class="row">${badge(j.state==="succeeded"?"good":
-        j.state==="failed"?"bad":"info", j.state)}
-        <span class="sub">${secs}s elapsed — a live episode is normally
-          3–8 minutes (8–15 model calls over your whole document)</span></div>
+      <div class="row">${badge(j.awaiting?"warn":
+        j.state==="succeeded"?"good":j.state==="failed"?"bad":"info",
+        j.awaiting?"waiting for your answer":j.state)}
+        <span class="sub">${secs}s total${since!=null&&!done
+          ? ` · ${since}s on this step` : ""}
+          ${chars?` · ${(chars/1000).toFixed(0)}k-char document — one model
+          call over it takes 1–3 min`:""}</span></div>
+      ${j.awaiting?askBox(id, j.awaiting):""}
       <div class="pipe" style="margin:10px 0 0">
         ${STAGE_ORDER.map(s=>`<div class="stage${reached.has(s)?" on":""}">
           <div class="t">${STAGE_LABEL[s]}</div>
@@ -1040,6 +1076,12 @@ async function pollJob(id, session){
     if(sess){
       const p = await api(`/api/episodes/${encodeURIComponent(sess)}/partial`);
       if(!p.error) renderLive(p);
+      // Wire the answer button each time the box is re-rendered (the log
+      // is rebuilt on every poll, so an inline handler would go stale).
+      if(j.awaiting){
+        const btn = $("#ansbtn");
+        if(btn) btn.onclick = ()=>sendAnswer(id);
+      }
       if(!drewIntent && reached.has("interrogated")){
         const ig = await api(
           `/api/episodes/${encodeURIComponent(sess)}/intent-graph`);
@@ -1083,6 +1125,31 @@ async function pollJob(id, session){
 // SUB-events (asked/answered/thinking) that are not phases — reading the
 // last event alone used to mark a running phase "waiting".
 const firstPending = reached => STAGE_ORDER.find(s=>!reached.has(s));
+
+/* The learner's open question, with a box to answer it. The run thread is
+   blocked on exactly this, so the conversation continues the moment you
+   send — nothing is queued or replayed later. */
+function askBox(jobId, questions){
+  return `<div class="warnbar" style="margin:10px 0 0">
+    <b>gpt-5.4 is asking you:</b>
+    <pre class="wrap" style="margin:8px 0">${esc(questions)}</pre>
+    <textarea id="ansbox" style="min-height:90px"
+      placeholder="Answer in your own words. The run is paused until you send."></textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="primary" id="ansbtn">Send answer</button>
+      <span class="sub" id="anssent"></span>
+    </div></div>`;
+}
+
+async function sendAnswer(jobId){
+  const box = $("#ansbox"); if(!box || !box.value.trim()) return;
+  $("#anssent").textContent = "sending…";
+  const r = await api(`/api/runs/${encodeURIComponent(jobId)}/answer`,
+    {method:"POST", headers:{"Content-Type":"application/json"},
+     body: JSON.stringify({answer: box.value})});
+  $("#anssent").innerHTML = r.error ? badge("bad", esc(r.error))
+    : badge("good","sent — the learner is thinking about it");
+}
 
 // The newest sub-event, in words: what the model is doing right now.
 function subEvent(j){

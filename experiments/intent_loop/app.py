@@ -36,6 +36,7 @@ if you ever use it.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from datetime import datetime, timezone
@@ -651,9 +652,30 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         # a strict document-quoting stakeholder (which says NOT SPECIFIED
         # when the text is silent — right for measuring what interrogation
         # recovers, wrong for getting a protocol finished unattended).
+        # Who answers the learner's questions:
+        #   human    a person, live, turn by turn — the run WAITS
+        #   expert   the stronger model (watch two models converse)
+        #   document a strict quoting stakeholder (says NOT SPECIFIED)
         answered_by = str(body.get("answered_by") or "expert").lower()
-        if answered_by not in ("expert", "document"):
+        if answered_by not in ("expert", "document", "human"):
             answered_by = "expert"
+
+        # Guard against a double-click launching two runs of the same
+        # document against one deployment: they contend for the same rate
+        # limit and each makes the other slower, which is exactly what a
+        # user reads as "stuck".
+        doc_sha = hashlib.sha256(document.encode("utf-8")).hexdigest()
+        for existing in registry.list():
+            if (existing.state in ("queued", "running")
+                    and existing.params.get("doc_sha") == doc_sha):
+                return jsonify({
+                    "error": "a run of this same document is already in "
+                             "flight — two runs against one deployment "
+                             "contend for the same rate limit and both get "
+                             "slower.",
+                    "job_id": existing.id,
+                    "session": existing.params.get("session"),
+                    "hint": "watch that job, or change the document"}), 409
 
         label_prefix = "mock" if mock else "live"
         out_dir = (app.config["SESSIONS"]
@@ -667,7 +689,7 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                   "max_rounds": int(body.get("max_rounds", 5)),
                   "max_repair_rounds": repair_rounds,
                   "pack": body.get("pack"), "session": out_dir.name,
-                  "answered_by": answered_by,
+                  "answered_by": answered_by, "doc_sha": doc_sha,
                   "learner": cfg.model,
                   "expert": cfg.expert_model if answered_by == "expert"
                   else None}
@@ -693,6 +715,14 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 kwargs = dict(llm=build_chat(role="learner"))
                 if answered_by == "expert":
                     kwargs["stakeholder_llm"] = build_chat(role="expert")
+                elif answered_by == "human":
+                    # The run BLOCKS on each question until the person
+                    # replies through /api/runs/<id>/answer.
+                    from experiments.intent_loop.stakeholder import (
+                        HumanStakeholder)
+                    human = HumanStakeholder(on_ask=job.ask)
+                    job.answer_sink = human.submit
+                    kwargs["stakeholder_obj"] = human
 
             llm = kwargs.pop("llm")
             record = loop_mod.run_episode(
@@ -726,6 +756,25 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         if job is None:
             return jsonify({"error": "no such job"}), 404
         return jsonify(job.to_dict())
+
+    @app.post("/api/runs/<job_id>/answer")
+    def answer_run(job_id: str):
+        """A human answers the learner's open question; the run resumes.
+
+        This is what makes the interrogation a conversation rather than a
+        transcript: the run thread is blocked inside the interrogation
+        waiting for exactly this."""
+        job = registry.get(job_id)
+        if job is None:
+            return jsonify({"error": "no such job"}), 404
+        body = request.get_json(silent=True) or {}
+        text = str(body.get("answer", "")).strip()
+        if not text:
+            return jsonify({"error": "answer is required"}), 400
+        if not job.answer(text):
+            return jsonify({"error": "this run is not waiting for an "
+                                     "answer right now"}), 409
+        return jsonify({"ok": True, "job_id": job_id})
 
     # -- settings: bring your own LLM -------------------------------------
     @app.get("/api/settings")

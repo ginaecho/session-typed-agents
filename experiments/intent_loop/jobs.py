@@ -37,6 +37,28 @@ class Job:
         self.created = _now()
         self.finished: Optional[str] = None
         self._lock = threading.Lock()
+        #: When a human is answering the interrogation, the run thread
+        #: blocks and these carry the open question to the UI and the reply
+        #: back. A conversation needs the run to WAIT, not to finish and be
+        #: read afterwards.
+        self.awaiting: Optional[str] = None
+        self.answer_sink: Optional[Callable[[str], None]] = None
+
+    def ask(self, questions: str) -> None:
+        with self._lock:
+            self.awaiting = questions
+        self.emit("awaiting_answer", {"questions": questions})
+
+    def answer(self, text: str) -> bool:
+        """Deliver a human reply. False if nothing was waiting for one."""
+        with self._lock:
+            sink, waiting = self.answer_sink, self.awaiting
+            self.awaiting = None
+        if sink is None or waiting is None:
+            return False
+        sink(text)
+        self.emit("answer_received", {"chars": len(text)})
+        return True
 
     def emit(self, stage: str, detail: dict) -> None:
         with self._lock:
@@ -47,9 +69,11 @@ class Job:
             d = {"id": self.id, "kind": self.kind, "state": self.state,
                  "params": self.params, "created": self.created,
                  "finished": self.finished, "result": self.result,
-                 "error": self.error,
+                 "error": self.error, "awaiting": self.awaiting,
                  "stage": (self.events[-1]["stage"] if self.events
-                           else None)}
+                           else None),
+                 "stage_since": (self.events[-1]["at"] if self.events
+                                 else self.created)}
             if include_events:
                 d["events"] = list(self.events)
             return d
