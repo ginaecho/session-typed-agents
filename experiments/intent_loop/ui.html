@@ -128,6 +128,35 @@ code{font-family:var(--mono);font-size:12px;background:var(--plane);
   padding:1px 5px;border-radius:4px}
 .warnbar{border:1px solid var(--warning);border-radius:9px;padding:9px 12px;
   margin-bottom:12px;font-size:13px;background:var(--surface)}
+
+/* interactive force graph */
+.gwrap{position:relative;border:1px solid var(--line);border-radius:9px;
+  background:var(--surface);overflow:hidden}
+.gwrap svg{display:block;width:100%;height:560px;touch-action:none;
+  cursor:grab}
+.gwrap svg.dragging{cursor:grabbing}
+.gctl{position:absolute;top:10px;left:10px;display:flex;gap:6px;
+  align-items:center;flex-wrap:wrap;z-index:2;
+  background:var(--surface);border:1px solid var(--line);border-radius:8px;
+  padding:6px 8px;font-size:12px;max-width:calc(100% - 20px)}
+.gctl button{padding:3px 9px;font-size:12px}
+.gctl label{margin:0;text-transform:none;letter-spacing:0;font-size:12px;
+  color:var(--ink-2);display:flex;align-items:center;gap:5px;font-weight:500}
+.gctl input[type=checkbox]{width:auto}
+.ginfo{position:absolute;right:10px;top:10px;width:250px;max-height:calc(100% - 20px);
+  overflow-y:auto;background:var(--surface);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;font-size:12px;z-index:2}
+.ginfo h4{margin:0 0 6px;font-size:12px}
+.ginfo .sub{font-size:11px}
+.node{cursor:pointer}
+.node circle{transition:opacity .15s}
+.node text{font-size:11px;font-weight:600;pointer-events:none;
+  fill:var(--ink)}
+.node.msg text{font-weight:500;font-size:10px;fill:var(--ink-2)}
+.link{stroke:var(--muted);fill:none;transition:opacity .15s}
+.dim{opacity:.09}
+.hot{opacity:1}
+.linklabel{font-size:10px;fill:var(--ink-2);pointer-events:none}
 </style>
 </head>
 <body>
@@ -359,6 +388,233 @@ async function showEpisode(session){
   paint("Graph");
 }
 
+/* ---------- interactive force-directed graph ----------------------------
+   Obsidian-style: nodes repel, links pull, drag to rearrange, wheel to
+   zoom, hover to focus a neighbourhood. Written from scratch (~150 lines)
+   because the page must stay offline — no d3, no CDN.
+
+   Two modes answer different questions:
+     roles     4 nodes, one per role; an arc per direction, thickness by
+               traffic. "Who talks to whom."
+     messages  every message is its own node between its sender and
+               receiver. This is the Obsidian-like view: with 53 messages
+               the clusters show which roles carry the conversation.
+------------------------------------------------------------------------ */
+const SERIES = ["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4","#008300",
+  "#4a3aa7","#e34948"];
+
+function forceGraph(host, roles, edges, mode){
+  const NS = "http://www.w3.org/2000/svg";
+  const mk = (n,a={})=>{const e=document.createElementNS(NS,n);
+    for(const k in a) e.setAttribute(k,a[k]); return e;};
+
+  // ---- build nodes + links for the chosen mode ----
+  const nodes = [], links = [];
+  const byId = {};
+  const addNode = n => { byId[n.id]=n; nodes.push(n); return n; };
+  roles.forEach((r,i)=>addNode({id:r, label:r, kind:"role", color:SERIES[i%8],
+    r:22, x:0, y:0, vx:0, vy:0}));
+
+  if(mode==="messages"){
+    let k=0;
+    edges.forEach(e=>e.labels.forEach(lab=>{
+      const id = `${e.from}|${lab}|${e.to}|${k++}`;
+      const n = addNode({id, label:lab, kind:"msg", r:6,
+        color: byId[e.from] ? byId[e.from].color : SERIES[0],
+        conditional:e.conditional, x:0, y:0, vx:0, vy:0});
+      if(byId[e.from]) links.push({s:byId[e.from], t:n, w:1, cond:e.conditional});
+      if(byId[e.to])   links.push({s:n, t:byId[e.to], w:1, cond:e.conditional,
+        arrow:true});
+    }));
+  } else {
+    edges.forEach(e=>{
+      if(!byId[e.from]||!byId[e.to]) return;
+      links.push({s:byId[e.from], t:byId[e.to], w:e.count,
+        cond:e.conditional, arrow:true, labels:e.labels});
+    });
+  }
+  // node radius by traffic so a hub reads as a hub
+  const deg = {};
+  links.forEach(l=>{deg[l.s.id]=(deg[l.s.id]||0)+l.w; deg[l.t.id]=(deg[l.t.id]||0)+l.w;});
+  nodes.forEach(n=>{ if(n.kind==="role")
+    n.r = 18 + Math.min(20, Math.sqrt(deg[n.id]||1)*3.2); });
+
+  // seed on a circle (deterministic — no Math.random, so a reload gives
+  // the same layout and the picture is stable between sessions)
+  const W = host.clientWidth||900, H = 560;
+  nodes.forEach((n,i)=>{
+    const a = 2*Math.PI*i/nodes.length;
+    const rad = n.kind==="role" ? 150 : 240;
+    n.x = W/2 + rad*Math.cos(a); n.y = H/2 + rad*Math.sin(a);
+  });
+
+  // ---- svg scaffold ----
+  const svg = mk("svg",{viewBox:`0 0 ${W} ${H}`});
+  const defs = mk("defs");
+  defs.innerHTML = `<marker id="fgar" viewBox="0 0 10 10" refX="10" refY="5"
+    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#898781"/></marker>`;
+  svg.appendChild(defs);
+  const view = mk("g");            // pan/zoom container
+  svg.appendChild(view);
+  const linkG = mk("g"), labelG = mk("g"), nodeG = mk("g");
+  view.appendChild(linkG); view.appendChild(labelG); view.appendChild(nodeG);
+  host.appendChild(svg);
+
+  const linkEls = links.map(l=>{
+    const p = mk("path",{class:"link","stroke-width":Math.min(5,1+l.w*0.35)});
+    if(l.cond) p.setAttribute("stroke-dasharray","5,4");
+    if(l.arrow) p.setAttribute("marker-end","url(#fgar)");
+    linkG.appendChild(p); return p;
+  });
+  const nodeEls = nodes.map(n=>{
+    const g = mk("g",{class:"node"+(n.kind==="msg"?" msg":"")});
+    const c = mk("circle",{r:n.r, fill:n.color, "fill-opacity":
+      n.kind==="role"?0.18:0.5, stroke:n.color,
+      "stroke-width":n.kind==="role"?2:1});
+    const t = mk("text",{"text-anchor":"middle",
+      y: n.kind==="role" ? n.r+15 : -9});
+    t.textContent = n.label;
+    g.appendChild(c); g.appendChild(t); nodeG.appendChild(g);
+    g.addEventListener("pointerenter",()=>focus(n));
+    g.addEventListener("pointerleave",()=>focus(null));
+    g.addEventListener("pointerdown",ev=>startDrag(ev,n));
+    return g;
+  });
+
+  // ---- physics ----
+  let alpha = 1, running = true, dragging = null;
+  const REP = mode==="messages" ? 5200 : 26000;   // node-node repulsion
+  const LEN = mode==="messages" ? 62 : 210;       // spring rest length
+  function step(){
+    for(let i=0;i<nodes.length;i++){
+      const a=nodes[i];
+      for(let j=i+1;j<nodes.length;j++){
+        const b=nodes[j];
+        let dx=b.x-a.x, dy=b.y-a.y, d2=dx*dx+dy*dy||1;
+        const d=Math.sqrt(d2), f=REP/d2;
+        const ux=dx/d, uy=dy/d;
+        a.vx-=ux*f; a.vy-=uy*f; b.vx+=ux*f; b.vy+=uy*f;
+      }
+    }
+    links.forEach(l=>{
+      let dx=l.t.x-l.s.x, dy=l.t.y-l.s.y;
+      const d=Math.sqrt(dx*dx+dy*dy)||1, f=(d-LEN)*0.02;
+      const ux=dx/d, uy=dy/d;
+      l.s.vx+=ux*f; l.s.vy+=uy*f; l.t.vx-=ux*f; l.t.vy-=uy*f;
+    });
+    nodes.forEach(n=>{                      // gentle pull to centre
+      n.vx += (W/2-n.x)*0.0016; n.vy += (H/2-n.y)*0.0016;
+      if(n===dragging){ n.vx=n.vy=0; return; }
+      n.x += (n.vx*=0.86)*alpha; n.y += (n.vy*=0.86)*alpha;
+    });
+    alpha = Math.max(0.02, alpha*0.994);
+  }
+  function draw(){
+    links.forEach((l,i)=>{
+      const dx=l.t.x-l.s.x, dy=l.t.y-l.s.y;
+      const d=Math.hypot(dx,dy)||1;
+      // stop the arc at the node edge so the arrowhead is visible
+      const sx=l.s.x+dx/d*l.s.r, sy=l.s.y+dy/d*l.s.r;
+      const tx=l.t.x-dx/d*(l.t.r+4), ty=l.t.y-dy/d*(l.t.r+4);
+      const mx=(sx+tx)/2 - dy/d*d*0.12, my=(sy+ty)/2 + dx/d*d*0.12;
+      linkEls[i].setAttribute("d",`M${sx},${sy} Q${mx},${my} ${tx},${ty}`);
+    });
+    nodeEls.forEach((g,i)=>g.setAttribute("transform",
+      `translate(${nodes[i].x.toFixed(1)},${nodes[i].y.toFixed(1)})`));
+  }
+  function loop(){
+    if(running){ step(); draw(); }
+    requestAnimationFrame(loop);
+  }
+  loop();
+  const reheat = a => { alpha = Math.max(alpha, a); };
+
+  // ---- focus / hover ----
+  const info = host.parentElement.querySelector(".ginfo");
+  function focus(n){
+    if(!n){
+      nodeEls.forEach(g=>g.classList.remove("dim","hot"));
+      linkEls.forEach(p=>p.classList.remove("dim","hot"));
+      if(info) info.innerHTML = infoDefault;
+      return;
+    }
+    const near = new Set([n]);
+    links.forEach(l=>{ if(l.s===n) near.add(l.t); if(l.t===n) near.add(l.s); });
+    nodeEls.forEach((g,i)=>g.classList.toggle("dim",!near.has(nodes[i])));
+    linkEls.forEach((p,i)=>p.classList.toggle("dim",
+      links[i].s!==n && links[i].t!==n));
+    if(info){
+      const outg = links.filter(l=>l.s===n), inc = links.filter(l=>l.t===n);
+      const nameOf = x => x.kind==="msg" ? x.label : x.id;
+      info.innerHTML = `<h4>${esc(n.label)}</h4>
+        <div class="sub">${n.kind==="role"?"role":"message"}</div>
+        ${mode==="roles" ? `
+          ${outg.map(l=>`<div style="margin-top:7px">
+            <b>→ ${esc(l.t.id)}</b> <span class="sub">${l.w} msg</span>
+            <div class="sub">${(l.labels||[]).map(esc).join(", ")}</div>
+          </div>`).join("")}
+          ${inc.map(l=>`<div style="margin-top:7px">
+            <b>← ${esc(l.s.id)}</b> <span class="sub">${l.w} msg</span>
+            <div class="sub">${(l.labels||[]).map(esc).join(", ")}</div>
+          </div>`).join("")}`
+        : `<div style="margin-top:6px" class="sub">
+            ${inc.map(l=>"from "+esc(nameOf(l.s))).join("<br>")}
+            ${outg.map(l=>"to "+esc(nameOf(l.t))).join("<br>")}</div>`}`;
+    }
+  }
+  const infoDefault = `<h4>Hover a node</h4><div class="sub">Drag to
+    rearrange · wheel to zoom · drag the background to pan. Dashed links
+    only happen on some branch.</div>`;
+  if(info) info.innerHTML = infoDefault;
+
+  // ---- pan / zoom / drag ----
+  let k=1, tx=0, ty=0, panning=null;
+  const apply = ()=>view.setAttribute("transform",
+    `translate(${tx},${ty}) scale(${k})`);
+  const toWorld = ev => {
+    const r = svg.getBoundingClientRect();
+    const sx = (ev.clientX-r.left)*(W/r.width), sy = (ev.clientY-r.top)*(H/r.height);
+    return {x:(sx-tx)/k, y:(sy-ty)/k, sx, sy};
+  };
+  function startDrag(ev,n){
+    ev.stopPropagation(); ev.preventDefault();
+    dragging = n; svg.classList.add("dragging");
+    svg.setPointerCapture(ev.pointerId); reheat(0.5);
+  }
+  svg.addEventListener("pointerdown",ev=>{
+    if(dragging) return;
+    const p = toWorld(ev); panning = {x:p.sx-tx, y:p.sy-ty};
+    svg.classList.add("dragging"); svg.setPointerCapture(ev.pointerId);
+  });
+  svg.addEventListener("pointermove",ev=>{
+    if(dragging){ const p=toWorld(ev); dragging.x=p.x; dragging.y=p.y;
+      reheat(0.3); }
+    else if(panning){ const p=toWorld(ev);
+      tx=p.sx-panning.x; ty=p.sy-panning.y; apply(); }
+  });
+  const endPointer = ()=>{ dragging=null; panning=null;
+    svg.classList.remove("dragging"); };
+  svg.addEventListener("pointerup",endPointer);
+  svg.addEventListener("pointercancel",endPointer);
+  svg.addEventListener("wheel",ev=>{
+    ev.preventDefault();
+    const p = toWorld(ev);
+    const nk = Math.min(4, Math.max(0.25, k*(ev.deltaY<0?1.12:1/1.12)));
+    tx = p.sx - p.x*nk; ty = p.sy - p.y*nk; k = nk; apply();
+  },{passive:false});
+
+  return {
+    zoom(f){ k = Math.min(4, Math.max(0.25, k*f)); apply(); },
+    reset(){ k=1; tx=0; ty=0; apply(); alpha=1;
+      nodes.forEach((n,i)=>{ const a=2*Math.PI*i/nodes.length;
+        const rad = n.kind==="role"?150:240;
+        n.x=W/2+rad*Math.cos(a); n.y=H/2+rad*Math.sin(a); n.vx=n.vy=0; }); },
+    freeze(){ running = !running; return running; },
+    destroy(){ running=false; },
+  };
+}
+
 /* ---------- graph tab ---------- */
 async function loadGraph(session){
   const g = await api(`/api/episodes/${encodeURIComponent(session)}/graph`);
@@ -382,8 +638,19 @@ async function loadGraph(session){
       </div>`:""}
 
     <h2>Who talks to whom</h2>
-    <p class="note">Dashed = the message only happens on some branch.</p>
-    <div class="card" style="overflow-x:auto">${g.svg.roles}</div>
+    <p class="note">Drag nodes to pull the graph apart · wheel to zoom ·
+    drag the background to pan · hover a node to isolate its neighbourhood.
+    Dashed links only happen on some branch.</p>
+    <div class="gwrap">
+      <div class="gctl">
+        <label><input type="checkbox" id="gmode"> show every message as a
+          node</label>
+        <button id="gzin">+</button><button id="gzout">−</button>
+        <button id="greset">reset</button><button id="gfreeze">pause</button>
+      </div>
+      <div class="ginfo"></div>
+      <div id="gcanvas"></div>
+    </div>
 
     <h2>In what order — and what is conditional</h2>
     <p class="note">Top to bottom is time. Grey bands are decision points and
@@ -406,6 +673,22 @@ async function loadGraph(session){
     <div class="row"><button class="primary" id="explain">Explain each
       message</button><span class="sub" id="explainstatus"></span></div>
     <div id="explainbody"></div>`;
+
+  // interactive graph — rebuilt on mode change so the simulation is clean
+  let sim = null;
+  const mountGraph = ()=>{
+    if(sim) sim.destroy();
+    const host = $("#gcanvas"); host.innerHTML = "";
+    sim = forceGraph(host, g.roles, g.edges,
+      $("#gmode").checked ? "messages" : "roles");
+  };
+  mountGraph();
+  $("#gmode").onchange = mountGraph;
+  $("#gzin").onclick = ()=>sim.zoom(1.25);
+  $("#gzout").onclick = ()=>sim.zoom(1/1.25);
+  $("#greset").onclick = ()=>sim.reset();
+  $("#gfreeze").onclick = e=>{ e.target.textContent =
+    sim.freeze() ? "pause" : "resume"; };
 
   el.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{
     el.querySelectorAll("[data-role]").forEach(x=>
