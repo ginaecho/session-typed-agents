@@ -204,7 +204,7 @@ const api = async (p,o) => {
 };
 const badge=(cls,label)=>`<span class="b ${cls}"><span class="dot"></span>${esc(label)}</span>`;
 const pct = v => v==null ? "—" : Math.round(v*100)+"%";
-let state={episodes:[],current:null,view:"episode",poll:null};
+let state={episodes:[],current:null,view:"episode",poll:null,askKey:""};
 
 /* ---------- health ---------- */
 async function loadHealth(){
@@ -981,6 +981,9 @@ document-scale intent is the point; a handbook is fine."></textarea>
         <span id="runstatus" class="sub"></span>
       </div>
     </div>
+    <!-- The reply box lives OUTSIDE #joblog: that panel is rebuilt on every
+         poll, which would wipe whatever you were typing. -->
+    <div id="askpanel"></div>
     <div id="joblog"></div>`;
   $("#go").onclick = startRun;
   // The scripted demo answers from a fixed script, so it cannot say
@@ -1100,6 +1103,23 @@ async function pollJob(id, session){
     const reached = new Set((j.events||[]).map(e=>e.stage));
     const cur = j.stage||"start";
 
+    // The reply box is rendered ONCE per question, into its own panel, and
+    // left alone afterwards — the 2-second poll must never touch the field
+    // you are typing in. Rebuilding it was destroying every keystroke.
+    const askKey = j.awaiting ? JSON.stringify(j.awaiting) : "";
+    if(askKey !== state.askKey){
+      state.askKey = askKey;
+      const panel = $("#askpanel");
+      if(panel){
+        panel.innerHTML = j.awaiting ? askBox(id, j.awaiting) : "";
+        const btn = $("#ansbtn");
+        if(btn) btn.onclick = ()=>sendAnswer(id);
+        const box = $("#ansbox");
+        if(box){ box.focus(); box.setSelectionRange(box.value.length,
+                                                    box.value.length); }
+      }
+    }
+
     // Seconds on the CURRENT stage. A single model call over a large
     // document can take minutes; without this the run reads as frozen.
     const since = j.stage_since ? Math.round(
@@ -1113,7 +1133,6 @@ async function pollJob(id, session){
           ? ` · ${since}s on this step` : ""}
           ${chars?` · ${(chars/1000).toFixed(0)}k-char document — one model
           call over it takes 1–3 min`:""}</span></div>
-      ${j.awaiting?askBox(id, j.awaiting):""}
       <div class="pipe" style="margin:10px 0 0">
         ${STAGE_ORDER.map(s=>`<div class="stage${reached.has(s)?" on":""}">
           <div class="t">${STAGE_LABEL[s]}</div>
@@ -1136,12 +1155,6 @@ async function pollJob(id, session){
     if(sess){
       const p = await api(`/api/episodes/${encodeURIComponent(sess)}/partial`);
       if(!p.error) renderLive(p);
-      // Wire the answer button each time the box is re-rendered (the log
-      // is rebuilt on every poll, so an inline handler would go stale).
-      if(j.awaiting){
-        const btn = $("#ansbtn");
-        if(btn) btn.onclick = ()=>sendAnswer(id);
-      }
       if(!drewIntent && reached.has("interrogated")){
         const ig = await api(
           `/api/episodes/${encodeURIComponent(sess)}/intent-graph`);
@@ -1213,12 +1226,21 @@ function askBox(jobId, awaiting){
 
 async function sendAnswer(jobId){
   const box = $("#ansbox"); if(!box || !box.value.trim()) return;
+  const btn = $("#ansbtn"); if(btn) btn.disabled = true;
   $("#anssent").textContent = "sending…";
   const r = await api(`/api/runs/${encodeURIComponent(jobId)}/answer`,
     {method:"POST", headers:{"Content-Type":"application/json"},
      body: JSON.stringify({answer: box.value})});
-  $("#anssent").innerHTML = r.error ? badge("bad", esc(r.error))
-    : badge("good","sent — the learner is thinking about it");
+  if(r.error){
+    if(btn) btn.disabled = false;
+    $("#anssent").innerHTML = badge("bad", esc(r.error));
+    return;
+  }
+  // Clear the panel and forget the key so the NEXT question renders fresh.
+  state.askKey = "";
+  $("#askpanel").innerHTML = `<div class="card">${badge("good","answer sent")}
+    <p class="note">gpt-5.4 is reading it and deciding what to ask
+    next.</p></div>`;
 }
 
 // The newest sub-event, in words: what the model is doing right now.
