@@ -265,13 +265,16 @@ async function showEpisode(session){
     </div>
 
     <div class="tabs" role="tablist">
-      ${["Requirements","Interrogation","Protocol","Faithfulness","Intent","Raw"]
+      ${["Graph","Requirements","Interrogation","Protocol","Faithfulness","Refine","Intent","Raw"]
         .map((t,i)=>`<button class="tab" role="tab" data-t="${t}"
           aria-selected="${i===0}">${t}</button>`).join("")}
     </div>
     <div id="tabbody"></div>`;
 
   const tabs = {
+    Graph: ()=>`<div id="graphbody"><div class="empty">Drawing…</div></div>`,
+    Refine: ()=>`<div id="refinebody"><div class="empty">Loading…</div></div>`,
+
     Requirements: ()=>`
       <h2>Distilled requirements</h2>
       <p class="note">Provenance is tracked per item: <b>document</b> = stated in
@@ -343,13 +346,198 @@ async function showEpisode(session){
     Raw: ()=>`<h2>Meter</h2><pre class="wrap">${esc(JSON.stringify(ep.meter,null,2))}</pre>
       <h2>Record</h2><pre class="wrap">${esc(JSON.stringify(ep,null,2).slice(0,20000))}</pre>`,
   };
-  const paint = name => { $("#tabbody").innerHTML = tabs[name](); };
+  const paint = name => {
+    $("#tabbody").innerHTML = tabs[name]();
+    if(name==="Graph") loadGraph(session);
+    if(name==="Refine") loadRefine(session, ep);
+  };
   document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
     document.querySelectorAll(".tab").forEach(x=>
       x.setAttribute("aria-selected", x===b));
     paint(b.dataset.t);
   });
-  paint("Requirements");
+  paint("Graph");
+}
+
+/* ---------- graph tab ---------- */
+async function loadGraph(session){
+  const g = await api(`/api/episodes/${encodeURIComponent(session)}/graph`);
+  const el = $("#graphbody"); if(!el) return;
+  if(g.error){ el.innerHTML=`<div class="empty">${esc(g.error)}</div>`; return; }
+  const s = g.stats||{};
+  el.innerHTML = `
+    <div class="tiles" style="margin-bottom:12px">
+      <div class="tile"><div class="v">${s.roles}</div><div class="k">Roles</div></div>
+      <div class="tile"><div class="v">${s.messages}</div><div class="k">Messages</div></div>
+      <div class="tile"><div class="v">${s.choices}</div><div class="k">Decision points</div></div>
+      <div class="tile"><div class="v">${s.loops}</div><div class="k">Loops</div></div>
+      <div class="tile"><div class="v">${s.branched_messages}</div><div class="k">Conditional msgs</div></div>
+    </div>
+    ${g.from_valid_draft?"":`<div class="warnbar">${badge("warn","rejected draft")}
+      This is the last attempt, which the validator rejected — drawn so you
+      can see why.</div>`}
+    ${(g.unparsed||[]).length?`<div class="warnbar">${badge("warn","unread lines")}
+      ${g.unparsed.length} line(s) could not be read and are NOT in the
+      diagrams: ${g.unparsed.map(u=>`<code>${esc(u.text.slice(0,80))}</code>`).join(" ")}
+      </div>`:""}
+
+    <h2>Who talks to whom</h2>
+    <p class="note">Dashed = the message only happens on some branch.</p>
+    <div class="card" style="overflow-x:auto">${g.svg.roles}</div>
+
+    <h2>In what order — and what is conditional</h2>
+    <p class="note">Top to bottom is time. Grey bands are decision points and
+    loops: everything inside one happens only on that branch. That is where
+    "when NOT to do it" lives.</p>
+    <div class="card" style="overflow-x:auto">${g.svg.sequence}</div>
+
+    <h2>One role's own contract</h2>
+    <p class="note">Each role's obligations in order — <code>!</code> it must
+    send, <code>?</code> it waits to receive. This is the projection idea:
+    the role sees only its own boundary.</p>
+    <div class="row" style="margin-bottom:8px">
+      ${g.roles.map((r,i)=>`<button class="tab" data-role="${esc(r)}"
+        aria-selected="${i===0}">${esc(r)}</button>`).join("")}
+    </div>
+    <div class="card" style="overflow-x:auto" id="fsmbox">
+      ${g.svg.fsm[g.roles[0]]||""}</div>
+
+    <h2>Why is it presented this way?</h2>
+    <div class="row"><button class="primary" id="explain">Explain each
+      message</button><span class="sub" id="explainstatus"></span></div>
+    <div id="explainbody"></div>`;
+
+  el.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{
+    el.querySelectorAll("[data-role]").forEach(x=>
+      x.setAttribute("aria-selected", x===b));
+    $("#fsmbox").innerHTML = g.svg.fsm[b.dataset.role]||"";
+  });
+  $("#explain").onclick = async ()=>{
+    $("#explain").disabled=true;
+    $("#explainstatus").textContent = "asking the model…";
+    const r = await api(`/api/episodes/${encodeURIComponent(session)}/explain`,
+      {method:"POST"});
+    $("#explain").disabled=false; $("#explainstatus").textContent="";
+    if(r.error){ $("#explainbody").innerHTML =
+      `<div class="warnbar">${esc(r.error)}</div>`; return; }
+    $("#explainbody").innerHTML = `
+      <div class="card"><b>Overall ordering</b>
+        <p class="note">${esc(r.ordering_rationale||"")}</p></div>
+      <table><thead><tr><th>Message</th><th>Realizes</th><th>Why here</th>
+        </tr></thead><tbody>
+        ${(r.messages||[]).map(m=>`<tr>
+          <td class="rid">${esc(m.label)}<br><span class="sub">${esc(m.from||"")}
+            → ${esc(m.to||"")}</span></td>
+          <td>${(m.realizes||[]).map(x=>badge("info",x)).join(" ")||
+            badge("warn","nothing")}</td>
+          <td>${esc(m.why||"")}</td></tr>`).join("")}
+      </tbody></table>
+      ${(r.unexplained||[]).length?`<p class="note">Not explained:
+        ${r.unexplained.map(u=>`<code>${esc(u)}</code>`).join(" ")}</p>`:""}`;
+  };
+}
+
+/* ---------- refine tab ---------- */
+async function loadRefine(session, ep){
+  const el = $("#refinebody"); if(!el) return;
+  if(!ep.final_protocol){
+    el.innerHTML = `<div class="empty">Nothing to refine — this episode has
+      no validated protocol.</div>`; return; }
+  el.innerHTML = `
+    <p class="note">Refinement folds your answers into the requirement
+    checklist and drafts again, as a <b>new</b> episode — the first draft and
+    its verdict are kept, so you can see whether refining helped.</p>
+    <div class="row" style="margin-bottom:10px">
+      <button class="primary" id="ask">Ask the model what it needs to
+        know</button>
+      <button id="addown">Add my own question</button>
+      <span class="sub" id="askstatus"></span>
+    </div>
+    <div id="qlist"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="primary" id="dorefine" disabled>Redraft with these
+        answers</button>
+      <span class="sub" id="refinestatus"></span>
+    </div>
+    <div id="refinelog"></div>`;
+
+  const questions = [];
+  const render = ()=>{
+    $("#qlist").innerHTML = questions.length ? questions.map((q,i)=>`
+      <div class="card">
+        <div><b>${esc(q.q)}</b></div>
+        ${q.because?`<p class="note">Asked because: ${esc(q.because)}
+          ${q.kind?badge("info",q.kind):""}</p>`:""}
+        <textarea data-a="${i}" style="min-height:64px"
+          placeholder="Your answer — one or two sentences.">${esc(q.answer||"")}</textarea>
+      </div>`).join("") : `<div class="empty">No questions yet.</div>`;
+    $("#qlist").querySelectorAll("[data-a]").forEach(t=>t.oninput=()=>{
+      questions[+t.dataset.a].answer = t.value;
+      $("#dorefine").disabled = !questions.some(x=>(x.answer||"").trim());
+    });
+  };
+  render();
+
+  $("#ask").onclick = async ()=>{
+    $("#ask").disabled=true; $("#askstatus").textContent="thinking…";
+    const r = await api(`/api/episodes/${encodeURIComponent(session)}/questions`,
+      {method:"POST"});
+    $("#ask").disabled=false; $("#askstatus").textContent="";
+    if(r.error){ $("#qlist").innerHTML=`<div class="warnbar">${esc(r.error)}</div>`;
+      return; }
+    (r.questions||[]).forEach(q=>questions.push({...q, answer:""}));
+    render();
+  };
+  $("#addown").onclick = ()=>{
+    const q = prompt("Your question for the next draft:");
+    if(q) { questions.push({q, because:"asked by you", kind:"user"});
+      render(); }
+  };
+  $("#dorefine").onclick = async ()=>{
+    $("#dorefine").disabled=true;
+    $("#refinestatus").textContent="redrafting…";
+    const r = await api(`/api/episodes/${encodeURIComponent(session)}/refine`,
+      {method:"POST", headers:{"Content-Type":"application/json"},
+       body: JSON.stringify({validator:"mock",
+         answers: questions.filter(q=>(q.answer||"").trim())
+           .map(q=>({question:q.q, answer:q.answer}))})});
+    if(r.error){ $("#refinestatus").innerHTML=badge("bad",esc(r.error));
+      $("#dorefine").disabled=false; return; }
+    $("#refinestatus").innerHTML = badge("info","job "+r.job_id);
+    pollRefine(r.job_id);
+  };
+}
+
+async function pollRefine(id){
+  clearInterval(state.poll);
+  state.poll = setInterval(async ()=>{
+    const j = await api("/api/runs/"+id);
+    $("#refinelog").innerHTML = `<div class="card">
+      <div class="row">${badge(j.state==="succeeded"?"good":
+        j.state==="failed"?"bad":"info", j.state)}
+        <span class="sub">${esc(j.stage||"")}</span></div>
+      <table style="margin-top:8px"><tbody>${(j.events||[]).map(e=>{
+        const {stage,at,...rest}=e;
+        return `<tr><td class="rid">${esc(stage)}</td>
+          <td><code>${esc(JSON.stringify(rest))}</code></td></tr>`;
+      }).join("")}</tbody></table>
+      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
+    if(j.state==="succeeded"||j.state==="failed"){
+      clearInterval(state.poll); $("#dorefine").disabled=false;
+      if(j.result){
+        const R=j.result;
+        $("#refinelog").innerHTML += `<div class="card">
+          <b>Draft 2</b>
+          <p class="note">coverage ${pct(R.recall_before)} →
+            <b>${pct(R.recall)}</b> · ${R.requirements} requirements ·
+            ${R.valid?"validator accepted":"never validated"}</p>
+          <button class="primary" id="openrefined">Open
+            ${esc(R.session)}</button></div>`;
+        await loadEpisodesKeepView();
+        $("#openrefined").onclick=()=>showEpisode(R.session);
+      }
+    }
+  }, 1500);
 }
 
 /* ---------- new run ---------- */
@@ -416,37 +604,110 @@ async function startRun(){
       +(r.detail?` — ${esc(r.detail)}`:"");
     $("#go").disabled=false; return;
   }
-  $("#runstatus").innerHTML = badge("info","job "+r.job_id);
-  pollJob(r.job_id);
+  $("#runstatus").innerHTML = badge("info","job "+r.job_id)
+    + ` <span class="sub">watch it below — the questions and the graph
+        appear as soon as they exist</span>`;
+  pollJob(r.job_id, r.session);
 }
 
-async function pollJob(id){
+/* Live view of a run: stages, then the Q&A and the graph AS THEY LAND.
+   A live episode takes minutes; the transcript is on disk once
+   interrogation ends and each draft as it is attempted, so there is no
+   reason to show a spinner until the very end. */
+const STAGE_ORDER = ["start","interrogated","drafted","evaluated","done"];
+const STAGE_LABEL = {start:"Reading the document",
+  interrogated:"Interrogating the stakeholder", drafted:"Drafting the protocol",
+  evaluated:"Grading faithfulness", done:"Finished"};
+
+async function pollJob(id, session){
   clearInterval(state.poll);
+  const t0 = Date.now();
+  let drewGraph = false;
   state.poll = setInterval(async ()=>{
     const j = await api("/api/runs/"+id);
+    const done = j.state==="succeeded"||j.state==="failed";
+    const secs = Math.round((Date.now()-t0)/1000);
+    const reached = new Set((j.events||[]).map(e=>e.stage));
+    const cur = j.stage||"start";
+
     $("#joblog").innerHTML = `<div class="card">
-      <div class="row">${badge(
-        j.state==="succeeded"?"good":j.state==="failed"?"bad":"info", j.state)}
-        <span class="sub">${esc(j.stage||"")}</span></div>
-      <table style="margin-top:9px"><thead><tr><th>Stage</th><th>Detail</th>
-        </tr></thead><tbody>${(j.events||[]).map(e=>{
-          const {stage,at,...rest}=e;
-          return `<tr><td class="rid">${esc(stage)}</td>
-            <td><code>${esc(JSON.stringify(rest))}</code></td></tr>`;
-        }).join("")}</tbody></table>
-      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
-    if(j.state==="succeeded"||j.state==="failed"){
+      <div class="row">${badge(j.state==="succeeded"?"good":
+        j.state==="failed"?"bad":"info", j.state)}
+        <span class="sub">${secs}s elapsed — a live episode is normally
+          3–8 minutes (8–15 model calls over your whole document)</span></div>
+      <div class="pipe" style="margin:10px 0 0">
+        ${STAGE_ORDER.map(s=>`<div class="stage${reached.has(s)?" on":""}">
+          <div class="t">${STAGE_LABEL[s]}</div>
+          <div class="d">${reached.has(s)?"done":
+            (s===nextOf(cur)?"in progress…":"waiting")}</div></div>`).join("")}
+      </div>
+      <table style="margin-top:10px"><tbody>${(j.events||[]).map(e=>{
+        const {stage,at,...rest}=e;
+        return `<tr><td class="rid">${esc(stage)}</td>
+          <td><code>${esc(JSON.stringify(rest))}</code></td></tr>`;
+      }).join("")}</tbody></table>
+      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>
+      <div id="livebody"></div>`;
+
+    // Partial artifacts — show them the moment they exist.
+    const sess = session || (j.params||{}).session;
+    if(sess && (reached.has("interrogated")||done)){
+      const p = await api(`/api/episodes/${encodeURIComponent(sess)}/partial`);
+      if(!p.error) renderLive(p);
+      if(!drewGraph && (reached.has("drafted")||done)){
+        const g = await api(`/api/episodes/${encodeURIComponent(sess)}/graph`);
+        if(!g.error){
+          drewGraph = true;
+          $("#livebody").innerHTML += `
+            <h2>First draft — who talks to whom</h2>
+            <div class="card" style="overflow-x:auto">${g.svg.roles}</div>
+            <h2>In what order</h2>
+            <div class="card" style="overflow-x:auto">${g.svg.sequence}</div>`;
+        }
+      }
+    }
+
+    if(done){
       clearInterval(state.poll); $("#go").disabled=false;
       await loadHealth();
       if(j.state==="succeeded" && j.result){
         const s=j.result.session;
         await loadEpisodesKeepView();
         $("#joblog").innerHTML += `<div class="card">
-          <button class="primary" id="open">Open ${esc(s)}</button></div>`;
+          <button class="primary" id="open">Open full episode
+            ${esc(s)}</button></div>`;
         $("#open").onclick=()=>showEpisode(s);
       }
     }
-  }, 1200);
+  }, 2000);
+}
+const nextOf = s => STAGE_ORDER[Math.min(STAGE_ORDER.indexOf(s)+1,
+  STAGE_ORDER.length-1)];
+
+function renderLive(p){
+  const el = $("#livebody"); if(!el) return;
+  const d = p.distilled||{}, reqs = d.requirements||[];
+  const t = p.transcript||[];
+  if(!reqs.length && !t.length) return;
+  const asked = reqs.filter(r=>r.source==="answer").length;
+  if(el.dataset.reqs === String(reqs.length)) return;   // avoid reflow churn
+  el.dataset.reqs = String(reqs.length);
+  el.innerHTML = `
+    <h2>Interrogation <span class="sub">— ${t.length} round(s)</span></h2>
+    ${t.map(x=>`<div class="card">
+      <div class="qa"><div class="role">Asked</div>
+        <pre class="wrap">${esc(x.question)}</pre></div>
+      <div class="qa"><div class="role">Answered</div>
+        <pre class="wrap">${esc(x.answer)}</pre></div></div>`).join("")}
+    <h2>Distilled so far <span class="sub">— ${reqs.length} requirements,
+      ${asked} recovered by asking</span></h2>
+    <table><thead><tr><th>ID</th><th>Kind</th><th>Source</th>
+      <th>Requirement</th></tr></thead><tbody>
+      ${reqs.map(r=>`<tr><td class="rid">${esc(r.rid)}</td>
+        <td>${badge(r.kind==="policy"?"oos":"info", r.kind)}</td>
+        <td>${badge(r.source==="answer"?"good":"oos", r.source)}</td>
+        <td>${esc(r.text)}</td></tr>`).join("")}
+    </tbody></table>`;
 }
 async function loadEpisodesKeepView(){
   const v=state.view; await loadEpisodes(); state.view=v;

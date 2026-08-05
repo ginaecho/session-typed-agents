@@ -118,6 +118,61 @@ def load_episodes(sessions_dir: Path) -> list[dict]:
     return out
 
 
+def load_partial(sessions_dir: Path, session: str) -> dict | None:
+    """Whatever a session has produced SO FAR, mid-run.
+
+    The loop writes each artifact as it is finished — the transcript and
+    distilled checklist the moment interrogation ends, each draft as it is
+    attempted — so a run that takes minutes has real content on disk long
+    before `record.json` appears at the end. Polling this makes a long run
+    legible instead of a spinner: the questions show up while the protocol
+    is still being drafted.
+    """
+    d = (sessions_dir / session).resolve()
+    if d.parent != sessions_dir.resolve() or not d.is_dir():
+        return None
+    out: dict[str, Any] = {"session": session, "complete": False}
+
+    rec_path = d / "record.json"
+    if rec_path.exists():
+        try:
+            out.update(json.loads(rec_path.read_text(encoding="utf-8")))
+            out["complete"] = True
+        except json.JSONDecodeError:
+            pass
+
+    if not out["complete"]:
+        tr = d / "transcript.json"
+        if tr.exists():
+            try:
+                interro = json.loads(tr.read_text(encoding="utf-8"))
+                out["transcript"] = interro.get("transcript", [])
+                out["distilled"] = interro.get("distilled", {})
+            except json.JSONDecodeError:
+                pass
+        attempts = []
+        drafts = d / "drafts"
+        if drafts.is_dir():
+            for p in sorted(drafts.glob("attempt_*.scr"),
+                            key=lambda q: len(q.name)):
+                k = int(p.stem.split("_")[1])
+                verdict = drafts / f"attempt_{k}.verdict.txt"
+                vtext = _read(verdict)
+                attempts.append({
+                    "k": k, "text": _read(p),
+                    "valid": vtext.startswith("valid: True"),
+                    "validator_msg": vtext.split("\n\n", 1)[-1]
+                    if "\n\n" in vtext else ""})
+        out["draft_attempts"] = attempts
+        proto = d / "protocol.scr"
+        if proto.exists():
+            out["final_protocol"] = _read(proto)
+        out["document"] = _read(d / "document.md")
+
+    out["stage_files"] = sorted(p.name for p in d.iterdir() if p.is_file())
+    return out
+
+
 def load_episode(sessions_dir: Path, session: str) -> dict | None:
     d = (sessions_dir / session).resolve()
     if d.parent != sessions_dir.resolve() or not (d / "record.json").exists():
@@ -280,6 +335,33 @@ def render_report(sessions_dir: Path, session: str | None) -> str:
                    f"<h3>Stakeholder answers</h3>"
                    f"<pre>{e(t.get('answer', ''))}</pre></div>")
 
+    protocol_text = ep.get("final_protocol")
+    if not protocol_text:
+        atts = ep.get("draft_attempts") or []
+        protocol_text = atts[-1].get("text") if atts else None
+    if protocol_text:
+        from experiments.intent_loop.protocol_graph import (parse_protocol,
+                                                            render_role_graph,
+                                                            render_sequence,
+                                                            render_role_fsm)
+        ir = parse_protocol(protocol_text)
+        st = ir.stats()
+        out.append(f"<h2>The protocol as a graph</h2><div class='sub'>"
+                   f"{st['roles']} roles · {st['messages']} messages · "
+                   f"{st['choices']} decision points · {st['loops']} loops · "
+                   f"{st['branched_messages']} messages that only happen on "
+                   f"some branch</div>")
+        if ir.unparsed:
+            out.append(f"<div class='warn'>{len(ir.unparsed)} line(s) could "
+                       f"not be read and are NOT drawn.</div>")
+        out.append("<h3>Who talks to whom</h3>"
+                   f"<div class='card'>{render_role_graph(ir)}</div>")
+        out.append("<h3>In what order — grey bands are conditional</h3>"
+                   f"<div class='card'>{render_sequence(ir)}</div>")
+        for role in ir.roles:
+            out.append(f"<h3>{e(role)} — its own contract</h3>"
+                       f"<div class='card'>{render_role_fsm(ir, role)}</div>")
+
     if ep.get("final_protocol"):
         out.append("<h2>Validated protocol</h2>"
                    f"<pre>{e(ep['final_protocol'])}</pre>")
@@ -406,6 +488,22 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 {"method": "GET", "path": "/api/runs/<job_id>",
                  "returns": "job state + stage events "
                             "(start|interrogated|drafted|evaluated|done)"},
+                {"method": "GET", "path": "/api/episodes/<session>/graph",
+                 "returns": "role graph, sequence view and per-role state "
+                            "machines as inline SVG, plus the edge list"},
+                {"method": "POST", "path": "/api/episodes/<session>/explain",
+                 "returns": "per-message rationale: which requirement each "
+                            "message realizes and why it sits there"},
+                {"method": "POST",
+                 "path": "/api/episodes/<session>/questions",
+                 "returns": "questions about this draft, each anchored to a "
+                            "measured defect"},
+                {"method": "POST", "path": "/api/episodes/<session>/refine",
+                 "body": {"answers": "[{question, answer}] from /questions "
+                                     "or from a human",
+                          "validator": "'real'|'mock'"},
+                 "returns": "{job_id} — redrafts with the answers folded in "
+                            "as new requirements, producing a NEW episode"},
                 {"method": "GET", "path": "/api/corpus",
                  "returns": "corpus statistics"},
                 {"method": "POST", "path": "/api/packs",
@@ -553,6 +651,153 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         if job is None:
             return jsonify({"error": "no such job"}), 404
         return jsonify(job.to_dict())
+
+    # -- the draft, seen and questioned -----------------------------------
+    def _live_llm():
+        from experiments.intent_loop.llm import FoundryChat
+        return FoundryChat()
+
+    @app.get("/api/episodes/<path:session>/partial")
+    def episode_partial(session: str):
+        """Poll a run in flight — returns artifacts as they land."""
+        p = load_partial(app.config["SESSIONS"], session)
+        if p is None:
+            return jsonify({"error": "no such session"}), 404
+        return jsonify(p)
+
+    @app.get("/api/episodes/<path:session>/graph")
+    def episode_graph(session: str):
+        """Role graph, sequence view and per-role state machines, as SVG.
+
+        Rendered from the drafted protocol by a tolerant reader — it draws
+        what the model actually emitted, including constructs the strict
+        Scribble grammar rejects, because seeing a rejected draft is how
+        you find out why it was rejected. Validity remains the validator's
+        verdict alone; anything unreadable is listed, never dropped."""
+        # Partial load, so a protocol can be drawn the moment it is
+        # drafted — the graph is the thing worth watching for, and waiting
+        # for the whole episode to finish just to see it is the difference
+        # between a legible run and a spinner.
+        ep = load_partial(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such episode"}), 404
+        protocol = ep.get("final_protocol")
+        if not protocol:
+            attempts = ep.get("draft_attempts") or []
+            protocol = attempts[-1].get("text") if attempts else None
+        if not protocol:
+            return jsonify({"error": "this episode has no protocol to draw"}), 404
+        from experiments.intent_loop.protocol_graph import graph_payload
+        payload = graph_payload(protocol)
+        payload["from_valid_draft"] = bool(ep.get("final_protocol"))
+        return jsonify(payload)
+
+    @app.post("/api/episodes/<path:session>/explain")
+    def episode_explain(session: str):
+        """Per-message rationale: which requirement each message realizes
+        and why it sits where it does. Cached to the session directory."""
+        ep = load_episode(app.config["SESSIONS"], session)
+        if ep is None or not ep.get("final_protocol"):
+            return jsonify({"error": "no validated protocol to explain"}), 404
+        cache = app.config["SESSIONS"] / session / "rationale.json"
+        if cache.exists() and not request.args.get("refresh"):
+            return jsonify(json.loads(cache.read_text(encoding="utf-8")))
+        from experiments.intent_loop.refine import explain_protocol
+        from experiments.intent_loop.schema import DistilledIntent
+        try:
+            out = explain_protocol(_live_llm(),
+                                   DistilledIntent.from_dict(ep["distilled"]),
+                                   ep["final_protocol"])
+        except Exception as e:
+            return jsonify({"error": f"{type(e).__name__}: {e}"}), 502
+        cache.write_text(json.dumps(out, ensure_ascii=False, indent=2),
+                         encoding="utf-8")
+        return jsonify(out)
+
+    @app.post("/api/episodes/<path:session>/questions")
+    def episode_questions(session: str):
+        """Questions worth asking about THIS draft, each anchored to a
+        measured defect (a requirement scored no/partial, an ungrounded
+        message, an unresolved intake question)."""
+        ep = load_episode(app.config["SESSIONS"], session)
+        if ep is None or not ep.get("final_protocol"):
+            return jsonify({"error": "no validated protocol to question"}), 404
+        cache = app.config["SESSIONS"] / session / "questions.json"
+        if cache.exists() and not request.args.get("refresh"):
+            return jsonify(json.loads(cache.read_text(encoding="utf-8")))
+        from experiments.intent_loop.refine import propose_questions
+        from experiments.intent_loop.schema import DistilledIntent
+        try:
+            qs = propose_questions(_live_llm(),
+                                   DistilledIntent.from_dict(ep["distilled"]),
+                                   ep["final_protocol"],
+                                   ep.get("faithfulness"))
+        except Exception as e:
+            return jsonify({"error": f"{type(e).__name__}: {e}"}), 502
+        out = {"questions": qs, "session": session}
+        cache.write_text(json.dumps(out, ensure_ascii=False, indent=2),
+                         encoding="utf-8")
+        return jsonify(out)
+
+    @app.post("/api/episodes/<path:session>/refine")
+    def episode_refine(session: str):
+        """Fold answers into the checklist and redraft -> a NEW episode.
+
+        Body: {"answers": [{"question": "...", "answer": "..."}], ...}
+        The answers may come from /questions or straight from a human —
+        the endpoint does not care which, so a colleague and an agent
+        refine the same way."""
+        ep = load_episode(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such episode"}), 404
+        body = request.get_json(silent=True) or {}
+        answers = [a for a in (body.get("answers") or [])
+                   if str(a.get("answer", "")).strip()]
+        if not answers:
+            return jsonify({"error": "no answered questions — refinement "
+                                     "needs at least one decision"}), 400
+        validator = body.get("validator") or "real"
+        if validator == "real":
+            status = toolchain_status()
+            if not status["available"]:
+                return jsonify({"error": "real validator unavailable",
+                                "detail": status["detail"],
+                                "hint": "pass validator='mock' for a "
+                                        "development run"}), 409
+            validate_fn, label = loop_mod.real_validate(), "scribble-java"
+        else:
+            validate_fn, label = loop_mod.mock_validate, "mock"
+
+        pack = None
+        if body.get("pack"):
+            pp = app.config["PACKS"] / f"pack_{body['pack']}.json"
+            if pp.exists():
+                pack = PromptPack.load(pp)
+
+        out_dir = app.config["SESSIONS"] / f"refine_{_now_stamp()}"
+        params = {"parent": session, "answers": len(answers),
+                  "validator": label, "session": out_dir.name}
+
+        def _work(job: Job) -> dict:
+            from experiments.intent_loop.refine import refine_episode
+            record = refine_episode(
+                _live_llm(), parent_record=ep,
+                parent_dir=app.config["SESSIONS"] / session,
+                out_dir=out_dir, answers=answers, validate_fn=validate_fn,
+                validator_label=label, prompt_pack=pack,
+                corpus_path=app.config["CORPUS"],
+                progress=lambda s, d: job.emit(s, d))
+            faith = record.faithfulness or {}
+            parent_faith = ep.get("faithfulness") or {}
+            return {"session": out_dir.name, "parent": session,
+                    "valid": record.valid,
+                    "faithful": bool(faith.get("faithful")),
+                    "recall": faith.get("recall"),
+                    "recall_before": parent_faith.get("recall"),
+                    "requirements": len(record.distilled.get("requirements", []))}
+
+        job = registry.submit("refine", params, _work)
+        return jsonify({"job_id": job.id, "session": out_dir.name}), 202
 
     # -- corpus / prompt-level training -----------------------------------
     @app.get("/api/corpus")
