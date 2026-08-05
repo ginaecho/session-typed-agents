@@ -361,11 +361,14 @@ function showRunForm(){
       <code>POST /api/runs</code>. Discovery: <code>GET /api/manifest</code>.</p>
     <div class="card">
       <div class="row">
-        <label style="margin:0"><input type="checkbox" id="mock" checked
-          style="width:auto"> scripted mock (offline, free)</label>
+        <label style="margin:0"><input type="checkbox" id="mock"
+          style="width:auto"> scripted demo — ignores your text, replies
+          from a fixed script (offline, free)</label>
       </div>
+      <div id="mockwarn"></div>
       <label>Intent document</label>
-      <textarea id="intent" placeholder="Paste the stakeholder's brief…"></textarea>
+      <textarea id="intent" placeholder="Paste the stakeholder's brief — a
+document-scale intent is the point; a handbook is fine."></textarea>
       <label>Hidden stakeholder facts (not in the document — tests whether
         interrogation recovers them)</label>
       <textarea id="hidden" style="min-height:80px"></textarea>
@@ -383,6 +386,18 @@ function showRunForm(){
     </div>
     <div id="joblog"></div>`;
   $("#go").onclick = startRun;
+  // The scripted demo answers from a fixed script, so it cannot say
+  // anything about a pasted document. Make that impossible to miss.
+  const syncMock = ()=>{
+    const on = $("#mock").checked;
+    $("#intent").disabled = on; $("#hidden").disabled = on;
+    $("#mockwarn").innerHTML = on
+      ? `<div class="warnbar" style="margin:9px 0 0">${badge("warn","scripted")}
+         Your document is ignored in this mode — the run replays a fixed
+         demo. Untick it to send your text to the model.</div>` : "";
+    $("#go").textContent = on ? "Run scripted demo" : "Run live episode";
+  };
+  $("#mock").onchange = syncMock; syncMock();
 }
 
 async function startRun(){

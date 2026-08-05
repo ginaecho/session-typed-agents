@@ -447,6 +447,20 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         mock = bool(body.get("mock", False))
         validator = body.get("validator") or ("mock" if mock else "real")
 
+        # A scripted mock replies from a fixed script REGARDLESS of the
+        # document, so pairing it with a real intent silently returns
+        # canned answers about a quarterly-report demo. That combination is
+        # never what anyone means; refuse it instead of producing
+        # confident nonsense.
+        if mock and (body.get("intent_text") or body.get("intent_file")):
+            return jsonify({
+                "error": "mock=true ignores your intent document — every "
+                         "reply comes from a fixed script, so the result "
+                         "would describe the built-in demo, not your text.",
+                "hint": "send mock=false to actually run your document "
+                        "through the model.",
+            }), 400
+
         if body.get("intent_text"):
             document = str(body["intent_text"])
         elif body.get("intent_file"):
