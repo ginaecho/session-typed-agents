@@ -79,6 +79,7 @@ def run_episode(
     corpus_path: Path = DEFAULT_CORPUS_PATH,
     episode_id: Optional[str] = None,
     progress: Optional[Callable[[str, dict], None]] = None,
+    stakeholder_mode: str = "document",
 ) -> LoopRecord:
     """Run one episode end-to-end and persist everything under out_dir.
 
@@ -117,7 +118,8 @@ def run_episode(
         _emit(stage, **{k: v for k, v in detail.items() if k != "transcript"})
 
     stakeholder = StakeholderSim(stakeholder_llm or llm, document,
-                                 hidden_notes=hidden_notes)
+                                 hidden_notes=hidden_notes,
+                                 mode=stakeholder_mode)
     interro = run_interrogation(llm, stakeholder, document,
                                 max_rounds=max_rounds,
                                 progress=_interro_progress)

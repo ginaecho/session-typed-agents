@@ -44,12 +44,20 @@ DEFAULT_API_VERSION = "2024-12-01-preview"
 PROVIDERS = ("azure", "openai")
 
 
+#: The expert the learner interrogates when no human is in the room. A
+#: STRONGER model than the learner on purpose: it stands in for the
+#: stakeholder/architect, so the learner is questioning something that
+#: knows more than it does — which is the whole point of asking.
+DEFAULT_EXPERT_MODEL = "gpt-5.6-sol"
+
+
 @dataclass
 class Settings:
     provider: str = "azure"
     endpoint: str = ""           # azure: resource endpoint; openai: base URL
     api_key: str = ""            # empty on azure => use `az login` identity
-    model: str = DEFAULT_MODEL   # azure: deployment name; openai: model id
+    model: str = DEFAULT_MODEL   # the LEARNER: reads intent, asks, drafts
+    expert_model: str = DEFAULT_EXPERT_MODEL   # the ORACLE it interrogates
     api_version: str = DEFAULT_API_VERSION
     max_tokens: int = 16384
 
@@ -94,6 +102,8 @@ def _from_env() -> Settings:
         api_key=os.environ.get("AZURE_OPENAI_API_KEY")
         or os.environ.get("OPENAI_API_KEY") or "",
         model=os.environ.get("AZURE_OPENAI_DEPLOYMENT") or DEFAULT_MODEL,
+        expert_model=os.environ.get("STJP_EXPERT_DEPLOYMENT")
+        or DEFAULT_EXPERT_MODEL,
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION",
                                    DEFAULT_API_VERSION))
 

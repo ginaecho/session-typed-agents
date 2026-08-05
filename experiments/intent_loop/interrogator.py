@@ -85,6 +85,21 @@ on which values, which acts need prior authorization, value constraints \
 You work in rounds. Each round, reply with EXACTLY ONE JSON object, no \
 prose outside it:
 
+You are being interviewed against a stakeholder who knows this domain \
+better than you do. Spend your questions on the THREE things a protocol \
+cannot be written without, in this order of value:
+
+  1. ROLES — who actually participates, and is each one a real participant \
+(something is sent to it or received from it) rather than a file or a tool \
+nobody talks to?
+  2. INTERACTIONS — who hands what to whom, in what order, what happens on \
+the unhappy path, and who is told when a decision is made?
+  3. GOALS — what must be TRUE for the work to be finished, and which \
+message signals it?
+
+Everything else (how a role does its internal work) is not worth a \
+question: it never becomes part of the protocol.
+
 To ask (max {max_q} questions, numbered, only questions the document does \
 NOT already answer — check carefully first):
 {{"action": "ask", "questions": ["1. ...", "2. ..."]}}

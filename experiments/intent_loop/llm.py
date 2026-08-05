@@ -60,15 +60,27 @@ class ChatLLM(Protocol):
         ...
 
 
-def build_chat(meter: Optional["Meter"] = None):
-    """The one place the app asks for a model. Uses the user's saved
-    settings; falls back to the Foundry-first client when none are set, so
-    an existing environment-variable checkout keeps working."""
+def build_chat(meter: Optional["Meter"] = None, role: str = "learner"):
+    """The one place the app asks for a model.
+
+    Two roles, deliberately different models:
+
+      learner  the model under training — reads the intent, asks the
+               questions, drafts the Scribble, and is the one whose
+               improvement we are actually after.
+      expert   a STRONGER model standing in for the human stakeholder when
+               no human is in the room. It answers the learner's questions
+               about roles, interactions and goals. Using the same model
+               for both would be the learner asking itself, which teaches
+               it nothing it did not already believe.
+    """
     from experiments.intent_loop import settings as settings_mod
     s = settings_mod.load()
-    if s.is_usable():
-        return ApiChat(s, meter=meter)
-    return FoundryChat(meter=meter)
+    if not s.is_usable():
+        return FoundryChat(meter=meter)
+    if role == "expert" and s.expert_model:
+        s = settings_mod.Settings(**{**s.to_dict(), "model": s.expert_model})
+    return ApiChat(s, meter=meter)
 
 
 #: Completion budget per call. Reasoning models (gpt-5 family, o-series)

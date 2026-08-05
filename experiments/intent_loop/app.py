@@ -647,13 +647,27 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 return jsonify({"error": f"no such pack: {body['pack']}"}), 400
             pack = PromptPack.load(pp)
 
+        # Who answers the learner's questions: the strong expert model, or
+        # a strict document-quoting stakeholder (which says NOT SPECIFIED
+        # when the text is silent — right for measuring what interrogation
+        # recovers, wrong for getting a protocol finished unattended).
+        answered_by = str(body.get("answered_by") or "expert").lower()
+        if answered_by not in ("expert", "document"):
+            answered_by = "expert"
+
         label_prefix = "mock" if mock else "live"
         out_dir = (app.config["SESSIONS"]
                    / f"{label_prefix}_{_now_stamp()}")
+        from experiments.intent_loop import settings as settings_mod
+        cfg = settings_mod.load()
         params = {"mock": mock, "validator": label,
                   "intent_chars": len(document),
                   "max_rounds": int(body.get("max_rounds", 5)),
-                  "pack": body.get("pack"), "session": out_dir.name}
+                  "pack": body.get("pack"), "session": out_dir.name,
+                  "answered_by": answered_by,
+                  "learner": cfg.model,
+                  "expert": cfg.expert_model if answered_by == "expert"
+                  else None}
 
         def _work(job: Job) -> dict:
             def progress(stage: str, detail: dict) -> None:
@@ -670,7 +684,12 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                     eval_llm=MockChat(mockdata.EVAL_SCRIPT, meter=meter))
             else:
                 from experiments.intent_loop.llm import build_chat
-                kwargs = dict(llm=build_chat())
+                # The learner drafts; a STRONGER expert model answers its
+                # questions in place of a human. Same model for both would
+                # be the learner interrogating itself.
+                kwargs = dict(llm=build_chat(role="learner"))
+                if answered_by == "expert":
+                    kwargs["stakeholder_llm"] = build_chat(role="expert")
 
             llm = kwargs.pop("llm")
             record = loop_mod.run_episode(
@@ -678,6 +697,8 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 prompt_pack=pack, max_rounds=params["max_rounds"],
                 validate_fn=validate_fn, validator_label=label,
                 corpus_path=app.config["CORPUS"], progress=progress,
+                stakeholder_mode=("expert" if answered_by == "expert"
+                                  and not mock else "document"),
                 **kwargs)
             faith = record.faithfulness or {}
             return {"session": out_dir.name,
