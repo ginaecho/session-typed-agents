@@ -367,7 +367,11 @@ async function showEpisode(session){
     Faithfulness: ()=>!graded ? `<div class="empty">Not graded — a protocol
       must validate before it can be checked for faithfulness.</div>` : `
       <div class="card"><b>Verdict rule.</b>
-        <p class="note">${esc(f.rule||"")}</p></div>
+        <p class="note">${esc(f.rule||"")}</p>
+        <p class="note">All three must hold, and <b>partial counts as a
+        miss</b> — deliberately strict, because the per-item evidence below
+        is there for you to overrule it.</p></div>
+      ${dimsPanel(f)}
       <h2>Per-requirement coverage</h2>
       <table><thead><tr><th>ID</th><th>Verdict</th><th>Evidence</th></tr></thead>
       <tbody>${(f.coverage||[]).map(c=>{
@@ -694,6 +698,38 @@ async function pollFormalize(id, session){
       await loadEpisodesKeepView();
     }
   }, 2500);
+}
+
+/* Structure and values are satisfied by DIFFERENT parts of the artifact —
+   the protocol's shape, and the refinement-guard sidecar. One blended
+   percentage hid the actual finding, so both are shown. */
+function dimsPanel(f){
+  const sc = f.scope||{}, dims = sc.dimensions||{};
+  if(!Object.keys(dims).length) return "";
+  const row = (k,label,why) => {
+    const d = dims[k]; if(!d) return "";
+    const ok = d.recall_pct===100;
+    return `<tr><td><b>${label}</b><div class="sub">${why}</div></td>
+      <td>${badge(ok?"good":d.recall_pct>=50?"warn":"bad",
+        d.recall_pct+"%")}</td>
+      <td class="sub">${d.yes} covered · ${d.partial} partial ·
+        ${d.no} missing (of ${d.total})</td></tr>`;
+  };
+  return `<h2>Where the gap is</h2>
+    <table><tbody>
+      ${row("structure","Interactions &amp; ordering",
+            "what the protocol's shape can express — roles, order, "
+            +"authorization, branches, termination")}
+      ${row("values","Value constraints",
+            "only a refinement guard can express these; no arrangement of "
+            +"messages will do")}
+    </tbody></table>
+    ${sc.guards_emitted===false?`<div class="warnbar">
+      ${badge("warn","no guard sidecar")} The drafter emitted no
+      <code>.refn</code> guards, so every value requirement is unenforced.
+      That is one repair (add guards), not a dozen — and it is not a problem
+      with the interactions.</div>`:""}
+    <p class="note">${esc(sc.note||"")}</p>`;
 }
 
 /* ---------- graph tab ---------- */

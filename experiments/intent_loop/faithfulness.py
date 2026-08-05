@@ -44,7 +44,22 @@ from experiments.intent_loop.schema import (CoverageVerdict, DistilledIntent,
 DEFAULT_BACKTRANSLATION_THRESHOLD = 70
 
 _COVERAGE_SYSTEM = """You audit whether a Scribble global protocol realizes \
-a checklist of requirements. For EVERY requirement, decide:
+a checklist of requirements.
+
+A protocol has TWO parts, and they answer different kinds of requirement:
+  * the STRUCTURE (roles, message order, `choice`, `rec`) answers ordering, \
+authorization-before-an-act, branching, termination and role requirements;
+  * the GUARD SIDECAR (`<Label>.<field> :: <predicate>` lines) answers VALUE \
+requirements — thresholds, non-empty fields, "accept only when the verdict \
+is MATCH", "the compared count must exceed zero".
+
+Judge a VALUE requirement against the SIDECAR, never against the message \
+structure. No arrangement of messages can express "the count must be greater \
+than zero", so demanding that of the structure is a category error. If the \
+sidecar is missing or lacks the predicate, the requirement is not realized — \
+say so AND say that a guard is what it needs.
+
+For EVERY requirement, decide:
 - "yes": the protocol clearly realizes it (cite the message(s)/structure),
 - "partial": partly realized or realized ambiguously,
 - "no": absent or contradicted.
@@ -84,8 +99,15 @@ def check_requirement_coverage(
         f"- [{r.rid}][{r.kind}] {r.text}"
         + (f" (roles: {', '.join(r.who)})" if r.who else "")
         for r in scored)
+    # Split structure from guards so the checker can judge each requirement
+    # against the part that can possibly satisfy it.
+    from experiments.seam_bench.t0.drafter import split_guard_sidecar
+    structure, guards = split_guard_sidecar(protocol_text)
     user = (f"=== REQUIREMENTS ===\n{reqs_text}\n\n"
-            f"=== PROTOCOL ===\n{protocol_text}")
+            f"=== PROTOCOL STRUCTURE ===\n{structure}\n\n"
+            + (f"=== GUARD SIDECAR (value constraints) ===\n{guards}\n"
+               if guards else "=== GUARD SIDECAR ===\n(none emitted — so "
+                              "every VALUE requirement is unenforced)\n"))
     obj = parse_json_block(llm.complete(_COVERAGE_SYSTEM, user,
                                         stage="coverage"))
     known = {r.rid for r in scored}
@@ -147,6 +169,8 @@ def evaluate_faithfulness(
     training-signal metric should be conservative; the per-item evidence
     is retained precisely so a human can overrule it.
     """
+    from experiments.seam_bench.t0.drafter import split_guard_sidecar
+    _structure, guards_text = split_guard_sidecar(protocol_text)
     verdicts, ungrounded = check_requirement_coverage(llm, distilled,
                                                       protocol_text)
     # Recall is over PROTOCOL-EXPRESSIBLE requirements only; policy
@@ -184,6 +208,39 @@ def evaluate_faithfulness(
             f"{backtranslation_threshold} (got {backtranslation['score']})"
             + (f". Reported but NOT scored: " + "; ".join(excluded)
                if excluded else ""))
+    # TWO DIMENSIONS, reported separately, because they are satisfied by
+    # different parts of the artifact and conflating them produced a single
+    # number nobody could act on. "16% faithful" hid the real finding: the
+    # INTERACTIONS were largely right and the VALUE GUARDS were absent.
+    #
+    #   structure  ordering / authorization / branch / termination / role
+    #              — what the protocol's shape can express
+    #   values     value requirements — only the .refn guard sidecar can
+    #              express these; no arrangement of messages will do
+    STRUCTURE_KINDS = ("ordering", "authorization", "branch", "termination",
+                       "role", "other")
+    by_rid = {r.rid: r for r in distilled.requirements}
+    dims: dict[str, dict[str, int]] = {}
+    for v in verdicts:
+        req = by_rid.get(v.rid)
+        if req is None or req.kind in distilled.UNGRADED_KINDS:
+            continue
+        dim = "values" if req.kind == "value" else "structure"
+        d = dims.setdefault(dim, {"yes": 0, "partial": 0, "no": 0})
+        d[v.covered if v.covered in d else "no"] += 1
+    for dim, d in dims.items():
+        total = sum(d.values()) or 1
+        d["total"] = sum(d.values())
+        d["recall_pct"] = round(d["yes"] / total * 100)
+    # Per-kind detail, so a reader can see WHICH kind of requirement failed.
+    per_kind: dict[str, dict[str, int]] = {}
+    for v in verdicts:
+        req = by_rid.get(v.rid)
+        if req is None or req.kind in distilled.UNGRADED_KINDS:
+            continue
+        k = per_kind.setdefault(req.kind, {"yes": 0, "partial": 0, "no": 0})
+        k[v.covered if v.covered in k else "no"] += 1
+
     report = FaithfulnessReport(
         coverage=verdicts, recall=recall, ungrounded=ungrounded,
         backtranslation=backtranslation, gold_equivalent=gold_equivalent,
@@ -193,7 +250,15 @@ def evaluate_faithfulness(
     # and reporting recall without it invites the wrong conclusion.
     report.scope = {"graded": n, "policy": n_policy, "interior": n_interior,
                     "typed_surface_ratio":
-                        round(distilled.typed_surface_ratio(), 3)}
+                        round(distilled.typed_surface_ratio(), 3),
+                    "dimensions": dims, "per_kind": per_kind,
+                    "guards_emitted": bool(guards_text),
+                    "note": "`dimensions` splits what the protocol SHAPE can "
+                            "express from what only a refinement guard can. "
+                            "A low overall recall with high structure recall "
+                            "means the interactions are right and the value "
+                            "guards are missing — a different repair from a "
+                            "wrong interaction."}
     return report
 
 
