@@ -200,19 +200,15 @@ def toolchain_status() -> dict:
 
 
 def llm_status() -> dict:
-    """Is a live LLM configured? Checked from config only — probing would
-    cost a call on every health check."""
-    import os
-    backend = os.environ.get("STJP_LLM_BACKEND", "foundry").lower()
-    key = ("AZURE_OPENAI_ENDPOINT" if backend == "chat"
-           else "AZURE_AI_PROJECT_ENDPOINT")
-    configured = bool(os.environ.get(key))
-    if not configured:  # .env is loaded lazily by the client
-        env_file = REPO_ROOT / "stjp_core" / ".env"
-        configured = env_file.exists() and key in _read(env_file)
-    return {"configured": configured, "backend": backend,
-            "expects_env": key,
-            "deployment": os.environ.get("AZURE_OPENAI_DEPLOYMENT")}
+    """Is a live LLM configured? From saved settings + environment only —
+    probing would cost a real call on every health check."""
+    from experiments.intent_loop import settings as settings_mod
+    s = settings_mod.load()
+    d = s.masked()
+    return {"configured": s.is_usable(), "provider": s.provider,
+            "deployment": s.model, "endpoint": s.endpoint,
+            "auth": d["auth"], "api_key_fingerprint":
+                d["api_key_fingerprint"]}
 
 
 # ---------------------------------------------------------------------------
@@ -673,8 +669,8 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                                           meter=meter),
                     eval_llm=MockChat(mockdata.EVAL_SCRIPT, meter=meter))
             else:
-                from experiments.intent_loop.llm import FoundryChat
-                kwargs = dict(llm=FoundryChat())
+                from experiments.intent_loop.llm import build_chat
+                kwargs = dict(llm=build_chat())
 
             llm = kwargs.pop("llm")
             record = loop_mod.run_episode(
@@ -706,10 +702,65 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
             return jsonify({"error": "no such job"}), 404
         return jsonify(job.to_dict())
 
+    # -- settings: bring your own LLM -------------------------------------
+    @app.get("/api/settings")
+    def get_settings():
+        """The saved configuration, ALWAYS masked — the key is never
+        returned, only a last-four fingerprint so you can tell which one is
+        loaded."""
+        from experiments.intent_loop import settings as settings_mod
+        return jsonify(settings_mod.load().masked())
+
+    @app.post("/api/settings")
+    def post_settings():
+        """Partial update. Omit `api_key` to keep the stored one; send an
+        empty string to clear it (that is how Azure falls back to
+        `az login`)."""
+        from experiments.intent_loop import settings as settings_mod
+        body = request.get_json(silent=True) or {}
+        s = settings_mod.update(body)
+        return jsonify(s.masked())
+
+    @app.post("/api/settings/test")
+    def test_settings():
+        """One tiny real call, so 'saved' never gets mistaken for 'works'.
+
+        Tests the SUBMITTED settings when a body is given (so you can
+        verify before saving), otherwise the stored ones."""
+        from experiments.intent_loop import settings as settings_mod
+        from experiments.intent_loop.llm import ApiChat
+        body = request.get_json(silent=True) or {}
+        current = settings_mod.load()
+        if body:
+            data = current.to_dict()
+            for k, v in body.items():
+                if k in data and not (k == "api_key" and v is None):
+                    data[k] = v
+            current = settings_mod.Settings(
+                **{k: data[k] for k in settings_mod.Settings.__dataclass_fields__})
+        if not current.is_usable():
+            return jsonify({"ok": False,
+                            "error": "endpoint and model are required"
+                                     + ("" if current.provider == "azure"
+                                        else "; an OpenAI-compatible "
+                                             "endpoint also needs a key")}), 400
+        try:
+            chat = ApiChat(current)
+            reply = chat.complete("Reply with exactly: OK",
+                                  "Say OK.", stage="settings_test")
+        except Exception as e:
+            return jsonify({"ok": False, "model": current.model,
+                            "error": f"{type(e).__name__}: "
+                                     f"{str(e)[:400]}"}), 502
+        return jsonify({"ok": True, "model": current.model,
+                        "provider": current.provider,
+                        "reply": reply.strip()[:120],
+                        "approx_tokens": chat.meter.to_dict()})
+
     # -- the draft, seen and questioned -----------------------------------
     def _live_llm():
-        from experiments.intent_loop.llm import FoundryChat
-        return FoundryChat()
+        from experiments.intent_loop.llm import build_chat
+        return build_chat()
 
     @app.get("/api/episodes/<path:session>/partial")
     def episode_partial(session: str):
@@ -810,6 +861,69 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         cache.write_text(json.dumps(out, ensure_ascii=False, indent=2),
                          encoding="utf-8")
         return jsonify(out)
+
+    @app.post("/api/episodes/<path:session>/repair-questions")
+    def episode_repair_questions(session: str):
+        """The checker rejected this draft — what must the USER decide?
+
+        This closes the loop the app is for. An "uninformed branch"
+        rejection is not a syntax slip: it means a decision is missing from
+        the intent (who gets told, on which path), and redrafting without
+        asking is guessing. Answers go to /refine, which folds them in as
+        requirements and drafts again."""
+        ep = load_partial(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such episode"}), 404
+        attempts = ep.get("draft_attempts") or []
+        rejected = [a for a in attempts if not a.get("valid")]
+        if not rejected:
+            return jsonify({"error": "nothing was rejected — this episode "
+                                     "validated",
+                            "hint": "use /questions for faithfulness gaps"}), 400
+        last = rejected[-1]
+        from experiments.intent_loop.protocol_checks import check_protocol
+        from experiments.intent_loop.refine import questions_from_validation
+        from experiments.intent_loop.schema import DistilledIntent
+        checks = check_protocol(last.get("text") or "")
+        try:
+            out = questions_from_validation(
+                _live_llm(),
+                DistilledIntent.from_dict(ep.get("distilled") or {}),
+                last.get("text") or "",
+                last.get("validator_msg") or "",
+                findings=checks.get("findings"))
+        except Exception as e:
+            return jsonify({"error": f"{type(e).__name__}: {e}"}), 502
+        out["attempt"] = last.get("k")
+        out["blockers"] = [f for f in checks.get("findings", [])
+                           if f.get("severity") == "blocker"]
+        (app.config["SESSIONS"] / session / "repair_questions.json").write_text(
+            json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        return jsonify(out)
+
+    @app.get("/api/episodes/<path:session>/skill")
+    def episode_skill(session: str):
+        """The episode as a reusable SKILL.md — the protocol, the decisions
+        that produced it, and what the validator taught."""
+        ep = load_episode(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such episode"}), 404
+        from experiments.intent_loop.protocol_checks import check_protocol
+        from experiments.intent_loop.skill import (build_skill,
+                                                   collect_decisions,
+                                                   write_skill)
+        sdir = app.config["SESSIONS"] / session
+        protocol = ep.get("final_protocol")
+        checks = check_protocol(protocol) if protocol else None
+        kwargs = dict(checks=checks, decisions=collect_decisions(sdir),
+                      validator_label=(ep.get("meter") or {}).get(
+                          "validator", "unknown"))
+        path = write_skill(sdir, ep, **kwargs)
+        if request.args.get("format") == "markdown":
+            return (build_skill(ep, **kwargs), 200,
+                    {"Content-Type": "text/markdown; charset=utf-8"})
+        return jsonify({"path": str(path),
+                        "markdown": build_skill(ep, **kwargs)})
 
     @app.post("/api/episodes/<path:session>/questions")
     def episode_questions(session: str):

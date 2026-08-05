@@ -77,3 +77,4 @@ experiments/cases/**/runs/
 experiments/cases/skills_safety/**/LATEST
 
 scribble-java/
+experiments/intent_loop/.settings.json

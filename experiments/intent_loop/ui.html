@@ -185,6 +185,7 @@ code{font-family:var(--mono);font-size:12px;background:var(--plane);
   <aside>
     <div class="row" style="margin-bottom:10px">
       <button class="primary" id="btn-new">New run</button>
+      <button id="btn-settings">Settings</button>
       <button id="btn-refresh">Refresh</button>
     </div>
     <h2 style="margin-top:6px">Episodes</h2>
@@ -211,7 +212,8 @@ async function loadHealth(){
   const v = h.validator||{}, l = h.llm||{};
   $("#health").innerHTML =
     badge(v.available?"good":"warn", v.available?"Scribble validator":"no Scribble toolchain")
-    + badge(l.configured?"good":"warn", l.configured?("LLM: "+(l.deployment||l.backend)):"LLM not configured")
+    + badge(l.configured?"good":"warn", l.configured
+        ? `LLM: ${l.deployment||"?"}` : "LLM not configured — open Settings")
     + badge("info", (h.episodes||0)+" episodes");
 }
 
@@ -823,6 +825,104 @@ async function pollRefine(id){
   }, 1500);
 }
 
+/* ---------- settings: bring your own LLM ---------- */
+async function showSettings(){
+  state.view="settings";
+  const s = await api("/api/settings");
+  $("#main").innerHTML = `
+    <h1 style="font-size:15px">Settings — your LLM</h1>
+    <p class="sub">Anyone with an API can run this. Nothing here leaves your
+      machine: the key is stored beside the app and is never returned by the
+      API — only a last-four fingerprint, so you can tell which key is
+      loaded.</p>
+    <div class="warnbar">${badge("warn","local tool")} This server has no
+      authentication and can spend your key. Keep it on 127.0.0.1. On Azure
+      you can leave the key empty and use <code>az login</code> instead.</div>
+    <div class="card">
+      <label>Provider</label>
+      <select id="s-provider">
+        <option value="azure">Azure OpenAI / AI Foundry</option>
+        <option value="openai">OpenAI-compatible (openai.com, vLLM,
+          LiteLLM, gateway)</option>
+      </select>
+      <label id="s-eplabel">Endpoint</label>
+      <input id="s-endpoint" placeholder="https://your-resource.cognitiveservices.azure.com/">
+      <label>API key <span class="sub" style="text-transform:none">
+        ${s.has_api_key?`— stored ${esc(s.api_key_fingerprint)}; leave blank
+        to keep it`:"— optional on Azure (uses az login)"}</span></label>
+      <input id="s-key" type="password" placeholder="${s.has_api_key?
+        "unchanged":"paste your key"}">
+      <div class="row">
+        <div style="flex:1"><label id="s-modellabel">Deployment / model</label>
+          <input id="s-model" placeholder="gpt-5.4"></div>
+        <div style="width:150px"><label>Max tokens</label>
+          <input id="s-maxtok" type="number" min="1024" step="1024"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" id="s-save">Save</button>
+        <button id="s-test">Test connection</button>
+        <button id="s-clearkey">Clear stored key</button>
+        <span id="s-status" class="sub"></span>
+      </div>
+    </div>
+    <div id="s-result"></div>`;
+
+  $("#s-provider").value = s.provider || "azure";
+  $("#s-endpoint").value = s.endpoint || "";
+  $("#s-model").value = s.model || "gpt-5.4";
+  $("#s-maxtok").value = s.max_tokens || 16384;
+  const syncLabels = ()=>{
+    const az = $("#s-provider").value === "azure";
+    $("#s-eplabel").textContent = az ? "Endpoint" : "Base URL";
+    $("#s-modellabel").textContent = az ? "Deployment name" : "Model id";
+    $("#s-endpoint").placeholder = az
+      ? "https://your-resource.cognitiveservices.azure.com/"
+      : "https://api.openai.com/v1";
+  };
+  $("#s-provider").onchange = syncLabels; syncLabels();
+
+  const body = (extra={}) => {
+    const b = {provider:$("#s-provider").value,
+      endpoint:$("#s-endpoint").value.trim(),
+      model:$("#s-model").value.trim(),
+      max_tokens:+$("#s-maxtok").value, ...extra};
+    const k = $("#s-key").value;
+    if(k) b.api_key = k;               // blank keeps the stored key
+    return b;
+  };
+  const show = (ok,msg) => $("#s-status").innerHTML =
+    badge(ok?"good":"bad", msg);
+
+  $("#s-save").onclick = async ()=>{
+    const r = await api("/api/settings",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body())});
+    if(r.error){ show(false, r.error); return; }
+    show(true, r.configured?"saved":"saved — incomplete");
+    $("#s-key").value = "";
+    await loadHealth();
+  };
+  $("#s-test").onclick = async ()=>{
+    $("#s-status").textContent = "calling the model…";
+    const r = await api("/api/settings/test",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body())});
+    show(!!r.ok, r.ok?`works — ${esc(r.model)}`:"failed");
+    $("#s-result").innerHTML = r.ok
+      ? `<div class="card">${badge("good","connected")}
+         <b>${esc(r.provider)} · ${esc(r.model)}</b>
+         <p class="note">Model replied: <code>${esc(r.reply)}</code></p></div>`
+      : `<div class="card">${badge("bad","not connected")}
+         <pre class="wrap">${esc(r.error||r.detail||"unknown error")}</pre></div>`;
+  };
+  $("#s-clearkey").onclick = async ()=>{
+    await api("/api/settings",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({api_key:""})});
+    show(true,"key cleared"); await showSettings();
+  };
+}
+
 /* ---------- new run ---------- */
 function showRunForm(){
   state.view="run";
@@ -1087,6 +1187,7 @@ async function loadEpisodesKeepView(){
 
 /* ---------- boot ---------- */
 $("#btn-new").onclick = showRunForm;
+$("#btn-settings").onclick = showSettings;
 $("#btn-refresh").onclick = async ()=>{ await loadHealth(); await loadEpisodes(); };
 loadHealth(); loadEpisodes();
 </script>

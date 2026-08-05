@@ -97,8 +97,8 @@ def cmd_run(args: argparse.Namespace) -> int:
         document = Path(args.intent_file).read_text(encoding="utf-8")
         hidden = (Path(args.hidden_notes).read_text(encoding="utf-8")
                   if args.hidden_notes else None)
-        from experiments.intent_loop.llm import FoundryChat
-        llm = FoundryChat()
+        from experiments.intent_loop.llm import build_chat
+        llm = build_chat()
         print(f"MODE: live ({llm.label}) + {validator_label} validator"
               + ("  [DEV RUN — mock validator, not evidence]"
                  if validator_label == "mock" else ""))

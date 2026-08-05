@@ -149,6 +149,70 @@ def propose_questions(llm: ChatLLM, distilled: DistilledIntent,
     return [q for q in out if q["q"]]
 
 
+_VALIDATION_QUESTION_SYSTEM = """A formal protocol checker REJECTED a draft \
+coordination protocol. Some rejections are mechanical (a missing keyword, a \
+wrong payload type) — a programmer fixes those without asking anyone. \
+Others are rejections of a DESIGN DECISION that nobody made: the checker \
+has discovered that some participant is required to act on information it \
+was never given, and only the person who wants this system can say who \
+should be told what.
+
+Your job: separate the two, and for the design ones, write the question to \
+put to that person — in their language, about their business, never about \
+protocol syntax.
+
+Example. Checker says "Source role not enabled: Auditor" inside a rejection \
+branch. The mechanical reading is "add a message". The real question is: \
+"When a request is rejected, does the Auditor need to be told — and by \
+whom?" That is a decision about how the business works, and answering it \
+correctly is what makes the protocol both valid AND right.
+
+Reply with EXACTLY ONE JSON object:
+{"mechanical": ["<fix that needs no human input>"],
+ "questions": [{"q": "<question for the stakeholder, in plain business \
+language>", "because": "<the checker error and the role/branch it names>", \
+"kind": "branch|authorization|ordering|role|termination|value"}]}"""
+
+
+def questions_from_validation(
+        llm: ChatLLM, distilled: DistilledIntent, protocol_text: str,
+        validator_msg: str, findings: Optional[list[dict]] = None,
+        max_questions: int = 6) -> dict:
+    """Turn a REJECTION into questions only the stakeholder can answer.
+
+    This is the loop the framework exists for. When the checker refuses a
+    draft, retrying the model alone is guessing: an "uninformed branch"
+    rejection means a real decision is missing from the intent, and no
+    amount of redrafting invents it correctly. Asking the person who wants
+    the system, then redrafting with their answer, is how the protocol
+    becomes both VALID and FAITHFUL rather than merely valid.
+
+    `findings` are the structural pre-checks (protocol_checks), which name
+    the exact role and branch — far better question material than the
+    checker's one-line verdict alone.
+    """
+    blockers = [f for f in (findings or [])
+                if f.get("severity") == "blocker"]
+    detail = "\n".join(f"- [{f.get('kind')}] at {f.get('where')}: "
+                       f"{f.get('detail', '')}" for f in blockers)
+    user = (f"=== WHAT THE CHECKER SAID ===\n{validator_msg.strip()[:1500]}\n\n"
+            + (f"=== STRUCTURAL ANALYSIS ===\n{detail}\n\n" if detail else "")
+            + f"=== THE REQUIREMENTS ===\n{distilled.requirements_text()}\n\n"
+            + f"=== THE REJECTED PROTOCOL ===\n{protocol_text[:6000]}\n\n"
+            + f"At most {max_questions} questions.")
+    obj = parse_json_block(llm.complete(_VALIDATION_QUESTION_SYSTEM, user,
+                                        stage="validation_questions"))
+    qs = []
+    for q in obj.get("questions", [])[:max_questions]:
+        if str(q.get("q", "")).strip():
+            qs.append({"q": str(q["q"]).strip(),
+                       "because": str(q.get("because", "")).strip(),
+                       "kind": str(q.get("kind", "branch"))})
+    return {"questions": qs,
+            "mechanical": [str(m) for m in obj.get("mechanical", [])],
+            "validator_msg": validator_msg.strip()[:600]}
+
+
 def requirements_from_answers(llm: ChatLLM, distilled: DistilledIntent,
                               answers: list[dict]) -> list[Requirement]:
     """Answered questions -> new typed requirements (source='answer')."""

@@ -60,6 +60,17 @@ class ChatLLM(Protocol):
         ...
 
 
+def build_chat(meter: Optional["Meter"] = None):
+    """The one place the app asks for a model. Uses the user's saved
+    settings; falls back to the Foundry-first client when none are set, so
+    an existing environment-variable checkout keeps working."""
+    from experiments.intent_loop import settings as settings_mod
+    s = settings_mod.load()
+    if s.is_usable():
+        return ApiChat(s, meter=meter)
+    return FoundryChat(meter=meter)
+
+
 #: Completion budget per call. Reasoning models (gpt-5 family, o-series)
 #: count REASONING tokens against this same budget, so a budget sized for
 #: the visible answer alone comes back empty — the model spent it all
@@ -71,6 +82,100 @@ DEFAULT_MAX_TOKENS = 16384
 class EmptyReplyError(RuntimeError):
     """The model returned no visible text — on reasoning models this means
     the completion budget was exhausted by reasoning tokens."""
+
+
+class ApiChat:
+    """Talks to whatever the user configured — Azure OpenAI or any
+    OpenAI-compatible endpoint — so the app works for anyone with an API
+    rather than only inside the author's tenant.
+
+    Two provider quirks are handled here rather than pushed onto the user:
+
+    * `max_tokens` vs `max_completion_tokens`. Reasoning models reject the
+      first, older deployments reject the second. Rather than keep a
+      model-name table that goes stale every release, learn the accepted
+      name from the service on the first 400 and remember it.
+    * Empty visible replies. Reasoning models charge REASONING tokens
+      against the same budget, so a budget sized for the answer alone comes
+      back blank. Retry once at double, then fail loudly — an empty string
+      otherwise surfaces as unparseable JSON three frames away.
+    """
+
+    def __init__(self, settings=None, meter: Optional[Meter] = None):
+        from experiments.intent_loop import settings as settings_mod
+        s = settings or settings_mod.load()
+        if not s.is_usable():
+            raise RuntimeError(
+                "No LLM configured. Set an endpoint and model in the app's "
+                "Settings (or POST /api/settings).")
+        self.settings = s
+        self.meter = meter if meter is not None else Meter()
+        self.max_tokens = s.max_tokens
+        self.label = f"{s.provider}:{s.model}"
+        self._token_param = "max_tokens"
+        self._client = self._build(s)
+
+    @staticmethod
+    def _build(s):
+        if s.provider == "azure":
+            from openai import AzureOpenAI
+            if s.api_key:
+                return AzureOpenAI(azure_endpoint=s.endpoint,
+                                   api_key=s.api_key,
+                                   api_version=s.api_version)
+            # Keyless path: the Azure AD identity from `az login`. Uses the
+            # repo's own credential shim, which works around azure-identity
+            # failing to find az.cmd on Windows.
+            from stjp_core.foundry.az_credential import make_token_provider
+            return AzureOpenAI(
+                azure_endpoint=s.endpoint,
+                azure_ad_token_provider=make_token_provider(
+                    "https://cognitiveservices.azure.com/.default"),
+                api_version=s.api_version)
+        from openai import OpenAI
+        return OpenAI(api_key=s.api_key or "unused",
+                      base_url=s.endpoint or None)
+
+    def _create(self, messages: list[dict], max_tokens: int):
+        try:
+            return self._client.chat.completions.create(
+                model=self.settings.model, messages=messages,
+                **{self._token_param: max_tokens})
+        except Exception as e:
+            other = ("max_completion_tokens"
+                     if self._token_param == "max_tokens" else "max_tokens")
+            if other not in str(e):
+                raise
+            self._token_param = other
+            return self._client.chat.completions.create(
+                model=self.settings.model, messages=messages,
+                **{self._token_param: max_tokens})
+
+    def _call(self, messages: list[dict], stage: str,
+              prompt_chars: int) -> str:
+        for budget in (self.max_tokens, self.max_tokens * 2):
+            reply = (self._create(messages, budget)
+                     .choices[0].message.content) or ""
+            if reply.strip():
+                self.meter.add(stage, prompt_chars, len(reply))
+                return reply
+        raise EmptyReplyError(
+            f"stage={stage}: {self.label} returned no visible text even at "
+            f"{self.max_tokens * 2} completion tokens — on a reasoning model "
+            f"that means reasoning consumed the whole budget. Raise "
+            f"max_tokens in Settings, or shorten the input.")
+
+    def complete(self, system: str, user: str, *, stage: str = "misc") -> str:
+        return self._call([{"role": "system", "content": system},
+                           {"role": "user", "content": user}],
+                          stage, len(system) + len(user))
+
+    def complete_with_history(self, system: str,
+                              messages: list[dict[str, str]], *,
+                              stage: str = "misc") -> str:
+        chars = len(system) + sum(len(m["content"]) for m in messages)
+        return self._call([{"role": "system", "content": system}] + messages,
+                          stage, chars)
 
 
 class FoundryChat:
