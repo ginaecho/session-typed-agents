@@ -747,7 +747,8 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                 # The learner drafts; a STRONGER expert model answers its
                 # questions in place of a human. Same model for both would
                 # be the learner interrogating itself.
-                kwargs = dict(llm=build_chat(role="learner"))
+                kwargs = dict(llm=build_chat(role="learner"),
+                              eval_llm=build_chat(role="judge"))
                 if answered_by == "expert":
                     kwargs["stakeholder_llm"] = build_chat(role="expert")
                 elif answered_by == "expert_reviewed":

@@ -161,6 +161,8 @@ def evaluate_faithfulness(
     original_md = distilled.to_markdown(include_policy=False)
     comparison = (compare_fn(original_md, reconstructed) if compare_fn
                   else compare_intents(llm, original_md, reconstructed))
+    comparison.setdefault("scorer", "built-in comparator prompt")
+    comparison.setdefault("judged_by", getattr(llm, "label", "?"))
     backtranslation = {"reconstructed": reconstructed, **comparison}
 
     gold_equivalent: Optional[bool] = None

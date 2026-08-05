@@ -80,6 +80,8 @@ def build_chat(meter: Optional["Meter"] = None, role: str = "learner"):
         return FoundryChat(meter=meter)
     if role == "expert" and s.expert_model:
         s = settings_mod.Settings(**{**s.to_dict(), "model": s.expert_model})
+    elif role == "judge" and s.judge_model:
+        s = settings_mod.Settings(**{**s.to_dict(), "model": s.judge_model})
     return ApiChat(s, meter=meter)
 
 

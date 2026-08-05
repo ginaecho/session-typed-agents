@@ -155,6 +155,28 @@ def _read_document(session_dir: Path) -> str:
         else text
 
 
+def _azure_compare_fn(judge=None):
+    """Microsoft's SimilarityEvaluator as the round-trip scorer, or None
+    to fall back to the built-in comparator. Returning None rather than
+    a guess matters: every report names the scorer that produced its
+    number, so a figure is never quietly from a different instrument
+    than the reader assumes."""
+    # A mock episode must NEVER reach the network — that invariant is
+    # what makes the offline test suite meaningful, and an evaluator
+    # that quietly called Azure from a scripted run would break it.
+    if judge is not None and type(judge).__name__ == "MockChat":
+        return None
+    from experiments.intent_loop import settings as settings_mod
+    cfg = settings_mod.load()
+    if not getattr(cfg, "use_azure_evaluator", True):
+        return None
+    try:
+        from experiments.intent_loop.azure_eval import similarity_scorer
+        return similarity_scorer(cfg)
+    except Exception:
+        return None
+
+
 def _faithfulness_complaints(report, structural: dict) -> str:
     """Turn the grading into instructions the drafter can act on.
 
@@ -440,9 +462,13 @@ def run_episode(
     if valid:
         for round_no in range(faithfulness_rounds + 1):
             protocol_only, _refn = split_guard_sidecar(final_protocol)
+            # The JUDGE grades, not the drafter, and the comparison is
+            # Microsoft's published evaluator when it is usable — a
+            # score from our own prompt is one only we vouch for.
             report = evaluate_faithfulness(
                 eval_llm or llm, distilled, protocol_only,
-                gold_protocol=gold_protocol, bisim_fn=bisim_fn)
+                gold_protocol=gold_protocol, bisim_fn=bisim_fn,
+                compare_fn=_azure_compare_fn(eval_llm or llm))
             faith_dict = report.to_dict()
             structural = check_protocol(
                 protocol_only,

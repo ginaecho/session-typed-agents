@@ -50,6 +50,21 @@ PROVIDERS = ("azure", "openai")
 #: knows more than it does — which is the whole point of asking.
 DEFAULT_EXPERT_MODEL = "gpt-5.6-sol"
 
+#: The JUDGE: reads the drafted protocol ALONE, writes down what it
+#: thinks was asked for, and scores that against the real intent. It
+#: must not be the model that drafted — a drafter reconstructs the
+#: intent it had in mind, not the one a reader would take from the
+#: text, which is marking your own homework.
+DEFAULT_JUDGE_MODEL = "gpt-5.6-sol"
+
+#: The deployment Microsoft's SimilarityEvaluator talks to. Separate from
+#: `judge_model` because azure-ai-evaluation's internal client still sends
+#: `max_tokens`, which every gpt-5/o-series deployment rejects outright
+#: ("Unsupported parameter"). A non-reasoning deployment is also what
+#: Microsoft calibrated these evaluators on, so this is the right tool
+#: rather than a downgrade.
+DEFAULT_EVALUATOR_MODEL = "gpt-4o"
+
 
 @dataclass
 class Settings:
@@ -58,6 +73,9 @@ class Settings:
     api_key: str = ""            # empty on azure => use `az login` identity
     model: str = DEFAULT_MODEL   # the LEARNER: reads intent, asks, drafts
     expert_model: str = DEFAULT_EXPERT_MODEL   # the ORACLE it interrogates
+    judge_model: str = DEFAULT_JUDGE_MODEL     # grades the round trip
+    evaluator_model: str = DEFAULT_EVALUATOR_MODEL  # MS SimilarityEvaluator
+    use_azure_evaluator: bool = True           # Microsoft's scorer
     api_version: str = DEFAULT_API_VERSION
     max_tokens: int = 16384
     #: Repair rounds per episode. The old default of 3 came from the
@@ -111,6 +129,10 @@ def _from_env() -> Settings:
         model=os.environ.get("AZURE_OPENAI_DEPLOYMENT") or DEFAULT_MODEL,
         expert_model=os.environ.get("STJP_EXPERT_DEPLOYMENT")
         or DEFAULT_EXPERT_MODEL,
+        judge_model=os.environ.get("STJP_JUDGE_DEPLOYMENT")
+        or DEFAULT_JUDGE_MODEL,
+        evaluator_model=os.environ.get("STJP_EVALUATOR_DEPLOYMENT")
+        or DEFAULT_EVALUATOR_MODEL,
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION",
                                    DEFAULT_API_VERSION))
 
