@@ -37,6 +37,14 @@ ProgressFn = Callable[[str, dict], None]
 
 #: SEAM_TRAINING_EXECUTION_PLAN.md §2/§4: repair loop caps at 3 rounds.
 MAX_REPAIR_ROUNDS = 3
+MAX_VALIDATOR_INFRA_RETRIES = 2
+
+
+def _is_validator_infrastructure_failure(message: str) -> bool:
+    text = message.lower()
+    return (("exceeded" in text and "killed" in text)
+            or "validator timed out" in text
+            or "verifier worker timed out" in text)
 
 
 def _now() -> str:
@@ -89,9 +97,20 @@ def run_repair_chain(
 
     def validate_attempt(text: str, attempt: int) -> tuple[bool, str]:
         protocol_text, refn = split_guard_sidecar(text)
-        emit("validation_started", attempt=attempt,
-             protocol_chars=len(protocol_text), guards=bool(refn))
-        valid, msg = validate_fn(protocol_text)
+        valid, msg = False, ""
+        for infra_try in range(MAX_VALIDATOR_INFRA_RETRIES + 1):
+            emit("validation_started", attempt=attempt,
+                 protocol_chars=len(protocol_text), guards=bool(refn),
+                 infrastructure_try=infra_try + 1)
+            valid, msg = validate_fn(protocol_text)
+            if not _is_validator_infrastructure_failure(msg):
+                break
+            if infra_try >= MAX_VALIDATOR_INFRA_RETRIES:
+                raise RuntimeError(
+                    "Scribble validator infrastructure failed after "
+                    f"{infra_try + 1} tries: {msg[:500]}")
+            emit("validation_infrastructure_retry", attempt=attempt,
+                 retry=infra_try + 1, reason=msg[:500])
         if valid and require_guard_sidecar and not refn:
             valid, msg = False, (
                 "intent-loop: missing required refinement-guard sidecar; "

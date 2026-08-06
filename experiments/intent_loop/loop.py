@@ -40,6 +40,7 @@ from experiments.seam_bench.t0.repair_loop import (MAX_REPAIR_ROUNDS,
                                                    run_repair_chain)
 
 ValidateFn = Callable[[str], tuple[bool, str]]
+MAX_VALIDATION_WAVES = 4
 
 
 #: Lessons the learner carries between episodes — the persistent half of
@@ -78,6 +79,11 @@ def learn_from_attempts(attempts: list[dict], *,
         msg = str(att.get("validator_msg", "")).strip()
         if not msg:
             continue
+        lower = msg.lower()
+        if (("exceeded" in lower and "killed" in lower)
+                or "validator timed out" in lower
+                or "verifier worker timed out" in lower):
+            continue
         lesson = next((text for pat, text in KNOWN_ERROR_LESSONS
                        if re.search(pat, msg)), None)
         if lesson is None:
@@ -95,6 +101,57 @@ def learn_from_attempts(attempts: list[dict], *,
     except OSError:
         pass
     return merged
+
+
+def run_validation_waves(
+        drafter: ChatDrafter, *, intent: str, initial_draft: str,
+        item_id: str, validate_fn: ValidateFn, bisim_fn,
+        max_repair_rounds: int, require_guard_sidecar: bool,
+        progress=None, max_waves: int = MAX_VALIDATION_WAVES):
+    """Repair, then abandon a non-converging shape and draft afresh."""
+    all_records = []
+    current = initial_draft
+    for wave in range(1, max_waves + 1):
+        if progress is not None:
+            progress("validation_wave_started", {
+                "wave": wave, "max_waves": max_waves,
+                "attempt_budget": max_repair_rounds + 1})
+        records = run_repair_chain(
+            drafter, system="intent-loop", item_id=item_id, split="train",
+            intent=intent, initial_draft=current,
+            max_rounds=max_repair_rounds, validate_fn=validate_fn,
+            bisim_fn=bisim_fn,
+            require_guard_sidecar=require_guard_sidecar,
+            progress=(lambda stage, detail: progress(
+                stage, {"wave": wave, **detail})) if progress else None)
+        offset = len(all_records)
+        for record in records:
+            record.k += offset
+        all_records.extend(records)
+        if records[-1].valid:
+            return all_records
+        failures = [{"k": record.k, "valid": record.valid,
+                     "validator_msg": record.validator_msg}
+                    for record in all_records]
+        lessons = learn_from_attempts(failures)
+        drafter.rulebook = list(dict.fromkeys(
+            [*lessons, *drafter.rulebook]))
+        if wave >= max_waves:
+            if progress is not None:
+                progress("validation_exhausted", {
+                    "waves": wave, "attempts": len(all_records),
+                    "last_error": records[-1].validator_msg[:500]})
+            break
+        if progress is not None:
+            progress("fresh_redraft_started", {
+                "next_wave": wave + 1,
+                "reason": "local repairs did not converge; starting a "
+                          "different protocol shape"})
+        current = drafter.redraft_after_failures(intent, failures)
+        if progress is not None:
+            progress("fresh_redraft_completed", {
+                "next_wave": wave + 1, "draft_chars": len(current)})
+    return all_records
 
 
 def formalize_episode(llm: ChatLLM, session_dir: Path, *,
@@ -447,16 +504,23 @@ def run_episode(
     spec_text = distilled.to_markdown()
     exemplars = (prompt_pack.select_exemplars(spec_text, exemplar_k)
                  if prompt_pack else None)
+    _emit("draft_started", agent="gpt-5.4 learner",
+          activity="drafting Scribble from the endorsed understanding",
+          guards_required=needs_guards)
     initial = drafter.draft(spec_text, 1, exemplars=exemplars)[0]
+    _emit("draft_completed", draft_chars=len(initial),
+          guards_emitted="=== REFN ===" in initial)
     # split="train": loop episodes feed the training corpus (RunRecord's
     # schema admits only the seam splits; these records never enter a
     # held-out eval set).
-    records = run_repair_chain(
-        drafter, system="intent-loop", item_id=episode_id, split="train",
-        intent=spec_text, initial_draft=initial,
-        max_rounds=max_repair_rounds, validate_fn=validate,
+    records = run_validation_waves(
+        drafter, item_id=episode_id, intent=spec_text,
+        initial_draft=initial, max_repair_rounds=max_repair_rounds,
+        validate_fn=validate,
         bisim_fn=(bisim_fn or (lambda a, b: (False, "no bisim_fn"))),
-        require_guard_sidecar=needs_guards)
+        require_guard_sidecar=needs_guards,
+        progress=lambda stage, detail: _emit(
+            stage, validator=validator_label, **detail))
 
     drafts_dir = out_dir / "drafts"
     drafts_dir.mkdir(exist_ok=True)

@@ -179,3 +179,26 @@ def test_repair_chain_reports_each_validation_and_repair_stage():
     results = [detail for stage, detail in events
                if stage == "validation_result"]
     assert [result["valid"] for result in results] == [False, True]
+
+
+def test_validator_timeout_retries_same_draft_without_llm_repair():
+    calls = []
+    events = []
+
+    def flaky_validate(text):
+        calls.append(text)
+        if len(calls) == 1:
+            return False, "verifier worker exceeded 30.0s and was killed"
+        return True, ""
+
+    drafter = MockDrafter(draft_script={INTENT: [GOLD]})
+    records = repair_loop.run_repair_chain(
+        drafter, system="infra-retry", item_id="item-1", split="dev",
+        intent=INTENT, validate_fn=flaky_validate,
+        progress=lambda stage, detail: events.append((stage, detail)))
+
+    assert calls == [GOLD, GOLD]
+    assert len(records) == 1 and records[0].valid
+    assert any(stage == "validation_infrastructure_retry"
+               for stage, _detail in events)
+    assert not any(stage == "repair_started" for stage, _detail in events)

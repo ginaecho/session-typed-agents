@@ -101,3 +101,12 @@ def test_lesson_list_is_bounded(tmp_path: Path):
                 for i in range(10)]
     learn_from_attempts(attempts, path=path, max_lessons=4)
     assert len(standing_lessons(path)) == 4
+
+
+def test_validator_timeout_never_becomes_a_protocol_lesson(tmp_path: Path):
+    path = tmp_path / "lessons.json"
+    learn_from_attempts([{
+        "k": 1, "valid": False,
+        "validator_msg": "verifier worker exceeded 30.0s and was killed"}],
+        path=path)
+    assert standing_lessons(path) == []

@@ -483,11 +483,11 @@ def refine_episode(
     _emit("draft_completed", draft_chars=len(initial),
           guards_emitted="=== REFN ===" in initial)
 
-    records = run_repair_chain(
-        drafter, system="intent-loop-refine",
-        item_id=parent_record.get("episode_id", "refine"), split="train",
+    from experiments.intent_loop.loop import run_validation_waves
+    records = run_validation_waves(
+        drafter, item_id=parent_record.get("episode_id", "refine"),
         intent=spec_text, initial_draft=initial,
-        max_rounds=max_repair_rounds, validate_fn=validate_fn,
+        max_repair_rounds=max_repair_rounds, validate_fn=validate_fn,
         bisim_fn=(bisim_fn or (lambda a, b: (False, "no bisim_fn"))),
         require_guard_sidecar=needs_guards,
         progress=lambda stage, detail: _emit(

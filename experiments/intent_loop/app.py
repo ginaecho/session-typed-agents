@@ -1176,7 +1176,10 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
             return {"session": session, "valid": record.valid,
                     "faithful": bool(faith.get("faithful")),
                     "recall": faith.get("recall"),
-                    "attempts": len(record.draft_attempts)}
+                    "attempts": len(record.draft_attempts),
+                    "validation_failed": not record.valid,
+                    "validator": label,
+                    "max_repair_rounds": rounds}
 
         job = registry.submit("formalize", params, _work)
         return jsonify({"job_id": job.id, "session": session}), 202

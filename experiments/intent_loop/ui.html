@@ -225,6 +225,16 @@ const badge=(cls,label)=>`<span class="b ${cls}"><span class="dot"></span>${esc(
 const pct = v => v==null ? "—" : Math.round(v*100)+"%";
 let state={episodes:[],current:null,view:"episode",poll:null,askKey:""};
 
+function validatorLesson(message){
+  const text=String(message||"");
+  if(/external choice subjects/i.test(text)) return "Use one consistent role to inform this participant which branch was chosen before it acts.";
+  if(/role not enabled|subject not enabled/i.test(text)) return "Notify the named role inside every relevant branch before that role sends or makes a decision.";
+  if(/safety violation/i.test(text)) return "A protocol path leaves a role unfinished. Add the missing terminal or branch notification so every active role can complete.";
+  if(/missing required refinement-guard/i.test(text)) return "Emit the required guard sidecar and bind each value constraint to the final message label and field.";
+  if(/mismatched input|cannot disambiguate|syntax/i.test(text)) return "Correct the Scribble syntax or declared payload sort without changing the endorsed interaction meaning.";
+  return "Treat this exact compiler rejection as a constraint on the next repair; do not repeat the rejected structure.";
+}
+
 /* ---------- health ---------- */
 async function loadHealth(){
   const h = await api("/api/health");
@@ -271,19 +281,33 @@ async function loadActiveRuns(){
     job.state==="queued"||job.state==="running");
   const host=$("#active-runs");
   host.innerHTML=active.length?`<div class="card">
-    <b>Active interrogation${active.length===1?"":"s"}</b>
+    <b>Active job${active.length===1?"":"s"}</b>
     ${active.map(job=>`<div style="margin-top:8px">
       ${badge(job.awaiting?"warn":"info",job.awaiting?"waiting for you":
         job.stage||job.state)}
-      <div class="sub">maximum ${job.params.max_rounds} turn(s) ·
+      <div><b>${job.kind==="formalize"?"Formalising and validating":
+        job.kind==="refine"?"Reviewing and redrafting":"Interrogating intent"}</b></div>
+      <div class="sub">${job.kind==="run"
+        ?`maximum ${job.params.max_rounds} turn(s)`
+        :`${job.params.max_repair_rounds||"?"} repairs per validation wave`} ·
         ${esc(job.params.session||"")}</div>
       <div class="row" style="margin-top:5px">
-        <button data-openjob="${job.id}" data-session="${esc(job.params.session||"")}">Open</button>
+        <button data-openjob="${job.id}" data-kind="${job.kind}"
+          data-session="${esc(job.params.session||"")}">Open</button>
         <button data-canceljob="${job.id}">Cancel</button>
       </div></div>`).join("")}</div>`:"";
-  host.querySelectorAll("[data-openjob]").forEach(button=>button.onclick=()=>{
-    showRunForm(); state.askKey="";
-    pollJob(button.dataset.openjob,button.dataset.session);
+  host.querySelectorAll("[data-openjob]").forEach(button=>button.onclick=async()=>{
+    state.askKey="";
+    if(button.dataset.kind==="run"){
+      showRunForm();pollJob(button.dataset.openjob,button.dataset.session);
+    }else{
+      await showEpisode(button.dataset.session);
+      const protocolTab=document.querySelector('.tab[data-t="Protocol"]');
+      if(protocolTab) protocolTab.click();
+      if(button.dataset.kind==="formalize")
+        pollFormalize(button.dataset.openjob,button.dataset.session);
+      else pollRefine(button.dataset.openjob);
+    }
   });
   host.querySelectorAll("[data-canceljob]").forEach(button=>button.onclick=async()=>{
     button.disabled=true;button.textContent="cancelling…";
@@ -405,14 +429,27 @@ async function showEpisode(session){
         could check it first. Review Requirements, then formalise it; the
         validated graph and message sequence will appear here in Protocol.</p>
         <div class="row">
-          <button class="primary" id="formalize">Formalise into Scribble
-            &amp; check it</button>
+          <button class="primary" id="formalize">Formalise and validate
+            until accepted</button>
           <label style="margin:0;text-transform:none;letter-spacing:0">
             <input type="checkbox" id="fmock" style="width:auto"> use only
             the basic text check, without formal Scribble validation
             (development only)</label>
           <span class="sub" id="fstatus"></span>
         </div>
+        <div class="card"><b>How validation proceeds</b>
+          <p class="note">GPT-5.4 drafts Scribble, the real Scribble compiler
+          validates it, and every rejection is returned to GPT-5.4 with the
+          exact reason. GPT-5.4 repairs and validates again. If one protocol
+          shape does not converge after 12 repairs, it starts a structurally
+          fresh draft using all prior rejection lessons.</p>
+          <p class="note">One click runs up to four validation waves: at most
+          52 attempts. The ceiling prevents an unbounded paid loop; you can
+          cancel while it runs or press Formalise again to continue with the
+          accumulated learner rules. Every rejected attempt and reason is
+          saved. Only a final <b>Scribble ACCEPTED</b> result creates or
+          replaces the validated protocol, graph, sequence chart, and role
+          projections.</p></div>
         <div class="warnbar"><b>What this development check means:</b>
           it only checks that the draft contains <code>global protocol</code>
           and has balanced braces. It does not prove role projection,
@@ -484,6 +521,11 @@ async function showEpisode(session){
     paint(b.dataset.t);
   });
   paint("Protocol");
+  const jobs=await api("/api/runs");
+  const formalizing=(jobs.jobs||[]).find(job=>job.kind==="formalize"&&
+    (job.state==="queued"||job.state==="running")&&
+    job.params.session===session);
+  if(formalizing) pollFormalize(formalizing.id,session);
 }
 
 async function loadProtocolVisuals(session){
@@ -934,23 +976,49 @@ async function pollFormalize(id, session){
         ${esc(j.error||"no state")} — reload and check the episode.</div>`;
       return;
     }
+    const labels={draft_started:"GPT-5.4 is drafting Scribble",
+      draft_completed:"Draft ready",validation_wave_started:"Validation wave",
+      validation_started:"Scribble validation started",
+      validation_infrastructure_retry:"Validator timed out; retrying the same draft",
+      validation_result:"Scribble validation result",
+      repair_started:"GPT-5.4 is repairing the rejection",
+      repair_completed:"Repair draft ready",
+      fresh_redraft_started:"GPT-5.4 is starting a different protocol shape",
+      fresh_redraft_completed:"Fresh protocol shape ready",
+      validation_exhausted:"Automatic validation budget exhausted",
+      drafted:"Drafting and validation finished",evaluated:"Faithfulness checked",
+      done:"Formalization completed",error:"Formalization failed"};
+    const row=e=>{const {stage,at,...detail}=e;
+      const status=stage==="validation_result"
+        ?badge(e.valid?"good":"bad",e.valid?"Scribble ACCEPTED":"Scribble REJECTED")
+        :badge(stage==="validation_exhausted"||stage==="error"?"bad":"info",
+          labels[stage]||stage);
+      return `<tr><td class="rid">${esc(at||"")}</td><td>${status}
+        ${e.wave?`<span class="sub">wave ${e.wave}</span>`:""}
+        ${e.attempt?`<span class="sub">attempt ${e.attempt}</span>`:""}
+        ${e.validator_message?`<div class="sub"><b>Why rejected:</b>
+          ${esc(e.validator_message)}</div>
+          ${!e.valid?`<div><b>What GPT-5.4 learns:</b>
+          ${esc(validatorLesson(e.validator_message))}</div>`:""}`:""}
+        <details><summary>details</summary><code>${esc(JSON.stringify(detail))}</code></details>
+        </td></tr>`;};
     $("#flog").innerHTML = `<div class="card" style="margin-top:10px">
       <div class="row">${badge(j.state==="succeeded"?"good":
         j.state==="failed"?"bad":"info", j.state)}
-        <span class="sub">${esc(j.stage||"")}</span></div>
-      <table style="margin-top:8px"><tbody>${(j.events||[]).map(e=>{
-        const {stage,at,...rest}=e;
-        return `<tr><td class="rid">${esc(stage)}</td>
-          <td><code>${esc(JSON.stringify(rest).slice(0,220))}</code></td>
-          </tr>`;}).join("")}</tbody></table>
+        <b>${esc(labels[j.stage]||j.stage||"queued")}</b></div>
+      <p class="note">GPT-5.4 drafts and learns from every rejected attempt.
+        Scribble is invoked on every row marked validation. If local repairs
+        do not converge, GPT-5.4 starts a fresh protocol shape automatically.</p>
+      <table style="margin-top:8px"><tbody>${(j.events||[]).map(row).join("")}</tbody></table>
       ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
     if(j.state==="succeeded"||j.state==="failed"){
       clearInterval(state.poll);
       if(j.result) $("#flog").innerHTML += `<div class="card">
         <b>${j.result.valid?"Scribble ACCEPTED it":"Scribble rejected every attempt"}</b>
         <p class="note">${j.result.attempts} attempt(s) ·
-          faithful: ${j.result.faithful} · recall
-          ${pct(j.result.recall)}</p>
+          ${j.result.valid?`faithful: ${j.result.faithful} · recall
+          ${pct(j.result.recall)}`:`no validated protocol or graph replaced;
+          all rejection evidence was saved as learner feedback`}</p>
         <button class="primary" id="reopen">Reload this episode</button>
         </div>`;
       const b = $("#reopen"); if(b) b.onclick = ()=>showEpisode(session);
@@ -1430,7 +1498,10 @@ async function pollRefine(id){
         stage==="validation_result"?`Attempt ${e.attempt}: ${e.verdict}`:"");
       return `<tr><td class="rid">${esc(at||"")}</td><td>${status}
         ${summary?`<div>${esc(summary)}</div>`:""}
-        ${e.validator_message?`<div class="sub">${esc(e.validator_message)}</div>`:""}
+        ${e.validator_message?`<div class="sub"><b>Why rejected:</b>
+          ${esc(e.validator_message)}</div>
+          ${!e.valid?`<div><b>What GPT-5.4 learns:</b>
+          ${esc(validatorLesson(e.validator_message))}</div>`:""}`:""}
         <details><summary>details</summary><code>${esc(JSON.stringify(rest))}</code></details>
         </td></tr>`;
     };

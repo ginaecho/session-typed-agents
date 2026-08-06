@@ -267,6 +267,33 @@ class ChatDrafter(Drafter):
         self._record_usage(system + user, reply)
         return reply
 
+    def redraft_after_failures(self, intent: str, attempts: list[dict]) -> str:
+        """Start a new protocol shape after local repairs stop converging."""
+        failures = "\n".join(
+            f"- Attempt {item.get('k', index + 1)}: "
+            f"{str(item.get('validator_msg', ''))[:600]}"
+            for index, item in enumerate(attempts)
+            if not item.get("valid"))
+        system = (_DRAFT_SYSTEM.format(
+            primer=SCRIBBLE_PRIMER,
+            guards_block=(_GUARDS_BLOCK.format(
+                sentinel=GUARD_SIDECAR_SENTINEL)
+                if self.require_guard_sidecar else ""),
+            rulebook_block=_rulebook_block(self.rulebook),
+            exemplars_block="")
+            + "\n\nThe previous protocol shape failed repeatedly. Start "
+              "again from the specification; do not patch or imitate the "
+              "old shape. Every validator rejection below is a constraint "
+              "the new design must avoid.\n")
+        user = (f"=== TASK SPECIFICATION ===\n{intent}\n\n"
+                f"=== REJECTED ATTEMPTS ===\n{failures}\n\n"
+                "Write a structurally different complete protocol now.")
+        reply = strip_fences(self.llm.complete(system, user,
+                                               stage="fresh_redraft"))
+        self._record_usage(system + user, reply)
+        self._rejections.clear()
+        return reply
+
     def refaithful(self, intent: str, protocol: str, complaints: str) -> str:
         """Redraft a protocol that VALIDATES but does not say what the user
         meant.
