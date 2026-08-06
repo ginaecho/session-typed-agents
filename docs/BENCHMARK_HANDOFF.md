@@ -279,7 +279,11 @@ Two standing rules the owner has set:
   the internal speaker-selection calls. The hosted workflow captures usage at
   the shared chat-client boundary and stamps
   `capture_scope=all_chat_client_calls`. Resumption automatically rejects and
-  reruns older MAF cells without that certification.
+  reruns older MAF cells without that certification. When exact run-owned OTel
+  server logs still exist, reconcile an older valid outcome with
+  `python experiments/scripts/reconcile_maf_usage.py <run-dir> <server.log>... --write`;
+  the command fails closed on missing or wrong-model trace IDs and preserves
+  the prior usage plus per-trace correction provenance.
 - **MAF must pass on all four models before n=30** — the pilot must prove that
   repeated-speaker turns never send an empty message list and that terminal
   protocol labels stop every MAF workflow before the 100-superstep limit.

@@ -581,7 +581,10 @@ needing to watch:
   comes from the shared `RetryingChatClient` interceptor, covering participant
   and orchestrator calls, and is accepted only with
   `capture_scope=all_chat_client_calls`. Participant-only historical MAF usage
-  is invalid evidence.
+  is invalid evidence. If its exact run-owned OTel server log remains
+  available, use `scripts/reconcile_maf_usage.py <run-dir> <server.log>...
+  --write`; it resolves only the cell's persisted trace IDs, rejects missing
+  or wrong-model spans, and records both the previous and corrected usage.
 - **MAF runtime acceptance checks**: participant requests must always contain
   a non-empty user message because selecting the same speaker twice can leave
   its MAF executor cache empty (GPT rejects an empty message list even when a
