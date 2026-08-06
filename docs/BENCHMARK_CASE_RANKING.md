@@ -50,7 +50,7 @@ what the benchmark can actually prove:
 
 ## Tier 1 — headline cases (run first)
 
-Run our core set of 9 setups (PLAN_V3 §10.8) on all six cases below, with
+Run our core set of 10 setups (PLAN_V3 §10.8) on all six cases below, with
 all 4 AI models (the 2-by-2 set in PLAN_V3 §1). (A "setup," which we call an "arm" elsewhere in this project,
 is one configuration being compared — for example, with or without the
 safety checker.)
@@ -108,7 +108,7 @@ finance-technology story).
 
 ## Recommendation
 
-1. **Main test round** = our core set of 9 setups × the 6 Tier-1 cases ×
+1. **Main test round** = our core set of 10 setups × the 6 Tier-1 cases ×
    2 models. This covers 7-role and 10-role teams, three developer-team
    cases copied word-for-word from real projects, and both cases already
    used in our earlier published results.

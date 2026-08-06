@@ -1,4 +1,4 @@
-# Hosted-group workflow spec — stjp-sdlc-release-gate-group (9 arms in one WorkflowAgent)
+# Hosted-group workflow spec — stjp-sdlc-release-gate-group (10 arms in one WorkflowAgent)
 
 **In plain terms:** this document tells a programmer exactly how to build
 the cloud-hosted version of one of our benchmark cases —
@@ -22,8 +22,9 @@ vocabulary, plus two real-skill-file baselines and one genuinely new arm:
 | `localvalid` | `min_llmvalid` | validated projected per-role local contract, round-robin, observe-only |
 | `maf_localvalid` | `maf_groupchat_llmvalid_orch` | same local contracts, MAF runtime (orchestrator holds intent+plan) |
 | `localvalid_gate` | `min_llmvalid_gate` | local contract + gate blocks rule-breaking messages |
+| `maf_localvalid_gate` | (new) | same local contracts and MAF AI orchestrator + custom pre-broadcast gate |
 | `localvalid_sched` | `min_llmvalid_sched` | + EFSM-driven turn selection (full STJP) |
-| `maf_localvalid_sched` | (new — feasibility confirmed same day) | MAF GroupChat + local contracts + EFSM-driven speaker selection (no gate — a hosted group-chat has no point where an outgoing message can be intercepted before delivery) |
+| `maf_localvalid_sched` | (new — feasibility confirmed same day) | MAF GroupChat + local contracts + EFSM-driven speaker selection; deliberately ungated to isolate scheduling |
 
 The rest of this document uses the NEW names exclusively; this container
 has no legacy-key aliasing (it is rebuilt fresh from
@@ -32,7 +33,7 @@ that depends on the container resolving an old key).
 
 **Key terms used throughout this document:**
 - **arm** — one configuration being tested (for example, with or without
-  the safety checker). This project tests 9 "core arms."
+  the safety checker). This project tests 10 "core arms."
 - **orchestrator / subagent** — the "orchestrator" is the lead AI
   directing this project's work; a "subagent" is an AI helper it assigns
   a specific task to.
@@ -89,7 +90,7 @@ breaks it down into per-role instructions), writes
   checked on a message's actual content — for example "amount must be
   positive" — beyond just checking that the message type itself is
   allowed).
-- `prompts.json` — `{arm: {role_or_special: system_prompt}}` for the 9
+- `prompts.json` — `{arm: {role_or_special: system_prompt}}` for the 10
   core arms, built with the EXISTING repaired builders (import from
   `experiments/baselines/instructions.py`; never re-implement):
   skills / maf_skills→build_unchecked_skills_instructions (real published
@@ -98,12 +99,13 @@ breaks it down into per-role instructions), writes
   globalvalid / maf_globalvalid→
   build_global_spec_fairintent_instructions(override=llm-valid)
   (maf_globalvalid additionally gets `__orchestrator__`, no protocol);
-  localvalid / maf_localvalid_sched / localvalid_gate / localvalid_sched→
+  localvalid / localvalid_gate / maf_localvalid_gate /
+  localvalid_sched / maf_localvalid_sched→
   build_spec_minimal_instructions(override=llm-valid) (identical string,
   one entry reused; maf_localvalid_sched gets NO `__orchestrator__` entry
   — speaker selection is the programmatic EFSM selection_func, not an LLM
   orchestrator call);
-  maf_localvalid→build_spec_minimal_instructions(override)
+  maf_localvalid / maf_localvalid_gate→build_spec_minimal_instructions(override)
   + `__orchestrator__` with protocol_text (reuse the runner's setup logic).
   Case loaded at intent_scale="doc" (the full-length task description,
   not the short paragraph version). Also write per-prompt sha256 index.
@@ -133,7 +135,7 @@ main campaign.
 
 ## 2. Request/response contract
 
-Request text = JSON: `{"stjp_arm": <one of 9 core keys>, "trial": int,
+Request text = JSON: `{"stjp_arm": <one of 10 core keys>, "trial": int,
 "branch_hint": str|null, "max_steps": int|null (default case_meta)}`.
 Response text = JSON trial record:
 
@@ -174,8 +176,9 @@ parsed as the one-JSON action schema ({"send_to","label","payload",
 | localvalid | round-robin, projected local contract; the monitor OBSERVES only, same as globalvalid |
 | maf_localvalid | same local-contract prompts, MAF GroupChat; orchestrator carries the protocol |
 | localvalid_gate | round-robin + GATE: EFSM walker (from efsm.json + refinements.json; evaluate refinement predicates with eval on payload string exactly as stjp_core/monitor does) REJECTS off-contract sends pre-delivery; re-prompt sender once per turn with rejection reason + its enabled actions (the liveness-hint variant, hints=True) |
+| maf_localvalid_gate | same local contracts and LLM orchestrator as maf_localvalid; a custom `AgentBasedGroupChatOrchestrator` validates before MAF's default transcript append/broadcast path, records rejected output only in `blocked_attempts`, and re-prompts the same participant |
 | localvalid_sched | gate + EFSM SCHEDULER: poll only roles whose current EFSM state has an enabled SEND; stop when all roles reach accepting states |
-| maf_localvalid_sched | same local-contract prompts, MAF GroupChat, but NO orchestrator agent: `GroupChatBuilder(selection_func=...)` — confirmed feasible 2026-08-05, a documented first-class alternative to `orchestrator_agent` — picks the next speaker with the SAME EFSM enabled-SEND rule as localvalid_sched. No gate (MAF's GroupChatOrchestrator broadcasts a reply before the next selection call runs; there is no interception point) |
+| maf_localvalid_sched | same local-contract prompts, MAF GroupChat, but NO orchestrator agent: `GroupChatBuilder(selection_func=...)` — confirmed feasible 2026-08-05, a documented first-class alternative to `orchestrator_agent` — picks the next speaker with the SAME EFSM enabled-SEND rule as localvalid_sched. Deliberately ungated to isolate scheduling |
 
 Monitor state advances ONLY on delivered events (committed reality), same
 as the classic gate. Payload-guard evaluation failures (unevaluable) =
@@ -183,7 +186,7 @@ allow + flag, matching stjp_core monitor behavior.
 
 ## 4. Driver — `experiments/scripts/hosted_campaign.py`
 
-`python hosted_campaign.py sdlc_release_gate --arms <9> --n 30
+`python hosted_campaign.py sdlc_release_gate --arms <10> --n 30
 [--models gpt-5.6-sol,...] [--endpoint-mode local|hosted]`
 
 - Invokes the group (local: `azd ai agent run` server; hosted: the
@@ -228,6 +231,8 @@ document.)
    send; sched makes only enabled-role calls. Also drive one trial of
    maf_localvalid_sched the same way, confirming the EFSM selection_func
    picks only enabled-SEND roles with zero orchestrator LLM calls.
+   Drive maf_localvalid_gate with a WrongLabel followed by Submit and assert
+   WrongLabel is blocked before broadcast while Submit is delivered.
    (Structure main.py so the loop is importable/testable without
    ResponsesHostServer.)
 3. `azd ai agent run` + `azd ai agent invoke --local` one skills trial on

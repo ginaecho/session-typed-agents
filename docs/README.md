@@ -9,13 +9,13 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
 ## ⭐ The benchmark campaign (current work — start here)
 
 If you are here for the **benchmark campaign** (comparing our approach
-against baselines and Microsoft's multi-agent tool, on 9 setups × 4 AI
+against baselines and Microsoft's multi-agent tool, on 10 setups × 4 AI
 models), start with these six documents — they are the current set, all
 named `BENCHMARK_*`, all in plain English:
 
 | read in this order | what it gives you |
 |---|---|
-| [`BENCHMARK_HANDOFF.md`](BENCHMARK_HANDOFF.md) | **Start here.** The whole picture: what we measure, the 9 setups, the 4 models, the fairness reasoning, every document, and the run steps. |
+| [`BENCHMARK_HANDOFF.md`](BENCHMARK_HANDOFF.md) | **Start here.** The whole picture: what we measure, the 10 setups, the 4 models, the fairness reasoning, every document, and the run steps. |
 | [`BENCHMARK_PLAN_V3.md`](BENCHMARK_PLAN_V3.md) | The full design and reasoning. §10.8 = the authoritative setup names. Top banner explains which parts are history. |
 | [`BENCHMARK_IMPLEMENTATION_STEPS.md`](BENCHMARK_IMPLEMENTATION_STEPS.md) | Step-by-step how to run it. §0a = the setup traps a fresh machine will hit. |
 | [`BENCHMARK_CASE_RANKING.md`](BENCHMARK_CASE_RANKING.md) | Which test cases to run, in what order, and why. |

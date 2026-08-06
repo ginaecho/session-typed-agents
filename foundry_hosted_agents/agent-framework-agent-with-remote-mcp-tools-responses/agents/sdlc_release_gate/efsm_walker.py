@@ -228,7 +228,7 @@ def refinements_from_json(entries: list) -> tuple[dict, list]:
             choice_guards.append(ChoiceGuard(
                 role=e["role"], when=e.get("when", ""),
                 require=e.get("require", ""), over=list(e.get("over", []))))
-        # "ledger" entries: not used by any of the 7 core arms' gate logic
+        # "ledger" entries: not used by the current gated arms
         # for the cases seen so far (no case ships a session ledger yet
         # alongside its llm-valid draft); ignored here rather than silently
         # mis-enforced.

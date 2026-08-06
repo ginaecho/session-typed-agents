@@ -82,6 +82,9 @@ CORE_ARMS = [
 #                          (ex `maf_groupchat_llmvalid_orch`)
 #   localvalid_gate            : round-robin + GATE (rejects pre-delivery,
 #                          re-prompts, liveness hint) (ex `min_llmvalid_gate`)
+#   maf_localvalid_gate        : same local contracts and LLM-orchestrated
+#                          MAF GroupChat, with a custom orchestrator that
+#                          rejects before transcript append/broadcast
 #   localvalid_sched            : gate + EFSM SCHEDULER (poll only
 #                          enabled-SEND roles) — full STJP execution plane
 #                          (ex `min_llmvalid_sched`)
@@ -90,10 +93,8 @@ CORE_ARMS = [
 #                          NEXT SPEAKER is chosen by a PROGRAMMATIC EFSM
 #                          enabled-sender function
 #                          (GroupChatBuilder(selection_func=...)) instead of
-#                          an LLM orchestrator agent. NO gate — MAF's sealed
-#                          GroupChat has no message-interception point (see
-#                          MafGroupChatLoop docstring below), so this arm
-#                          isolates scheduling only, on the MAF runtime.
+#                          an LLM orchestrator agent. No gate, so this arm
+#                          isolates scheduling only on the MAF runtime.
 ARM_CONFIG: dict[str, dict] = {
     "skills": {"kind": "roundrobin", "use_monitor": False, "gate": False,
                "schedule": "roundrobin", "hints": False},
@@ -492,22 +493,18 @@ def _build_maf_gated_orchestrator(
 
 
 class MafGroupChatLoop:
-    """maf_skills / maf_globalvalid / maf_localvalid (schedule="orchestrator",
-    the default) / maf_localvalid_sched (schedule="efsm").
+    """maf_skills / maf_globalvalid / maf_localvalid / maf_localvalid_gate
+    (schedule="orchestrator") or maf_localvalid_sched (schedule="efsm").
 
     Drives agent_framework.orchestrations.GroupChatBuilder EXACTLY as
     experiments/baselines/maf_groupchat.py::MAFGroupChatRunner._run_attempt_async
     does (same max_rounds slack, same task string, same event/usage
-    extraction). NO gate in either mode — MAF's sealed GroupChat has no
-    message-interception point: GroupChatOrchestrator._handle_response
-    (agent_framework_orchestrations/_group_chat.py) broadcasts a
-    participant's reply to every other participant UNCONDITIONALLY before
-    the next speaker-selection call runs. There is no hook to reject/
-    re-prompt an off-contract send before delivery — confirmed by reading
-    the installed agent_framework_orchestrations package source
-    (2026-08-05 feasibility check, BENCHMARK_PLAN_V3 §10.8).
+    extraction). With gate=True, a custom AgentBasedGroupChatOrchestrator
+    validates before invoking MAF's default append/broadcast path and
+    re-prompts the same participant after rejection.
 
-    schedule="orchestrator" (maf_skills / maf_globalvalid / maf_localvalid):
+    schedule="orchestrator" (maf_skills / maf_globalvalid / maf_localvalid /
+    maf_localvalid_gate):
     an LLM `orchestrator_agent` picks the next speaker each round — the
     MAF-alone / MAF+STJP-compile-time-artifacts condition.
 
@@ -747,6 +744,7 @@ def build_trial_record(arm: str, model: str, trial: int, case_meta: dict,
         "blocked_attempts": result.blocked_attempts,
         "usage": {"prompt_tokens": result.prompt_tokens,
                   "completion_tokens": result.completion_tokens,
+                  "total_tokens": result.prompt_tokens + result.completion_tokens,
                   "calls": result.calls},
         "terminated_by": result.terminated_by,
         "error": result.error,
@@ -916,12 +914,12 @@ def build_group() -> "af.WorkflowAgent":
     workflow = af.WorkflowBuilder(
         start_executor=coordinator, output_from=[coordinator],
         name="stjp-sdlc-release-gate",
-        description="STJP sdlc_release_gate 7-arm hosted group",
+        description="STJP sdlc_release_gate 10-arm hosted group",
     ).build()
     return af.WorkflowAgent(
         workflow, name="stjp-sdlc-release-gate-group",
         description="STJP sdlc_release_gate hosted as one grouped WorkflowAgent "
-                    "serving all 7 core arms "
+                    "serving all 10 core arms "
                     "(spec: docs/reference/SDLC_HOSTED_WORKFLOW_SPEC.md).",
     )
 

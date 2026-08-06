@@ -1,11 +1,11 @@
 # experiments/ — project policy
 
 How the STJP benchmark fits together. Read this before answering questions
-about the arm matrix (9-arm core + 3 ablation + 17 legacy), the skills files, or where prompts come from.
+about the arm matrix (10-arm core + 3 ablation + 17 legacy), the skills files, or where prompts come from.
 
 ## Menu
 
-- [The arm matrix: 9 core + 3 ablation + 17 legacy](#the-arm-matrix-9-core--3-ablation--17-legacy)
+- [The arm matrix: 10 core + 3 ablation + 17 legacy](#the-arm-matrix-10-core--3-ablation--17-legacy)
 - ["Unsafe" means Scribble's deadlock-freedom check rejected it](#unsafe-means-scribbles-deadlock-freedom-check-rejected-it)
 - [Skills files — gone from the live path](#skills-files--gone-from-the-live-path-kept-for-authoring-only)
 - [Payload values are pure LLM output](#payload-values-the-numbers-are-pure-llm-output)
@@ -18,12 +18,12 @@ about the arm matrix (9-arm core + 3 ablation + 17 legacy), the skills files, or
 - [Common pitfalls](#common-pitfalls-dont-repeat)
 - [File map you'll need](#file-map-youll-need)
 
-## The arm matrix: 9 core + 3 ablation + 17 legacy
+## The arm matrix: 10 core + 3 ablation + 17 legacy
 
 `baselines/registry.py` is the single source of truth and holds THREE
 lists (line numbers drift; search for `SCENARIOS`):
 
-- **`SCENARIOS` — the 9-arm CORE matrix** (what `case_runner.py <case>`
+- **`SCENARIOS` — the 10-arm CORE matrix** (what `case_runner.py <case>`
   runs). RENAMED 2026-08-05 (project-owner directive, BENCHMARK_PLAN_V3
   §10.8 "Final arm naming") to a uniform `(maf_)?(global|local)valid(_gate|_sched)?`
   vocabulary, plus the two real-skill-file baselines. Full rename table:
@@ -37,8 +37,9 @@ lists (line numbers drift; search for `SCENARIOS`):
   | `localvalid` | `min_llmvalid` | validated projected per-role local contract, round-robin, observe-only |
   | `maf_localvalid` | `maf_groupchat_llmvalid_orch` | same local contracts, MAF runtime (orchestrator holds intent+plan) |
   | `localvalid_gate` | `min_llmvalid_gate` | local contract + gate blocks rule-breaking messages |
+  | `maf_localvalid_gate` | (new) | same local contracts + a custom MAF orchestrator that gates before transcript append/broadcast |
   | `localvalid_sched` | `min_llmvalid_sched` | + EFSM-driven turn selection (full STJP) |
-  | `maf_localvalid_sched` | (new — feasibility confirmed same day) | MAF GroupChat + local contracts + EFSM-driven speaker selection (no gate — MAF's sealed GroupChat has no message-interception point) |
+  | `maf_localvalid_sched` | (new — feasibility confirmed same day) | MAF GroupChat + local contracts + EFSM-driven speaker selection; deliberately no gate so scheduling remains isolated |
 
   Every OLD key above is still resolvable (`make_runner`, `--arms`,
   `ALL_SCENARIOS`) via an identical-factory alias in `LEGACY_SCENARIOS` — old
@@ -51,7 +52,7 @@ lists (line numbers drift; search for `SCENARIOS`):
   (REQUIRED on >=1 branching case per campaign — the scheduling claim must
   beat the cheap heuristic), `min_llmvalid_gate_nohint` (blocking vs
   hinting), `spec_llmvalid_gate` (contract verbosity). NOT covered by the
-  2026-08-05 rename (they sit outside the 9-arm canonical table); keys
+  2026-08-05 rename (they sit outside the 10-arm canonical table); keys
   unchanged. (`unchecked_skills` and `global_decentralized` used to live
   here too — both were PROMOTED into the core matrix as `skills` and
   `globalvalid` respectively; their old keys survive as legacy aliases,
@@ -100,6 +101,7 @@ Each arm is `(scenario_key, scenario_name, factory)`. The factory builds a
 | `maf_globalvalid` (ex `maf_groupchat_llmvalid`, repaired) | `build_global_spec_fairintent_instructions(override=valid)` | LLM-drafted valid global text + role brief (no full intent in workers; orchestrator holds the intent) | LLM-drafted valid |
 | `maf_groupchat_llmvalid_legacy` (LEGACY) | `build_global_spec_instructions(override=valid)` | LLM-drafted valid global text + full intent in every worker (pre-repair `maf_globalvalid`) | LLM-drafted valid |
 | `maf_localvalid` (ex `maf_groupchat_llmvalid_orch`) | `build_spec_minimal_instructions(override=valid)` for participants; orchestrator prompt carries intent + the valid global text | projected **local** types for participants; global type with the ORCHESTRATOR (BENCHMARK_PLAN_V3 §5.2 / §10) | LLM-drafted valid |
+| `maf_localvalid_gate` (NEW) | same byte-identical local contracts and orchestrator prompt as `maf_localvalid` | custom `AgentBasedGroupChatOrchestrator` validates a participant response before MAF appends/broadcasts it; rejected output is not delivered and the same role is re-prompted | LLM-drafted valid |
 | `maf_localvalid_sched` (NEW, feasibility confirmed 2026-08-05) | `build_spec_minimal_instructions(override=valid)` for participants; NO orchestrator prompt (`GroupChatBuilder(selection_func=...)`, no LLM speaker-selection call) | projected **local** types for participants; speaker choice is a programmatic EFSM enabled-sender function, not a protocol-text prompt | LLM-drafted valid |
 | `unchecked_skills` (LEGACY alias) | `build_unchecked_skills_instructions` | human-written per-role skills, never formally checked (the deadlock demo's no-checker arm) | canonical |
 | `globalvalid` (ex `global_decentralized`, repaired) | `build_global_spec_fairintent_instructions(override=valid)` | LLM-drafted valid global text + role brief, on the decentralized round-robin `FoundryRunner` (no LLM orchestrator) — isolates "global text vs local contract" from "orchestrated vs decentralized" | LLM-drafted valid |
@@ -118,9 +120,10 @@ as `localvalid`, same gate as `spec_llmvalid_gate`). `localvalid_sched` is
 the full STJP execution plane — `FoundryRunner(schedule="efsm")` polls only
 roles whose projected local state has an enabled SEND (delm_runner Plane B on
 real agents; requires `gate=True` so the scheduler's monitor state tracks
-committed reality). `maf_localvalid_sched` is the MAF-runtime twin (no gate;
-see `baselines/maf_groupchat.py`'s `MAFGroupChatRunner` docstring for why MAF
-cannot gate). When adding arms remember all four registration points:
+committed reality). `maf_localvalid_gate` is the MAF-runtime gate twin:
+its custom orchestrator calls the same monitor before MAF's default
+append/broadcast path. `maf_localvalid_sched` stays ungated to isolate
+scheduling. When adding arms remember all four registration points:
 `registry.py` SCENARIOS, `case_runner.py` `_FOUNDRY_INSTALL_KEYS` **and**
 `FOUNDRY_KEYS` (wave split), `evaluate_run.py` `VOCABULARY_ARMS`.
 
@@ -333,7 +336,7 @@ update the matching `prompts_schema_version`.
   sender/receiver/label match) for arms whose prompt contained the protocol
   vocabulary (`evaluate_run.VOCABULARY_ARMS` — `globalvalid`, `maf_globalvalid`,
   `localvalid`, `localvalid_gate`, `localvalid_sched`, `maf_localvalid`,
-  `maf_localvalid_sched`, plus their pre-rename aliases), and `role_pair`
+  `maf_localvalid_gate`, `maf_localvalid_sched`, plus their pre-rename aliases), and `role_pair`
   (label-free — right sender, right receiver, predicate-satisfying payload,
   any label) for arms that never saw the protocol (`skills`, `maf_skills`,
   and their pre-rename aliases `bare`/`maf_groupchat`) and so cannot be
@@ -380,7 +383,7 @@ update the matching `prompts_schema_version`.
 
 | what | where |
 |---|---|
-| arm registry (9 core + 3 ablation + 17 legacy) | `experiments/baselines/registry.py` |
+| arm registry (10 core + 3 ablation + 17 legacy) | `experiments/baselines/registry.py` |
 | 7 instruction builders | `experiments/baselines/instructions.py` |
 | Foundry-stack runner (skills/spec/local(valid)/gate/sched) | `experiments/baselines/foundry_runner.py` |
 | MAF runners | `experiments/baselines/maf_*.py` |

@@ -66,7 +66,7 @@ from stjp_core.compiler.refinement_checker import (
     load_refinements_for_protocol, Refinement, ChoiceGuard)
 from stjp_core.compiler.protocol_parser import parse_protocol_file
 
-# The 9 core arms, in the SAME order as baselines/registry.py SCENARIOS.
+# The 10 core arms, in the SAME order as baselines/registry.py SCENARIOS.
 # RENAMED 2026-08-05 (BENCHMARK_PLAN_V3 §10.8 "Final arm naming",
 # project-owner directive): skills/maf_skills (real skill-file baselines)
 # replace bare/maf_groupchat; global_decentralized -> globalvalid (promoted
@@ -152,8 +152,8 @@ def _serialize_refinements(refn: dict) -> list[dict]:
                 "require": val.require, "over": list(val.over),
             })
         elif key == "__ledger__":
-            # Session ledger (stateful invariants) — not used by any of the
-            # 7 core arms' gate logic today; recorded for completeness so a
+            # Session ledger (stateful invariants) — not used by the current
+            # gated arms; recorded for completeness so a
             # future case that has one is not silently dropped.
             out.append({"kind": "ledger", "raw": str(val)})
     return out
@@ -204,7 +204,8 @@ def build_prompts(case: Case, llmvalid_path: Path) -> dict[str, dict[str, str]]:
     prompts["maf_skills"] = dict(skills_prompts)
     prompts["maf_skills"]["__orchestrator__"] = _build_orchestrator_instructions(case)
 
-    # -- localvalid / localvalid_gate / localvalid_sched / maf_localvalid_sched
+    # -- localvalid / localvalid_gate / maf_localvalid_gate /
+    #    localvalid_sched / maf_localvalid_sched
     # "identical string, one entry reused": compute once per role, share
     # across the four arm keys (byte-identical by construction, and only
     # ONE Scribble-projection round-trip per role instead of four).

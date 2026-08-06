@@ -10,7 +10,7 @@ every technical name is explained where it first appears.
 ## Menu
 - [1. What this benchmark proves](#1-what-this-benchmark-proves)
 - [2. The one big idea: making a fair comparison](#2-the-one-big-idea-making-a-fair-comparison)
-- [3. The 9 arms (what we compare)](#3-the-9-arms-what-we-compare)
+- [3. The 10 arms (what we compare)](#3-the-10-arms-what-we-compare)
 - [4. The 4 AI models](#4-the-4-ai-models)
 - [5. How a run is graded (no opinions, just counting)](#5-how-a-run-is-graded-no-opinions-just-counting)
 - [6. How we keep the comparison fair and comparable](#6-how-we-keep-the-comparison-fair-and-comparable)
@@ -68,7 +68,7 @@ differs between two arms is the one mechanism we mean to test — nothing
 else. Full history of the fairness audit:
 [`BENCHMARK_FAIRNESS_REVIEW.md`](BENCHMARK_FAIRNESS_REVIEW.md).
 
-## 3. The 9 arms (what we compare)
+## 3. The 10 arms (what we compare)
 
 An **arm** is one configuration being compared — like one contestant in a
 race. All arms run the *same* task, with the *same* AI model, and differ
@@ -92,7 +92,7 @@ The names are built from simple parts:
 - **`_sched`** = the plan itself decides whose turn is next (a lookup, no
   AI call), on top of `_gate`.
 
-The 9 arms, and the matched pairs that make the comparison clean:
+The 10 arms, and the matched pairs that make the comparison clean:
 
 | # | arm | what each role holds | runtime | old name |
 |---|---|---|---|---|
@@ -103,8 +103,9 @@ The 9 arms, and the matched pairs that make the comparison clean:
 | 5 | `localvalid` | its own slice of the plan | our round-robin | `min_llmvalid` |
 | 6 | `maf_localvalid` | its own slice of the plan | Microsoft's tool | `maf_groupchat_llmvalid_orch` |
 | 7 | `localvalid_gate` | own slice + blocking checker | our round-robin | `min_llmvalid_gate` |
-| 8 | `localvalid_sched` | own slice + checker + plan picks turns (**full STJP**) | our round-robin | `min_llmvalid_sched` |
-| 9 | `maf_localvalid_sched` | own slice + plan picks turns, **no** blocking checker | Microsoft's tool | (new) |
+| 8 | `maf_localvalid_gate` | own slice + blocking checker | Microsoft's tool with a custom pre-broadcast orchestrator | (new) |
+| 9 | `localvalid_sched` | own slice + checker + plan picks turns (**full STJP**) | our round-robin | `min_llmvalid_sched` |
+| 10 | `maf_localvalid_sched` | own slice + plan picks turns, **no** blocking checker | Microsoft's tool | (new) |
 
 Read it as a grid — the same information level on both runtimes:
 
@@ -113,18 +114,21 @@ Read it as a grid — the same information level on both runtimes:
 | skill file only, no plan | `skills` | `maf_skills` |
 | whole plan as text | `globalvalid` | `maf_globalvalid` |
 | own slice of the plan | `localvalid` | `maf_localvalid` |
+| own slice + blocking checker | `localvalid_gate` | `maf_localvalid_gate` |
 | own slice + plan picks turns | `localvalid_sched` | `maf_localvalid_sched` |
 
-Two things this grid makes clear:
+Three things this grid makes clear:
 - **The question "does giving each role its own slice help?"** is answered
   on *both* runtimes (`globalvalid` vs `localvalid`, and `maf_globalvalid`
   vs `maf_localvalid`).
-- **One thing Microsoft's tool cannot do**: block a rule-breaking message
-  before it is delivered. Its group chat broadcasts every reply
-  immediately, with no point to intercept. So there is no `maf_localvalid_gate`,
-  and `maf_localvalid_sched` has no blocking checker. **That gap is itself
-  a finding**, not a hole in the design: only our runtime can enforce the
-  plan at the message boundary.
+- **The enforcement comparison is now symmetric**: `localvalid_gate` and
+  `maf_localvalid_gate` use byte-identical role contracts and the same
+  deterministic monitor. The MAF arm supplies a custom documented
+  orchestrator extension that validates before invoking MAF's default
+  transcript append/broadcast path.
+- `maf_localvalid_sched` remains ungated deliberately, so its comparison
+  isolates deterministic speaker selection rather than combining
+  scheduling and enforcement.
 
 There are also a few **optional arms** kept for specific extra checks (for
 example, a cheap turn-picking shortcut to prove the plan-driven scheduler
@@ -211,7 +215,7 @@ entry point (arms, models, fairness, doc list, run steps).
 
 | in the code | what it is |
 |---|---|
-| `experiments/baselines/registry.py` | The one true list of the 9 arms (search for `SCENARIOS`). |
+| `experiments/baselines/registry.py` | The one true list of the 10 arms (search for `SCENARIOS`). |
 | `experiments/baselines/instructions.py` | The functions that write each role's instructions. |
 | `experiments/scripts/hosted_campaign.py` | The script that runs the trials and saves the evidence. |
 | `experiments/scripts/intent_pipeline.py` | The preparation step that distills the goal into per-role briefs. |
@@ -230,15 +234,15 @@ Do these in order. The one-time machine setup and its traps are in
    §3.
 3. **Build the runnable package** for the case from the recipe in
    `reference/SDLC_HOSTED_WORKFLOW_SPEC.md`.
-4. **Do a small check run first** — 1 real trial of each of the 9 arms on
-   each of the 4 models (36 trials). Confirm every arm runs and the results
+4. **Do a small check run first** — 1 real trial of each of the 10 arms on
+   each of the 4 models (40 trials). Confirm every arm runs and the results
    look sane before spending on the full campaign. Save under a run folder
    whose name contains `-localcheck-`.
-5. **Run the full campaign** — 9 arms × 4 models × 30 trials, the four
+5. **Run the full campaign** — 10 arms × 4 models × 30 trials, the four
    models in parallel (each on its own local server). This is real money;
    get the owner's go first.
 6. **Grade and report** — the grading is automatic; the report follows the
-   table format in `BENCHMARK_PLAN_V3.md` §7, extended to the 9 arms and 4
+   table format in `BENCHMARK_PLAN_V3.md` §7, extended to the 10 arms and 4
    models.
 
 Two standing rules the owner has set:
@@ -250,14 +254,14 @@ Two standing rules the owner has set:
 ## 9. What is done and what is left
 
 **Done:**
-- The 9 arms are built and named consistently in the code; the two new arms
-  (`maf_skills`, `maf_localvalid_sched`) are implemented and checked.
+- The 10 arms are built and named consistently in the code; the MAF
+  baseline, gate, and scheduler variants are implemented and checked.
 - The instructions for matched arms are verified byte-for-byte identical.
 - The task-preparation and safety-check tools work on the first case.
-- All the documents above are aligned to the 9-arm, 4-model reality.
+- All the documents above are aligned to the 10-arm, 4-model reality.
 
 **Left to do (the next agent's job):**
-- Run the small 36-trial check run cleanly and confirm the table.
-- On the owner's go, run the full campaign (9 arms × 4 models × 30) on the
+- Run the small 40-trial check run cleanly and confirm the table.
+- On the owner's go, run the full campaign (10 arms × 4 models × 30) on the
   first case, then the remaining cases in `BENCHMARK_CASE_RANKING.md` order.
 - Write the results report.

@@ -45,8 +45,8 @@ during the full campaign:
   average and how much it varies)
 - calls per test run and tokens per test run (billing units we already
   track)
-- how long one full batch of runs takes for a single AI model (270 test
-  runs per batch — 9 setups × 30 trials); we expect the DeepSeek-V4-Flash
+- how long one full batch of runs takes for a single AI model (300 test
+  runs per batch — 10 setups × 30 trials); we expect the DeepSeek-V4-Flash
   model (capped at 125 requests) to be the slowest
 - how many times each batch hits a rate limit — a "429" error, meaning the
   server said "slow down" — which tells us whether running things in
@@ -56,16 +56,16 @@ during the full campaign:
 |---|---|---|---|
 | Finished building the hosted workflow template (checkpoints 1–3) | 2026-08-05 | **56.8 min** (AI-helper time) | this is the full build for the very first case, and includes 3 spec changes made while work was underway. Its first real test run (checkpoint 3, plain baseline setup on gpt-5-mini) made 25 calls, used 57,300 tokens, and stopped after hitting its turn limit — the expected result for the plain baseline with no safety checks |
 | Ported the "fair reordering" logic (a method for trying different valid message orders, checked against our core system for an exact match) | 2026-08-05 | 8.8 min | 4 out of 4 small check runs passed, plus a check that this version's output exactly matches the original |
-| Small check runs for each setup, across 4 AI models (36 test runs total — 9 setups × 4 models) | — | — | pending |
-| Full campaign batches (1,080 test runs — 9 setups × 4 models × 30 trials, models run in parallel) | — | — | pending |
+| Small check runs for each setup, across 4 AI models (40 test runs total — 10 setups × 4 models) | — | — | pending |
+| Full campaign batches (1,200 test runs — 10 setups × 4 models × 30 trials, models run in parallel) | — | — | pending |
 | Analyze results and write the report | — | — | pending |
 
 ## Estimation model (to refine after the pilot)
 
 Our rough formula for a future case's total time: about 10 minutes to
 prepare the case, plus about 15 minutes to apply the template, plus about
-5 minutes of extra deployment time, plus the small check runs (36 runs ×
-time per test run), plus the full campaign (270 runs × the time per test
+5 minutes of extra deployment time, plus the small check runs (40 runs ×
+time per test run), plus the full campaign (300 runs × the time per test
 run for the slowest batch, with batches running at the same time), plus
 time for analysis. The one number we still need from the pilot case — and
 the whole reason this log exists — is: how long does one test run actually

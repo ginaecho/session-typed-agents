@@ -85,7 +85,7 @@ CORE_ARMS = [
     "localvalid_gate",
     "maf_localvalid_gate",
     "localvalid_sched",
-    "maf_localvalid_sched",   # 9th arm, NEW 2026-08-05 (feasibility confirmed
+    "maf_localvalid_sched",   # EFSM-scheduled MAF arm
                               # same day): MAF GroupChat + local contracts +
                               # EFSM-driven speaker selection, no gate. In
                               # evaluate_run.VOCABULARY_ARMS -> strict rule.
@@ -95,7 +95,7 @@ CORE_ARMS = [
 # global_decentralized->globalvalid, maf_groupchat_llmvalid->maf_globalvalid,
 # min_llmvalid->localvalid, maf_groupchat_llmvalid_orch->maf_localvalid,
 # min_llmvalid_gate->localvalid_gate, min_llmvalid_sched->localvalid_sched,
-# plus the new maf_localvalid_sched arm above. This driver has no legacy-key
+# plus the MAF gate and scheduler arms above. This driver has no legacy-key
 # aliasing -- old run dirs (produced under the old CORE_ARMS list) are
 # UNTOUCHED and still summarize/evaluate via case_runner.py's ALL_SCENARIOS
 # + evaluate_run.VOCABULARY_ARMS, which DO keep the old keys resolvable.
@@ -138,6 +138,36 @@ class WorkflowBusyError(RuntimeError):
     """The single-instance WorkflowAgent is still executing a previous
     request ('Workflow is already running; concurrent runs are not allowed
     on the same instance.') -- transport-level condition, never an attempt."""
+
+
+def _validated_usage(record: dict) -> tuple[int, int, int]:
+    """Return trustworthy usage or reject the response as benchmark evidence."""
+    if record.get("error"):
+        raise RuntimeError(f"workflow returned an error: {record['error']}")
+    usage = record.get("usage")
+    if not isinstance(usage, dict):
+        raise RuntimeError("workflow response has no usage object")
+    values: dict[str, int] = {}
+    for key in ("prompt_tokens", "completion_tokens", "calls"):
+        value = usage.get(key)
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise RuntimeError(
+                f"workflow usage.{key} must be an integer, got {value!r}")
+        values[key] = value
+    if values["prompt_tokens"] <= 0:
+        raise RuntimeError("workflow reported zero prompt tokens")
+    if values["completion_tokens"] <= 0:
+        raise RuntimeError("workflow reported zero completion tokens")
+    if values["calls"] <= 0:
+        raise RuntimeError("workflow reported zero model calls")
+    reported_total = usage.get("total_tokens")
+    computed_total = values["prompt_tokens"] + values["completion_tokens"]
+    if reported_total is not None and reported_total != computed_total:
+        raise RuntimeError(
+            "workflow usage.total_tokens does not equal prompt + completion "
+            f"({reported_total!r} != {computed_total})")
+    return (values["prompt_tokens"], values["completion_tokens"],
+            values["calls"])
 
 
 def _unwrap_local_response(body: dict) -> dict:
@@ -409,7 +439,7 @@ def cross_check_verdicts(case: Case, trial_record: dict) -> list[str]:
     """Independent re-derivation: walk the container's delivered events
     through a FRESH local SessionMonitor; a mismatch between "container said
     delivered/rejected" and "local monitor says conformant/violation" for
-    any GATE arm (localvalid_gate / localvalid_sched — the only arms that
+    any GATE arm (localvalid_gate / maf_localvalid_gate / localvalid_sched)
     actually reject) is a HARD ERROR per spec §4. For non-gate arms the
     container never rejects, so this only re-derives the SAME conformance
     verdict a case_runner run would have recorded for cross-reference; it is
@@ -432,7 +462,8 @@ def cross_check_verdicts(case: Case, trial_record: dict) -> list[str]:
         # min_llmvalid_gate / min_llmvalid_sched. Getting this set wrong is
         # not cosmetic -- it silently disables the hard-error cross-check
         # for the gate arms.
-        if arm in ("localvalid_gate", "localvalid_sched"):
+        if arm in ("localvalid_gate", "maf_localvalid_gate",
+                   "localvalid_sched"):
             # A DELIVERED event under gate enforcement must be locally
             # conformant -- if the container delivered it, the local replay
             # must not find a violation either (both walk the SAME llm-valid
@@ -532,10 +563,18 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
         n_goals_total = len(goal_results)
         n_goals_ok_strict = sum(1 for ok, _ in strict_results.values() if ok)
 
-        usage = record.get("usage", {})
-        prompt_tk = usage.get("prompt_tokens", 0)
-        completion_tk = usage.get("completion_tokens", 0)
-        calls = usage.get("calls", 0)
+        try:
+            prompt_tk, completion_tk, calls = _validated_usage(record)
+        except RuntimeError as exc:
+            emitter.emit_marker(
+                "attempt_end", trial=trial, attempt=attempt, events=0,
+                model=model_key, evidence_valid=False,
+                invalid_reason=str(exc),
+                tokens={"prompt_tokens": 0, "completion_tokens": 0,
+                        "total_tokens": 0, "calls": 0})
+            raise RuntimeError(
+                f"INVALID BENCHMARK EVIDENCE arm={arm} model={model_key} "
+                f"trial={trial} attempt={attempt}: {exc}") from exc
         cum_prompt += prompt_tk
         cum_completion += completion_tk
         cum_calls += calls
@@ -667,11 +706,13 @@ async def run_wave(case: Case, model_key: str, arms: list[str], n: int, *,
             goal_set = (load_goal_set_from_yaml(goals_path, case.intent)
                        if goals_path.exists() else case.goal_set())
 
-            result = await asyncio.to_thread(
-                run_one_trial, case, invoker, arm, trial, branch_hint,
-                case.max_steps, emitter, goal_set, strict_labels, success_rule,
-                model_key)
-            emitter.close()
+            try:
+                result = await asyncio.to_thread(
+                    run_one_trial, case, invoker, arm, trial, branch_hint,
+                    case.max_steps, emitter, goal_set, strict_labels, success_rule,
+                    model_key)
+            finally:
+                emitter.close()
             return result
 
     for arm in arms:  # arms run SEQUENTIALLY inside a wave (spec §7.2)

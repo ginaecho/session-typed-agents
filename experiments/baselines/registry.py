@@ -9,7 +9,7 @@ Adding a new baseline:
 The order here is also the display order in print_summary.
 
 ARM RENAME (2026-08-05, project-owner directive — BENCHMARK_PLAN_V3 §10.8,
-"Final arm naming"): the 9-arm canonical matrix for THIS benchmark
+"Final arm naming"): the 10-arm canonical matrix for THIS benchmark
 (skills_safety/sdlc_release_gate) was renamed to a uniform vocabulary. Every
 OLD key below stays resolvable (make_runner, --arms, ALL_SCENARIOS) via a
 LEGACY_SCENARIOS alias bound to the IDENTICAL factory/builder — so run dirs
@@ -29,18 +29,18 @@ differs — but keep the provenance clear in any report.
     localvalid               | min_llmvalid                         | validated projected per-role local contract, round-robin, observe-only
     maf_localvalid            | maf_groupchat_llmvalid_orch          | same local contracts, MAF runtime (orchestrator holds intent+plan)
     localvalid_gate            | min_llmvalid_gate                    | local contract + gate blocks rule-breaking messages
+    maf_localvalid_gate        | (new)                                | same contracts + pre-broadcast gate on MAF GroupChat
     localvalid_sched            | min_llmvalid_sched                   | + EFSM-driven turn selection (full STJP)
     maf_localvalid_sched          | (new — feasibility confirmed:        | MAF GroupChat + local contracts + EFSM-driven speaker
-                            |  GroupChatBuilder(selection_func=...)| selection (no gate — MAF's sealed GroupChat has no
-                            |  is a documented, first-class          | message-interception point; see MAFGroupChatRunner
-                            |  alternative to orchestrator_agent)   | docstring, baselines/maf_groupchat.py)
+                            |  GroupChatBuilder(selection_func=...)                            |  is a documented, first-class          | selection without a gate (scheduling-only isolation)
+                            |  alternative to orchestrator_agent)   |
 
 `bare` and `maf_groupchat` (the old no-protocol baselines) are NOT renamed —
 they are REPLACED as the canonical baseline by `skills`/`maf_skills` and
 demoted to LEGACY_SCENARIOS aliases (still resolvable under their old keys).
 The 3 ablation-tier isolations (`min_llmvalid_gate_lastrecv`,
 `min_llmvalid_gate_nohint`, `spec_llmvalid_gate`) are untouched by this
-rename — they are not part of the 9-arm canonical table above.
+rename — they are not part of the 10-arm canonical table above.
 """
 from __future__ import annotations
 
@@ -154,11 +154,12 @@ def _maf_localvalid_factory(case):
 
     vs maf_globalvalid (same protocol text broadcast to every participant):
     isolates "orchestrated placement" from "who knows the protocol". No
-    gate, no EFSM scheduler — those cannot be interposed in MAF's sealed
-    GroupChat when an LLM orchestrator picks the speaker; the EFSM-scheduled
-    counterpart is `maf_localvalid_sched` (schedule="efsm", NO orchestrator
-    agent at all — see MAFGroupChatRunner docstring). This kind measures
-    compile-time artifacts only.
+    No gate and no EFSM scheduler. The gated counterpart,
+    `maf_localvalid_gate`, uses a custom MAF orchestrator to intercept output
+    before broadcast. The EFSM-scheduled counterpart is
+    `maf_localvalid_sched` (schedule="efsm", NO orchestrator agent at all —
+    see MAFGroupChatRunner docstring). This kind measures compile-time
+    artifacts only.
 
     2026-08-05 arm rename: was `maf_groupchat_llmvalid_orch`; that key
     survives as a LEGACY_SCENARIOS alias (identical factory, old key)."""
@@ -231,11 +232,7 @@ def _maf_localvalid_sched_factory(case):
     `maf_localvalid`, but speaker selection is a PROGRAMMATIC function
     implementing the EFSM enabled-sender claim predicate — the full STJP
     execution plane's scheduler, ported to MAF's GroupChat — instead of an
-    LLM orchestrator_agent. NO gate: MAF's GroupChatOrchestrator broadcasts
-    a participant's reply unconditionally before the next selection call
-    runs (no message-interception hook exists in the sealed GroupChat
-    runtime); see MAFGroupChatRunner's class docstring
-    (baselines/maf_groupchat.py) for the exact evidence. This arm isolates
+    LLM orchestrator_agent. This arm deliberately has no gate so it isolates
     "protocol-derived speaker scheduling" on the MAF runtime, the MAF-side
     twin of `localvalid_sched` on the round-robin runtime."""
     from baselines.maf_groupchat import MAFGroupChatRunner
@@ -465,7 +462,7 @@ _min_llmvalid_gate_nohint_factory = _make_foundry_llm_drafted_factory(
 # `global_decentralized_legacy`.
 #
 # 2026-08-05 arm rename: renamed to `globalvalid` and promoted from
-# ABLATION_SCENARIOS to the 9-arm core matrix; `global_decentralized`
+# ABLATION_SCENARIOS to the 10-arm core matrix; `global_decentralized`
 # survives as a LEGACY_SCENARIOS alias (identical factory, old key).
 _globalvalid_factory = _make_foundry_llm_drafted_factory(
     "valid", "globalvalid", "WITH-globalvalid",
@@ -532,7 +529,7 @@ SCENARIOS: list[tuple[str, str, Callable[..., "BaselineRunner"]]] = [
 #: ABLATION arms — pre-registered mechanism isolations, run via --arms
 #: ONLY on the case(s) where their question is live (never in every
 #: campaign cell). Each defends one claim. NOT covered by the 2026-08-05
-#: rename table (they are not part of the 9-arm canonical matrix); keys
+#: rename table (they are not part of the 10-arm canonical matrix); keys
 #: unchanged.
 #:   min_llmvalid_gate_lastrecv — REQUIRED on >=1 BRANCHING case per
 #:       campaign: the scheduling dividend is only honest against the

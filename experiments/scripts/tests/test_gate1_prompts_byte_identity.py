@@ -3,8 +3,9 @@
 RENAMED 2026-08-05 (BENCHMARK_PLAN_V3 §10.8 "Final arm naming") along with
 the 10-arm hosted matrix: `skills` (ex `bare`) is now built from
 `build_unchecked_skills_instructions`; the `min_llmvalid` family is now
-`localvalid`/`localvalid_gate`/`localvalid_sched` (+ `maf_localvalid_sched`,
-which shares the SAME prompt string -- "one entry reused").
+`localvalid`/`localvalid_gate`/`localvalid_sched` plus
+`maf_localvalid_gate`/`maf_localvalid_sched`, which share the SAME prompt
+string ("one entry reused").
 
   - prompts.json (written by build_hosted_artifacts.py) is sha-indexed:
     every (arm, role) entry's sha256 in prompts_index.json matches a fresh
@@ -93,7 +94,7 @@ def main() -> None:
 
     # Bonus: same check for every role in skills / maf_skills (same builder),
     # globalvalid / maf_globalvalid (same builder), and every arm in the
-    # localvalid* / maf_localvalid_sched quartet ("one entry reused").
+    # localvalid* / maf_localvalid* prompt family ("one entry reused").
     for role in case.roles:
         live_r = build_unchecked_skills_instructions(case, role)
         assert live_r == prompts["skills"][role], f"skills/{role} byte mismatch"

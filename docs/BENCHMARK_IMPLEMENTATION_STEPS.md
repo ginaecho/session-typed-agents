@@ -65,7 +65,7 @@ meet the same landmines:
    arms and was not installed by default. It is now in the container's
    `requirements.txt` — but a fresh Python environment must install it,
    or the four MAF arms (`maf_skills`, `maf_globalvalid`, `maf_localvalid`,
-   `maf_localvalid_sched`) fail while everything else works.
+   `maf_localvalid_gate`, `maf_localvalid_sched`) fail while everything else works.
 5. **Package downloads fail on this network.** The standard Python
    package site is TLS-blocked here. FIX: set
    `UV_DEFAULT_INDEX=https://packagefeedproxy.microsoft.io/pypi/simple/`.
@@ -316,7 +316,7 @@ Group naming rule: **`stjp-<case>-group`**. Each group contains **every
 role in that case**, built with the Microsoft Agent Framework, inside one
 `WorkflowAgent` (a container that runs the whole team) served by
 `ResponsesHostServer` (the code that answers requests). We do not deploy
-a separate group per setup — with 9 setups per case, that would be too
+a separate group per setup — with 10 setups per case, that would be too
 many groups to manage. Instead, `main.py` reads which setup to use from
 the request itself (field `stjp_arm`, also saved as a label on the
 recorded conversation) and builds the matching workflow on the fly. Which
@@ -330,18 +330,18 @@ Since we cannot use the old-style ("classic") agents, and a hosted group
 cannot be watched or controlled from the outside, our safety-checking
 system has to live **inside the deployed workflow code itself**. That's
 fine — we write `main.py`, so we control what happens inside the group.
-Here is what each of our 9 core setups ("arms") does inside the group.
+Here is what each of our 10 core setups ("arms") does inside the group.
 **Renamed 2026-08-05** (PLAN_V3 §10.8, "Final arm naming" — a uniform
 `(maf_)?(global|local)valid(_gate|_sched)?` vocabulary, plus two real-skill-
 file baselines): `bare`→`skills`, `global_decentralized`→`globalvalid`,
 `maf_groupchat_llmvalid`→`maf_globalvalid`, `min_llmvalid`→`localvalid`,
 `maf_groupchat_llmvalid_orch`→`maf_localvalid`, `min_llmvalid_gate`→`localvalid_gate`,
-`min_llmvalid_sched`→`localvalid_sched`, plus two genuinely new setups,
-`maf_skills` and `maf_localvalid_sched`. See PLAN_V3 §10.8 for
+`min_llmvalid_sched`→`localvalid_sched`, plus three genuinely new setups,
+`maf_skills`, `maf_localvalid_gate`, and `maf_localvalid_sched`. See PLAN_V3 §10.8 for
 the full old-name/new-name/meaning table; do not use the old names below
 this point in the document.
 
-| arm (core 9, PLAN_V3 §10.8) | what happens inside the group |
+| arm (core 10, PLAN_V3 §10.8) | what happens inside the group |
 |---|---|
 | `skills` | every role gets its real, hand-authored per-role skill file (never formally checked) as its prompt; the code takes turns role by role in a fixed order ("round-robin") |
 | `maf_skills` | same real skill-file prompts, but built with Microsoft's own group-chat tool (`GroupChatBuilder`) plus an orchestrator role holding the task description |
@@ -350,8 +350,9 @@ this point in the document.
 | `localvalid` | roles get their own short, projected instructions ("local contract" — each role's own slice of the protocol), round-robin turn order; a checker watches and records what it would have done, but blocks nothing |
 | `maf_localvalid` | same local-contract prompts, group-chat setup; the orchestrator holds the task description and full protocol, while other roles get only their own short, projected instructions |
 | `localvalid_gate` | same local-contract prompts as `localvalid`, plus a generated safety checker (`SessionMonitor`, plain Python code shipped inside the container) that blocks off-protocol messages before delivery and asks the sender to try again |
+| `maf_localvalid_gate` | same local-contract prompts and AI orchestrator as `maf_localvalid`; a custom MAF orchestrator checks before the default transcript append/broadcast path, blocks off-contract output, and re-prompts the same sender |
 | `localvalid_sched` | same as `localvalid_gate`, plus a scheduler: instead of a fixed turn order, it only asks roles whose turn is actually valid right now, based on the protocol's state diagram (EFSM) — the full STJP execution plane |
-| `maf_localvalid_sched` | same local-contract prompts, group-chat setup, but the next speaker is picked by the SAME state-diagram (EFSM) scheduler instead of an AI orchestrator — confirmed feasible 2026-08-05 (`GroupChatBuilder(selection_func=...)`, a documented, first-class, no-LLM-call alternative to an orchestrator role); no gate, since a hosted group-chat has no point where an outgoing message can be intercepted before delivery |
+| `maf_localvalid_sched` | same local-contract prompts, group-chat setup, but the next speaker is picked by the SAME state-diagram (EFSM) scheduler instead of an AI orchestrator — confirmed feasible 2026-08-05 (`GroupChatBuilder(selection_func=...)`, a documented, first-class, no-LLM-call alternative to an orchestrator role); deliberately ungated to isolate scheduling |
 
 The checker and state-diagram files are generated ahead of time, when the
 protocol is broken down into per-role parts (§3), and copied into the
@@ -377,7 +378,7 @@ azd deploy                                        # then 1 hosted smoke trial pe
 
 A case is only allowed to join the full campaign once: both checkers'
 (nuscr and scribble) results are recorded, a small check run passes
-locally for all 9 setups, and at least one small check run's recorded
+locally for all 10 setups, and at least one small check run's recorded
 conversation shows up on the Azure portal's Tracing page.
 
 ### 4.5 How we run tests — mainly on local containers, with a small hosted verification sample (2026-08-05, project-owner directive)
@@ -495,7 +496,7 @@ needing to watch:
 
 ## 7. Run matrix and order
 
-- **The full test grid**: our 9 core setups (PLAN_V3 §10.8) × **4 AI
+- **The full test grid**: our 10 core setups (PLAN_V3 §10.8) × **4 AI
   models** (a 2-by-2 grid: **gpt-5.6-sol**, a strong closed model;
   **gpt-5-mini**, a weaker closed model; **DeepSeek-V4-Pro**, a strong
   open-weight model; **DeepSeek-V4-Flash**, a weaker open-weight model —
@@ -547,7 +548,7 @@ package per helper, and reviews each result:
 | S1 | Install and check every tool: `azd` and its hosted-agent extension, build scribble, get the nuscr program or Docker image, and run the startup check script (including `nuscr check`) | §2; write down version numbers |
 | S2 | Run `intent_pipeline.py synth --all` and check the results and records it produced | §5.1 |
 | S3 | Write AI-drafted protocols for any case missing one, run the checks from §3 on every case in the campaign, and write up a table of nuscr/scribble results | §3 |
-| S4 | Write the `agents/<case>/` files (agent.yaml, Dockerfile, main.py) for each Tier-1 case, copying the existing pattern, with the switch between the 9 setups and the safety checker/scheduler built in | §4.2–4.3; the director designs the workflow template once, then it gets copied ("stamped") onto each case |
+| S4 | Write the `agents/<case>/` files (agent.yaml, Dockerfile, main.py) for each Tier-1 case, copying the existing pattern, with the switch between the 10 setups and the safety checker/scheduler built in | §4.2–4.3; the director designs the workflow template once, then it gets copied ("stamped") onto each case |
 | S5 | Run `azd deploy`, then run local and hosted small check runs for every case and setup; confirm they show up on the Azure portal | §4.4 |
 | S6 | Run the campaign: call each group the required number of times for each setup and model, collect the recorded conversations, and save each run's folder (events, prompts, intent.md) | §6–7 |
 | S7 | Grade the results, verify them, build the report tables, and make sure old and new prompt versions are never mixed in one table | §8 |

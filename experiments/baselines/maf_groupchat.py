@@ -187,7 +187,8 @@ class MAFGatedOrchestrator(AgentBasedGroupChatOrchestrator):
         event, violation = self._probe(actor, text)
         if violation is None:
             if event is not None:
-                self._monitor.process_event(event)
+                for monitor in self._monitor.monitors.values():
+                    monitor.process_event(event)
                 self._accepted_steps += 1
             await super()._handle_response(response, ctx)
             return
@@ -222,7 +223,8 @@ class MAFGroupChatRunner(BaselineRunner):
     """MAF GroupChatBuilder, either with an LLM orchestrator_agent
     (schedule="orchestrator", the default) or a PROGRAMMATIC selection_func
     implementing the EFSM enabled-sender rule (schedule="efsm", the
-    maf_localvalid_sched kind — BENCHMARK_PLAN_V3 §10.8).
+    maf_localvalid_sched kind — BENCHMARK_PLAN_V3 §10.8), optionally with
+    a pre-broadcast gate (`maf_localvalid_gate`).
 
     Parameterised by `instructions_builder` so the same class powers most of
     the MAF arms:
@@ -230,7 +232,8 @@ class MAFGroupChatRunner(BaselineRunner):
       - maf_groupchat (legacy) : build_bare_instructions / build_bare_fairintent_instructions
       - maf_globalvalid : build_global_spec_(fairintent_)instructions(override=...)
       - maf_groupchat_unsafe : build_global_spec_instructions(override=...)
-      - maf_localvalid / maf_localvalid_sched : build_spec_minimal_instructions(override=...)
+      - maf_localvalid / maf_localvalid_gate / maf_localvalid_sched :
+        build_spec_minimal_instructions(override=...)
 
     schedule="efsm" (feasibility confirmed 2026-08-05 — see
     agent_framework_orchestrations/_group_chat.py: GroupChatBuilder accepts
@@ -243,13 +246,14 @@ class MAFGroupChatRunner(BaselineRunner):
     synchronization needed with MAF's own transcript) and returns the first
     round-robin-ordered participant with an enabled SEND at its current
     state — the SAME claim predicate as FoundryRunner(schedule="efsm") /
-    main.py's RoundRobinGateLoop(schedule="efsm"). There is NO gate in this
-    arm: MAF's GroupChatOrchestrator._handle_response
-    (agent_framework_orchestrations/_group_chat.py) broadcasts a
-    participant's reply to every other participant unconditionally before
-    the next selection call runs — there is no hook to reject/re-prompt an
-    off-contract send before delivery. This arm therefore isolates
-    "protocol-derived speaker scheduling" only, not enforcement.
+    main.py's RoundRobinGateLoop(schedule="efsm").
+
+    `gate=True` uses a custom AgentBasedGroupChatOrchestrator, a documented
+    GroupChatBuilder extension point, to validate each participant response
+    before the default append/broadcast path. Rejected output is never added
+    to the shared transcript; the same participant is re-prompted with the
+    contract verdict. `maf_localvalid_sched` keeps gate=False so scheduling
+    remains isolated from enforcement.
     """
 
     def __init__(self, case: "Case", scenario_key: str, scenario_name: str,

@@ -4,12 +4,12 @@
 > This is a long design document that grew in layers. **The numbers in the
 > title, in §1's older bullets, and in §5 describe earlier versions of the
 > plan.** The current campaign is:
-> - **9 setups** (called "arms"), not 8 — the authoritative list, with plain
+> - **10 setups** (called "arms"), not 8 — the authoritative list, with plain
 >   meanings and old-name mapping, is **§10.8**.
 > - **4 AI models**, not 2 — see the "AI models" bullet in §1.
 > - New readers and any agent taking over the work should start from
 >   **[`BENCHMARK_HANDOFF.md`](BENCHMARK_HANDOFF.md)**, which is the single
->   clean entry point: it lists every document, the 9 arms, the reasoning,
+>   clean entry point: it lists every document, the 10 arms, the reasoning,
 >   and the exact steps to run the campaign. Come back here only for the
 >   full design rationale.
 > Sections §2–§9 and §10.1–§10.7 are kept as written to preserve the design
@@ -64,7 +64,7 @@ what result tables the campaign produces. The step-by-step "how to run it" is
 - **Cases:** the real-skill / purpose-built cases (see
   [`BENCHMARK_CASE_RANKING.md`](BENCHMARK_CASE_RANKING.md) for the full list and the order to
   run them). Each declares its own worst-possible-failure ("catastrophe").
-- **Matrix per case (current):** **9 arms × 4 models × n trials** — the 9
+- **Matrix per case (current):** **10 arms × 4 models × n trials** — the 10
   arms are listed in §10.8; the 4 models are the bullet above. (The older
   "8 settings + 3 MAF kinds × 2 models" wording elsewhere in this file is
   superseded.)
@@ -830,8 +830,9 @@ correctly; it is never deleted or silently reinterpreted):
 | `localvalid` | each role's own validated, projected slice of the plan (a "local contract"); round-robin; the checker only watches, never blocks | `min_llmvalid` |
 | `maf_localvalid` | the same per-role local contracts, run on Microsoft's own group-chat tool, with the orchestrator role holding the task description plus the whole plan | `maf_groupchat_llmvalid_orch` |
 | `localvalid_gate` | the same per-role local contract, plus the checker now blocks rule-breaking messages before they're delivered | `min_llmvalid_gate` |
+| `maf_localvalid_gate` | the same local contracts and AI speaker-selection runtime as `maf_localvalid`, plus a custom MAF orchestrator that checks each participant response before the default transcript append/broadcast path; rejected output is not delivered and the same participant is re-prompted | (new) |
 | `localvalid_sched` | the same as `localvalid_gate`, plus the state-diagram (EFSM) scheduler picks whose turn is next — our full STJP approach | `min_llmvalid_sched` |
-| `maf_localvalid_sched` | Microsoft's own group-chat tool, per-role local contracts, but the next speaker is picked by the SAME state-diagram scheduler instead of an AI orchestrator role; no checker-blocking, because a hosted group-chat gives us no point to intercept a message before it's delivered | (new — see feasibility note below) |
+| `maf_localvalid_sched` | Microsoft's own group-chat tool, per-role local contracts, but the next speaker is picked by the SAME state-diagram scheduler instead of an AI orchestrator role; deliberately ungated so this arm isolates scheduling | (new — see feasibility note below) |
 
 Nothing else changes: this is a renaming of setup keys, not a change to
 any setup's meaning, prompt content, or grading rule. Every prompt string
@@ -844,7 +845,7 @@ LEGACY-only aliases (still runnable, e.g. to reproduce an older cited
 result, just no longer part of the core matrix). The three
 already-published ablation-only setups (`min_llmvalid_gate_lastrecv`,
 `min_llmvalid_gate_nohint`, `spec_llmvalid_gate`) are untouched — they are
-not part of this 9-setup table.
+not part of this 10-setup table.
 
 **Feasibility of `maf_localvalid_sched` (checked before deciding to build
 it).** Whether Microsoft's group-chat tool could be driven by our own
@@ -859,13 +860,19 @@ own example in that source file shows a deterministic round-robin
 function used exactly this way. We built `maf_localvalid_sched` around
 that: our own state-diagram (EFSM) "who has a valid move right now?"
 rule, ported into that function, replacing the orchestrator entirely (so
-this arm makes zero orchestrator AI calls). One thing this does NOT get
-us: a way to block a rule-breaking message before it's delivered.
-Microsoft's group-chat tool always broadcasts a role's reply to everyone
-else the moment it arrives, before our turn-picking rule is even asked
-who goes next — there is no hook in the library to intercept and reject a
-message first. So `maf_localvalid_sched` isolates turn-scheduling only, on
-Microsoft's own runtime; it has no gate-equivalent, and none is claimed.
+this arm makes zero orchestrator AI calls).
+
+**Feasibility of `maf_localvalid_gate` (verified in code).** MAF's default
+orchestrator appends and broadcasts a participant reply immediately, but
+`GroupChatBuilder` also accepts a custom `BaseGroupChatOrchestrator` as a
+documented extension point. `maf_localvalid_gate` subclasses the
+agent-based orchestrator and validates the response before calling the
+default append/broadcast path. An off-contract output is retained only as
+a blocked-attempt audit record, never enters the shared transcript, and
+causes the same participant to be re-prompted with the deterministic
+verdict. A fake-client acceptance test proves `WrongLabel` is absent from
+the delivered trace and corrected `Submit` is the first delivered event.
+`maf_localvalid_sched` remains ungated by design so it isolates scheduling.
 
 **Where the rename was implemented** (so a reader can verify the claim
 that nothing else changed): the shared setup list

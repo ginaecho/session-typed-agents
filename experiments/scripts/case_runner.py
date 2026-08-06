@@ -710,7 +710,8 @@ def run_case(case_id: str, n_trials: int,
     # 2026-08-05 arm rename (BENCHMARK_PLAN_V3 §10.8): same key set as
     # _FOUNDRY_INSTALL_KEYS above (new names + pre-rename aliases) — every
     # arm NOT in this set (maf_skills, maf_globalvalid, maf_localvalid,
-    # maf_localvalid_sched, and their pre-rename aliases) runs the MAF wave.
+    # maf_localvalid_gate, maf_localvalid_sched, and pre-rename aliases)
+    # runs the MAF wave.
     FOUNDRY_KEYS = {"skills", "bare", "bare_legacy", "spec_llmvalid", "localvalid", "min_llmvalid", "spec_llmvalid_gate", "localvalid_gate", "min_llmvalid_gate", "min_llmvalid_gate_nohint", "min_llmvalid_gate_lastrecv", "localvalid_sched", "min_llmvalid_sched", "globalvalid", "global_decentralized", "global_decentralized_legacy", "unchecked_skills"}
 
     def _run_one(idx: int, runner_):
@@ -813,7 +814,7 @@ def main():
         other = set(core_keys) | set(ablation_keys)
         legacy_keys = [k for k, _, _ in ALL_SCENARIOS if k not in other]
         print(f"  --arms: comma-separated scenario keys to run.")
-        print(f"    default = the 9-arm CORE matrix: {core_keys}")
+        print(f"    default = the 10-arm CORE matrix: {core_keys}")
         print(f"    ablations (opt-in, run only where their question is "
               f"live): {ablation_keys}")
         print(f"    legacy (reproduction of pre-repair prompts): "
@@ -826,7 +827,7 @@ def main():
               "synth --all` once before a campaign; the repaired "
               "brief-carrying legacy-alias arms (bare, global_decentralized, "
               "maf_groupchat, maf_groupchat_llmvalid) fail fast without it. "
-              "The 9-arm core matrix's globalvalid / maf_globalvalid also "
+              "The 10-arm core matrix's globalvalid / maf_globalvalid also "
               "carry a role brief and share the same prerequisite.")
         sys.exit(2)
 
