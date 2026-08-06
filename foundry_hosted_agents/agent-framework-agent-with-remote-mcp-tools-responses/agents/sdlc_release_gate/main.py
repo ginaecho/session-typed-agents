@@ -402,9 +402,77 @@ class RoundRobinGateLoop:
         return result
 
 
+_MAF_TURN_INSTRUCTION = (
+    "Continue the group task. Produce your next JSON action now.")
+
+
+def _maf_terminal_condition(terminal_label: str):
+    def condition(messages) -> bool:
+        for message in reversed(messages):
+            if getattr(message, "role", None) != "assistant":
+                continue
+            action = session_view.parse_action_or_none(
+                getattr(message, "text", "") or "")
+            if action:
+                return action.get("label") == terminal_label
+        return False
+    return condition
+
+
+def _build_maf_agent_orchestrator(
+        orchestrator_agent, participant_executors, *,
+        max_rounds, terminal_label):
+    from agent_framework.orchestrations import AgentBasedGroupChatOrchestrator
+    from agent_framework_orchestrations._base_group_chat_orchestrator import (
+        ParticipantRegistry)
+
+    class NonEmptyAgentOrchestrator(AgentBasedGroupChatOrchestrator):
+        async def _send_request_to_participant(
+                self, target, ctx, *, additional_instruction=None,
+                metadata=None):
+            await super()._send_request_to_participant(
+                target, ctx,
+                additional_instruction=(
+                    additional_instruction or _MAF_TURN_INSTRUCTION),
+                metadata=metadata)
+
+    return NonEmptyAgentOrchestrator(
+        agent=orchestrator_agent,
+        participant_registry=ParticipantRegistry(participant_executors),
+        max_rounds=max_rounds,
+        termination_condition=_maf_terminal_condition(terminal_label))
+
+
+def _build_maf_selection_orchestrator(
+        participant_executors, selection_func, *,
+        max_rounds, terminal_label):
+    from agent_framework.orchestrations import GroupChatOrchestrator
+    from agent_framework_orchestrations._base_group_chat_orchestrator import (
+        ParticipantRegistry)
+
+    class NonEmptySelectionOrchestrator(GroupChatOrchestrator):
+        async def _send_request_to_participant(
+                self, target, ctx, *, additional_instruction=None,
+                metadata=None):
+            await super()._send_request_to_participant(
+                target, ctx,
+                additional_instruction=(
+                    additional_instruction or _MAF_TURN_INSTRUCTION),
+                metadata=metadata)
+
+    return NonEmptySelectionOrchestrator(
+        id="efsm_group_chat_orchestrator",
+        participant_registry=ParticipantRegistry(participant_executors),
+        selection_func=selection_func,
+        name="EFSMScheduler",
+        max_rounds=max_rounds,
+        termination_condition=_maf_terminal_condition(terminal_label))
+
+
 def _build_maf_gated_orchestrator(
         orchestrator_agent, participant_executors, *,
-        efsms, payload_guards, choice_guards, max_rounds, log_fn):
+        efsms, payload_guards, choice_guards, max_rounds, terminal_label,
+        log_fn):
     """Build a MAF orchestrator that gates before transcript append/broadcast."""
     from agent_framework import AgentExecutorResponse
     from agent_framework.orchestrations import AgentBasedGroupChatOrchestrator
@@ -416,12 +484,22 @@ def _build_maf_gated_orchestrator(
             super().__init__(
                 agent=orchestrator_agent,
                 participant_registry=ParticipantRegistry(participant_executors),
-                max_rounds=max_rounds)
+                max_rounds=max_rounds,
+                termination_condition=_maf_terminal_condition(terminal_label))
             self._monitor = walker.SessionMonitor(
                 efsms, payload_guards, choice_guards)
             self._accepted_steps = 0
             self._rejected: list[tuple[str, Optional[str], str]] = []
             self.blocked_attempts: list[dict] = []
+
+        async def _send_request_to_participant(
+                self, target, ctx, *, additional_instruction=None,
+                metadata=None):
+            await super()._send_request_to_participant(
+                target, ctx,
+                additional_instruction=(
+                    additional_instruction or _MAF_TURN_INSTRUCTION),
+                metadata=metadata)
 
         @staticmethod
         def _response_key(response):
@@ -609,43 +687,46 @@ class MafGroupChatLoop:
         return selection_func
 
     async def run(self, branch_hint: Optional[str] = None) -> RoleLoopResult:
-        from agent_framework import AgentExecutorResponse, AgentResponse
+        from agent_framework import AgentExecutor, AgentExecutorResponse, AgentResponse
         from agent_framework.orchestrations import GroupChatBuilder
 
         result = RoleLoopResult()
         gated_orchestrator = None
+        participant_executors = [
+            AgentExecutor(agent)
+            for agent in self.participant_agents.values()
+        ]
         if self.schedule == "efsm":
-            workflow = (
-                GroupChatBuilder(participants=list(self.participant_agents.values()),
-                                 selection_func=self._build_efsm_selection_func(),
-                                 orchestrator_name="EFSMScheduler")
-                .with_max_rounds(self.max_steps + 4)
-                .build()
-            )
+            selection_orchestrator = _build_maf_selection_orchestrator(
+                participant_executors, self._build_efsm_selection_func(),
+                max_rounds=self.max_steps + 4,
+                terminal_label=self.terminal_label)
+            workflow = GroupChatBuilder(
+                participants=participant_executors,
+                orchestrator=selection_orchestrator,
+            ).build()
         elif self.gate:
-            from agent_framework import AgentExecutor
-            participant_executors = [
-                AgentExecutor(agent)
-                for agent in self.participant_agents.values()
-            ]
             gated_orchestrator = _build_maf_gated_orchestrator(
                 self.orchestrator_agent, participant_executors,
                 efsms=self.efsms,
                 payload_guards=self.payload_guards,
                 choice_guards=self.choice_guards,
                 max_rounds=self.max_steps + 4,
+                terminal_label=self.terminal_label,
                 log_fn=self.log_fn)
             workflow = GroupChatBuilder(
                 participants=participant_executors,
                 orchestrator=gated_orchestrator,
             ).build()
         else:
-            workflow = (
-                GroupChatBuilder(participants=list(self.participant_agents.values()),
-                                 orchestrator_agent=self.orchestrator_agent)
-                .with_max_rounds(self.max_steps + 4)
-                .build()
-            )
+            agent_orchestrator = _build_maf_agent_orchestrator(
+                self.orchestrator_agent, participant_executors,
+                max_rounds=self.max_steps + 4,
+                terminal_label=self.terminal_label)
+            workflow = GroupChatBuilder(
+                participants=participant_executors,
+                orchestrator=agent_orchestrator,
+            ).build()
         hint_clause = (f"  Branch hint: this scenario is a {branch_hint}-revenue case."
                        if branch_hint else "")
         task = (f"Start the sdlc_release_gate pipeline now. Each participant "
@@ -938,6 +1019,48 @@ def _throttle_log(**kw) -> None:
     _add_span_event("throttled", kw)
 
 
+def _build_azure_credential():
+    if os.environ.get("STJP_LOCAL_CLI_AUTH") == "true":
+        from stjp_core.foundry.az_credential import AzCliCredential
+        return AzCliCredential()
+    from azure.identity import DefaultAzureCredential
+    return DefaultAzureCredential()
+
+
+def _configure_application_insights() -> None:
+    if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+        return
+    endpoint = (os.environ.get("FOUNDRY_PROJECT_ENDPOINT")
+                or os.environ.get("AZURE_AI_PROJECT_ENDPOINT"))
+    if not endpoint:
+        raise RuntimeError(
+            "FOUNDRY_PROJECT_ENDPOINT is required to configure tracing")
+    from azure.ai.projects import AIProjectClient
+    client = AIProjectClient(
+        endpoint=endpoint, credential=_build_azure_credential())
+    connection_string = (
+        client.telemetry.get_application_insights_connection_string())
+    if not connection_string:
+        raise RuntimeError(
+            "Foundry project has no Application Insights connection")
+    os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"] = connection_string
+
+
+def _configure_agent_identity() -> None:
+    model = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "")
+    group_by_model = {
+        "gpt-5.6-sol": "stjp-sdlc-release-gate-group-sol",
+        "gpt-5-mini": "stjp-sdlc-release-gate-group-mini",
+        "DeepSeek-V4-Pro": "stjp-sdlc-release-gate-group-v4pro",
+        "DeepSeek-V4-Flash": "stjp-sdlc-release-gate-group-v4flash",
+    }
+    group_name = group_by_model.get(model)
+    if group_name:
+        os.environ.setdefault("FOUNDRY_AGENT_NAME", group_name)
+        if os.environ.get("STJP_LOCAL_CLI_AUTH") == "true":
+            os.environ.setdefault("FOUNDRY_AGENT_VERSION", "local")
+
+
 def _build_role_clients() -> tuple[object, str]:
     """(chat_client, model_name). Default surface is 'responses'
     (FoundryChatClient — the airline_seat pattern) unless STJP_CHAT_API=chat
@@ -945,14 +1068,9 @@ def _build_role_clients() -> tuple[object, str]:
     the chat-completions-compatible surface, spec §7.3)."""
     model = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "gpt-4o")
     api = os.environ.get("STJP_CHAT_API", "responses").strip().lower()
-    if os.environ.get("STJP_LOCAL_CLI_AUTH") == "true":
-        from stjp_core.foundry.az_credential import AzCliCredential
-        credential = AzCliCredential()
-    else:
-        from azure.identity import DefaultAzureCredential
-        # Deployed containers use ambient managed identity. AzCliCredential is
-        # enabled explicitly only for local benchmark servers.
-        credential = DefaultAzureCredential()
+    # Deployed containers use ambient managed identity. AzCliCredential is
+    # enabled explicitly only for local benchmark servers.
+    credential = _build_azure_credential()
 
     if api == "chat":
         from agent_framework.openai import OpenAIChatCompletionClient
@@ -1003,9 +1121,12 @@ def main():
     os.environ.setdefault(
         "AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED", "true")
     from dotenv import load_dotenv
-    from agent_framework_foundry_hosting import ResponsesHostServer
 
     load_dotenv()
+    _configure_agent_identity()
+    _configure_application_insights()
+    from agent_framework_foundry_hosting import ResponsesHostServer
+
     group = build_group()
     ResponsesHostServer(group).run()
 
