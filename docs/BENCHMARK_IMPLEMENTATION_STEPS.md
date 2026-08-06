@@ -80,15 +80,41 @@ meet the same landmines:
    command-line tool give up and print a misleading connection error
    while the server quietly finishes the trial anyway, creating orphaned
    run records.
-8. **Where things appear on the Azure portal — set expectations:**
-   locally-run trials appear under **Tracing** (Monitoring) with the
-   `stjp-sdlc-local-<model>` names, NOT on the hosted agents' pages; the
-   hosted agents' own Traces tabs fill only as the hosted verification
-   queue reaches each model (mini first). Rows with 0 tokens and
-   sub-2-second durations are aborted starts from auth retries — no AI
-   call happened; each run folder's `trace_map.json` explains every row.
-   Also: local runs are plain Python processes (ports 8091–8094), so
-   Docker Desktop shows nothing — that is correct.
+8. **Where things appear on the Azure portal — and the required identity.**
+   Local benchmark servers must export live telemetry with the same
+   per-model Foundry agent name as their deployment and with version
+   `local`. This makes the source explicit while allowing the trace to be
+   found under the correct agent identity:
+
+   | model | port | `FOUNDRY_AGENT_NAME` | API |
+   |---|---:|---|---|
+   | `gpt-5.6-sol` | 8091 | `stjp-sdlc-release-gate-group-sol` | responses |
+   | `gpt-5-mini` | 8092 | `stjp-sdlc-release-gate-group-mini` | responses |
+   | `DeepSeek-V4-Pro` | 8093 | `stjp-sdlc-release-gate-group-v4pro` | chat |
+   | `DeepSeek-V4-Flash` | 8094 | `stjp-sdlc-release-gate-group-v4flash` | chat |
+
+   `main.py` derives these names from
+   `AZURE_AI_MODEL_DEPLOYMENT_NAME`; local servers also set
+   `FOUNDRY_AGENT_VERSION=local`. DeepSeek servers MUST set
+   `STJP_CHAT_API=chat`; otherwise the Responses API requests unsupported
+   encrypted content and fails with HTTP 400. Local runs are still local
+   Python processes, not deployed containers, and must never be reported
+   as hosted execution.
+9. **Tracing needs an exporter, not only tracing flags.** Before
+   `ResponsesHostServer` is imported or started, `main.py` retrieves the
+   project's Application Insights connection string and sets
+   `APPLICATIONINSIGHTS_CONNECTION_STRING`. Startup is invalid unless its
+   log reports both `appinsights_configured=True` and the expected
+   `agent_name`. The two GenAI content-recording flags alone do not
+   configure export.
+10. **Every server/model combination must pass an exact-ID trace check.**
+    Run `hosted_campaign.py --preflight-only` before benchmark cells. Read
+    the trace ID from `preflight/<model>.json`, wait for ingestion, and
+    query Application Insights using only
+    `operation_Id == '<that exact trace ID>'`. Require a root/workflow
+    span, one `chat <expected-model>` span, positive input/output tokens,
+    and the expected `cloud_RoleName`/`gen_ai.agent.name`. Never accept a
+    nearby trace by timestamp and never count unrelated historical traces.
 9. **First results only appear after all of the above is fixed** — if a
    model shows no conversations on the portal, check (in order): is its
    server process alive? was it killed at the 60-minute mark? did its
@@ -481,9 +507,14 @@ needing to watch:
   `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true` and
   `AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED=true`. This requires the
   project's Application Insights connection to be set up (Project
-  Settings → Connections).
+  Settings → Connections). The hosted workflow additionally resolves that
+  connection at server startup and sets
+  `APPLICATIONINSIGHTS_CONNECTION_STRING` before constructing
+  `ResponsesHostServer`; environment flags without this exporter are not
+  sufficient.
 - **Labeling each recorded conversation**: the service name is
-  `stjp-<case>-group`; each test run's recording is tagged with
+  the per-model `FOUNDRY_AGENT_NAME` from the table in §0a; local execution
+  is explicitly versioned `local`. Each test run's recording is tagged with
   `stjp.arm` (which setup), `stjp.case`, `stjp.model`, `stjp.trial`,
   `stjp.prompts_schema_version` (currently 2 — the version number of our
   prompt-writing rules), and the intent file's fingerprint (a short unique
@@ -491,10 +522,9 @@ needing to watch:
   logged as events inside the recording.
 - **Where to look**: the Tracing tab in the Azure portal (direct link:
   `https://ai.azure.com/resource/tracing?wsid=<ARM-id>`); it takes about
-  30–60 seconds for a new recording to show up there. Hosted and MAF runs
-  show up **only** on this Tracing page (not on the separate
-  Agents/Threads pages) — this Tracing page is what a reviewer would check
-  to audit our work.
+  30–60 seconds for a new recording to show up there. Filter by the exact
+  trace ID persisted in the cell result and confirm the per-model agent
+  identity. Do not use a broad time-window query as benchmark evidence.
 - **Every test run leaves three separate records** (PLAN_V3 §2.3): a
   local one (the event log file `events_*.jsonl`, summary files, the
   prompts used in `prompts/<arm>/`, and the task description in
@@ -552,6 +582,14 @@ needing to watch:
   and orchestrator calls, and is accepted only with
   `capture_scope=all_chat_client_calls`. Participant-only historical MAF usage
   is invalid evidence.
+- **MAF runtime acceptance checks**: participant requests must always contain
+  a non-empty user message because selecting the same speaker twice can leave
+  its MAF executor cache empty (GPT rejects an empty message list even when a
+  DeepSeek model tolerates it). All MAF orchestrators must also stop on the
+  protocol terminal label; otherwise deterministic scheduling can hit the
+  workflow runner's 100-superstep convergence limit. The 40-cell pilot must
+  exercise `maf_skills`, `maf_localvalid_gate`, and
+  `maf_localvalid_sched` on every model before an n=30 campaign starts.
 - As always, split test runs evenly across each branch on cases with a
   decision point.
 

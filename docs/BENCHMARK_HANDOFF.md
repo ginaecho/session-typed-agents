@@ -247,6 +247,13 @@ Do these in order. The one-time machine setup and its traps are in
    Use `--preflight-only` to run just this gate. Local invocations use explicit
    unique session and conversation IDs so stale MAF checkpoints cannot resume
    into a new trial.
+   Before accepting the preflight, require the server startup log to show
+   `appinsights_configured=True` and the expected per-model
+   `FOUNDRY_AGENT_NAME`. The two DeepSeek servers use
+   `STJP_CHAT_API=chat`; the GPT servers use the Responses API. Verify the
+   exact persisted preflight trace ID in Application Insights and require its
+   `cloud_RoleName` and `gen_ai.agent.name` to match the model's Foundry agent
+   group. Never substitute another trace from the same time window.
 5. **Run the full campaign** — 10 arms × 4 models × 30 trials, the four
    models in parallel (each on its own local server). This is real money;
    get the owner's go first.
@@ -273,6 +280,15 @@ Two standing rules the owner has set:
   the shared chat-client boundary and stamps
   `capture_scope=all_chat_client_calls`. Resumption automatically rejects and
   reruns older MAF cells without that certification.
+- **MAF must pass on all four models before n=30** — the pilot must prove that
+  repeated-speaker turns never send an empty message list and that terminal
+  protocol labels stop every MAF workflow before the 100-superstep limit.
+  Specifically exercise `maf_skills`, `maf_localvalid_gate`, and
+  `maf_localvalid_sched` on Sol, Mini, V4-Pro, and V4-Flash.
+- **Trace visibility is fail-closed** — a cell is not valid merely because a
+  local JSON record exists. Its exact run-owned trace ID must resolve to the
+  expected Foundry agent identity, model span, and positive usage. Missing,
+  duplicate, wrong-model, or ambiguous trace IDs require repair or rerun.
 
 ## 9. What is done and what is left
 
