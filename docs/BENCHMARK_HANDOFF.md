@@ -293,6 +293,11 @@ Two standing rules the owner has set:
   local JSON record exists. Its exact run-owned trace ID must resolve to the
   expected Foundry agent identity, model span, and positive usage. Missing,
   duplicate, wrong-model, or ambiguous trace IDs require repair or rerun.
+- **Compare MAF with non-MAF only within the same model and trial stratum.**
+  Never compare pooled arm averages when the valid model composition differs
+  (for example, two DeepSeek-only MAF successes against four non-MAF trials
+  that also include GPT). Report matched-model ratios first; pooled values are
+  permitted only after every arm has the same valid model/trial denominator.
 
 ## 9. What is done and what is left
 

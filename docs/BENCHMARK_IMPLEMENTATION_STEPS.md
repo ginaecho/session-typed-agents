@@ -593,6 +593,11 @@ needing to watch:
   workflow runner's 100-superstep convergence limit. The 40-cell pilot must
   exercise `maf_skills`, `maf_localvalid_gate`, and
   `maf_localvalid_sched` on every model before an n=30 campaign starts.
+- **MAF cost comparisons are paired comparisons.** Compare each MAF cell with
+  its non-MAF twin for the same model and trial stratum. A pooled average is
+  invalid when one arm contains a different model mix or valid-cell count;
+  this can reverse the apparent cost relationship. Publish pooled arm averages
+  only after denominators are balanced across all four models.
 - As always, split test runs evenly across each branch on cases with a
   decision point.
 

@@ -20,6 +20,7 @@ from pathlib import Path
 
 CHAT_BLOCK = re.compile(r"(?=\{\r?\n    \"name\":)")
 NAME = re.compile(r'"name":\s*"([^"]+)"')
+SPAN_ID = re.compile(r'"span_id":\s*"([^"]+)"')
 INPUT_TOKENS = re.compile(r'"gen_ai\.usage\.input_tokens":\s*([0-9]+)')
 OUTPUT_TOKENS = re.compile(r'"gen_ai\.usage\.output_tokens":\s*([0-9]+)')
 
@@ -53,12 +54,14 @@ def _load_trace_usage(log_paths: list[Path], trace_ids: set[str]) -> dict:
             if not block_ids:
                 continue
             name_match = NAME.search(block)
+            span_id_match = SPAN_ID.search(block)
             input_match = INPUT_TOKENS.search(block)
             output_match = OUTPUT_TOKENS.search(block)
             if (not name_match or not name_match.group(1).startswith("chat ")
-                    or not input_match or not output_match):
+                    or not span_id_match or not input_match or not output_match):
                 continue
             span = {
+                "span_id": span_id_match.group(1),
                 "name": name_match.group(1),
                 "prompt_tokens": int(input_match.group(1)),
                 "completion_tokens": int(output_match.group(1)),
@@ -72,6 +75,9 @@ def _load_trace_usage(log_paths: list[Path], trace_ids: set[str]) -> dict:
 def _usage_for_trace(spans: list[dict], expected_model: str) -> dict:
     if not spans:
         raise RuntimeError("trace has no chat spans")
+    span_ids = [span["span_id"] for span in spans]
+    if len(span_ids) != len(set(span_ids)):
+        raise RuntimeError("trace contains duplicate chat span IDs")
     expected_name = f"chat {expected_model}"
     wrong_models = sorted({span["name"] for span in spans
                            if span["name"] != expected_name})
