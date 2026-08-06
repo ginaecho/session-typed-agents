@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
 import json
 import os
 import re
@@ -255,6 +256,27 @@ def _verify_azure_context() -> dict:
         "tenant_id": account["tenantId"],
         "user": (account.get("user") or {}).get("name"),
     }
+
+
+def _load_protocol_validation(case: Case) -> dict:
+    protocol = (case.case_dir / "protocols" / "llm_drafts" /
+                "valid" / "v1.scr")
+    validation_path = protocol.parent / "protocol_validation.json"
+    if not validation_path.is_file():
+        raise RuntimeError(
+            f"missing {validation_path}; run "
+            "experiments/scripts/validate_protocol_provenance.py first")
+    validation = json.loads(validation_path.read_text(encoding="utf-8"))
+    actual_sha = hashlib.sha256(protocol.read_bytes()).hexdigest()
+    if validation.get("protocol_sha256") != actual_sha:
+        raise RuntimeError(
+            "protocol validation is stale: recorded SHA does not match v1.scr")
+    if (validation.get("scribble") or {}).get("verdict") != "pass":
+        raise RuntimeError("Scribble protocol verdict is not pass")
+    if (validation.get("nuscr") or {}).get("verdict") not in (
+            "pass", "not-implemented"):
+        raise RuntimeError("nuscr protocol verdict is neither pass nor not-implemented")
+    return validation
 
 
 # ---------------------------------------------------------------------------
@@ -1022,6 +1044,7 @@ async def run_campaign(case_id: str, arms: list[str], n: int, models: list[str],
                        preflight_only: bool = False) -> Path:
     azure_context = _verify_azure_context()
     case = Case.load(CASES_DIR / case_id, intent_scale="doc")
+    protocol_validation = _load_protocol_validation(case)
     prompts = json.loads((ARTIFACTS_DIR / "prompts.json").read_text(encoding="utf-8"))
 
     if resume_dir is not None:
@@ -1040,7 +1063,15 @@ async def run_campaign(case_id: str, arms: list[str], n: int, models: list[str],
         run_dir, case_id=case_id, arms=arms, models=models, n=n,
         endpoint_mode=endpoint_mode)
     manifest.payload["azure_context"] = azure_context
+    manifest.payload["protocol_validation"] = {
+        "protocol_sha256": protocol_validation["protocol_sha256"],
+        "nuscr_verdict": protocol_validation["nuscr"]["verdict"],
+        "scribble_verdict": protocol_validation["scribble"]["verdict"],
+        "validated_at": protocol_validation["validated_at"],
+    }
     manifest.save()
+    _atomic_write_json(run_dir / "protocol_validation.json",
+                       protocol_validation)
 
     print(f"[hosted_campaign] case={case.case_id} arms={arms} n={n} "
           f"models={models} endpoint_mode={endpoint_mode} "

@@ -231,7 +231,10 @@ Do these in order. The one-time machine setup and its traps are in
    long goal, the per-role briefs, and an auto-approval record.
 2. **Check the plan is safe:** run the two protocol checkers (nuscr, then
    Scribble) on the case's plan — steps in `BENCHMARK_IMPLEMENTATION_STEPS.md`
-   §3.
+   §3. For the pilot:
+   `python experiments/scripts/validate_protocol_provenance.py skills_safety/sdlc_release_gate`.
+   This writes the exact protocol SHA and both verdicts to
+   `protocol_validation.json`; the campaign refuses stale or failing evidence.
 3. **Build the runnable package** for the case from the recipe in
    `reference/SDLC_HOSTED_WORKFLOW_SPEC.md`.
 4. **Do a small check run first** — 1 real trial of each of the 10 arms on

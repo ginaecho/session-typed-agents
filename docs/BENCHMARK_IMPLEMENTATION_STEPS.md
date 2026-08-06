@@ -267,6 +267,18 @@ For every case, we record both results in the run's provenance file (its
 record of origin): `nuscr_verdict` (pass / fail / `not-implemented`)
 **and** `scribble_verdict`.
 
+Run:
+
+```powershell
+python experiments\scripts\validate_protocol_provenance.py <case>
+```
+
+The command validates and projects every role, hashes the exact `.scr` bytes,
+writes `protocols/llm_drafts/valid/protocol_validation.json`, and links the
+verdicts from `intent/provenance.json`. `hosted_campaign.py` verifies the SHA
+and verdicts before any preflight or benchmark call and copies the validation
+artifact into the run directory.
+
 **Being honest about nuscr's limits** (from our own verified comparison
 of the two tools — see NUSCR_BACKEND_COMPARISON.md, based on 30 test
 protocols): nuscr cannot check certain kinds of loops (it calls this
