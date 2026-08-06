@@ -372,6 +372,12 @@ class DistilledIntent:
         return [(i.iid, f) for i in self.interactions for f in i.carries
                 if f.constraint]
 
+    def requires_guard_sidecar(self) -> bool:
+        """Return whether the endorsed intent contains value semantics."""
+        return (any(r.kind == "value" for r in self.protocol_requirements())
+                or any(g.predicate for g in self.goals)
+                or bool(self.value_constraints()))
+
     def unbounded_repeats(self) -> list["Interaction"]:
         """Interactions declared to repeat without a stated bound.
 
@@ -479,11 +485,22 @@ class DistilledIntent:
         return cls(
             mission=str(d["mission"]),
             roles=[{"name": str(r["name"]),
-                    "description": str(r.get("description", ""))}
+                "kind": str(r.get("kind", "agent")),
+                "description": str(r.get("description", "")),
+                "must_not": [str(item)
+                     for item in r.get("must_not", [])]}
                    for r in d.get("roles", [])],
             requirements=[Requirement.from_dict(r)
                           for r in d.get("requirements", [])],
             completion_signal=str(d.get("completion_signal", "")),
+            goals=[Goal.from_dict(g) for g in d.get("goals", [])],
+            interactions=[Interaction.from_dict(i)
+                  for i in d.get("interactions", [])],
+            resources=[Resource.from_dict(r)
+                   for r in d.get("resources", [])],
+            invariants=[SessionInvariant.from_dict(i)
+                for i in d.get("invariants", [])],
+            non_goals=[str(n) for n in d.get("non_goals", [])],
             open_questions=[str(q) for q in d.get("open_questions", [])],
             provenance=dict(d.get("provenance", {})))
 

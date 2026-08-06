@@ -131,24 +131,28 @@ code{font-family:var(--mono);font-size:12px;background:var(--plane);
 
 /* interactive force graph */
 .gwrap{position:relative;border:1px solid var(--line);border-radius:9px;
-  background:var(--surface);overflow:hidden}
-.gwrap svg{display:block;width:100%;height:560px;touch-action:none;
+  background:var(--surface);overflow:hidden;display:grid;
+  grid-template-columns:minmax(0,1fr) 320px;
+  grid-template-areas:"controls controls" "canvas info"}
+.gwrap svg{display:block;width:100%;height:680px;touch-action:none;
   cursor:grab}
+#gcanvas,#pgcanvas{grid-area:canvas;min-width:0;overflow:hidden}
 .gwrap svg.dragging{cursor:grabbing}
-.gctl{position:absolute;top:10px;left:10px;display:flex;gap:6px;
-  align-items:center;flex-wrap:wrap;z-index:2;
+.gctl{grid-area:controls;display:flex;gap:6px;
+  align-items:center;flex-wrap:wrap;
   background:var(--surface);border:1px solid var(--line);border-radius:8px;
-  padding:6px 8px;font-size:12px;max-width:calc(100% - 20px)}
+  padding:8px 10px;font-size:12px;margin:8px}
 .gctl button{padding:3px 9px;font-size:12px}
 .gctl label{margin:0;text-transform:none;letter-spacing:0;font-size:12px;
   color:var(--ink-2);display:flex;align-items:center;gap:5px;font-weight:500}
 .gctl input[type=checkbox]{width:auto}
-.ginfo{position:absolute;right:10px;top:10px;width:250px;max-height:calc(100% - 20px);
+.ginfo{grid-area:info;width:auto;max-width:none;max-height:680px;
   overflow-y:auto;background:var(--surface);border:1px solid var(--line);
-  border-radius:8px;padding:10px 12px;font-size:12px;z-index:2}
+  border-radius:8px;padding:10px 12px;font-size:12px;margin:0 8px 8px 0}
 .ginfo h4{margin:0 0 6px;font-size:12px}
 .ginfo .sub{font-size:11px}
 .node{cursor:pointer}
+.node.pinned circle{stroke-width:4}
 .node circle{transition:opacity .15s}
 .node text{font-size:11px;font-weight:600;pointer-events:none;
   fill:var(--ink)}
@@ -157,6 +161,20 @@ code{font-family:var(--mono);font-size:12px;background:var(--plane);
 .dim{opacity:.09}
 .hot{opacity:1}
 .linklabel{font-size:10px;fill:var(--ink-2);pointer-events:none}
+.glegend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px;
+  color:var(--ink-2);background:var(--plane)}
+.glegend span{display:flex;align-items:center;gap:6px}
+.legend-role,.legend-message{display:inline-block;border:2px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 18%,transparent);border-radius:50%}
+.legend-role{width:18px;height:18px}.legend-message{width:9px;height:9px}
+.legend-line{display:inline-block;width:28px;height:0;border-top:2px solid var(--muted)}
+.legend-line.conditional{border-top-style:dashed}
+@media(max-width:900px){
+  .gwrap{grid-template-columns:1fr;
+    grid-template-areas:"controls" "canvas" "info"}
+  .ginfo{margin:0 8px 8px;max-height:320px}
+}
 </style>
 </head>
 <body>
@@ -186,8 +204,9 @@ code{font-family:var(--mono);font-size:12px;background:var(--plane);
     <div class="row" style="margin-bottom:10px">
       <button class="primary" id="btn-new">New run</button>
       <button id="btn-settings">Settings</button>
-      <button id="btn-refresh">Refresh</button>
+      <button id="btn-refresh">Reload episodes</button>
     </div>
+    <div id="active-runs"></div>
     <h2 style="margin-top:6px">Episodes</h2>
     <div id="eplist"></div>
   </aside>
@@ -235,16 +254,49 @@ async function loadEpisodes(select){
       <div class="meta">${e.requirements} reqs · ${e.qa_rounds} Q&amp;A ·
         ${e.attempts} attempt${e.attempts===1?"":"s"} · ${esc(e.validator)}</div>
     </button>`).join("") : `<div class="empty">No episodes yet.<br>Run one →</div>`;
-  document.querySelectorAll(".ep").forEach(b=>
-    b.onclick=()=>showEpisode(b.dataset.s));
-  const pick = select || state.current ||
-    (state.episodes[0] && state.episodes[0].session);
+  document.querySelectorAll(".ep").forEach(b=>b.onclick=()=>{
+    const episode=state.episodes.find(item=>item.session===b.dataset.s);
+    if(episode && episode.complete!==false) showEpisode(b.dataset.s);
+  });
+  const completeSessions=state.episodes.filter(item=>item.complete!==false);
+  const requested=[select,state.current].find(session=>
+    session && completeSessions.some(item=>item.session===session));
+  const pick=requested||(completeSessions[0]&&completeSessions[0].session);
   if(pick && state.view==="episode") showEpisode(pick);
+}
+
+async function loadActiveRuns(){
+  const response=await api("/api/runs");
+  const active=(response.jobs||[]).filter(job=>
+    job.state==="queued"||job.state==="running");
+  const host=$("#active-runs");
+  host.innerHTML=active.length?`<div class="card">
+    <b>Active interrogation${active.length===1?"":"s"}</b>
+    ${active.map(job=>`<div style="margin-top:8px">
+      ${badge(job.awaiting?"warn":"info",job.awaiting?"waiting for you":
+        job.stage||job.state)}
+      <div class="sub">maximum ${job.params.max_rounds} turn(s) ·
+        ${esc(job.params.session||"")}</div>
+      <div class="row" style="margin-top:5px">
+        <button data-openjob="${job.id}" data-session="${esc(job.params.session||"")}">Open</button>
+        <button data-canceljob="${job.id}">Cancel</button>
+      </div></div>`).join("")}</div>`:"";
+  host.querySelectorAll("[data-openjob]").forEach(button=>button.onclick=()=>{
+    showRunForm(); state.askKey="";
+    pollJob(button.dataset.openjob,button.dataset.session);
+  });
+  host.querySelectorAll("[data-canceljob]").forEach(button=>button.onclick=async()=>{
+    button.disabled=true;button.textContent="cancelling…";
+    await api(`/api/runs/${encodeURIComponent(button.dataset.canceljob)}/cancel`,
+      {method:"POST"});
+    await loadActiveRuns();await loadEpisodes();
+  });
 }
 
 /* ---------- pipeline strip ---------- */
 function pipeline(ep){
   const f = ep.faithfulness||{}, d = ep.distilled||{};
+  const ranked = ((f.scope||{}).ranking||{}).overall_coverage_pct;
   const reqs = d.requirements||[];
   const asked = reqs.filter(r=>r.source==="answer").length;
   const s = [
@@ -252,7 +304,8 @@ function pipeline(ep){
     ["02","Distil",`${reqs.length} requirements · ${asked} from asking`],
     ["03","Draft",`${(ep.draft_attempts||[]).length} attempt(s)`],
     ["04","Validate",ep.valid?"accepted":"never validated"],
-    ["05","Grade",Object.keys(f).length?`recall ${pct(f.recall)}`:"not graded"],
+    ["05","Grade",Object.keys(f).length?
+      `STJP coverage ${ranked==null?pct(f.recall):ranked+"%"}`:"not graded"],
   ];
   return `<div class="pipe">${s.map(([n,t,dd])=>`
     <div class="stage on"><div class="n">${n}</div><div class="t">${t}</div>
@@ -261,7 +314,7 @@ function pipeline(ep){
 
 /* ---------- episode view ---------- */
 const COVER = {yes:["good","covered"],partial:["warn","partial"],
-  no:["bad","missing"],out_of_scope:["oos","policy — not gradable"]};
+  no:["bad","missing"],out_of_scope:["oos","not protocol-scored"]};
 
 async function showEpisode(session){
   state.current=session; state.view="episode";
@@ -293,21 +346,20 @@ async function showEpisode(session){
       <div class="tile"><div class="v">${reqs.length}</div><div class="k">Requirements</div></div>
       <div class="tile"><div class="v">${asked}</div><div class="k">Only by asking</div></div>
       <div class="tile"><div class="v">${(ep.draft_attempts||[]).length}</div><div class="k">Draft attempts</div></div>
-      <div class="tile"><div class="v">${pct(f.recall)}</div><div class="k">Coverage recall</div></div>
+      <div class="tile"><div class="v">${((f.scope||{}).ranking||{}).overall_coverage_pct??"—"}%</div><div class="k">Ranked STJP coverage</div></div>
       <div class="tile"><div class="v">${bt.score??"—"}</div><div class="k">Back-translation</div></div>
       <div class="tile"><div class="v">${(f.ungrounded||[]).length}</div><div class="k">Ungrounded steps</div></div>
     </div>
 
     <div class="tabs" role="tablist">
-      ${["Graph","Requirements","Interrogation","Protocol","Faithfulness","Refine","Intent","Raw"]
+      ${["Protocol","Requirements","Interrogation","Faithfulness","Review loop","Intent","Raw"]
         .map((t,i)=>`<button class="tab" role="tab" data-t="${t}"
           aria-selected="${i===0}">${t}</button>`).join("")}
     </div>
     <div id="tabbody"></div>`;
 
   const tabs = {
-    Graph: ()=>`<div id="graphbody"><div class="empty">Drawing…</div></div>`,
-    Refine: ()=>`<div id="refinebody"><div class="empty">Loading…</div></div>`,
+    "Review loop": ()=>`<div id="refinebody"><div class="empty">Loading…</div></div>`,
 
     Requirements: ()=>`
       <h2>Distilled requirements</h2>
@@ -337,22 +389,36 @@ async function showEpisode(session){
 
     Protocol: ()=>`
       ${ep.final_protocol?`<h2>Validated protocol
-        <span class="sub">— accepted by the real Scribble checker</span></h2>
+        <span class="sub">— accepted by
+        ${esc((ep.meter||{}).validator||"the configured validator")}</span></h2>
+        <div class="warnbar">${badge("good","validated source")}
+          Every graph, arrow, branch and per-role contract below is drawn
+          from this final accepted Scribble, not from an earlier draft or
+          the intended-interaction checklist.</div>
+        <div id="protocolgraphbody"><div class="empty">Drawing the validated
+          protocol…</div></div>
+        <h2>Final accepted Scribble</h2>
         <pre>${esc(ep.final_protocol)}</pre>`
        : `<div class="card">
         <b>No Scribble yet — and that is deliberate.</b>
         <p class="note">This episode stopped after the UNDERSTANDING so you
-        could check it first. Review the Requirements and Graph tabs; when
-        the roles, interactions and goals look right, formalise them and the
-        real checker runs.</p>
+        could check it first. Review Requirements, then formalise it; the
+        validated graph and message sequence will appear here in Protocol.</p>
         <div class="row">
           <button class="primary" id="formalize">Formalise into Scribble
             &amp; check it</button>
           <label style="margin:0;text-transform:none;letter-spacing:0">
-            <input type="checkbox" id="fmock" style="width:auto"> use the
-            crude validator (dev only)</label>
+            <input type="checkbox" id="fmock" style="width:auto"> use only
+            the basic text check, without formal Scribble validation
+            (development only)</label>
           <span class="sub" id="fstatus"></span>
         </div>
+        <div class="warnbar"><b>What this development check means:</b>
+          it only checks that the draft contains <code>global protocol</code>
+          and has balanced braces. It does not prove role projection,
+          interaction order, branch knowledge, payload types, deadlock
+          freedom, or session-type correctness. Its result is not research
+          evidence.</div>
         <div id="flog"></div></div>`}
       <h2>Attempts</h2>
       ${(ep.draft_attempts||[]).map(a=>`
@@ -368,10 +434,10 @@ async function showEpisode(session){
       must validate before it can be checked for faithfulness.</div>` : `
       <div class="card"><b>Verdict rule.</b>
         <p class="note">${esc(f.rule||"")}</p>
-        <p class="note">All three must hold, and <b>partial counts as a
+        <p class="note">Every ranked gate must hold, and <b>partial counts as a
         miss</b> — deliberately strict, because the per-item evidence below
         is there for you to overrule it.</p></div>
-      ${mustPanel(f)}
+      ${rankingPanel(f)}
       ${dimsPanel(f)}
       <h2>Per-requirement coverage</h2>
       <table><thead><tr><th>ID</th><th>Verdict</th><th>Evidence</th></tr></thead>
@@ -406,16 +472,104 @@ async function showEpisode(session){
   if(back) back.onclick = showRunForm;
   const paint = name => {
     $("#tabbody").innerHTML = tabs[name]();
-    if(name==="Graph") loadGraph(session);
-    if(name==="Refine") loadRefine(session, ep);
-    if(name==="Protocol") wireFormalize(session);
+    if(name==="Review loop") loadRefine(session, ep);
+    if(name==="Protocol") {
+      wireFormalize(session);
+      if(ep.final_protocol) loadProtocolVisuals(session);
+    }
   };
   document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
     document.querySelectorAll(".tab").forEach(x=>
       x.setAttribute("aria-selected", x===b));
     paint(b.dataset.t);
   });
-  paint("Graph");
+  paint("Protocol");
+}
+
+async function loadProtocolVisuals(session){
+  const host=$("#protocolgraphbody"); if(!host) return;
+  const g=await api(`/api/episodes/${encodeURIComponent(session)}/graph`);
+  if(g.error){ host.innerHTML=`<div class="warnbar">${esc(g.error)}</div>`;
+    return; }
+  if(!g.from_valid_draft){
+    host.innerHTML=`<div class="warnbar">No final validated protocol is
+      available, so no protocol graph was drawn.</div>`; return;
+  }
+  const s=g.stats||{};
+  host.innerHTML=`
+    <h2>Validated protocol graph</h2>
+    <div class="tiles">
+      <div class="tile"><div class="v">${s.roles}</div><div class="k">Roles</div></div>
+      <div class="tile"><div class="v">${s.messages}</div><div class="k">Messages</div></div>
+      <div class="tile"><div class="v">${s.choices}</div><div class="k">Decision points</div></div>
+      <div class="tile"><div class="v">${s.loops}</div><div class="k">Loops</div></div>
+    </div>
+    <div class="card"><b>Does this validated protocol miss your intent?</b>
+      <p class="note">Open the review conversation. GPT-5.4 will check your
+      observation against the original intent and ask you to confirm it before
+      changing the roles, interactions, constraints, or Scribble.</p>
+      <button class="primary" id="reviewprotocol">Review or correct this
+        protocol</button></div>
+    <h3>Who talks to whom</h3>
+    <p class="note">Obsidian-style graph: drag nodes to rearrange, drag the
+      background to pan, use the wheel to zoom, and hover a role to isolate
+      its neighbourhood. Switch on message nodes to inspect every handover.</p>
+    <div class="gwrap">
+      <div class="gctl">
+        <label><input type="checkbox" id="pgmode"> show every message as a
+          node</label>
+        <button id="pgzin">+</button><button id="pgzout">−</button>
+        <button id="pgspread">spread</button><button id="pgfit">fit</button>
+        <button id="pgrelease">release all</button>
+        <button id="pgtaller">taller</button><button id="pgshorter">shorter</button>
+        <button id="pgreset">reset</button><button id="pgfreeze">pause</button>
+      </div>
+      <div class="ginfo"></div><div id="pgcanvas"></div>
+    </div>
+    <h3>Message sequence</h3>
+    <p class="note">Top to bottom is protocol order. Grey bands mark choices
+      and loops, so conditional and repeated interactions remain visible.</p>
+    <div class="card" style="overflow-x:auto">${g.svg.sequence}</div>
+    ${Object.keys(g.svg.fsm||{}).length?`
+      <h3>Each role's projected contract</h3>
+      <p class="note"><code>!</code> means send; <code>?</code> means receive.
+        Each view contains only that role's boundary in the validated protocol.</p>
+      <div class="row" id="pgroles">
+        ${g.roles.map((role,index)=>`<button class="tab" data-prole="${esc(role)}"
+          aria-selected="${index===0}">${esc(role)}</button>`).join("")}
+      </div>
+      <div class="card" style="overflow-x:auto" id="pgfsm">
+        ${g.svg.fsm[g.roles[0]]||""}</div>`:""}`;
+
+  let simulation=null;
+  const mount=()=>{
+    if(simulation) simulation.destroy();
+    const canvas=$("#pgcanvas"); canvas.innerHTML="";
+    simulation=forceGraph(canvas,g.roles,g.edges,
+      $("#pgmode").checked?"messages":"roles",g);
+  };
+  mount();
+  $("#reviewprotocol").onclick=()=>{
+    const tab=document.querySelector('.tab[data-t="Review loop"]');
+    if(tab) tab.click();
+  };
+  $("#pgmode").onchange=mount;
+  $("#pgzin").onclick=()=>simulation.zoom(1.25);
+  $("#pgzout").onclick=()=>simulation.zoom(1/1.25);
+  $("#pgreset").onclick=()=>simulation.reset();
+  $("#pgspread").onclick=()=>simulation.spread();
+  $("#pgfit").onclick=()=>simulation.fit();
+  $("#pgrelease").onclick=()=>simulation.releaseAll();
+  $("#pgtaller").onclick=()=>simulation.resizeHeight(160);
+  $("#pgshorter").onclick=()=>simulation.resizeHeight(-160);
+  $("#pgfreeze").onclick=event=>{
+    event.target.textContent=simulation.freeze()?"pause":"resume";
+  };
+  host.querySelectorAll("[data-prole]").forEach(button=>button.onclick=()=>{
+    host.querySelectorAll("[data-prole]").forEach(item=>
+      item.setAttribute("aria-selected",item===button));
+    $("#pgfsm").innerHTML=g.svg.fsm[button.dataset.prole]||"";
+  });
 }
 
 /* ---------- interactive force-directed graph ----------------------------
@@ -433,7 +587,7 @@ async function showEpisode(session){
 const SERIES = ["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4","#008300",
   "#4a3aa7","#e34948"];
 
-function forceGraph(host, roles, edges, mode){
+function forceGraph(host, roles, edges, mode, evidence={}){
   const NS = "http://www.w3.org/2000/svg";
   const mk = (n,a={})=>{const e=document.createElementNS(NS,n);
     for(const k in a) e.setAttribute(k,a[k]); return e;};
@@ -442,25 +596,30 @@ function forceGraph(host, roles, edges, mode){
   const nodes = [], links = [];
   const byId = {};
   const addNode = n => { byId[n.id]=n; nodes.push(n); return n; };
+  const roleDetail = Object.fromEntries((evidence.role_details||[]).map(
+    item=>[item.name,item.intent_role]));
   roles.forEach((r,i)=>addNode({id:r, label:r, kind:"role", color:SERIES[i%8],
-    r:22, x:0, y:0, vx:0, vy:0}));
+    r:22, x:0, y:0, vx:0, vy:0, intentRole:roleDetail[r]||null}));
 
   if(mode==="messages"){
     let k=0;
     edges.forEach(e=>e.labels.forEach(lab=>{
       const id = `${e.from}|${lab}|${e.to}|${k++}`;
+      const message=(e.messages||[]).find(item=>item.label===lab)||null;
       const n = addNode({id, label:lab, kind:"msg", r:6,
         color: byId[e.from] ? byId[e.from].color : SERIES[0],
-        conditional:e.conditional, x:0, y:0, vx:0, vy:0});
-      if(byId[e.from]) links.push({s:byId[e.from], t:n, w:1, cond:e.conditional});
+        conditional:e.conditional, x:0, y:0, vx:0, vy:0,
+        message, edge:e});
+      if(byId[e.from]) links.push({s:byId[e.from], t:n, w:1,
+        cond:e.conditional,edge:e});
       if(byId[e.to])   links.push({s:n, t:byId[e.to], w:1, cond:e.conditional,
-        arrow:true});
+        arrow:true,edge:e});
     }));
   } else {
     edges.forEach(e=>{
       if(!byId[e.from]||!byId[e.to]) return;
       links.push({s:byId[e.from], t:byId[e.to], w:e.count,
-        cond:e.conditional, arrow:true, labels:e.labels});
+        cond:e.conditional, arrow:true, labels:e.labels,edge:e});
     });
   }
   // node radius by traffic so a hub reads as a hub
@@ -471,7 +630,8 @@ function forceGraph(host, roles, edges, mode){
 
   // seed on a circle (deterministic — no Math.random, so a reload gives
   // the same layout and the picture is stable between sessions)
-  const W = host.clientWidth||900, H = 560;
+  const W = host.clientWidth||900;
+  let H = 680;
   nodes.forEach((n,i)=>{
     const a = 2*Math.PI*i/nodes.length;
     const rad = n.kind==="role" ? 150 : 240;
@@ -489,6 +649,13 @@ function forceGraph(host, roles, edges, mode){
   svg.appendChild(view);
   const linkG = mk("g"), labelG = mk("g"), nodeG = mk("g");
   view.appendChild(linkG); view.appendChild(labelG); view.appendChild(nodeG);
+  const legend=document.createElement("div");
+  legend.className="glegend";
+  legend.innerHTML=`<span><i class="legend-role"></i>large circle: role</span>
+    <span><i class="legend-message"></i>small circle: message</span>
+    <span><i class="legend-line"></i>arrow: sender → receiver</span>
+    <span><i class="legend-line conditional"></i>dashed: conditional branch</span>`;
+  host.appendChild(legend);
   host.appendChild(svg);
 
   const linkEls = links.map(l=>{
@@ -509,11 +676,21 @@ function forceGraph(host, roles, edges, mode){
     g.addEventListener("pointerenter",()=>focus(n));
     g.addEventListener("pointerleave",()=>focus(null));
     g.addEventListener("pointerdown",ev=>startDrag(ev,n));
+    g.addEventListener("click",ev=>{ev.stopPropagation();selectNode(n);});
+    g.addEventListener("dblclick",ev=>{ev.stopPropagation();n.pinned=false;
+      g.classList.remove("pinned");reheat(0.5);selectNode(n);});
     return g;
+  });
+  linkEls.forEach((path,index)=>{
+    path.style.cursor="pointer";
+    path.style.pointerEvents="stroke";
+    path.addEventListener("pointerdown",event=>event.stopPropagation());
+    path.addEventListener("click",ev=>{ev.stopPropagation();
+      selectEdge(links[index]);});
   });
 
   // ---- physics ----
-  let alpha = 1, running = true, dragging = null;
+  let alpha = 1, running = true, dragging = null, selected=null;
   const REP = mode==="messages" ? 5200 : 26000;   // node-node repulsion
   const LEN = mode==="messages" ? 62 : 210;       // spring rest length
   function step(){
@@ -534,8 +711,8 @@ function forceGraph(host, roles, edges, mode){
       l.s.vx+=ux*f; l.s.vy+=uy*f; l.t.vx-=ux*f; l.t.vy-=uy*f;
     });
     nodes.forEach(n=>{                      // gentle pull to centre
-      n.vx += (W/2-n.x)*0.0016; n.vy += (H/2-n.y)*0.0016;
-      if(n===dragging){ n.vx=n.vy=0; return; }
+      n.vx += (W/2-n.x)*0.0003; n.vy += (H/2-n.y)*0.0003;
+      if(n===dragging || n.pinned){ n.vx=n.vy=0; return; }
       n.x += (n.vx*=0.86)*alpha; n.y += (n.vy*=0.86)*alpha;
     });
     alpha = Math.max(0.02, alpha*0.994);
@@ -566,7 +743,7 @@ function forceGraph(host, roles, edges, mode){
     if(!n){
       nodeEls.forEach(g=>g.classList.remove("dim","hot"));
       linkEls.forEach(p=>p.classList.remove("dim","hot"));
-      if(info) info.innerHTML = infoDefault;
+      if(info && !selected) info.innerHTML = infoDefault;
       return;
     }
     const near = new Set([n]);
@@ -593,9 +770,70 @@ function forceGraph(host, roles, edges, mode){
             ${outg.map(l=>"to "+esc(nameOf(l.t))).join("<br>")}</div>`}`;
     }
   }
-  const infoDefault = `<h4>Hover a node</h4><div class="sub">Drag to
-    rearrange · wheel to zoom · drag the background to pan. Dashed links
-    only happen on some branch.</div>`;
+  const intentHtml = interactions => (interactions||[]).length
+    ? interactions.map(item=>`<div class="intentmap">
+        <b>${esc(item.iid||"Intent interaction")}</b>: ${esc(item.what||"")}
+        <div class="sub">${esc(item.sender||item.from||"")} →
+          ${esc(item.receiver||item.to||"")}</div>
+        ${item.when?`<div><b>When:</b> ${esc(item.when)}</div>`:""}
+        ${item.cardinality?`<div><b>How often:</b> ${esc(item.cardinality)}</div>`:""}
+        ${(item.waits_for||[]).length?`<div><b>Waits for:</b>
+          ${item.waits_for.map(esc).join(", ")}</div>`:""}
+        ${(item.carries||[]).length?`<div><b>Carries:</b><ul>
+          ${item.carries.map(field=>`<li>${esc(field.name)}: ${esc(field.type||"string")}
+            ${field.constraint?` — ${esc(field.constraint)}`:""}</li>`).join("")}
+          </ul></div>`:""}</div>`).join("")
+    : `<div class="warnbar">No endorsed user-intent interaction has this
+        sender → receiver direction. It may be invented or the intent model
+        may be incomplete.</div>`;
+  function showNode(n){
+    if(!info) return;
+    if(n.kind==="role"){
+      const role=n.intentRole;
+      const related=(evidence.messages||[]).filter(message=>
+        message.sender===n.id||message.receiver===n.id);
+      info.innerHTML=`<h4>${esc(n.label)}</h4>${badge("info","role")}
+        ${role?`<p>${esc(role.description||"")}</p>
+          ${(role.must_not||[]).length?`<b>Must not</b><ul>${role.must_not.map(
+            item=>`<li>${esc(item)}</li>`).join("")}</ul>`:""}`:
+          `<div class="warnbar">This protocol role is not declared in the
+            endorsed user intent.</div>`}
+        <b>Accepted Scribble participation</b>
+        <p class="sub">${related.length} message(s), lines
+          ${[...new Set(related.map(item=>item.line))].join(", ")||"—"}</p>
+        <p class="sub">Drag to move and pin. Double-click to release.</p>`;
+      return;
+    }
+    const message=n.message||{};
+    info.innerHTML=`<h4>${esc(n.label)}</h4>${badge("info","message")}
+      <p><b>${esc(message.sender||n.edge?.from||"")} →
+        ${esc(message.receiver||n.edge?.to||"")}</b></p>
+      <b>Accepted Scribble</b>
+      <pre class="wrap">line ${message.line||"?"}: ${esc(message.scribble||n.label)}</pre>
+      ${(message.path||[]).length?`<div><b>Branch/loop:</b>
+        ${message.path.map(esc).join(" / ")}</div>`:""}
+      <h4>User intent correspondence</h4>
+      ${intentHtml(message.intent_interactions||n.edge?.intent_interactions)}
+      <p class="sub">Drag to move and pin. Double-click to release.</p>`;
+  }
+  function showEdge(link){
+    if(!info) return;
+    const edge=link.edge||edges.find(item=>item.from===link.s.id&&
+      item.to===link.t.id)||{};
+    info.innerHTML=`<h4>${esc(edge.from||link.s.label)} →
+      ${esc(edge.to||link.t.label)}</h4>${badge("info","interaction edge")}
+      <h4>User intent correspondence</h4>${intentHtml(edge.intent_interactions)}
+      <h4>Accepted Scribble messages</h4>
+      ${(edge.messages||[]).map(message=>`<pre class="wrap">line
+        ${message.line}: ${esc(message.scribble)}</pre>`).join("")||
+        `<p class="sub">No direct Scribble message evidence.</p>`}`;
+  }
+  function selectNode(n){ selected={kind:"node",value:n}; showNode(n);
+    nodeEls.forEach((element,index)=>element.classList.toggle("hot",nodes[index]===n)); }
+  function selectEdge(link){ selected={kind:"edge",value:link}; showEdge(link); }
+  const infoDefault = `<h4>Graph inspector</h4><div class="sub">Click a role,
+    message node, or edge to pin its details here. Dragging a node pins its
+    position. Double-click releases one node; Release all restores physics.</div>`;
   if(info) info.innerHTML = infoDefault;
 
   // ---- pan / zoom / drag ----
@@ -609,6 +847,7 @@ function forceGraph(host, roles, edges, mode){
   };
   function startDrag(ev,n){
     ev.stopPropagation(); ev.preventDefault();
+    selectNode(n);
     dragging = n; svg.classList.add("dragging");
     svg.setPointerCapture(ev.pointerId); reheat(0.5);
   }
@@ -623,7 +862,9 @@ function forceGraph(host, roles, edges, mode){
     else if(panning){ const p=toWorld(ev);
       tx=p.sx-panning.x; ty=p.sy-panning.y; apply(); }
   });
-  const endPointer = ()=>{ dragging=null; panning=null;
+  const endPointer = ()=>{ if(dragging){dragging.pinned=true;
+      const index=nodes.indexOf(dragging);if(index>=0)nodeEls[index].classList.add("pinned");}
+    dragging=null; panning=null;
     svg.classList.remove("dragging"); };
   svg.addEventListener("pointerup",endPointer);
   svg.addEventListener("pointercancel",endPointer);
@@ -639,7 +880,23 @@ function forceGraph(host, roles, edges, mode){
     reset(){ k=1; tx=0; ty=0; apply(); alpha=1;
       nodes.forEach((n,i)=>{ const a=2*Math.PI*i/nodes.length;
         const rad = n.kind==="role"?150:240;
-        n.x=W/2+rad*Math.cos(a); n.y=H/2+rad*Math.sin(a); n.vx=n.vy=0; }); },
+        n.x=W/2+rad*Math.cos(a); n.y=H/2+rad*Math.sin(a); n.vx=n.vy=0;
+        n.pinned=false;nodeEls[i].classList.remove("pinned"); }); },
+    spread(){ const cx=nodes.reduce((sum,n)=>sum+n.x,0)/nodes.length;
+      const cy=nodes.reduce((sum,n)=>sum+n.y,0)/nodes.length;
+      nodes.forEach((n,index)=>{n.x=cx+(n.x-cx)*1.45;
+        n.y=cy+(n.y-cy)*1.45;n.pinned=true;
+        nodeEls[index].classList.add("pinned");});draw();this.fit(); },
+    fit(){ const xs=nodes.map(n=>n.x),ys=nodes.map(n=>n.y);
+      const minX=Math.min(...xs)-60,maxX=Math.max(...xs)+60;
+      const minY=Math.min(...ys)-60,maxY=Math.max(...ys)+60;
+      k=Math.min(2,Math.max(0.2,Math.min(W/(maxX-minX),H/(maxY-minY))));
+      tx=W/2-k*(minX+maxX)/2;ty=H/2-k*(minY+maxY)/2;apply(); },
+    releaseAll(){nodes.forEach((n,index)=>{n.pinned=false;
+      nodeEls[index].classList.remove("pinned");});alpha=0.7;},
+    resizeHeight(delta){H=Math.max(400,Math.min(1400,H+delta));
+      svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.style.height=`${H}px`;
+      draw();},
     freeze(){ running = !running; return running; },
     destroy(){ running=false; },
   };
@@ -776,6 +1033,40 @@ function mustPanel(f){
       </tbody></table>`:""}`;
 }
 
+function rankingPanel(f){
+  const ranking=(f.scope||{}).ranking||{};
+  if(ranking.overall_coverage_pct==null) return "";
+  const row=(key,label,description)=>{
+    const d=ranking[key]||{};
+    const score=d.score_pct??0;
+    const detail=key==="roles"
+      ? `${d.matched}/${d.expected} expected roles matched`
+      :key==="directions"
+        ? `${d.covered}/${d.expected} intended handovers have the correct direction`
+        :`${d.yes} covered · ${d.partial} partial · ${d.no} missing`;
+    const gaps=key==="roles"?[...(d.missing||[]),...(d.unexpected||[])]:
+      key==="directions"?[...(d.missing_interactions||[]),
+                            ...(d.unexpected_pairs||[])]:d.unmet||[];
+    const priority=d.priority==="critical"?"Critical":"High priority";
+    return `<tr><td><b>${priority} · ${label}</b>
+        <div class="sub">${description}</div></td>
+      <td>${badge(score===100?"good":score>=70?"warn":"bad",score+"%")}</td>
+      <td class="sub">weight ${d.weight_pct}% · ${detail}
+        ${gaps.length?`<div>Gaps: ${gaps.map(esc).join(", ")}</div>`:""}</td></tr>`;
+  };
+  return `<h2>Ranked STJP coverage</h2>
+    <div class="tiles"><div class="tile"><div class="v">
+      ${ranking.overall_coverage_pct}%</div><div class="k">Weighted coverage</div>
+    </div></div>
+    <table><tbody>
+      ${row("roles","Roles","the exact participant set")}
+      ${row("directions","Interaction direction",
+            "each intended sender must hand off to the intended receiver")}
+      ${row("interaction_constraints","Interaction constraints",
+            "payload guards, order, authorization, branches, and termination")}
+    </tbody></table>`;
+}
+
 function dimsPanel(f){
   const sc = f.scope||{}, dims = sc.dimensions||{};
   if(!Object.keys(dims).length) return "";
@@ -821,6 +1112,12 @@ async function loadGraph(session){
     </div>
     <div class="warnbar">${badge("info","source")}
       Drawn from <b>${esc(g.source||"the drafted protocol")}</b>.</div>
+    <div class="card"><b>Something is missing or pointing the wrong way?</b>
+      <p class="note">Reopen the understanding instead of accepting this
+      graph as final. The learner will check your observation and ask you to
+      confirm it before changing anything.</p>
+      <button class="primary" id="reviewgraph">Review or correct this
+        graph</button></div>
     ${(g.unparsed||[]).length?`<div class="warnbar">${badge("warn","unread lines")}
       ${g.unparsed.length} line(s) could not be read and are NOT in the
       diagrams: ${g.unparsed.map(u=>`<code>${esc(u.text.slice(0,80))}</code>`).join(" ")}
@@ -835,6 +1132,9 @@ async function loadGraph(session){
         <label><input type="checkbox" id="gmode"> show every message as a
           node</label>
         <button id="gzin">+</button><button id="gzout">−</button>
+        <button id="gspread">spread</button><button id="gfit">fit</button>
+        <button id="grelease">release all</button>
+        <button id="gtaller">taller</button><button id="gshorter">shorter</button>
         <button id="greset">reset</button><button id="gfreeze">pause</button>
       </div>
       <div class="ginfo"></div>
@@ -869,15 +1169,24 @@ async function loadGraph(session){
     if(sim) sim.destroy();
     const host = $("#gcanvas"); host.innerHTML = "";
     sim = forceGraph(host, g.roles, g.edges,
-      $("#gmode").checked ? "messages" : "roles");
+      $("#gmode").checked ? "messages" : "roles",g);
   };
   mountGraph();
   $("#gmode").onchange = mountGraph;
   $("#gzin").onclick = ()=>sim.zoom(1.25);
   $("#gzout").onclick = ()=>sim.zoom(1/1.25);
   $("#greset").onclick = ()=>sim.reset();
+  $("#gspread").onclick = ()=>sim.spread();
+  $("#gfit").onclick = ()=>sim.fit();
+  $("#grelease").onclick = ()=>sim.releaseAll();
+  $("#gtaller").onclick = ()=>sim.resizeHeight(160);
+  $("#gshorter").onclick = ()=>sim.resizeHeight(-160);
   $("#gfreeze").onclick = e=>{ e.target.textContent =
     sim.freeze() ? "pause" : "resume"; };
+  $("#reviewgraph").onclick = ()=>{
+    const tab=document.querySelector('.tab[data-t="Review loop"]');
+    if(tab) tab.click();
+  };
 
   el.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{
     el.querySelectorAll("[data-role]").forEach(x=>
@@ -912,28 +1221,64 @@ async function loadGraph(session){
 /* ---------- refine tab ---------- */
 async function loadRefine(session, ep){
   const el = $("#refinebody"); if(!el) return;
-  if(!ep.final_protocol){
-    el.innerHTML = `<div class="empty">Nothing to refine — this episode has
-      no validated protocol.</div>`; return; }
   el.innerHTML = `
-    <p class="note">Refinement folds your answers into the requirement
-    checklist and drafts again, as a <b>new</b> episode — the first draft and
-    its verdict are kept, so you can see whether refining helped.</p>
+    <button id="backtoprotocol">Return to the validated protocol</button>
+    ${ep.review?`<div class="card"><b>What changed in the previous review</b>
+      <p class="note">${esc(ep.review.critique||"")}</p>
+      ${(ep.review.changes||[]).length?`<ul>${ep.review.changes.map(change=>
+        `<li>${esc(change)}</li>`).join("")}</ul>`:""}
+      ${ep.review.lesson?`<p class="note"><b>Learner rule:</b>
+        ${esc(ep.review.lesson)}</p>`:""}</div>`:""}
+    <div class="card"><b>How the review works</b>
+      <p class="note">Tell the learner what looks missing or wrong in the
+      graph or Scribble. GPT-5.4 checks your observation against the original
+      intent and asks you to confirm what you mean. Confirmed answers revise
+      the roles, interaction directions, goals and constraints, redraw the
+      graph, and draft a new checked Scribble episode. You can repeat this
+      loop until the graph and protocol match your intent.</p></div>
+    <label>What do you see missing or wrong?</label>
+    <textarea id="reviewcritique" style="min-height:110px"
+      placeholder="Example: The Inspector should report only to the Orchestrator, not directly to the requesting user. Ask me before changing it."></textarea>
     <div class="row" style="margin-bottom:10px">
-      <button class="primary" id="ask">Ask the model what it needs to
-        know</button>
-      <button id="addown">Add my own question</button>
+      <button id="ask">Analyze my review and ask confirmation questions</button>
+      <button id="expertask">Ask GPT-5.6-sol to review first</button>
+      <button id="gapask">Ask about measured gaps</button>
       <span class="sub" id="askstatus"></span>
     </div>
+    <div id="reviewassessment"></div>
     <div id="qlist"></div>
+    <label style="margin-top:12px;text-transform:none;letter-spacing:0">
+      <input type="checkbox" id="refinemock" style="width:auto"> use only
+      the basic text check, without formal Scribble validation
+      (development only)</label>
+    <div class="warnbar"><b>What this development check means:</b>
+      it only checks that the draft contains <code>global protocol</code> and
+      has balanced braces. It does not prove role projection, interaction
+      order, branch knowledge, payload types, deadlock freedom, or
+      session-type correctness. Its result is not research evidence.</div>
     <div class="row" style="margin-top:12px">
-      <button class="primary" id="dorefine" disabled>Redraft with these
-        answers</button>
+      <button class="primary" id="dorefine" disabled>Apply review, redraw,
+        and redraft</button>
       <span class="sub" id="refinestatus"></span>
     </div>
     <div id="refinelog"></div>`;
 
+  const backToProtocol = $("#backtoprotocol");
+  if(backToProtocol) backToProtocol.onclick=()=>{
+    const tab=document.querySelector('.tab[data-t="Protocol"]');
+    if(tab) tab.click();
+  };
+
   const questions = [];
+  let activeCritique = "";
+  const syncActions=()=>{
+    const hasAnswers=questions.some(item=>(item.answer||"").trim());
+    const hasReview=$("#reviewcritique").value.trim().length>0;
+    $("#dorefine").disabled=!(hasAnswers||hasReview);
+    $("#dorefine").textContent=hasAnswers
+      ? "Apply confirmed answers, redraw, and redraft"
+      : "Apply written review, redraw, and redraft";
+  };
   const render = ()=>{
     $("#qlist").innerHTML = questions.length ? questions.map((q,i)=>`
       <div class="card">
@@ -945,39 +1290,98 @@ async function loadRefine(session, ep){
       </div>`).join("") : `<div class="empty">No questions yet.</div>`;
     $("#qlist").querySelectorAll("[data-a]").forEach(t=>t.oninput=()=>{
       questions[+t.dataset.a].answer = t.value;
-      $("#dorefine").disabled = !questions.some(x=>(x.answer||"").trim());
+      syncActions();
     });
+    syncActions();
   };
   render();
+  $("#reviewcritique").oninput=syncActions;
 
-  $("#ask").onclick = async ()=>{
-    $("#ask").disabled=true; $("#askstatus").textContent="thinking…";
-    const r = await api(`/api/episodes/${encodeURIComponent(session)}/questions`,
-      {method:"POST"});
-    $("#ask").disabled=false; $("#askstatus").textContent="";
+  const saved = await api(
+    `/api/episodes/${encodeURIComponent(session)}/review-state`);
+  if(!saved.error){
+    const prior=saved.questions||{};
+    if(prior.critique){
+      activeCritique=prior.critique;
+      $("#reviewcritique").value=prior.critique;
+      $("#reviewassessment").innerHTML=`<div class="card">
+        ${badge("info","saved review restored")}
+        <p>${esc(prior.assessment||"")}</p></div>`;
+      (prior.questions||[]).forEach(item=>questions.push({...item,answer:""}));
+    }
+    const submission=saved.latest_submission;
+    if(submission && !submission.completed){
+      activeCritique=submission.review_critique||activeCritique;
+      const byQuestion=Object.fromEntries((submission.answers||[]).map(
+        item=>[item.question,item.answer]));
+      questions.forEach(item=>item.answer=byQuestion[item.q]||item.answer||"");
+      $("#refinelog").innerHTML=`<div class="warnbar">
+        ${badge("warn","previous refinement interrupted")}
+        Your submitted answers were saved before processing. Review them and
+        press <b>Update understanding, redraw, and redraft</b> to resume as a
+        new job.</div>`;
+    }
+    render();
+  }
+
+  const runReview = async expert =>{
+    const critique = $("#reviewcritique").value.trim();
+    if(!expert && !critique){
+      $("#askstatus").innerHTML=badge("bad","describe what you noticed");
+      return;
+    }
+    $("#ask").disabled=true; $("#expertask").disabled=true;
+    $("#askstatus").textContent=expert?
+      "expert reviewing, then learner checking…":"learner checking…";
+    const r = await api(
+      `/api/episodes/${encodeURIComponent(session)}/review-questions`,
+      {method:"POST",headers:{"Content-Type":"application/json"},
+       body:JSON.stringify({critique,expert_review:expert})});
+    $("#ask").disabled=false; $("#expertask").disabled=false;
+    $("#askstatus").textContent="";
     if(r.error){ $("#qlist").innerHTML=`<div class="warnbar">${esc(r.error)}</div>`;
       return; }
+    activeCritique=r.critique||critique;
+    $("#reviewcritique").value=activeCritique;
+    $("#reviewassessment").innerHTML=`<div class="card">
+      ${badge("info",r.reviewed_by==="expert"?"expert critique checked":"your critique checked")}
+      <p>${esc(r.assessment||"")}</p></div>`;
+    questions.splice(0,questions.length);
     (r.questions||[]).forEach(q=>questions.push({...q, answer:""}));
     render();
   };
-  $("#addown").onclick = ()=>{
-    const q = prompt("Your question for the next draft:");
-    if(q) { questions.push({q, because:"asked by you", kind:"user"});
-      render(); }
+  $("#ask").onclick=()=>runReview(false);
+  $("#expertask").onclick=()=>runReview(true);
+  $("#gapask").onclick = async ()=>{
+    $("#gapask").disabled=true; $("#askstatus").textContent="thinking…";
+    const r=await api(`/api/episodes/${encodeURIComponent(session)}/questions`,
+      {method:"POST"});
+    $("#gapask").disabled=false; $("#askstatus").textContent="";
+    if(r.error){ $("#qlist").innerHTML=`<div class="warnbar">${esc(r.error)}</div>`;
+      return; }
+    activeCritique="Measured faithfulness gaps need stakeholder decisions.";
+    questions.splice(0,questions.length);
+    (r.questions||[]).forEach(q=>questions.push({...q,answer:""})); render();
   };
-  $("#dorefine").onclick = async ()=>{
+  const submitRefinement = async ()=>{
     $("#dorefine").disabled=true;
     $("#refinestatus").textContent="redrafting…";
+    const critique=$("#reviewcritique").value.trim();
+    const answered=questions.filter(q=>(q.answer||"").trim())
+      .map(q=>({question:q.q,answer:q.answer}));
+    const submittedAnswers=answered.length?answered:
+      [{question:"What correction did the user confirm?",answer:critique}];
     const r = await api(`/api/episodes/${encodeURIComponent(session)}/refine`,
       {method:"POST", headers:{"Content-Type":"application/json"},
-       body: JSON.stringify({validator:"mock",
-         answers: questions.filter(q=>(q.answer||"").trim())
-           .map(q=>({question:q.q, answer:q.answer}))})});
+       body: JSON.stringify({validator:$("#refinemock").checked?"mock":"real",
+         review_critique:critique||activeCritique,
+         answers:submittedAnswers})});
     if(r.error){ $("#refinestatus").innerHTML=badge("bad",esc(r.error));
-      $("#dorefine").disabled=false; return; }
+      syncActions(); return; }
     $("#refinestatus").innerHTML = badge("info","job "+r.job_id);
     pollRefine(r.job_id);
   };
+  $("#dorefine").onclick=submitRefinement;
 }
 
 async function pollRefine(id){
@@ -994,29 +1398,69 @@ async function pollRefine(id){
       await loadEpisodesKeepView();
       return;
     }
+    const LABELS={
+      start:"Starting refinement",
+      intent_revision_started:"GPT-5.4 is revising the understanding",
+      understanding_revised:"Understanding revised",
+      requirements_added:"Requirements updated",
+      draft_started:"GPT-5.4 is drafting Scribble",
+      draft_completed:"Initial Scribble draft ready",
+      validation_started:"Scribble validation started",
+      validation_result:"Scribble validation result",
+      repair_started:"GPT-5.4 is repairing rejected Scribble",
+      repair_completed:"Repaired Scribble draft ready",
+      drafted:"Draft and validation loop finished",
+      faithfulness_started:"Faithfulness judging started",
+      evaluated:"Faithfulness judging finished",
+      artifacts_writing:"Saving learned artifacts",
+      done:"Refinement completed",error:"Refinement failed"};
+    const started=Date.parse(j.created||"");
+    const elapsed=Number.isFinite(started)?Math.max(0,Math.round(
+      (Date.now()-started)/1000)):null;
+    const eventRow=e=>{
+      const {stage,at,...rest}=e;
+      const validation=stage==="validation_result";
+      const status=validation
+        ? badge(e.valid?"good":"bad",e.valid?"Scribble ACCEPTED":"Scribble REJECTED")
+        : badge(stage==="error"?"bad":stage==="done"?"good":"info",
+                LABELS[stage]||stage);
+      const summary=e.activity||
+        (stage==="validation_started"?`Attempt ${e.attempt} is running through ${e.validator}`:
+        stage==="repair_started"?`Attempt ${e.attempt}: repairing the previous rejection`:
+        stage==="validation_result"?`Attempt ${e.attempt}: ${e.verdict}`:"");
+      return `<tr><td class="rid">${esc(at||"")}</td><td>${status}
+        ${summary?`<div>${esc(summary)}</div>`:""}
+        ${e.validator_message?`<div class="sub">${esc(e.validator_message)}</div>`:""}
+        <details><summary>details</summary><code>${esc(JSON.stringify(rest))}</code></details>
+        </td></tr>`;
+    };
     $("#refinelog").innerHTML = `<div class="card">
       <div class="row">${badge(j.state==="succeeded"?"good":
         j.state==="failed"?"bad":"info", j.state)}
-        <span class="sub">${esc(j.stage||"")}</span></div>
-      <table style="margin-top:8px"><tbody>${(j.events||[]).map(e=>{
-        const {stage,at,...rest}=e;
-        return `<tr><td class="rid">${esc(stage)}</td>
-          <td><code>${esc(JSON.stringify(rest))}</code></td></tr>`;
-      }).join("")}</tbody></table>
+        <b>${esc(LABELS[j.stage]||j.stage||"queued")}</b>
+        <span class="sub">${elapsed==null?"":`${elapsed}s elapsed`}</span></div>
+      <p class="note">This panel updates while GPT-5.4 drafts or repairs and
+        while Scribble validates each attempt. Do not restart the server while
+        the job is running.</p>
+      <table style="margin-top:8px"><tbody>${(j.events||[]).map(eventRow).join("")}</tbody></table>
       ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
     if(j.state==="succeeded"||j.state==="failed"){
       clearInterval(state.poll); $("#dorefine").disabled=false;
       if(j.result){
         const R=j.result;
         $("#refinelog").innerHTML += `<div class="card">
-          <b>Draft 2</b>
-          <p class="note">coverage ${pct(R.recall_before)} →
-            <b>${pct(R.recall)}</b> · ${R.requirements} requirements ·
-            ${R.valid?"validator accepted":"never validated"}</p>
+          <b>${R.valid?"New validated protocol":"No new valid protocol"}</b>
+          <p class="note">${R.attempts} attempt(s) through
+            ${esc(R.validator||"the validator")} · ${R.requirements}
+            requirements · ${R.valid?`coverage ${pct(R.recall_before)} →
+            <b>${pct(R.recall)}</b>`:`every attempt was rejected; the current
+            validated protocol and graph were not replaced`}</p>
           <button class="primary" id="openrefined">Open
-            ${esc(R.session)}</button></div>`;
+            ${R.valid?"new protocol":"revised understanding and rejected attempts"}
+            </button></div>`;
         await loadEpisodesKeepView();
         $("#openrefined").onclick=()=>showEpisode(R.session);
+        if(j.state==="succeeded"&&R.valid) await showEpisode(R.session);
       }
     }
   }, 1500);
@@ -1156,6 +1600,13 @@ document-scale intent is the point; a handbook is fine."></textarea>
         <div style="max-width:220px"><label>Interrogation turns (max)</label>
           <input id="rounds" type="number" value="8" min="1" max="20"></div>
       </div>
+      <label style="margin-top:12px;text-transform:none;letter-spacing:0">
+        <input type="checkbox" id="startfresh" style="width:auto" checked>
+        Start fresh: if this same intent is already running, cancel the old
+        interrogation and use these new settings instead</label>
+      <p class="note">Cancellation takes effect immediately while waiting for
+        your answer, or after the current model call returns. The old run will
+        not continue into another interrogation turn.</p>
       <p class="note">This run does the UNDERSTANDING only: gpt-5.4
       questions you, then shows the roles, interactions and goals it
       arrived at. No protocol is written and Scribble is not run — you
@@ -1214,6 +1665,7 @@ async function startRun(){
     // formalise an understanding you have endorsed.
     max_rounds: +$("#rounds").value,
     answered_by: $("#answeredby").value,
+    replace_existing: $("#startfresh").checked,
   };
   // The scripted demo runs the whole pipeline as a smoke check, so it does
   // need a validator — the crude one, since it is not evidence anyway.
@@ -1244,7 +1696,8 @@ async function startRun(){
         const c = await api(`/api/runs/${encodeURIComponent(r.job_id)}/cancel`,
           {method:"POST"});
         $("#killstatus").innerHTML = c.error ? badge("bad", esc(c.error))
-          : badge("good","cancelled — press the button again");
+          : badge("good","cancelled");
+        if(!c.error){ $("#go").disabled=false; await startRun(); }
       };
     }
     $("#go").disabled=false; return;
@@ -1306,7 +1759,8 @@ async function pollJob(id, session){
       return;
     }
 
-    const done = j.state==="succeeded"||j.state==="failed";
+    const done = j.state==="succeeded"||j.state==="failed"||
+      j.state==="cancelled";
     const secs = Math.round((Date.now()-t0)/1000);
     const reached = new Set((j.events||[]).map(e=>e.stage));
     const cur = j.stage||"start";
@@ -1335,7 +1789,8 @@ async function pollJob(id, session){
     const chars = (j.params||{}).intent_chars || 0;
     $("#joblog").innerHTML = `<div class="card">
       <div class="row">${badge(j.awaiting?"warn":
-        j.state==="succeeded"?"good":j.state==="failed"?"bad":"info",
+        j.state==="succeeded"?"good":j.state==="failed"?"bad":
+        j.state==="cancelled"?"warn":"info",
         j.awaiting?"waiting for your answer":j.state)}
         <span class="sub">${secs}s total${since!=null&&!done
           ? ` · ${since}s on this step` : ""}
@@ -1549,14 +2004,16 @@ function renderLive(p){
     </tbody></table>`;
 }
 async function loadEpisodesKeepView(){
-  const v=state.view; await loadEpisodes(); state.view=v;
+  const v=state.view; await loadEpisodes(); await loadActiveRuns(); state.view=v;
 }
 
 /* ---------- boot ---------- */
 $("#btn-new").onclick = showRunForm;
 $("#btn-settings").onclick = showSettings;
-$("#btn-refresh").onclick = async ()=>{ await loadHealth(); await loadEpisodes(); };
-loadHealth(); loadEpisodes();
+$("#btn-refresh").onclick = async ()=>{
+  await loadHealth(); await loadActiveRuns(); await loadEpisodes();
+};
+loadHealth(); loadActiveRuns(); loadEpisodes();
 </script>
 </body>
 </html>

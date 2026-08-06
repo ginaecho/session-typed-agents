@@ -567,12 +567,54 @@ def intent_graph_payload(distilled: dict) -> dict[str, Any]:
                     "sequence": render_sequence(ir)}}
 
 
-def graph_payload(protocol_text: str) -> dict[str, Any]:
-    """Everything the UI and the report need for one protocol."""
+def _normalized_role(name: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", name.lower())
+
+
+def graph_payload(protocol_text: str,
+                  distilled: Optional[dict] = None) -> dict[str, Any]:
+    """Everything the UI needs, including protocol-to-intent provenance."""
     ir = parse_protocol(protocol_text)
+    distilled = distilled or {}
+    interactions = distilled.get("interactions") or []
+
+    def matching_intent(sender: str, receiver: str) -> list[dict]:
+        source = _normalized_role(sender)
+        target = _normalized_role(receiver)
+        return [interaction for interaction in interactions
+                if _normalized_role(str(interaction.get("sender") or
+                                        interaction.get("from") or "")) == source
+                and _normalized_role(str(interaction.get("receiver") or
+                                        interaction.get("to") or "")) == target]
+
+    messages = []
+    for message in ir.messages():
+        for receiver in message.receivers:
+            messages.append({
+                "label": message.label, "payload": message.payload,
+                "sender": message.sender, "receiver": receiver,
+                "line": message.line, "path": list(message.path),
+                "scribble": (f"{message.label}({message.payload}) from "
+                             f"{message.sender} to {receiver};"),
+                "intent_interactions": matching_intent(message.sender,
+                                                        receiver),
+            })
+    edges = role_edges(ir)
+    for edge in edges:
+        edge["intent_interactions"] = matching_intent(edge["from"],
+                                                        edge["to"])
+        edge["messages"] = [message for message in messages
+                            if message["sender"] == edge["from"]
+                            and message["receiver"] == edge["to"]]
+    roles = []
+    for role in ir.roles:
+        intended = next((item for item in distilled.get("roles", [])
+                         if _normalized_role(str(item.get("name", ""))) ==
+                         _normalized_role(role)), None)
+        roles.append({"name": role, "intent_role": intended})
     return {
-        "name": ir.name, "roles": ir.roles, "stats": ir.stats(),
-        "edges": role_edges(ir),
+        "name": ir.name, "roles": ir.roles, "role_details": roles,
+        "messages": messages, "stats": ir.stats(), "edges": edges,
         "unparsed": [{"line": n, "text": t} for n, t in ir.unparsed],
         "svg": {
             "roles": render_role_graph(ir),

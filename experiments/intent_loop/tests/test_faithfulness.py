@@ -22,6 +22,11 @@ def test_faithful_episode_aggregates_true():
     assert report.backtranslation["score"] == 92
     assert report.faithful
     assert report.gold_equivalent is None
+    ranking = report.scope["ranking"]
+    assert ranking["overall_coverage_pct"] == 100
+    assert ranking["roles"]["score_pct"] == 100
+    assert ranking["directions"]["score_pct"] == 100
+    assert ranking["interaction_constraints"]["score_pct"] == 100
 
 
 def test_missing_requirement_fails_verdict():
@@ -34,6 +39,27 @@ def test_missing_requirement_fails_verdict():
     r5 = next(v for v in report.coverage if v.rid == "R5")
     assert r5.covered == "no"
     assert report.recall == 0.8
+    assert not report.faithful
+
+
+def test_direction_ranking_detects_a_reversed_handover():
+    from experiments.intent_loop.schema import Interaction
+    distilled = _distilled()
+    distilled.interactions = [
+        Interaction("I1", "Requester", "Analyst", "request"),
+    ]
+    reversed_protocol = """global protocol Reversed(
+        role Requester, role Analyst, role Approver) {
+        WrongWay(String) from Analyst to Requester;
+        ApproverNotified(String) from Analyst to Approver;
+    }"""
+    report = evaluate_faithfulness(
+        MockChat(mockdata.EVAL_SCRIPT), distilled, reversed_protocol)
+
+    directions = report.scope["ranking"]["directions"]
+    assert directions["recall_pct"] == 0
+    assert "I1" in directions["missing_interactions"]
+    assert "analyst -> requester" in directions["unexpected_pairs"]
     assert not report.faithful
 
 
@@ -136,6 +162,21 @@ def test_drafter_asks_for_guards_only_when_constraints_exist():
     assert GUARD_SIDECAR_SENTINEL in withc.calls[0][1]
 
 
+def test_value_requirement_requires_guards_without_interaction_constraint():
+    from experiments.intent_loop.drafter_llm import ChatDrafter
+    from experiments.seam_bench.t0.drafter import GUARD_SIDECAR_SENTINEL
+    d = _distilled()
+    d.requirements.append(Requirement(
+        rid="R6", kind="value", text="The amount must exceed 500.",
+        who=["Analyst"], source="document", priority="must"))
+    assert not d.value_constraints()
+    assert d.requires_guard_sidecar()
+
+    chat = MockChat([mockdata.FIXED_DRAFT])
+    ChatDrafter(chat, require_guard_sidecar=True).draft(d.to_markdown(), 1)
+    assert GUARD_SIDECAR_SENTINEL in chat.calls[0][1]
+
+
 def test_interior_requirements_are_reported_not_graded():
     """Intra-role procedure ("open that cell and fix the syntax") crosses no
     role boundary. Grading a protocol on it made recall report a failure of
@@ -184,6 +225,31 @@ def test_joins_and_shared_resources_are_surfaced():
     assert "Joins" in md and "deadlocks" in md
     assert "shared-write" in md
     assert "repair_rounds" in md and "<= 3" in md
+
+
+def test_distilled_intent_roundtrip_preserves_phase_two_inputs():
+    from experiments.intent_loop.schema import (Field, Goal, Interaction,
+                                                Resource, SessionInvariant)
+    d = _distilled()
+    d.roles[0].update({"kind": "tool", "must_not": ["approve its own work"]})
+    d.goals = [Goal("G1", "The request is approved", marker="I1",
+                    predicate="approved is true", final=True)]
+    d.interactions = [Interaction(
+        iid="I1", sender="Analyst", receiver="Approver",
+        what="approval request",
+        carries=[Field("amount", "double", "greater than 500")],
+        cardinality="exactly once", waits_for=["I0"])]
+    d.resources = [Resource("ledger", "table", "shared-write",
+                            "one writer at a time")]
+    d.invariants = [SessionInvariant("retries", "<= 3", "approval",
+                                     "stop")]
+    d.non_goals = ["Do not issue payment"]
+    d.provenance = {"approved_by": "human"}
+
+    restored = type(d).from_dict(d.to_dict())
+
+    assert restored.to_dict() == d.to_dict()
+    assert restored.value_constraints()[0][1].constraint == "greater than 500"
 
 
 def test_gold_equivalence_uses_injected_bisim():

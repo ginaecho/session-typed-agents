@@ -91,6 +91,9 @@ BROKEN_DRAFT = """global protocol QuarterlyReport(role Requester, role Analyst, 
 """
 
 FIXED_DRAFT = BROKEN_DRAFT + "    }\n}\n"
+GUARDED_FIXED_DRAFT = FIXED_DRAFT + """=== REFN ===
+Analysis.justification :: amount <= 100000 or justification is non-empty
+"""
 
 # ── faithfulness scripts ────────────────────────────────────────────────
 COVERAGE_REPLY = json.dumps({
@@ -123,5 +126,5 @@ COMPARE_REPLY = json.dumps({"score": 92, "missing": [], "added": []})
 
 INTERROGATOR_SCRIPT = [INTERROGATOR_ROUND1, INTERROGATOR_DONE]
 STAKEHOLDER_SCRIPT = [STAKEHOLDER_ANSWERS_ROUND1]
-DRAFTER_SCRIPT = [BROKEN_DRAFT, FIXED_DRAFT]
+DRAFTER_SCRIPT = [BROKEN_DRAFT, GUARDED_FIXED_DRAFT]
 EVAL_SCRIPT = [COVERAGE_REPLY, BACKTRANSLATION_REPLY, COMPARE_REPLY]

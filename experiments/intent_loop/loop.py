@@ -439,8 +439,11 @@ def run_episode(
     # we still load the standing one, so each run starts where the last one
     # left off instead of re-learning the same syntax from scratch.
     rulebook = list(prompt_pack.rulebook) if prompt_pack else standing_lessons()
-    drafter = ChatDrafter(drafter_chat or llm, rulebook=rulebook,
-                          model_label=getattr(llm, "label", "chat"))
+    needs_guards = distilled.requires_guard_sidecar()
+    drafter = ChatDrafter(
+        drafter_chat or llm, rulebook=rulebook,
+        model_label=getattr(llm, "label", "chat"),
+        require_guard_sidecar=needs_guards)
     spec_text = distilled.to_markdown()
     exemplars = (prompt_pack.select_exemplars(spec_text, exemplar_k)
                  if prompt_pack else None)
@@ -452,7 +455,8 @@ def run_episode(
         drafter, system="intent-loop", item_id=episode_id, split="train",
         intent=spec_text, initial_draft=initial,
         max_rounds=max_repair_rounds, validate_fn=validate,
-        bisim_fn=(bisim_fn or (lambda a, b: (False, "no bisim_fn"))))
+        bisim_fn=(bisim_fn or (lambda a, b: (False, "no bisim_fn"))),
+        require_guard_sidecar=needs_guards)
 
     drafts_dir = out_dir / "drafts"
     drafts_dir.mkdir(exist_ok=True)
@@ -496,7 +500,7 @@ def run_episode(
             # Microsoft's published evaluator when it is usable — a
             # score from our own prompt is one only we vouch for.
             report = evaluate_faithfulness(
-                eval_llm or llm, distilled, protocol_only,
+                eval_llm or llm, distilled, final_protocol,
                 gold_protocol=gold_protocol, bisim_fn=bisim_fn,
                 compare_fn=_azure_compare_fn(eval_llm or llm))
             faith_dict = report.to_dict()

@@ -155,10 +155,12 @@ class ChatDrafter(Drafter):
 
     def __init__(self, llm: ChatLLM, *,
                  rulebook: Sequence[str] = (),
-                 model_label: str = "chat-drafter"):
+                 model_label: str = "chat-drafter",
+                 require_guard_sidecar: bool | None = None):
         self.llm = llm
         self.rulebook = list(rulebook)
         self.model_label = model_label
+        self.require_guard_sidecar = require_guard_sidecar
         self._usage: dict[str, UsageInfo] = {}
         #: Every rejection this drafter has seen in this episode, with the
         #: structural diagnosis. Fed back into every later repair — see
@@ -177,8 +179,11 @@ class ChatDrafter(Drafter):
         # constraints — an unconditional instruction invites invented
         # guards, which are worse than none: they enforce a rule nobody
         # agreed to.
+        needs_guards = (self.require_guard_sidecar
+                if self.require_guard_sidecar is not None
+                else "compile to refinement guards" in intent)
         guards = (_GUARDS_BLOCK.format(sentinel=GUARD_SIDECAR_SENTINEL)
-                  if "compile to refinement guards" in intent else "")
+              if needs_guards else "")
         system = _DRAFT_SYSTEM.format(
             primer=SCRIBBLE_PRIMER, guards_block=guards,
             rulebook_block=_rulebook_block(self.rulebook),
@@ -238,10 +243,15 @@ class ChatDrafter(Drafter):
         system = _REPAIR_SYSTEM.format(
             primer=SCRIBBLE_PRIMER,
             rulebook_block=_rulebook_block(self.rulebook)
-            + (f"\n- The broken draft carries a `{GUARD_SIDECAR_SENTINEL}` "
-               f"guard sidecar; keep it, and keep it consistent with the "
-               f"labels you end up using.\n"
-               if GUARD_SIDECAR_SENTINEL in broken else ""))
+                + (f"\n- A `{GUARD_SIDECAR_SENTINEL}` guard sidecar is REQUIRED "
+                    f"for this specification. Add it if missing, preserve it if "
+                    f"present, and keep every guard consistent with the final "
+                    f"message labels.\n"
+                    if self.require_guard_sidecar else
+                    (f"\n- The broken draft carries a "
+                     f"`{GUARD_SIDECAR_SENTINEL}` guard sidecar; keep it, and "
+                     f"keep it consistent with the labels you end up using.\n"
+                     if GUARD_SIDECAR_SENTINEL in broken else "")))
         diagnosis = self._diagnose(broken)
         user = (f"=== TASK SPECIFICATION ===\n{intent}\n\n"
                 f"=== BROKEN PROTOCOL ===\n{broken}\n\n"

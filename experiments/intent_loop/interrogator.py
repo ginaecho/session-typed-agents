@@ -168,6 +168,18 @@ document. It is real work, but no protocol expresses it and nothing will be \
 graded on it. Do not discard it and do not inflate it into messages — label \
 it "interior". Only what governs WHO UNBLOCKS WHOM, ON WHAT EVIDENCE, is \
 protocol.
+- BEFORE returning `action=done`, audit EVERY requirement with this exact \
+test: "Does satisfying this sentence require information or authority to \
+cross from one role to another?" If no, its kind MUST be `interior` (or \
+`policy` when it belongs to identity/deployment). A sentence about one role \
+reading, diagnosing, editing, running, formatting, naming, or choosing its \
+own next action is `interior`, even when it says MUST. Do not classify it as \
+ordering merely because the role performs its private steps in sequence. \
+Conversely, prior approval, evidence sent to a decision-maker, a branch \
+communicated to affected roles, and a completion signal crossing roles stay \
+protocol requirements. After this audit, the requirements classified as \
+protocol must be explainable by a declared interaction, branch, or session \
+termination; otherwise reclassify them or add the missing interaction.
 - `interactions` must list EVERY handover the work needs, including the \
 unhappy paths (rejection, retry, escalation). Mark `optional: true` when it \
 only happens on some branch. These become the messages of the protocol, so \

@@ -25,6 +25,10 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+class JobCancelled(RuntimeError):
+    """Raised cooperatively after a user cancels or supersedes a job."""
+
+
 class Job:
     def __init__(self, job_id: str, kind: str, params: dict):
         self.id = job_id
@@ -72,10 +76,16 @@ class Job:
             self.params = {**self.params, "cancelled": True}
             sink, waiting = self.answer_sink, self.awaiting
             self.awaiting = None
+            self.state = "cancelled"
+            self.finished = _now()
         self.emit("cancelled", {"reason": reason})
         if sink is not None and waiting is not None:
             sink("NOT SPECIFIED. The session was cancelled before this "
                  "question was answered; treat it as unresolved.")
+
+    def check_cancelled(self) -> None:
+        if self.cancelled:
+            raise JobCancelled("job was cancelled or superseded")
 
     def answer(self, text: str) -> bool:
         """Deliver a human reply. False if nothing was waiting for one."""
@@ -128,16 +138,24 @@ class JobRegistry:
             self._evict_locked()
 
         def _run() -> None:
+            if job.cancelled:
+                return
             job.state = "running"
             try:
                 job.result = fn(job)
-                job.state = "succeeded"
+                if not job.cancelled:
+                    job.state = "succeeded"
+            except JobCancelled as error:
+                job.error = str(error)
+                job.emit("cancelled", {"reason": str(error)})
+                job.state = "cancelled"
             except Exception as e:
                 job.error = f"{type(e).__name__}: {e}"
                 job.emit("error", {"traceback": traceback.format_exc()[-4000:]})
                 job.state = "failed"
             finally:
-                job.finished = _now()
+                if job.finished is None:
+                    job.finished = _now()
 
         threading.Thread(target=_run, name=f"job-{job.id}",
                          daemon=True).start()
@@ -146,7 +164,8 @@ class JobRegistry:
     def _evict_locked(self) -> None:
         while len(self._order) > self.max_jobs:
             for i, jid in enumerate(self._order):
-                if self._jobs[jid].state in ("succeeded", "failed"):
+                if self._jobs[jid].state in ("succeeded", "failed",
+                                              "cancelled"):
                     del self._jobs[jid]
                     self._order.pop(i)
                     break

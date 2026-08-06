@@ -34,6 +34,7 @@ every episode.
 """
 from __future__ import annotations
 
+import re
 from typing import Callable, Optional
 
 from experiments.intent_loop.llm import ChatLLM
@@ -42,6 +43,9 @@ from experiments.intent_loop.schema import (CoverageVerdict, DistilledIntent,
                                             parse_json_block)
 
 DEFAULT_BACKTRANSLATION_THRESHOLD = 70
+STJP_RANKING_WEIGHTS = {"roles": 20, "directions": 40,
+                        "interaction_constraints": 40}
+MIN_INTERACTION_CONSTRAINT_SCORE = 90
 
 _COVERAGE_SYSTEM = """You audit whether a Scribble global protocol realizes \
 a checklist of requirements.
@@ -171,6 +175,176 @@ def _by_priority(verdicts, distilled) -> dict:
     return out
 
 
+def _normalized_role(name: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", name.lower())
+
+
+def _ratio_pct(numerator: int, denominator: int) -> int:
+    return round(numerator / denominator * 100) if denominator else 100
+
+
+def _ranked_stjp_score(distilled: DistilledIntent, protocol_text: str,
+                       verdicts: list[CoverageVerdict]) -> dict:
+    """Score the formal surface STJP is responsible for, in priority order.
+
+    Roles and directed role pairs are mechanical. Interaction constraints
+    reuse the per-requirement semantic verdicts because ordering,
+    authorization, branching, value predicates, and termination are the
+    constraints on those handovers. Partial evidence earns half credit in
+    the displayed score but never counts as fully covered.
+    """
+    from experiments.intent_loop.protocol_graph import parse_protocol
+    from experiments.seam_bench.t0.drafter import split_guard_sidecar
+
+    protocol_only, _guards = split_guard_sidecar(protocol_text)
+    ir = parse_protocol(protocol_only)
+
+    expected_roles = {_normalized_role(r["name"]): r["name"]
+                      for r in distilled.roles}
+    actual_roles = {_normalized_role(role): role for role in ir.roles}
+    matched_roles = set(expected_roles) & set(actual_roles)
+    missing_roles = [expected_roles[key]
+                     for key in sorted(set(expected_roles) - matched_roles)]
+    unexpected_roles = [actual_roles[key]
+                        for key in sorted(set(actual_roles) - matched_roles)]
+    role_recall = _ratio_pct(len(matched_roles), len(expected_roles))
+    role_precision = _ratio_pct(len(matched_roles), len(actual_roles))
+    role_score = round((role_recall + role_precision) / 2)
+
+    expected_pairs: dict[tuple[str, str], list[str]] = {}
+    for interaction in distilled.interactions:
+        pair = (_normalized_role(interaction.sender),
+                _normalized_role(interaction.receiver))
+        expected_pairs.setdefault(pair, []).append(interaction.iid)
+    actual_pairs = {
+        (_normalized_role(message.sender), _normalized_role(receiver))
+        for message in ir.messages() for receiver in message.receivers}
+    matched_pairs = set(expected_pairs) & actual_pairs
+    covered_interactions = sum(len(expected_pairs[pair])
+                               for pair in matched_pairs)
+    expected_interactions = sum(len(iids)
+                                for iids in expected_pairs.values())
+    missing_interactions = [iid for pair, iids in expected_pairs.items()
+                            if pair not in actual_pairs for iid in iids]
+    unexpected_pairs = ([
+        f"{sender} -> {receiver}"
+        for sender, receiver in sorted(actual_pairs - set(expected_pairs))]
+        if expected_pairs else [])
+    direction_recall = _ratio_pct(covered_interactions,
+                                  expected_interactions)
+    direction_precision = (_ratio_pct(len(matched_pairs), len(actual_pairs))
+                           if expected_pairs else 100)
+    direction_score = round((direction_recall + direction_precision) / 2)
+
+    by_id = {verdict.rid: verdict for verdict in verdicts}
+    constraint_requirements = [
+        requirement for requirement in distilled.protocol_requirements()
+        if requirement.kind != "role"]
+    yes = partial = no = 0
+    unmet = []
+    for requirement in constraint_requirements:
+        covered = by_id.get(requirement.rid)
+        state = covered.covered if covered is not None else "no"
+        if state == "yes":
+            yes += 1
+        elif state == "partial":
+            partial += 1
+            unmet.append(requirement.rid)
+        else:
+            no += 1
+            unmet.append(requirement.rid)
+    constraint_total = len(constraint_requirements)
+    constraint_score = (round((yes + 0.5 * partial) / constraint_total * 100)
+                        if constraint_total else 100)
+
+    overall = round(
+        role_score * STJP_RANKING_WEIGHTS["roles"] / 100
+        + direction_score * STJP_RANKING_WEIGHTS["directions"] / 100
+        + constraint_score
+        * STJP_RANKING_WEIGHTS["interaction_constraints"] / 100)
+    return {
+        "overall_coverage_pct": overall,
+        "weights": STJP_RANKING_WEIGHTS,
+        "roles": {
+            "priority": "critical",
+            "weight_pct": STJP_RANKING_WEIGHTS["roles"],
+            "expected": len(expected_roles), "matched": len(matched_roles),
+            "missing": missing_roles, "unexpected": unexpected_roles,
+            "recall_pct": role_recall, "precision_pct": role_precision,
+            "score_pct": role_score},
+        "directions": {
+            "priority": "critical",
+            "weight_pct": STJP_RANKING_WEIGHTS["directions"],
+            "expected": expected_interactions,
+            "covered": covered_interactions,
+            "rankable": bool(expected_pairs),
+            "missing_interactions": missing_interactions,
+            "unexpected_pairs": unexpected_pairs,
+            "recall_pct": direction_recall,
+            "precision_pct": direction_precision,
+            "score_pct": direction_score},
+        "interaction_constraints": {
+            "priority": "high",
+            "weight_pct": STJP_RANKING_WEIGHTS["interaction_constraints"],
+            "expected": constraint_total, "yes": yes,
+            "partial": partial, "no": no, "unmet": unmet,
+            "score_pct": constraint_score,
+            "minimum_for_faithful_pct": MIN_INTERACTION_CONSTRAINT_SCORE},
+    }
+
+
+def rerank_faithfulness_report(distilled: DistilledIntent,
+                               protocol_text: str,
+                               report: dict) -> dict:
+    """Apply the current STJP ranking to a saved faithfulness report.
+
+    This reuses its judge evidence and back-translation, so historical
+    episodes can adopt a corrected scoring policy without another model call.
+    """
+    updated = dict(report)
+    verdicts = [CoverageVerdict(
+        rid=str(item.get("rid", "")),
+        covered=str(item.get("covered", "no")),
+        evidence=str(item.get("evidence", "")))
+        for item in report.get("coverage", [])]
+    ranking = _ranked_stjp_score(distilled, protocol_text, verdicts)
+    scope = dict(report.get("scope") or {})
+    scope["ranking"] = ranking
+    updated["scope"] = scope
+
+    roles = ranking["roles"]
+    directions = ranking["directions"]
+    constraints = ranking["interaction_constraints"]
+    ungrounded = report.get("ungrounded") or []
+    backtranslation = report.get("backtranslation") or {}
+    updated["faithful"] = (
+        roles["recall_pct"] == 100 and roles["precision_pct"] == 100
+        and directions["recall_pct"] == 100
+        and directions["precision_pct"] == 100
+        and constraints["score_pct"] >= MIN_INTERACTION_CONSTRAINT_SCORE
+        and not ungrounded
+        and backtranslation.get("score", 0)
+        >= DEFAULT_BACKTRANSLATION_THRESHOLD)
+    excluded = []
+    if distilled.policy_requirements():
+        excluded.append(f"{len(distilled.policy_requirements())} policy")
+    if distilled.interior_requirements():
+        excluded.append(f"{len(distilled.interior_requirements())} interior")
+    updated["rule"] = (
+        "faithful iff STJP's ranked formal surface passes: exact role set "
+        f"(got {roles['score_pct']}%), exact directed interaction topology "
+        f"(got {directions['score_pct']}%), interaction constraints >= "
+        f"{MIN_INTERACTION_CONSTRAINT_SCORE}% "
+        f"(got {constraints['score_pct']}%), no ungrounded interactions "
+        f"(got {len(ungrounded)}), and back-translation >= "
+        f"{DEFAULT_BACKTRANSLATION_THRESHOLD} "
+        f"(got {backtranslation.get('score', 0)}). Ranked STJP coverage: "
+        f"{ranking['overall_coverage_pct']}%"
+        + (f". Reported but not scored: {', '.join(excluded)}"
+           if excluded else ""))
+    return updated
+
+
 def evaluate_faithfulness(
         llm: ChatLLM, distilled: DistilledIntent, protocol_text: str, *,
         gold_protocol: Optional[str] = None,
@@ -219,7 +393,6 @@ def evaluate_faithfulness(
     # hold EVERYTHING to the obligation bar rather than quietly certifying a
     # protocol against an empty set of requirements.
     musts = distilled.must_requirements() or distilled.protocol_requirements()
-    must_ids = {r.rid for r in musts}
     by_id = {v.rid: v for v in verdicts}
     must_yes = sum(1 for r in musts
                    if by_id.get(r.rid) and by_id[r.rid].covered == "yes")
@@ -228,8 +401,19 @@ def evaluate_faithfulness(
                           and by_id[r.rid].covered == "yes")]
     must_recall = (must_yes / len(musts)) if musts else None
 
-    faithful = (bool(musts) and not must_unmet and not ungrounded
-                and backtranslation["score"] >= backtranslation_threshold)
+    ranking = _ranked_stjp_score(distilled, protocol_text, verdicts)
+    ranked_roles = ranking["roles"]
+    ranked_directions = ranking["directions"]
+    ranked_constraints = ranking["interaction_constraints"]
+    faithful = (
+        ranked_roles["recall_pct"] == 100
+        and ranked_roles["precision_pct"] == 100
+        and ranked_directions["recall_pct"] == 100
+        and ranked_directions["precision_pct"] == 100
+        and ranked_constraints["score_pct"]
+        >= MIN_INTERACTION_CONSTRAINT_SCORE
+        and not ungrounded
+        and backtranslation["score"] >= backtranslation_threshold)
     excluded = []
     if n_policy:
         excluded.append(f"{n_policy} policy (no session type can express "
@@ -237,16 +421,15 @@ def evaluate_faithfulness(
     if n_interior:
         excluded.append(f"{n_interior} intra-role interior (untyped by "
                         f"design)")
-    graded_all = len(musts) == len(distilled.protocol_requirements())
-    rule = (f"faithful iff every "
-            + ("requirement (no priorities were assigned, so all count as "
-               "obligations)" if graded_all else "MUST requirement")
-            + f" is covered 'yes' "
-            f"({must_yes} of {len(musts)}"
-            + (f"; unmet: {', '.join(must_unmet)}" if must_unmet else "")
-            + f"), no ungrounded interactions "
-            f"(got {len(ungrounded)}), and back-translation score >= "
-            f"{backtranslation_threshold} (got {backtranslation['score']})"
+    rule = ("faithful iff STJP's ranked formal surface passes: exact role "
+            f"set (got {ranked_roles['score_pct']}%), exact directed "
+            f"interaction topology (got {ranked_directions['score_pct']}%), "
+            f"interaction constraints >= {MIN_INTERACTION_CONSTRAINT_SCORE}% "
+            f"(got {ranked_constraints['score_pct']}%), no ungrounded "
+            f"interactions (got {len(ungrounded)}), and back-translation "
+            f">= {backtranslation_threshold} "
+            f"(got {backtranslation['score']}). Ranked STJP coverage: "
+            f"{ranking['overall_coverage_pct']}%"
             + (f". Reported but NOT scored: " + "; ".join(excluded)
                if excluded else ""))
     # TWO DIMENSIONS, reported separately, because they are satisfied by
@@ -298,6 +481,7 @@ def evaluate_faithfulness(
                                         if must_recall is not None else None),
                     "all_recall_pct": round(recall * 100),
                     "dimensions": dims, "per_kind": per_kind,
+                    "ranking": ranking,
                     "by_priority": _by_priority(verdicts, distilled),
                     "guards_emitted": bool(guards_text),
                     "note": "`dimensions` splits what the protocol SHAPE can "

@@ -183,7 +183,15 @@ def build_skill(record: dict, *, checks: Optional[dict] = None,
 
     if faith:
         scope = faith.get("scope") or {}
+        ranking = scope.get("ranking") or {}
         L += ["## Faithfulness to the intent", "",
+              f"- ranked STJP coverage: "
+              f"{ranking.get('overall_coverage_pct', '?')}%",
+              f"- roles: {(ranking.get('roles') or {}).get('score_pct', '?')}%",
+              f"- interaction direction: "
+              f"{(ranking.get('directions') or {}).get('score_pct', '?')}%",
+              f"- interaction constraints: "
+              f"{(ranking.get('interaction_constraints') or {}).get('score_pct', '?')}%",
               f"- requirements graded: {scope.get('graded', '?')} "
               f"(recall {round((faith.get('recall') or 0) * 100)}%)",
               f"- reported but not graded: {scope.get('policy', 0)} policy, "
@@ -203,6 +211,49 @@ def build_skill(record: dict, *, checks: Optional[dict] = None,
 def write_skill(session_dir: Path, record: dict, **kwargs) -> Path:
     path = session_dir / "SKILL.md"
     path.write_text(build_skill(record, **kwargs), encoding="utf-8")
+    return path
+
+
+def build_agent_markdown(record: dict, lessons: list[str]) -> str:
+    """Render the learner-facing agent contract from the revised intent."""
+    distilled = record.get("distilled") or {}
+    lines = ["# STJP protocol drafting agent", "",
+             "Use the endorsed coordination model below as the source of "
+             "truth. Preserve the exact roles, sender-to-receiver direction, "
+             "and interaction constraints. When a stakeholder correction is "
+             "ambiguous, ask before changing the model.", ""]
+    if lessons:
+        lines += ["## Learned drafting rules", ""]
+        lines += [f"- {lesson}" for lesson in lessons]
+        lines.append("")
+    lines += ["## Mission", "", distilled.get("mission", ""), "",
+              "## Roles", ""]
+    for role in distilled.get("roles") or []:
+        lines.append(f"- **{role.get('name', '')}**: "
+                     f"{role.get('description', '')}")
+    lines += ["", "## Directed interactions", ""]
+    for interaction in distilled.get("interactions") or []:
+        constraints = "; ".join(
+            f"{field.get('name')}: {field.get('constraint')}"
+            for field in interaction.get("carries", [])
+            if field.get("constraint"))
+        lines.append(
+            f"- **{interaction.get('iid', '')}**: "
+            f"{interaction.get('sender', '')} -> "
+            f"{interaction.get('receiver', '')}: "
+            f"{interaction.get('what', '')}"
+            + (f". Constraints: {constraints}" if constraints else "")
+            + (f". Waits for: {', '.join(interaction.get('waits_for', []))}"
+               if interaction.get("waits_for") else ""))
+    lines += ["", "## Completion", "",
+              distilled.get("completion_signal", ""), ""]
+    return "\n".join(lines)
+
+
+def write_agent_markdown(session_dir: Path, record: dict,
+                         lessons: list[str]) -> Path:
+    path = session_dir / "AGENT.md"
+    path.write_text(build_agent_markdown(record, lessons), encoding="utf-8")
     return path
 
 

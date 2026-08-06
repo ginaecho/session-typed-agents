@@ -106,3 +106,26 @@ def test_formalize_honours_a_hand_edited_understanding(tmp_path: Path):
         faithfulness_rounds=0, corpus_path=tmp_path / "corpus.jsonl")
     rids = [r["rid"] for r in record.distilled["requirements"]]
     assert "R3" in rids
+
+
+def test_formalize_grades_the_emitted_guard_sidecar(tmp_path: Path):
+    d = _session(tmp_path)
+    edited = json.loads((d / "understanding.json").read_text(encoding="utf-8"))
+    edited["distilled"]["requirements"].append(
+        {"rid": "R3", "kind": "value", "priority": "must",
+         "who": ["Analyst"], "text": "The amount must exceed 500.",
+         "source": "document"})
+    edited["distilled"]["interactions"][1]["carries"] = [
+        {"name": "amount", "type": "double", "constraint": "amount > 500"}]
+    (d / "understanding.json").write_text(json.dumps(edited), encoding="utf-8")
+    guarded = mockdata.FIXED_DRAFT + \
+        "\n=== REFN ===\nAnalysisSubmitted.amount :: amount > 500\n"
+    chat = MockChat([guarded] + mockdata.EVAL_SCRIPT)
+
+    record = formalize_episode(
+        chat, d, validate_fn=mock_validate, validator_label="mock",
+        faithfulness_rounds=0, corpus_path=tmp_path / "corpus.jsonl")
+
+    assert record.valid
+    coverage_call = next(call for call in chat.calls if call[0] == "coverage")
+    assert "AnalysisSubmitted.amount :: amount > 500" in coverage_call[2]

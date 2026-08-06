@@ -6,11 +6,14 @@ no JVM, no Azure config.
 from __future__ import annotations
 
 import json
+import threading
 import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
+from experiments.intent_loop import mockdata
 from experiments.intent_loop.app import create_app
 
 
@@ -142,3 +145,147 @@ def test_run_with_a_pack_is_accepted(client):
     assert job["state"] == "succeeded"
     job2 = client.post("/api/runs", json={"mock": True, "pack": "nope"})
     assert job2.status_code == 400
+
+
+def test_user_graph_critique_returns_learner_confirmation_questions(
+        client, monkeypatch):
+    job = _run_mock(client)
+    session = job["result"]["session"]
+    reply = json.dumps({
+        "assessment": "The completion handover may be missing.",
+        "questions": [{
+            "q": "Who sends the completed report to the requester?",
+            "because": "This confirms the missing direction.",
+            "kind": "direction"}]})
+    from experiments.intent_loop.llm import MockChat
+    learner = MockChat([reply])
+    monkeypatch.setattr("experiments.intent_loop.llm.build_chat",
+                        lambda *args, **kwargs: learner)
+
+    response = client.post(
+        f"/api/episodes/{session}/review-questions",
+        json={"critique": "The graph does not show final delivery."})
+
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body["reviewed_by"] == "user"
+    assert body["questions"][0]["kind"] == "direction"
+    assert "final delivery" in learner.calls[0][2]
+
+
+def test_review_state_recovers_questions_and_interrupted_submission(
+        client, tmp_path):
+    job = _run_mock(client)
+    session = job["result"]["session"]
+    session_dir = tmp_path / "sessions" / session
+    (session_dir / "review_questions.json").write_text(json.dumps({
+        "assessment": "A delivery may be missing.",
+        "critique": "The requester never receives the report.",
+        "questions": [{"q": "Who sends the report?", "kind": "direction"}]
+    }), encoding="utf-8")
+    refine_dir = tmp_path / "sessions" / "refine_interrupted"
+    refine_dir.mkdir()
+    (refine_dir / "review_submission.json").write_text(json.dumps({
+        "parent": session,
+        "review_critique": "The requester never receives the report.",
+        "answers": [{"question": "Who sends the report?",
+                     "answer": "The Analyst sends it."}],
+        "validator": "scribble-java",
+        "submitted_at": "2026-08-06T09:00:00+00:00",
+        "status": "submitted"
+    }), encoding="utf-8")
+
+    response = client.get(f"/api/episodes/{session}/review-state")
+
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body["questions"]["questions"][0]["kind"] == "direction"
+    submission = body["latest_submission"]
+    assert submission["completed"] is False
+    assert submission["answers"][0]["answer"] == "The Analyst sends it."
+
+
+def test_start_fresh_supersedes_same_intent_with_new_round_budget(
+        client, monkeypatch):
+    release = threading.Event()
+
+    def slow_episode(_llm, _document, *, progress, max_rounds, **_kwargs):
+        while not release.wait(0.01):
+            progress("thinking", {"max_rounds": max_rounds})
+        return SimpleNamespace(
+            episode_id="ep", valid=False, faithfulness=None,
+            draft_attempts=[])
+
+    monkeypatch.setattr("experiments.intent_loop.app.loop_mod.run_episode",
+                        slow_episode)
+    body = {"mock": False, "validator": "mock",
+            "intent_text": "same intent", "answered_by": "document"}
+    first = client.post("/api/runs", json={**body, "max_rounds": 10})
+    assert first.status_code == 202
+
+    second = client.post("/api/runs", json={
+        **body, "max_rounds": 3, "replace_existing": True})
+    assert second.status_code == 202
+    first_job = client.get(
+        f"/api/runs/{first.get_json()['job_id']}").get_json()
+    second_job = client.get(
+        f"/api/runs/{second.get_json()['job_id']}").get_json()
+    assert first_job["state"] == "cancelled"
+    assert second_job["params"]["max_rounds"] == 3
+    release.set()
+
+
+def test_confirmed_review_creates_valid_redrawable_learned_episode(
+        client, monkeypatch, tmp_path):
+    original_job = _run_mock(client)
+    parent = original_job["result"]["session"]
+    parent_record = client.get(f"/api/episodes/{parent}").get_json()
+    revised = parent_record["distilled"]
+    revised["interactions"] = [{
+        "iid": "I99", "sender": "Analyst", "receiver": "Requester",
+        "what": "the corrected final report delivery", "carries": [],
+        "cardinality": "exactly once", "waits_for": []}]
+    revision_reply = json.dumps({
+        "distilled": revised,
+        "change_summary": ["Corrected final report delivery."],
+        "lesson": "Confirm the final recipient before drafting."})
+    from experiments.intent_loop.llm import MockChat
+    chat = MockChat([revision_reply, mockdata.GUARDED_FIXED_DRAFT]
+                    + mockdata.EVAL_SCRIPT)
+    monkeypatch.setattr("experiments.intent_loop.llm.build_chat",
+                        lambda *args, **kwargs: chat)
+    monkeypatch.setattr(
+        "experiments.intent_loop.refine.persist_review_lesson",
+        lambda lesson, **kwargs: [lesson] if lesson else [])
+
+    response = client.post(f"/api/episodes/{parent}/refine", json={
+        "validator": "mock",
+        "review_critique": "The final report delivery is wrong.",
+        "answers": [{"question": "What correction did the user confirm?",
+                     "answer": "Analyst sends the report to Requester."}]})
+    assert response.status_code == 202
+    body = response.get_json()
+    queued = client.get(f"/api/runs/{body['job_id']}").get_json()
+    assert queued["params"]["max_repair_rounds"] == 12
+    for _ in range(200):
+        job = client.get(f"/api/runs/{body['job_id']}").get_json()
+        if job["state"] in ("succeeded", "failed"):
+            break
+        time.sleep(0.05)
+    assert job["state"] == "succeeded", job.get("error")
+    assert job["result"]["valid"] is True
+    assert job["result"]["validation_failed"] is False
+    assert job["result"]["attempts"] >= 1
+
+    reviewed_session = job["result"]["session"]
+    reviewed = client.get(
+        f"/api/episodes/{reviewed_session}").get_json()
+    assert reviewed["distilled"]["interactions"][0]["iid"] == "I99"
+    assert reviewed["final_protocol"]
+    graph = client.get(
+        f"/api/episodes/{reviewed_session}/graph").get_json()
+    assert graph["from_valid_draft"] is True
+    output = tmp_path / "sessions" / reviewed_session
+    assert (output / "review.json").exists()
+    assert (output / "SKILL.md").exists()
+    assert (output / "AGENT.md").exists()

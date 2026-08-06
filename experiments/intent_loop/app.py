@@ -69,11 +69,46 @@ def _now_stamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
 
 
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
 def _read(path: Path) -> str:
     try:
         return path.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError):
         return ""
+
+
+def _endorsed_distilled(session_dir: Path, rec: dict) -> dict:
+    recorded = rec.get("distilled") or {}
+    understanding_path = session_dir / "understanding.json"
+    if not understanding_path.exists():
+        return recorded
+    try:
+        endorsed = json.loads(understanding_path.read_text(
+            encoding="utf-8")).get("distilled") or {}
+    except (OSError, json.JSONDecodeError):
+        return recorded
+    if len(endorsed.get("interactions") or []) > len(
+            recorded.get("interactions") or []):
+        return endorsed
+    return recorded
+
+
+def _rerank_record(rec: dict, protocol_text: str,
+                   distilled_raw: dict | None = None) -> dict:
+    faith = rec.get("faithfulness") or {}
+    distilled_raw = distilled_raw or rec.get("distilled") or {}
+    if not faith or not distilled_raw or not protocol_text:
+        return rec
+    from experiments.intent_loop.faithfulness import (
+        rerank_faithfulness_report)
+    from experiments.intent_loop.schema import DistilledIntent
+    rec["distilled"] = distilled_raw
+    rec["faithfulness"] = rerank_faithfulness_report(
+        DistilledIntent.from_dict(distilled_raw), protocol_text, faith)
+    return rec
 
 
 # ---------------------------------------------------------------------------
@@ -97,6 +132,8 @@ def load_episodes(sessions_dir: Path) -> list[dict]:
             except json.JSONDecodeError:
                 continue
             complete = True
+            rec = _rerank_record(rec, _read(d / "protocol.scr"),
+                                 _endorsed_distilled(d, rec))
         else:
             # An UNFINISHED session — killed mid-run, or still going. It has
             # real work on disk (transcript, distilled checklist, drafts)
@@ -204,10 +241,18 @@ def load_episode(sessions_dir: Path, session: str) -> dict | None:
     if d.parent != sessions_dir.resolve() or not (d / "record.json").exists():
         return None                       # path traversal / unknown session
     rec = json.loads((d / "record.json").read_text(encoding="utf-8"))
+    rec = _rerank_record(rec, _read(d / "protocol.scr"),
+                         _endorsed_distilled(d, rec))
     rec["session"] = session
     rec["document"] = _read(d / "document.md")
     for att in rec.get("draft_attempts") or []:
         att["text"] = _read(d / "drafts" / f"attempt_{att.get('k')}.scr")
+    review_path = d / "review.json"
+    if review_path.exists():
+        try:
+            rec["review"] = json.loads(review_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            rec["review"] = None
     return rec
 
 
@@ -313,6 +358,7 @@ def render_report(sessions_dir: Path, session: str | None) -> str:
     d = ep.get("distilled") or {}
     f = ep.get("faithfulness") or {}
     bt = f.get("backtranslation") or {}
+    ranking = (f.get("scope") or {}).get("ranking") or {}
     reqs = d.get("requirements") or []
     asked = sum(1 for r in reqs if r.get("source") == "answer")
     pct = (lambda v: "—" if v is None else f"{round(v * 100)}%")
@@ -330,8 +376,9 @@ def render_report(sessions_dir: Path, session: str | None) -> str:
         "<div class='k'>Only by asking</div></div>"
         f"<div class='tile'><div class='v'>{len(ep.get('draft_attempts') or [])}"
         "</div><div class='k'>Draft attempts</div></div>"
-        f"<div class='tile'><div class='v'>{pct(f.get('recall'))}</div>"
-        "<div class='k'>Coverage recall</div></div>"
+        f"<div class='tile'><div class='v'>"
+        f"{ranking.get('overall_coverage_pct', '—')}%</div>"
+        "<div class='k'>Ranked STJP coverage</div></div>"
         f"<div class='tile'><div class='v'>{bt.get('score', '—')}</div>"
         "<div class='k'>Back-translation</div></div>"
         f"<div class='tile'><div class='v'>{len(f.get('ungrounded') or [])}"
@@ -559,6 +606,9 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                                                "omits (stakeholder-only)",
                           "validator": "'real'|'mock'",
                           "max_rounds": "int - interrogation round cap",
+                          "replace_existing": "bool - cancel an older run "
+                                              "of this same intent and start "
+                                              "with these settings",
                           "pack": "str - prompt pack version to draft with"},
                  "returns": "{job_id} - poll /api/runs/<job_id>"},
                 {"method": "GET", "path": "/api/runs/<job_id>",
@@ -574,9 +624,21 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                  "path": "/api/episodes/<session>/questions",
                  "returns": "questions about this draft, each anchored to a "
                             "measured defect"},
+                {"method": "POST",
+                 "path": "/api/episodes/<session>/review-questions",
+                 "body": {"critique": "what the user sees missing/wrong",
+                          "expert_review": "bool - ask gpt-5.6-sol to "
+                                           "critique first"},
+                 "returns": "gpt-5.4 assessment plus confirmation questions"},
+                {"method": "GET",
+                 "path": "/api/episodes/<session>/review-state",
+                 "returns": "saved critique/questions and any durable "
+                            "refinement submission state"},
                 {"method": "POST", "path": "/api/episodes/<session>/refine",
                  "body": {"answers": "[{question, answer}] from /questions "
                                      "or from a human",
+                          "review_critique": "optional graph/Scribble "
+                                             "critique being confirmed",
                           "validator": "'real'|'mock'"},
                  "returns": "{job_id} — redrafts with the answers folded in "
                             "as new requirements, producing a NEW episode"},
@@ -694,10 +756,15 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         # limit and each makes the other slower, which is exactly what a
         # user reads as "stuck".
         doc_sha = hashlib.sha256(document.encode("utf-8")).hexdigest()
+        replace_existing = bool(body.get("replace_existing", False))
         for existing in registry.list():
             if (existing.state in ("queued", "running")
                     and not getattr(existing, "cancelled", False)
                     and existing.params.get("doc_sha") == doc_sha):
+                if replace_existing:
+                    existing.cancel("superseded by a new run of the same "
+                                    "intent with updated settings")
+                    continue
                 return jsonify({
                     "error": "a run of this same document is already in "
                              "flight — two runs against one deployment "
@@ -730,13 +797,17 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                   "pack": body.get("pack"), "session": out_dir.name,
                   "stop_after": stop_after,
                   "answered_by": answered_by, "doc_sha": doc_sha,
+                  "replace_existing": replace_existing,
                   "learner": cfg.model,
                   "expert": cfg.expert_model if answered_by == "expert"
                   else None}
 
         def _work(job: Job) -> dict:
             def progress(stage: str, detail: dict) -> None:
+                job.check_cancelled()
                 job.emit(stage, detail)
+
+            job.check_cancelled()
 
             if mock:
                 meter = Meter()
@@ -778,6 +849,7 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                     kwargs["stakeholder_obj"] = human
 
             llm = kwargs.pop("llm")
+            job.check_cancelled()
             record = loop_mod.run_episode(
                 llm, document, out_dir=out_dir, hidden_notes=hidden,
                 prompt_pack=pack, max_rounds=params["max_rounds"],
@@ -789,6 +861,7 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                                   ("expert", "expert_reviewed")
                                   and not mock else "document"),
                 **kwargs)
+            job.check_cancelled()
             faith = record.faithfulness or {}
             return {"session": out_dir.name,
                     "episode_id": record.episode_id,
@@ -969,7 +1042,7 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
             return jsonify({"error": "nothing to draw yet — no protocol and "
                                      "no declared interactions"}), 404
         from experiments.intent_loop.protocol_graph import graph_payload
-        payload = graph_payload(protocol)
+        payload = graph_payload(protocol, ep.get("distilled") or {})
         payload["from_valid_draft"] = bool(ep.get("final_protocol"))
         payload["source"] = "the drafted protocol"
         return jsonify(payload)
@@ -1116,8 +1189,11 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         if ep is None:
             return jsonify({"error": "no such episode"}), 404
         from experiments.intent_loop.protocol_checks import check_protocol
-        from experiments.intent_loop.skill import (build_skill,
+        from experiments.intent_loop.loop import standing_lessons
+        from experiments.intent_loop.skill import (build_agent_markdown,
+                               build_skill,
                                                    collect_decisions,
+                               write_agent_markdown,
                                                    write_skill)
         sdir = app.config["SESSIONS"] / session
         protocol = ep.get("final_protocol")
@@ -1126,11 +1202,15 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                       validator_label=(ep.get("meter") or {}).get(
                           "validator", "unknown"))
         path = write_skill(sdir, ep, **kwargs)
+        agent_path = write_agent_markdown(sdir, ep, standing_lessons())
         if request.args.get("format") == "markdown":
             return (build_skill(ep, **kwargs), 200,
                     {"Content-Type": "text/markdown; charset=utf-8"})
         return jsonify({"path": str(path),
-                        "markdown": build_skill(ep, **kwargs)})
+                        "markdown": build_skill(ep, **kwargs),
+                        "agent_path": str(agent_path),
+                        "agent_markdown": build_agent_markdown(
+                            ep, standing_lessons())})
 
     @app.post("/api/episodes/<path:session>/questions")
     def episode_questions(session: str):
@@ -1156,6 +1236,82 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
         cache.write_text(json.dumps(out, ensure_ascii=False, indent=2),
                          encoding="utf-8")
         return jsonify(out)
+
+    @app.post("/api/episodes/<path:session>/review-questions")
+    def episode_review_questions(session: str):
+        """Reopen understanding after a person or expert critiques the graph.
+
+        The learner checks the critique against the original intent and asks
+        for confirmation. Nothing changes until those questions are answered
+        and sent to /refine.
+        """
+        ep = load_episode(app.config["SESSIONS"], session)
+        if ep is None or not ep.get("distilled"):
+            return jsonify({"error": "no endorsed understanding to review"}), 404
+        body = request.get_json(silent=True) or {}
+        critique = str(body.get("critique") or "").strip()
+        from experiments.intent_loop.llm import build_chat
+        from experiments.intent_loop.refine import (expert_review,
+                                                     review_questions)
+        from experiments.intent_loop.schema import DistilledIntent
+        distilled = DistilledIntent.from_dict(ep["distilled"])
+        document = ep.get("document") or ""
+        try:
+            if body.get("expert_review"):
+                critique = expert_review(
+                    build_chat(role="expert"), distilled, document,
+                    ep.get("final_protocol") or "", ep.get("faithfulness"))
+            if not critique:
+                return jsonify({"error": "describe what looks missing or "
+                                         "wrong, or request expert_review"}), 400
+            out = review_questions(
+                build_chat(role="learner"), distilled, document,
+                ep.get("final_protocol") or "", critique,
+                ep.get("faithfulness"))
+        except Exception as e:
+            return jsonify({"error": f"{type(e).__name__}: {e}"}), 502
+        out.update({"session": session,
+                    "reviewed_by": ("expert" if body.get("expert_review")
+                                    else "user")})
+        review_path = (app.config["SESSIONS"] / session
+                       / "review_questions.json")
+        review_path.write_text(json.dumps(out, ensure_ascii=False, indent=2),
+                               encoding="utf-8")
+        return jsonify(out)
+
+    @app.get("/api/episodes/<path:session>/review-state")
+    def episode_review_state(session: str):
+        ep = load_episode(app.config["SESSIONS"], session)
+        if ep is None:
+            return jsonify({"error": "no such episode"}), 404
+        session_dir = app.config["SESSIONS"] / session
+        questions_path = session_dir / "review_questions.json"
+        questions = {}
+        if questions_path.exists():
+            try:
+                questions = json.loads(questions_path.read_text(
+                    encoding="utf-8"))
+            except json.JSONDecodeError:
+                questions = {}
+        submissions = []
+        for candidate in app.config["SESSIONS"].glob("refine_*"):
+            path = candidate / "review_submission.json"
+            if not path.exists():
+                continue
+            try:
+                item = json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                continue
+            if item.get("parent") != session:
+                continue
+            item["session"] = candidate.name
+            item["completed"] = (candidate / "record.json").exists()
+            submissions.append(item)
+        submissions.sort(key=lambda item: item.get("submitted_at", ""),
+                         reverse=True)
+        return jsonify({"session": session, "questions": questions,
+                        "latest_submission": (submissions[0]
+                                              if submissions else None)})
 
     @app.post("/api/episodes/<path:session>/refine")
     def episode_refine(session: str):
@@ -1192,19 +1348,56 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
             if pp.exists():
                 pack = PromptPack.load(pp)
 
+        from experiments.intent_loop import settings as settings_mod
+        settings = settings_mod.load()
+        repair_rounds = int(body.get("max_repair_rounds")
+                            or settings.max_repair_rounds)
+
         out_dir = app.config["SESSIONS"] / f"refine_{_now_stamp()}"
+        review_critique = str(body.get("review_critique") or "").strip()
+        out_dir.mkdir(parents=True, exist_ok=True)
+        submission = {"parent": session, "answers": answers,
+                      "review_critique": review_critique,
+                      "validator": label, "submitted_at": _now_iso(),
+                      "status": "submitted",
+                      "max_repair_rounds": repair_rounds}
+        (out_dir / "review_submission.json").write_text(
+            json.dumps(submission, ensure_ascii=False, indent=2),
+            encoding="utf-8")
         params = {"parent": session, "answers": len(answers),
-                  "validator": label, "session": out_dir.name}
+              "validator": label, "session": out_dir.name,
+              "review": bool(review_critique),
+              "max_repair_rounds": repair_rounds}
 
         def _work(job: Job) -> dict:
             from experiments.intent_loop.refine import refine_episode
-            record = refine_episode(
-                _live_llm(), parent_record=ep,
-                parent_dir=app.config["SESSIONS"] / session,
-                out_dir=out_dir, answers=answers, validate_fn=validate_fn,
-                validator_label=label, prompt_pack=pack,
-                corpus_path=app.config["CORPUS"],
-                progress=lambda s, d: job.emit(s, d))
+            try:
+                record = refine_episode(
+                    _live_llm(), parent_record=ep,
+                    parent_dir=app.config["SESSIONS"] / session,
+                    out_dir=out_dir, answers=answers, validate_fn=validate_fn,
+                    validator_label=label, prompt_pack=pack,
+                    max_repair_rounds=repair_rounds,
+                    corpus_path=app.config["CORPUS"],
+                    progress=lambda s, d: job.emit(s, d),
+                    review_critique=review_critique)
+            except Exception as error:
+                submission.update({"status": "failed",
+                                   "failed_at": _now_iso(),
+                                   "error": f"{type(error).__name__}: {error}"})
+                (out_dir / "review_submission.json").write_text(
+                    json.dumps(submission, ensure_ascii=False, indent=2),
+                    encoding="utf-8")
+                raise
+            submission.update({"status": ("completed" if record.valid
+                                           else "validation_failed"),
+                               "completed_at": _now_iso(),
+                               "valid": record.valid,
+                               "faithful": bool((record.faithfulness or
+                                                {}).get("faithful"))})
+            (out_dir / "review_submission.json").write_text(
+                json.dumps(submission, ensure_ascii=False, indent=2),
+                encoding="utf-8")
             faith = record.faithfulness or {}
             parent_faith = ep.get("faithfulness") or {}
             return {"session": out_dir.name, "parent": session,
@@ -1212,7 +1405,10 @@ def create_app(sessions_dir: Path = DEFAULT_SESSIONS,
                     "faithful": bool(faith.get("faithful")),
                     "recall": faith.get("recall"),
                     "recall_before": parent_faith.get("recall"),
-                    "requirements": len(record.distilled.get("requirements", []))}
+                    "requirements": len(record.distilled.get("requirements", [])),
+                    "attempts": len(record.draft_attempts),
+                    "validator": label,
+                    "validation_failed": not record.valid}
 
         job = registry.submit("refine", params, _work)
         return jsonify({"job_id": job.id, "session": out_dir.name}), 202

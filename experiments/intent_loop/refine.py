@@ -88,6 +88,59 @@ Rules: one fact per requirement; no protocol jargon or message labels; use \
 kind "policy" ONLY for constraints that cannot be expressed as message \
 ordering (who may inhabit a role, identity, retention)."""
 
+_REVIEW_QUESTION_SYSTEM = """You are the learner responsible for turning a \
+stakeholder's intent into a faithful coordination protocol. The stakeholder \
+or an expert reviewer has challenged the CURRENT graph or Scribble draft.
+
+Do not accept the critique blindly and do not defend the draft. Check it \
+against the original intent document, the endorsed roles/interactions/goals, \
+the current protocol, and the measured faithfulness gaps. Then ask the \
+stakeholder the smallest number of confirmation questions needed before the \
+understanding can be changed safely.
+
+Prioritize: (1) roles, (2) sender -> receiver direction, (3) payload and \
+ordering constraints, branches, retries, and termination. A correction may \
+add, remove, or alter a role, interaction, goal, constraint, or non-goal. \
+Never silently turn reviewer speculation into an endorsed fact.
+
+Reply with EXACTLY ONE JSON object:
+{"assessment": "<what the critique appears to change and what remains \
+uncertain>", "questions": [{"q": "<plain-language confirmation question>", \
+"because": "<what role, interaction, direction, or constraint this settles>", \
+"kind": "role|interaction|direction|ordering|authorization|branch|value|termination"}]}
+"""
+
+_EXPERT_REVIEW_SYSTEM = """You are a senior stakeholder proxy reviewing a \
+coordination graph and Scribble protocol against the original user intent. \
+Find concrete missing, reversed, invented, or under-constrained interactions. \
+Focus on roles, sender -> receiver direction, payload constraints, ordering, \
+authorization, branches, retries, and termination. Do not rewrite the \
+protocol and do not claim certainty where the document is silent. Return \
+plain-language review notes for the learner to verify with the user."""
+
+_REVISE_INTENT_SYSTEM = """You revise an ENDORSED structured understanding \
+after the stakeholder answered confirmation questions about its graph and \
+Scribble protocol.
+
+Return the COMPLETE revised understanding, not a patch. Preserve every \
+settled role, interaction, goal, requirement, resource, invariant, non-goal, \
+and open question unless the confirmed answers change it. Update roles and \
+interactions directly when the correction concerns the graph; adding a prose \
+requirement alone is not enough. Every interaction must have one sender and \
+one receiver, meaningful carried fields, constraints where values matter, \
+cardinality, and waits_for dependencies. Keep existing ids where their \
+meaning survives and allocate new ids only for new items.
+
+Also provide one short GENERAL lesson for future drafting. It must describe \
+the observed mistake pattern without naming this episode's private business \
+entities. If there is no reusable lesson, return an empty string.
+
+Reply with EXACTLY ONE JSON object:
+{"distilled": <complete DistilledIntent JSON object>,
+ "change_summary": ["<specific confirmed change>", ...],
+ "lesson": "<general future drafting rule or empty>"}
+"""
+
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -147,6 +200,93 @@ def propose_questions(llm: ChatLLM, distilled: DistilledIntent,
                     "because": str(q.get("because", "")).strip(),
                     "kind": str(q.get("kind", "other"))})
     return [q for q in out if q["q"]]
+
+
+def review_questions(llm: ChatLLM, distilled: DistilledIntent,
+                     document: str, protocol_text: str, critique: str,
+                     faithfulness: Optional[dict] = None,
+                     max_questions: int = 6) -> dict:
+    """Turn a user/expert graph critique into learner confirmation questions."""
+    ranking = ((faithfulness or {}).get("scope") or {}).get("ranking") or {}
+    user = (f"=== ORIGINAL USER INTENT ===\n{document[:16000]}\n\n"
+            f"=== ENDORSED UNDERSTANDING ===\n{distilled.to_markdown()}\n"
+            f"=== CURRENT SCRIBBLE ===\n{protocol_text[:10000]}\n\n"
+            f"=== CURRENT RANKED GAPS ===\n"
+            f"{json.dumps(ranking, ensure_ascii=False, indent=2)[:5000]}\n\n"
+            f"=== REVIEWER'S CRITIQUE ===\n{critique.strip()}\n\n"
+            f"Ask at most {max_questions} confirmation questions.")
+    obj = parse_json_block(llm.complete(_REVIEW_QUESTION_SYSTEM, user,
+                                        stage="review_questions"))
+    questions = []
+    for item in obj.get("questions", [])[:max_questions]:
+        question = str(item.get("q", "")).strip()
+        if question:
+            questions.append({"q": question,
+                              "because": str(item.get("because", "")).strip(),
+                              "kind": str(item.get("kind", "interaction"))})
+    assessment = str(obj.get("assessment", "")).strip()
+    if not questions:
+        questions.append({
+            "q": ("Is this interpretation of your correction accurate: "
+                  f"{assessment or critique.strip()}"),
+            "because": "No change is applied without your confirmation.",
+            "kind": "interaction"})
+    return {"assessment": assessment,
+            "questions": questions, "critique": critique.strip()}
+
+
+def expert_review(llm: ChatLLM, distilled: DistilledIntent, document: str,
+                  protocol_text: str, faithfulness: Optional[dict] = None
+                  ) -> str:
+    """A stronger model proposes graph/Scribble concerns for user review."""
+    ranking = ((faithfulness or {}).get("scope") or {}).get("ranking") or {}
+    user = (f"=== ORIGINAL USER INTENT ===\n{document[:16000]}\n\n"
+            f"=== ENDORSED UNDERSTANDING ===\n{distilled.to_markdown()}\n"
+            f"=== CURRENT SCRIBBLE ===\n{protocol_text[:10000]}\n\n"
+            f"=== RANKED GAPS ===\n"
+            f"{json.dumps(ranking, ensure_ascii=False, indent=2)[:5000]}")
+    return llm.complete(_EXPERT_REVIEW_SYSTEM, user,
+                        stage="expert_review").strip()
+
+
+def revise_intent_from_review(llm: ChatLLM, distilled: DistilledIntent,
+                              document: str, protocol_text: str,
+                              critique: str, answers: list[dict]) -> tuple[
+                                  DistilledIntent, list[str], str]:
+    """Apply confirmed review answers to the complete structured intent."""
+    answered = [item for item in answers
+                if str(item.get("answer", "")).strip()]
+    qa = "\n\n".join(
+        f"Q: {item.get('question', '')}\nA: {item.get('answer', '')}"
+        for item in answered)
+    user = (f"=== ORIGINAL USER INTENT ===\n{document[:16000]}\n\n"
+            f"=== CURRENT ENDORSED UNDERSTANDING (JSON) ===\n"
+            f"{json.dumps(distilled.to_dict(), ensure_ascii=False, indent=2)}\n\n"
+            f"=== CURRENT SCRIBBLE ===\n{protocol_text[:10000]}\n\n"
+            f"=== REVIEWER CRITIQUE ===\n{critique.strip()}\n\n"
+            f"=== CONFIRMED ANSWERS ===\n{qa}")
+    obj = parse_json_block(llm.complete(_REVISE_INTENT_SYSTEM, user,
+                                        stage="review_revision"))
+    revised = DistilledIntent.from_dict(obj.get("distilled") or {})
+    changes = [str(item).strip() for item in obj.get("change_summary", [])
+               if str(item).strip()]
+    lesson = str(obj.get("lesson", "")).strip()
+    return revised, changes, lesson
+
+
+def persist_review_lesson(lesson: str, *, path: Path,
+                          max_lessons: int = 12) -> list[str]:
+    """Add one confirmed review lesson to the learner's bounded rulebook."""
+    from experiments.intent_loop.loop import standing_lessons
+    existing = standing_lessons(path)
+    if not lesson:
+        return existing
+    merged = [lesson] + [item for item in existing if item != lesson]
+    merged = merged[:max_lessons]
+    path.write_text(json.dumps({"lessons": merged, "updated": _now()},
+                               ensure_ascii=False, indent=2),
+                    encoding="utf-8")
+    return merged
 
 
 _VALIDATION_QUESTION_SYSTEM = """A formal protocol checker REJECTED a draft \
@@ -246,7 +386,8 @@ def refine_episode(
     validator_label: str, prompt_pack=None,
     max_repair_rounds: int = MAX_REPAIR_ROUNDS,
     corpus_path: Path = DEFAULT_CORPUS_PATH,
-    bisim_fn=None, progress=None,
+    bisim_fn=None, progress=None, review_critique: str = "",
+    lessons_path: Path | None = None,
 ) -> LoopRecord:
     """Redraft the protocol with the answers folded in, and re-grade.
 
@@ -263,8 +404,31 @@ def refine_episode(
     _emit("start", parent=parent_dir.name,
           answers=len([a for a in answers if str(a.get("answer", "")).strip()]))
 
-    new_reqs = requirements_from_answers(llm, distilled, answers)
-    distilled.requirements.extend(new_reqs)
+    new_reqs: list[Requirement] = []
+    review_changes: list[str] = []
+    review_lesson = ""
+    if review_critique.strip():
+        document = (parent_dir / "document.md").read_text(
+            encoding="utf-8") if (parent_dir / "document.md").exists() else ""
+        _emit("intent_revision_started",
+              agent="gpt-5.4 learner",
+              activity="checking confirmed answers and revising roles, "
+                       "interactions, goals, and constraints")
+        revised, review_changes, review_lesson = revise_intent_from_review(
+            llm, distilled, document,
+            parent_record.get("final_protocol") or "",
+            review_critique, answers)
+        distilled = revised
+        from experiments.intent_loop.loop import LESSONS_PATH
+        persist_review_lesson(review_lesson,
+                      path=lessons_path or LESSONS_PATH)
+        _emit("understanding_revised", changes=len(review_changes),
+              roles=len(distilled.roles),
+              interactions=len(distilled.interactions),
+              goals=len(distilled.goals), lesson=bool(review_lesson))
+    else:
+        new_reqs = requirements_from_answers(llm, distilled, answers)
+        distilled.requirements.extend(new_reqs)
     # An answered question is no longer open.
     answered_text = {str(a.get("question", "")).strip() for a in answers
                      if str(a.get("answer", "")).strip()}
@@ -278,8 +442,21 @@ def refine_episode(
     (out_dir / "decisions.json").write_text(
         json.dumps({"parent": parent_dir.name, "answers": answers,
                     "new_requirements": [r.to_dict() for r in new_reqs],
+                    "review_critique": review_critique,
+                    "review_changes": review_changes,
+                    "review_lesson": review_lesson,
                     "at": _now()}, ensure_ascii=False, indent=2),
         encoding="utf-8")
+    if review_critique.strip():
+        (out_dir / "review.json").write_text(
+            json.dumps({"parent": parent_dir.name,
+                        "critique": review_critique,
+                        "answers": answers,
+                        "changes": review_changes,
+                        "lesson": review_lesson,
+                        "revised_distilled": distilled.to_dict(),
+                        "at": _now()}, ensure_ascii=False, indent=2),
+            encoding="utf-8")
     for name in ("document.md",):          # keep the run dir self-contained
         src = parent_dir / name
         if src.exists():
@@ -287,9 +464,11 @@ def refine_episode(
                                         encoding="utf-8")
 
     spec_text = distilled.to_markdown()
+    needs_guards = distilled.requires_guard_sidecar()
     drafter = ChatDrafter(llm, rulebook=(list(prompt_pack.rulebook)
                                          if prompt_pack else []),
-                          model_label=getattr(llm, "label", "chat"))
+                          model_label=getattr(llm, "label", "chat"),
+                          require_guard_sidecar=needs_guards)
     exemplars = (prompt_pack.select_exemplars(spec_text, 3)
                  if prompt_pack else None)
     # Show the previous draft: refining means improving THIS protocol, not
@@ -297,14 +476,22 @@ def refine_episode(
     prior = parent_record.get("final_protocol") or ""
     seed_user = (f"{spec_text}\n\n=== PREVIOUS DRAFT (improve it; keep what "
                  f"already satisfies the checklist) ===\n{prior}")
+    _emit("draft_started", agent="gpt-5.4 learner",
+          activity="drafting revised Scribble from the updated understanding",
+          guards_required=needs_guards)
     initial = drafter.draft(seed_user, 1, exemplars=exemplars)[0]
+    _emit("draft_completed", draft_chars=len(initial),
+          guards_emitted="=== REFN ===" in initial)
 
     records = run_repair_chain(
         drafter, system="intent-loop-refine",
         item_id=parent_record.get("episode_id", "refine"), split="train",
         intent=spec_text, initial_draft=initial,
         max_rounds=max_repair_rounds, validate_fn=validate_fn,
-        bisim_fn=(bisim_fn or (lambda a, b: (False, "no bisim_fn"))))
+        bisim_fn=(bisim_fn or (lambda a, b: (False, "no bisim_fn"))),
+        require_guard_sidecar=needs_guards,
+        progress=lambda stage, detail: _emit(
+            stage, validator=validator_label, **detail))
 
     drafts_dir = out_dir / "drafts"
     drafts_dir.mkdir(exist_ok=True)
@@ -327,8 +514,10 @@ def refine_episode(
 
     faith_dict = None
     if valid:
-        protocol_only, _refn = split_guard_sidecar(final_protocol)
-        report = evaluate_faithfulness(llm, distilled, protocol_only,
+        _emit("faithfulness_started", agent="configured judge",
+              activity="checking requirement coverage, reconstructing the "
+                       "intent from Scribble, and calculating STJP ranking")
+        report = evaluate_faithfulness(llm, distilled, final_protocol,
                                        bisim_fn=bisim_fn)
         faith_dict = report.to_dict()
         (out_dir / "faithfulness.json").write_text(
@@ -349,9 +538,22 @@ def refine_episode(
         draft_attempts=attempts, final_protocol=final_protocol, valid=valid,
         faithfulness=faith_dict, meter=meter_dict, ts=_now())
     append_record(record, corpus_path)
+    _emit("artifacts_writing", activity="saving record, review evidence, "
+          "SKILL.md, AGENT.md, and protocol artifacts")
     (out_dir / "record.json").write_text(
         json.dumps(record.to_dict(), ensure_ascii=False, indent=2),
         encoding="utf-8")
+    if review_critique.strip():
+        from experiments.intent_loop.loop import standing_lessons
+        from experiments.intent_loop.skill import (collect_decisions,
+                                                   write_agent_markdown,
+                                                   write_skill)
+        learned = standing_lessons(lessons_path) if lessons_path else \
+            standing_lessons()
+        write_skill(out_dir, record.to_dict(),
+                    decisions=collect_decisions(out_dir),
+                    validator_label=validator_label)
+        write_agent_markdown(out_dir, record.to_dict(), learned)
     _emit("done", valid=valid,
           faithful=bool((faith_dict or {}).get("faithful")),
           out_dir=str(out_dir))
