@@ -775,6 +775,17 @@ def _add_span_event(name: str, attrs: dict) -> None:
         pass
 
 
+def _current_trace_id() -> str | None:
+    try:
+        from opentelemetry import trace
+        context = trace.get_current_span().get_span_context()
+        if context.is_valid:
+            return f"{context.trace_id:032x}"
+    except Exception:  # noqa: BLE001
+        pass
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Coordinator — the single WorkflowAgent executor. Parses the request JSON
 # (spec §2), builds role Agents from prompts.json[arm], drives the arm's
@@ -801,6 +812,45 @@ class Coordinator(af.Executor):
             await ctx.yield_output(json.dumps({
                 "error": f"bad request JSON: {type(e).__name__}: {e}",
                 "terminated_by": "error"}))
+            return
+
+        if req.get("stjp_preflight") is True:
+            client, model = self._build_role_clients_fn()
+            probe = af.Agent(
+                client,
+                "Reply with exactly OK and no other text.",
+                name="STJPPreflight",
+            )
+            try:
+                text, prompt_tokens, completion_tokens = await _agent_turn(
+                    probe, "Reply now.")
+                record = {
+                    "preflight": True,
+                    "model": model,
+                    "text": text,
+                    "usage": {
+                        "prompt_tokens": prompt_tokens,
+                        "completion_tokens": completion_tokens,
+                        "total_tokens": prompt_tokens + completion_tokens,
+                        "calls": 1,
+                    },
+                    "trace_id": _current_trace_id(),
+                    "error": None,
+                }
+            except Exception as e:
+                record = {
+                    "preflight": True,
+                    "model": model,
+                    "usage": {
+                        "prompt_tokens": 0,
+                        "completion_tokens": 0,
+                        "total_tokens": 0,
+                        "calls": 0,
+                    },
+                    "trace_id": _current_trace_id(),
+                    "error": f"{type(e).__name__}: {e}",
+                }
+            await ctx.yield_output(json.dumps(record))
             return
 
         arm = req.get("stjp_arm")
@@ -856,6 +906,7 @@ class Coordinator(af.Executor):
                                     error=f"{type(e).__name__}: {e}")
 
         record = build_trial_record(arm, model, trial, self._case_meta, result)
+        record["trace_id"] = _current_trace_id()
         await ctx.yield_output(json.dumps(record))
 
 
@@ -874,13 +925,16 @@ def _build_role_clients() -> tuple[object, str]:
     (FoundryChatClient — the airline_seat pattern) unless STJP_CHAT_API=chat
     (the two DeepSeek groups; DeepSeek Foundry deployments are served via
     the chat-completions-compatible surface, spec §7.3)."""
-    from azure.identity import DefaultAzureCredential
-
     model = os.environ.get("AZURE_AI_MODEL_DEPLOYMENT_NAME", "gpt-4o")
     api = os.environ.get("STJP_CHAT_API", "responses").strip().lower()
-    # Ambient managed identity in-container — NEVER AzCliCredential here
-    # (that is a local-workstation-only credential; spec §7.4).
-    credential = DefaultAzureCredential()
+    if os.environ.get("STJP_LOCAL_CLI_AUTH") == "true":
+        from stjp_core.foundry.az_credential import AzCliCredential
+        credential = AzCliCredential()
+    else:
+        from azure.identity import DefaultAzureCredential
+        # Deployed containers use ambient managed identity. AzCliCredential is
+        # enabled explicitly only for local benchmark servers.
+        credential = DefaultAzureCredential()
 
     if api == "chat":
         from agent_framework.openai import OpenAIChatCompletionClient

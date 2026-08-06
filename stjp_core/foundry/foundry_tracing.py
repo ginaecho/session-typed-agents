@@ -23,6 +23,8 @@ def enable_foundry_tracing(service_name: str = "stjp-experiment") -> str | None:
     Returns the connection string used (None if disabled / failed).
     """
     global _INSTRUMENTED
+    if os.environ.get("STJP_DISABLE_TRACING") == "1":
+        return None
     if _INSTRUMENTED:
         return os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
     # Required so genai content (prompts/responses) is captured in spans

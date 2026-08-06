@@ -238,6 +238,12 @@ Do these in order. The one-time machine setup and its traps are in
    each of the 4 models (40 trials). Confirm every arm runs and the results
    look sane before spending on the full campaign. Save under a run folder
    whose name contains `-localcheck-`.
+   The driver first makes one short model preflight call and rejects the wave
+   unless the Azure subscription/tenant, model identity, positive token usage,
+   model-call count, and trace ID all validate.
+   Use `--preflight-only` to run just this gate. Local invocations use explicit
+   unique session and conversation IDs so stale MAF checkpoints cannot resume
+   into a new trial.
 5. **Run the full campaign** — 10 arms × 4 models × 30 trials, the four
    models in parallel (each on its own local server). This is real money;
    get the owner's go first.
@@ -250,6 +256,15 @@ Two standing rules the owner has set:
   another agent is never enough authorization for a real-money run.
 - **"Stop" means a full sweep** — kill the run servers (ports 8091–8094),
   the campaign driver, and any watcher loops — all at once.
+- **Resume instead of restart** — every `(model, arm, trial)` writes an atomic
+  `cells/<model>/<arm>/<trial>/result.json` and updates
+  `campaign_manifest.json`. Re-run with `--resume <run-dir>`; valid cells are
+  skipped and only missing/invalid cells execute.
+- **Shared JSONL is never authoritative** — `events_<arm>.jsonl` is rebuilt
+  from valid per-cell event files after the run, eliminating parallel writer
+  truncation and ambiguous model attribution.
+- **Circuit breaker** — two consecutive invalid cells stop that model wave.
+  Override only with `--circuit-breaker N`; never bypass evidence validation.
 
 ## 9. What is done and what is left
 

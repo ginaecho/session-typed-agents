@@ -518,6 +518,22 @@ needing to watch:
   token-usage numbers from any run, but we can only make **speed claims
   from runs done one at a time, with nothing else competing for that
   model's capacity**.
+- **Fail-fast preflight and resumability** (implemented in
+  `hosted_campaign.py`): before a model wave, make one short real model call
+  and require the pinned Microsoft subscription/tenant, exact deployment
+  identity, positive prompt/completion tokens, positive call count, and a
+  valid trace ID. Persist every `(model, arm, trial)` atomically under
+  `cells/`; `campaign_manifest.json` is the state machine. Use
+  `--resume <run-dir>` to skip valid cells. Two consecutive infrastructure or
+  evidence failures open the model circuit breaker.
+  Use `--preflight-only` before a new model/server combination. Every local
+  invocation supplies fresh explicit session and conversation UUIDs; do not
+  rely on `azd --new-session` alone because it previously restored stale MAF
+  checkpoints.
+- **Compatibility logs are derived**: parallel waves never write the same
+  authoritative file. After all cells validate, the driver deterministically
+  rebuilds `events_<arm>.jsonl` from per-cell `events.jsonl` files for existing
+  summarizers.
 - As always, split test runs evenly across each branch on cases with a
   decision point.
 

@@ -7,15 +7,12 @@ STANDARD run dir that `summarize_run`/`evaluate_run` from case_runner.py
 consume UNCHANGED, and cross-checks the container's gate verdicts against
 an independent local replay (Set A).
 
-STATUS (S4 implementation, 2026-08-05): this is the DRIVER SKELETON deliverable
-of spec §1/§4. It is structurally complete (CLI, per-wave concurrency
-scaffolding, persistence matching case_runner.py's exact schema, Set-A
-cross-check, retry-to-success) but has NOT been exercised beyond what
-acceptance gate 3 required (a single manual `azd ai agent invoke --local`
-call made directly, not through this script — see the S4 report). Per spec
-§5.4 the implementer stops here for orchestrator review before any
-`azd deploy` or n>1 run; --endpoint-mode hosted is therefore UNTESTED (no
-agent has been deployed yet).
+Each model is preflighted with one real call before its wave starts. Evidence
+is persisted atomically under cells/<model>/<arm>/<trial>/ and indexed by a
+resumable campaign_manifest.json. A cell is valid only when usage, trace
+identity, local Set-A replay, and the terminal record all validate. Legacy
+events_<arm>.jsonl files are rebuilt from valid cells after a completed run;
+they are compatibility views, not the authoritative store.
 
 Usage:
     python hosted_campaign.py sdlc_release_gate --arms skills --n 1 \\
@@ -26,17 +23,24 @@ Usage:
 
     python hosted_campaign.py sdlc_release_gate --n 30 --models mini \\
         --sequential   # dedicated timing pass, one arm at a time
+
+    python hosted_campaign.py sdlc_release_gate --n 30 --models mini \\
+        --resume experiments/cases/.../runs/<existing-run>
 """
 from __future__ import annotations
 
 import argparse
 import asyncio
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import time
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -127,6 +131,130 @@ MODEL_GROUPS = {
 # timeout cuts off live trials. 60 min still satisfies the spec's
 # ">= 30 min" bound.
 DRIVER_TIMEOUT_S = 60 * 60
+MANIFEST_SCHEMA_VERSION = 1
+_MANIFEST_LOCK = threading.Lock()
+
+
+def _atomic_write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+    try:
+        tmp.write_text(json.dumps(payload, indent=2, sort_keys=True),
+                       encoding="utf-8")
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
+def _cell_id(model: str, arm: str, trial: int) -> str:
+    return f"{model}/{arm}/{trial:04d}"
+
+
+def _cell_dir(run_dir: Path, model: str, arm: str, trial: int) -> Path:
+    return run_dir / "cells" / model / arm / f"{trial:04d}"
+
+
+class CampaignManifest:
+    def __init__(self, path: Path, payload: dict):
+        self.path = path
+        self.payload = payload
+
+    @classmethod
+    def create_or_load(cls, run_dir: Path, *, case_id: str, arms: list[str],
+                       models: list[str], n: int, endpoint_mode: str):
+        path = run_dir / "campaign_manifest.json"
+        if path.exists():
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            expected = {
+                "case_id": case_id, "arms": arms, "models": models,
+                "trials_per_cell": n, "endpoint_mode": endpoint_mode,
+            }
+            actual = {key: payload.get(key) for key in expected}
+            if actual != expected:
+                raise RuntimeError(
+                    f"resume manifest does not match requested campaign: "
+                    f"expected={expected}, actual={actual}")
+            return cls(path, payload)
+
+        now = datetime.now().isoformat()
+        cells = {
+            _cell_id(model, arm, trial): {
+                "status": "pending", "model": model, "arm": arm,
+                "trial": trial, "updated_at": now,
+            }
+            for model in models for arm in arms for trial in range(n)
+        }
+        payload = {
+            "schema_version": MANIFEST_SCHEMA_VERSION,
+            "case_id": case_id,
+            "arms": arms,
+            "models": models,
+            "trials_per_cell": n,
+            "endpoint_mode": endpoint_mode,
+            "created_at": now,
+            "updated_at": now,
+            "preflight": {},
+            "cells": cells,
+        }
+        manifest = cls(path, payload)
+        manifest.save()
+        return manifest
+
+    def save(self) -> None:
+        with _MANIFEST_LOCK:
+            self.payload["updated_at"] = datetime.now().isoformat()
+            _atomic_write_json(self.path, self.payload)
+
+    def update_cell(self, model: str, arm: str, trial: int, **values) -> None:
+        with _MANIFEST_LOCK:
+            cell = self.payload["cells"][_cell_id(model, arm, trial)]
+            cell.update(values)
+            cell["updated_at"] = datetime.now().isoformat()
+            self.payload["updated_at"] = cell["updated_at"]
+            _atomic_write_json(self.path, self.payload)
+
+    def update_preflight(self, preflight_key: str, **values) -> None:
+        with _MANIFEST_LOCK:
+            entry = self.payload["preflight"].setdefault(preflight_key, {})
+            entry.update(values)
+            entry["updated_at"] = datetime.now().isoformat()
+            self.payload["updated_at"] = entry["updated_at"]
+            _atomic_write_json(self.path, self.payload)
+
+    def is_valid(self, model: str, arm: str, trial: int) -> bool:
+        return (self.payload["cells"][_cell_id(model, arm, trial)]
+                .get("status") == "valid")
+
+
+def _verify_azure_context() -> dict:
+    expected_subscription = os.environ.get("STJP_AZURE_SUBSCRIPTION_ID")
+    expected_tenant = os.environ.get("STJP_AZURE_TENANT_ID")
+    if not expected_subscription or not expected_tenant:
+        raise RuntimeError(
+            "STJP_AZURE_SUBSCRIPTION_ID and STJP_AZURE_TENANT_ID are required")
+    az = shutil.which("az")
+    if not az:
+        raise RuntimeError("az CLI not found on PATH")
+    proc = subprocess.run(
+        [az, "account", "show", "-o", "json"],
+        capture_output=True, text=True, timeout=60)
+    if proc.returncode != 0:
+        raise RuntimeError(f"az account show failed: {proc.stderr[-1000:]}")
+    account = json.loads(proc.stdout)
+    if account.get("id") != expected_subscription:
+        raise RuntimeError(
+            "wrong Azure subscription selected: "
+            f"{account.get('id')} (expected {expected_subscription})")
+    if account.get("tenantId") != expected_tenant:
+        raise RuntimeError(
+            "wrong Azure tenant selected: "
+            f"{account.get('tenantId')} (expected {expected_tenant})")
+    return {
+        "subscription_id": account["id"],
+        "tenant_id": account["tenantId"],
+        "user": (account.get("user") or {}).get("name"),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -168,6 +296,54 @@ def _validated_usage(record: dict) -> tuple[int, int, int]:
             f"({reported_total!r} != {computed_total})")
     return (values["prompt_tokens"], values["completion_tokens"],
             values["calls"])
+
+
+def _validated_trace_id(record: dict, invoker) -> str:
+    trace_id = record.get("trace_id") or getattr(invoker, "last_trace_id", None)
+    if not isinstance(trace_id, str):
+        raise RuntimeError("workflow response has no trace identifier")
+    normalized = trace_id.strip().lower().replace("-", "")
+    if not re.fullmatch(r"[0-9a-f]{32}", normalized) or int(normalized, 16) == 0:
+        raise RuntimeError(f"workflow returned invalid trace identifier {trace_id!r}")
+    return normalized
+
+
+def _run_preflight(invoker, *, expected_model: str, model_key: str,
+                   run_dir: Path, manifest: CampaignManifest) -> dict:
+    manifest.update_preflight(model_key, status="running")
+    try:
+        record = invoker.invoke({"stjp_preflight": True})
+        if record.get("preflight") is not True:
+            raise RuntimeError("workflow did not return a preflight record")
+        if record.get("model") != expected_model:
+            raise RuntimeError(
+                f"preflight model mismatch: {record.get('model')!r} "
+                f"!= {expected_model!r}")
+        prompt_tokens, completion_tokens, calls = _validated_usage(record)
+        trace_id = _validated_trace_id(record, invoker)
+        evidence = {
+            "status": "valid",
+            "model_key": model_key,
+            "model": expected_model,
+            "usage": {
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "total_tokens": prompt_tokens + completion_tokens,
+                "calls": calls,
+            },
+            "trace_id": trace_id,
+            "response_text": record.get("text", ""),
+            "completed_at": datetime.now().isoformat(),
+        }
+        _atomic_write_json(run_dir / "preflight" / f"{model_key}.json", evidence)
+        manifest.update_preflight(model_key, **evidence)
+        return evidence
+    except Exception as exc:
+        manifest.update_preflight(
+            model_key, status="invalid",
+            error=f"{type(exc).__name__}: {exc}")
+        raise RuntimeError(
+            f"MODEL PREFLIGHT FAILED model={model_key}: {exc}") from exc
 
 
 def _unwrap_local_response(body: dict) -> dict:
@@ -229,8 +405,10 @@ class LocalAgentInvoker:
         self.port = port
         self.cwd = cwd
         self.timeout_s = timeout_s
+        self.last_trace_id: Optional[str] = None
 
     def _invoke_once(self, request: dict) -> dict:
+        invocation_id = str(uuid.uuid4())
         with tempfile.NamedTemporaryFile(
                 "w", suffix=".json", delete=False, encoding="utf-8") as f:
             json.dump(request, f)
@@ -238,7 +416,10 @@ class LocalAgentInvoker:
         try:
             proc = subprocess.run(
                 ["azd", "ai", "agent", "invoke", self.group_name, "--local",
-                 "--new-session", "-f", req_path, "--port", str(self.port),
+                 "--session-id", invocation_id,
+                 "--conversation-id", invocation_id,
+                 "--new-session", "--new-conversation",
+                 "-f", req_path, "--port", str(self.port),
                  "--timeout", str(self.timeout_s), "--no-prompt",
                  "--output", "raw"],
                 cwd=str(self.cwd), capture_output=True, text=True,
@@ -258,7 +439,9 @@ class LocalAgentInvoker:
         for busy_try in range(self.BUSY_MAX_TRIES):
             body = self._invoke_once(request)
             try:
-                return _unwrap_local_response(body)
+                record = _unwrap_local_response(body)
+                self.last_trace_id = record.get("trace_id")
+                return record
             except WorkflowBusyError:
                 if busy_try == self.BUSY_MAX_TRIES - 1:
                     raise
@@ -318,9 +501,13 @@ class HostedAgentInvoker:
         az = shutil.which("az")  # az is az.cmd on Windows; resolve explicitly
         if not az:
             raise RuntimeError("az CLI not found on PATH")
+        cmd = [az, "account", "get-access-token",
+               "--scope", "https://ai.azure.com/.default", "-o", "json"]
+        subscription = os.environ.get("STJP_AZURE_SUBSCRIPTION_ID")
+        if subscription:
+            cmd += ["--subscription", subscription]
         proc = subprocess.run(
-            [az, "account", "get-access-token",
-             "--scope", "https://ai.azure.com/.default", "-o", "json"],
+            cmd,
             capture_output=True, text=True, timeout=120)
         if proc.returncode != 0:
             raise RuntimeError(
@@ -528,6 +715,7 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
     succeeded = False
     attempts_used = 0
     final_record: dict = {}
+    trace_ids: list[str] = []
 
     emitter.emit_marker("trial_start", trial=trial, branch=branch_hint,
                         scenario=arm, model=model_key)
@@ -543,6 +731,8 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
         t0 = time.time()
         record = invoker.invoke(request)
         wall_s = time.time() - t0
+        trace_id = _validated_trace_id(record, invoker)
+        trace_ids.append(trace_id)
 
         mismatches = cross_check_verdicts(case, record)
         if mismatches:
@@ -602,6 +792,7 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
                     "total_tokens": prompt_tk + completion_tk, "calls": calls},
             extra={"terminated_by": record.get("terminated_by"),
                    "model": record.get("model"),
+                   "trace_id": trace_id,
                    "blocked_attempts": len(record.get("blocked_attempts", [])),
                    "wall_seconds": round(wall_s, 1)})
 
@@ -615,11 +806,16 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
                         model=model_key,
                         success_rule=success_rule, attempts=attempts_used,
                         events=len(final_record.get("events", [])),
+                        trace_ids=trace_ids,
                         tokens={"prompt_tokens": cum_prompt,
                                 "completion_tokens": cum_completion,
                                 "total_tokens": cum_total, "calls": cum_calls})
     return {"trial": trial, "branch": branch_hint, "succeeded": succeeded,
-            "attempts": attempts_used, "record": final_record}
+            "attempts": attempts_used, "trace_ids": trace_ids,
+            "usage": {"prompt_tokens": cum_prompt,
+                      "completion_tokens": cum_completion,
+                      "total_tokens": cum_total, "calls": cum_calls},
+            "record": final_record}
 
 
 # ---------------------------------------------------------------------------
@@ -667,7 +863,10 @@ def write_hosted_meta(run_dir: Path, *, group_name: str, model: str,
 # ---------------------------------------------------------------------------
 
 async def run_wave(case: Case, model_key: str, arms: list[str], n: int, *,
-                   endpoint_mode: str, run_dir: Path, prompts: dict) -> None:
+                   endpoint_mode: str, run_dir: Path, prompts: dict,
+                   manifest: CampaignManifest,
+                   circuit_breaker: int,
+                   preflight_only: bool = False) -> None:
     cfg = MODEL_GROUPS[model_key]
     group_name, model, concurrency = cfg["group"], cfg["model"], cfg["concurrency"]
 
@@ -679,6 +878,12 @@ async def run_wave(case: Case, model_key: str, arms: list[str], n: int, *,
         # separate `azd ai agent show` round-trip needed (see class docstring).
         invoker = HostedAgentInvoker(group_name)
 
+    await asyncio.to_thread(
+        _run_preflight, invoker, expected_model=model, model_key=model_key,
+        run_dir=run_dir, manifest=manifest)
+    if preflight_only:
+        return
+
     sem = asyncio.Semaphore(concurrency)
     span_ids_sample: list = []
 
@@ -688,17 +893,14 @@ async def run_wave(case: Case, model_key: str, arms: list[str], n: int, *,
             if not efsm_json_path.exists():
                 raise FileNotFoundError(
                     f"missing {efsm_json_path} -- run build_hosted_artifacts.py first")
-            events_path = run_dir / f"events_{arm}.jsonl"
-            # One emitter per (arm) so events_<arm>.jsonl matches case_runner's
-            # one-file-per-arm layout even though trials for different arms in
-            # the SAME wave interleave under asyncio.
+            cell_dir = _cell_dir(run_dir, model_key, arm, trial)
+            cell_dir.mkdir(parents=True, exist_ok=True)
+            events_path = cell_dir / "events.jsonl"
+            events_path.write_text("", encoding="utf-8")
             llmvalid_path = case.case_dir / "protocols" / "llm_drafts" / "valid" / "v1.scr"
             efsms = get_all_efsms(llmvalid_path, case.protocol_name, case.roles)
             refinements = load_refinements_for_protocol(llmvalid_path)
-            # run_campaign creates each arm file once. Parallel model waves
-            # must append without truncating evidence written by another wave.
-            emitter = LiveEventEmitter(
-                events_path, efsms, refinements, truncate=False)
+            emitter = LiveEventEmitter(events_path, efsms, refinements)
 
             strict_labels = arm in VOCABULARY_ARMS
             success_rule = "strict" if strict_labels else "role_pair"
@@ -715,36 +917,130 @@ async def run_wave(case: Case, model_key: str, arms: list[str], n: int, *,
                 emitter.close()
             return result
 
+    consecutive_failures = 0
     for arm in arms:  # arms run SEQUENTIALLY inside a wave (spec §7.2)
         persist_prompts_from_artifacts(run_dir, arm, prompts)
         for trial in range(n):
+            if manifest.is_valid(model_key, arm, trial):
+                print(f"[hosted_campaign] resume skip valid "
+                      f"{_cell_id(model_key, arm, trial)}", flush=True)
+                consecutive_failures = 0
+                continue
             branch_hint = (case.branch_hints[trial % len(case.branch_hints)]
                           if case.branch_hints else None)
-            await _one(arm, trial, branch_hint)
-            trace_id = getattr(invoker, "last_trace_id", None)
-            if trace_id:
-                span_ids_sample.append(
-                    {"arm": arm, "trial": trial, "trace_id": trace_id})
+            manifest.update_cell(model_key, arm, trial, status="running",
+                                 error=None)
+            try:
+                result = await _one(arm, trial, branch_hint)
+                evidence = {
+                    "schema_version": 1,
+                    "status": "valid",
+                    "case_id": case.case_id,
+                    "model_key": model_key,
+                    "model": model,
+                    "arm": arm,
+                    "trial": trial,
+                    "branch": branch_hint,
+                    "goal_succeeded": result["succeeded"],
+                    "attempts": result["attempts"],
+                    "usage": result["usage"],
+                    "trace_ids": result["trace_ids"],
+                    "events_file": "events.jsonl",
+                    "record": result["record"],
+                    "completed_at": datetime.now().isoformat(),
+                }
+                cell_dir = _cell_dir(run_dir, model_key, arm, trial)
+                _atomic_write_json(cell_dir / "result.json", evidence)
+                manifest.update_cell(
+                    model_key, arm, trial, status="valid",
+                    goal_succeeded=result["succeeded"],
+                    attempts=result["attempts"], usage=result["usage"],
+                    trace_ids=result["trace_ids"],
+                    result_file=str(
+                        (cell_dir / "result.json").relative_to(run_dir)))
+                span_ids_sample.extend(
+                    {"arm": arm, "trial": trial, "trace_id": trace_id}
+                    for trace_id in result["trace_ids"])
+                consecutive_failures = 0
+            except Exception as exc:
+                consecutive_failures += 1
+                cell_dir = _cell_dir(run_dir, model_key, arm, trial)
+                failure = {
+                    "schema_version": 1,
+                    "status": "invalid",
+                    "case_id": case.case_id,
+                    "model_key": model_key,
+                    "model": model,
+                    "arm": arm,
+                    "trial": trial,
+                    "branch": branch_hint,
+                    "error": f"{type(exc).__name__}: {exc}",
+                    "failed_at": datetime.now().isoformat(),
+                }
+                _atomic_write_json(cell_dir / "failure.json", failure)
+                manifest.update_cell(
+                    model_key, arm, trial, status="invalid",
+                    error=failure["error"],
+                    failure_file=str(
+                        (cell_dir / "failure.json").relative_to(run_dir)))
+                if consecutive_failures >= circuit_breaker:
+                    raise RuntimeError(
+                        f"circuit breaker opened for model={model_key} after "
+                        f"{consecutive_failures} consecutive invalid cells") from exc
 
     write_hosted_meta(run_dir, group_name=group_name, model=model,
                       endpoint_mode=endpoint_mode, wave=model_key,
                       span_ids_sample=span_ids_sample)
 
 
+def _rebuild_legacy_event_files(run_dir: Path, arms: list[str],
+                                models: list[str], n: int) -> None:
+    for arm in arms:
+        lines: list[str] = []
+        for model in models:
+            for trial in range(n):
+                cell_dir = _cell_dir(run_dir, model, arm, trial)
+                result_path = cell_dir / "result.json"
+                events_path = cell_dir / "events.jsonl"
+                if not result_path.exists() or not events_path.exists():
+                    continue
+                result = json.loads(result_path.read_text(encoding="utf-8"))
+                if result.get("status") != "valid":
+                    continue
+                lines.extend(events_path.read_text(encoding="utf-8").splitlines())
+        path = run_dir / f"events_{arm}.jsonl"
+        tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+        tmp.write_text("".join(f"{line}\n" for line in lines), encoding="utf-8")
+        os.replace(tmp, path)
+
+
 async def run_campaign(case_id: str, arms: list[str], n: int, models: list[str], *,
                        endpoint_mode: str, parallel_models: bool,
-                       dir_tag: Optional[str] = None) -> Path:
+                       dir_tag: Optional[str] = None,
+                       resume_dir: Optional[Path] = None,
+                       circuit_breaker: int = 2,
+                       preflight_only: bool = False) -> Path:
+    azure_context = _verify_azure_context()
     case = Case.load(CASES_DIR / case_id, intent_scale="doc")
     prompts = json.loads((ARTIFACTS_DIR / "prompts.json").read_text(encoding="utf-8"))
 
-    ts = datetime.now().strftime("%Y%m%dT%H%M%S")
-    model_tag = "-".join(models)
-    tag = f"-{dir_tag}" if dir_tag else ""
-    run_dir = case.runs_dir / f"{ts}-hosted{tag}-{model_tag}-n{n}"
-    run_dir.mkdir(parents=True, exist_ok=True)
-    for arm in arms:
-        (run_dir / f"events_{arm}.jsonl").write_text("", encoding="utf-8")
-    _persist_intent(case, run_dir)  # reuse case_runner._persist_intent verbatim
+    if resume_dir is not None:
+        run_dir = resume_dir.resolve()
+        if not run_dir.is_dir():
+            raise FileNotFoundError(f"resume directory not found: {run_dir}")
+    else:
+        ts = datetime.now().strftime("%Y%m%dT%H%M%S")
+        model_tag = "-".join(models)
+        tag = f"-{dir_tag}" if dir_tag else ""
+        run_dir = case.runs_dir / f"{ts}-hosted{tag}-{model_tag}-n{n}"
+        run_dir.mkdir(parents=True, exist_ok=False)
+        _persist_intent(case, run_dir)
+
+    manifest = CampaignManifest.create_or_load(
+        run_dir, case_id=case_id, arms=arms, models=models, n=n,
+        endpoint_mode=endpoint_mode)
+    manifest.payload["azure_context"] = azure_context
+    manifest.save()
 
     print(f"[hosted_campaign] case={case.case_id} arms={arms} n={n} "
           f"models={models} endpoint_mode={endpoint_mode} "
@@ -752,16 +1048,44 @@ async def run_campaign(case_id: str, arms: list[str], n: int, models: list[str],
     print(f"[hosted_campaign] run_dir={run_dir}")
 
     if parallel_models:
-        await asyncio.gather(*[
+        wave_results = await asyncio.gather(*[
             run_wave(case, m, arms, n, endpoint_mode=endpoint_mode, run_dir=run_dir,
-                    prompts=prompts)
+                     prompts=prompts, manifest=manifest,
+                     circuit_breaker=circuit_breaker,
+                     preflight_only=preflight_only)
             for m in models
-        ])
+        ], return_exceptions=True)
+        wave_failures = [
+            f"{model}: {type(result).__name__}: {result}"
+            for model, result in zip(models, wave_results)
+            if isinstance(result, BaseException)
+        ]
     else:
+        wave_failures = []
         for m in models:  # --sequential: one model, one arm at a time
-            await run_wave(case, m, arms, n, endpoint_mode=endpoint_mode,
-                          run_dir=run_dir, prompts=prompts)
+            try:
+                await run_wave(
+                    case, m, arms, n, endpoint_mode=endpoint_mode,
+                    run_dir=run_dir, prompts=prompts, manifest=manifest,
+                    circuit_breaker=circuit_breaker,
+                    preflight_only=preflight_only)
+            except Exception as exc:
+                wave_failures.append(f"{m}: {type(exc).__name__}: {exc}")
 
+    if preflight_only:
+        if wave_failures:
+            raise RuntimeError(
+                "preflight failed:\n  " + "\n  ".join(wave_failures))
+        return run_dir
+    _rebuild_legacy_event_files(run_dir, arms, models, n)
+    incomplete = [
+        key for key, cell in manifest.payload["cells"].items()
+        if cell.get("status") != "valid"
+    ]
+    if incomplete or wave_failures:
+        raise RuntimeError(
+            f"campaign incomplete: {len(incomplete)} invalid/pending cells; "
+            f"wave failures={wave_failures}; resume with --resume {run_dir}")
     return run_dir
 
 
@@ -789,6 +1113,14 @@ def main():
                        "'smoke' -> <ts>-hosted-smoke-<model>-n<n> (evidence "
                        "isolation: smoke dirs must never look like campaign "
                        "data, spec S5)")
+    p.add_argument("--resume", type=Path, default=None,
+                  help="resume an existing run directory; valid cells are skipped")
+    p.add_argument("--circuit-breaker", type=int, default=2,
+                  help="stop a model wave after this many consecutive invalid "
+                       "cells (default: 2)")
+    p.add_argument("--preflight-only", action="store_true",
+                  help="validate account, model, usage, and tracing without "
+                       "running benchmark cells")
     args = p.parse_args()
 
     arms = [a.strip() for a in args.arms.split(",") if a.strip()]
@@ -804,12 +1136,18 @@ def main():
     if args.parallel_models and args.sequential:
         print("--parallel-models and --sequential are mutually exclusive")
         sys.exit(2)
+    if args.circuit_breaker < 1:
+        print("--circuit-breaker must be >= 1")
+        sys.exit(2)
 
     run_dir = asyncio.run(run_campaign(
         args.case_id, arms, args.n, models,
         endpoint_mode=args.endpoint_mode,
         parallel_models=args.parallel_models and not args.sequential,
-        dir_tag=args.dir_tag))
+        dir_tag=args.dir_tag,
+        resume_dir=args.resume,
+        circuit_breaker=args.circuit_breaker,
+        preflight_only=args.preflight_only))
     print(f"[hosted_campaign] DONE -> {run_dir}")
 
 
