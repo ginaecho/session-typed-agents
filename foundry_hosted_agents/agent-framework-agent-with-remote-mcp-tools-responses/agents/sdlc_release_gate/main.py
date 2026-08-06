@@ -165,6 +165,9 @@ class RetryingChatClient:
         self._base = base
         self._cap = cap
         self._max_tries = max_tries
+        self._prompt_tokens = 0
+        self._completion_tokens = 0
+        self._calls = 0
 
     def __getattr__(self, name):
         # Delegate everything not explicitly overridden (model, service_url,
@@ -177,7 +180,12 @@ class RetryingChatClient:
         for attempt in range(self._max_tries):
             try:
                 call = self._inner.get_response(*args, **kwargs)
-                return await call if hasattr(call, "__await__") else call
+                response = await call if hasattr(call, "__await__") else call
+                prompt_tokens, completion_tokens = _extract_usage(response)
+                self._prompt_tokens += prompt_tokens
+                self._completion_tokens += completion_tokens
+                self._calls += 1
+                return response
             except Exception as e:  # noqa: BLE001 - must inspect any client's error type
                 if not _is_rate_limited(e):
                     raise
@@ -189,6 +197,9 @@ class RetryingChatClient:
                 await asyncio.sleep(delay)
         assert last_exc is not None
         raise last_exc
+
+    def captured_usage(self) -> tuple[int, int, int]:
+        return self._prompt_tokens, self._completion_tokens, self._calls
 
 
 def _extract_usage(response) -> tuple[int, int]:
@@ -745,7 +756,8 @@ def build_trial_record(arm: str, model: str, trial: int, case_meta: dict,
         "usage": {"prompt_tokens": result.prompt_tokens,
                   "completion_tokens": result.completion_tokens,
                   "total_tokens": result.prompt_tokens + result.completion_tokens,
-                  "calls": result.calls},
+                  "calls": result.calls,
+                  "capture_scope": "all_chat_client_calls"},
         "terminated_by": result.terminated_by,
         "error": result.error,
     }
@@ -833,6 +845,7 @@ class Coordinator(af.Executor):
                         "completion_tokens": completion_tokens,
                         "total_tokens": prompt_tokens + completion_tokens,
                         "calls": 1,
+                        "capture_scope": "all_chat_client_calls",
                     },
                     "trace_id": _current_trace_id(),
                     "error": None,
@@ -846,6 +859,7 @@ class Coordinator(af.Executor):
                         "completion_tokens": 0,
                         "total_tokens": 0,
                         "calls": 0,
+                        "capture_scope": "all_chat_client_calls",
                     },
                     "trace_id": _current_trace_id(),
                     "error": f"{type(e).__name__}: {e}",
@@ -905,6 +919,10 @@ class Coordinator(af.Executor):
             result = RoleLoopResult(terminated_by="error",
                                     error=f"{type(e).__name__}: {e}")
 
+        prompt_tokens, completion_tokens, calls = client.captured_usage()
+        result.prompt_tokens = prompt_tokens
+        result.completion_tokens = completion_tokens
+        result.calls = calls
         record = build_trial_record(arm, model, trial, self._case_meta, result)
         record["trace_id"] = _current_trace_id()
         await ctx.yield_output(json.dumps(record))

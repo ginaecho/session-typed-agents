@@ -438,6 +438,15 @@ async def smoke_maf_gate_rejects_pre_broadcast():
           "participant was re-prompted before broadcast.\n")
 
 
+async def smoke_usage_interceptor_counts_internal_calls():
+    inner = ScriptedChatClient(["one", "two"])
+    client = main.RetryingChatClient(inner)
+    await client.get_response([])
+    await client.get_response([])
+    assert client.captured_usage() == (22, 8, 2)
+    print("  PASS: chat-client interceptor counts calls hidden inside MAF.\n")
+
+
 async def _run() -> None:
     r1 = await smoke_gate_rejects_off_contract()
     r2 = await smoke_sched_enabled_roles_only()
@@ -445,11 +454,13 @@ async def _run() -> None:
     smoke_recv_side_reorder_walker_level()
     r5 = await smoke_maf_sched_enabled_roles_only()
     await smoke_maf_gate_rejects_pre_broadcast()
+    await smoke_usage_interceptor_counts_internal_calls()
     print("=" * 72)
     print("ALL GATE-2 SMOKES PASSED (1: gate reject, 2: sched, "
           "3: reorder both orders, 4: RECV-side reorder, "
           "5: maf_localvalid_sched EFSM selection_func, "
-          "6: maf_localvalid_gate pre-broadcast enforcement)")
+          "6: maf_localvalid_gate pre-broadcast enforcement, "
+          "7: complete MAF usage interception)")
     print("=" * 72)
     print("\n(FakeChatClient trial records shown for transcript purposes ONLY -")
     print(" per spec §6 these are NEVER persisted to runs/ and count in no table.)")

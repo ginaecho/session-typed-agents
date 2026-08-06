@@ -39,15 +39,25 @@ def test_atomic_manifest_and_resume() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         run_dir = Path(tmp)
         manifest = CampaignManifest.create_or_load(
-            run_dir, case_id="case", arms=["skills"], models=["mini"],
+            run_dir, case_id="case", arms=["skills", "maf_skills"], models=["mini"],
             n=2, endpoint_mode="local")
         manifest.update_cell(
             "mini", "skills", 0, status="valid", trace_ids=["a" * 32])
         loaded = CampaignManifest.create_or_load(
-            run_dir, case_id="case", arms=["skills"], models=["mini"],
+            run_dir, case_id="case", arms=["skills", "maf_skills"], models=["mini"],
             n=2, endpoint_mode="local")
         assert loaded.is_valid("mini", "skills", 0)
         assert not loaded.is_valid("mini", "skills", 1)
+        maf_result = run_dir / "cells" / "mini" / "maf_skills" / "0000" / "result.json"
+        _atomic_write_json(maf_result, {
+            "record": {"usage": {"capture_scope": "participant_outputs_only"}}})
+        loaded.update_cell(
+            "mini", "maf_skills", 0, status="valid",
+            result_file=str(maf_result.relative_to(run_dir)))
+        assert not loaded.is_valid("mini", "maf_skills", 0)
+        _atomic_write_json(maf_result, {
+            "record": {"usage": {"capture_scope": "all_chat_client_calls"}}})
+        assert loaded.is_valid("mini", "maf_skills", 0)
         leftovers = list(run_dir.glob(".*.tmp"))
         assert not leftovers, leftovers
 
@@ -57,15 +67,19 @@ def test_usage_and_trace_validation() -> None:
         "usage": {
             "prompt_tokens": 12, "completion_tokens": 2,
             "total_tokens": 14, "calls": 1,
+            "capture_scope": "all_chat_client_calls",
         },
         "trace_id": "0123456789abcdef0123456789abcdef",
     }
     assert _validated_usage(record) == (12, 2, 1)
     assert _validated_trace_id(record, object()) == record["trace_id"]
     for bad in (
-        {"usage": {"prompt_tokens": 0, "completion_tokens": 2, "calls": 1}},
-        {"usage": {"prompt_tokens": 12, "completion_tokens": 0, "calls": 1}},
-        {"usage": {"prompt_tokens": 12, "completion_tokens": 2, "calls": 0}},
+        {"usage": {"prompt_tokens": 0, "completion_tokens": 2, "calls": 1,
+                   "capture_scope": "all_chat_client_calls"}},
+        {"usage": {"prompt_tokens": 12, "completion_tokens": 0, "calls": 1,
+                   "capture_scope": "all_chat_client_calls"}},
+        {"usage": {"prompt_tokens": 12, "completion_tokens": 2, "calls": 0,
+                   "capture_scope": "all_chat_client_calls"}},
     ):
         try:
             _validated_usage(bad)
@@ -88,6 +102,7 @@ def test_preflight_persistence() -> None:
             "usage": {
                 "prompt_tokens": 10, "completion_tokens": 1,
                 "total_tokens": 11, "calls": 1,
+                "capture_scope": "all_chat_client_calls",
             },
             "trace_id": "fedcba9876543210fedcba9876543210",
             "error": None,

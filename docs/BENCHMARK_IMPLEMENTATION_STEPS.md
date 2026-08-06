@@ -546,6 +546,12 @@ needing to watch:
   authoritative file. After all cells validate, the driver deterministically
   rebuilds `events_<arm>.jsonl` from per-cell `events.jsonl` files for existing
   summarizers.
+- **Count every MAF model call**: `GroupChatBuilder` does not expose every
+  internal orchestrator response in its outer result stream. Usage therefore
+  comes from the shared `RetryingChatClient` interceptor, covering participant
+  and orchestrator calls, and is accepted only with
+  `capture_scope=all_chat_client_calls`. Participant-only historical MAF usage
+  is invalid evidence.
 - As always, split test runs evenly across each branch on cases with a
   decision point.
 

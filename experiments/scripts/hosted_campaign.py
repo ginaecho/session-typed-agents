@@ -224,8 +224,20 @@ class CampaignManifest:
             _atomic_write_json(self.path, self.payload)
 
     def is_valid(self, model: str, arm: str, trial: int) -> bool:
-        return (self.payload["cells"][_cell_id(model, arm, trial)]
-                .get("status") == "valid")
+        cell = self.payload["cells"][_cell_id(model, arm, trial)]
+        if cell.get("status") != "valid":
+            return False
+        if not arm.startswith("maf_"):
+            return True
+        result_file = cell.get("result_file")
+        if not result_file:
+            return False
+        path = self.path.parent / result_file
+        if not path.is_file():
+            return False
+        evidence = json.loads(path.read_text(encoding="utf-8"))
+        usage = (evidence.get("record") or {}).get("usage") or {}
+        return usage.get("capture_scope") == "all_chat_client_calls"
 
 
 def _verify_azure_context() -> dict:
@@ -297,6 +309,9 @@ def _validated_usage(record: dict) -> tuple[int, int, int]:
     usage = record.get("usage")
     if not isinstance(usage, dict):
         raise RuntimeError("workflow response has no usage object")
+    if usage.get("capture_scope") != "all_chat_client_calls":
+        raise RuntimeError(
+            "workflow usage does not certify capture of all chat-client calls")
     values: dict[str, int] = {}
     for key in ("prompt_tokens", "completion_tokens", "calls"):
         value = usage.get(key)

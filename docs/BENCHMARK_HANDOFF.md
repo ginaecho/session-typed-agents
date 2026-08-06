@@ -268,6 +268,11 @@ Two standing rules the owner has set:
   truncation and ambiguous model attribution.
 - **Circuit breaker** — two consecutive invalid cells stop that model wave.
   Override only with `--circuit-breaker N`; never bypass evidence validation.
+- **MAF usage must include orchestration** — participant responses alone omit
+  the internal speaker-selection calls. The hosted workflow captures usage at
+  the shared chat-client boundary and stamps
+  `capture_scope=all_chat_client_calls`. Resumption automatically rejects and
+  reruns older MAF cells without that certification.
 
 ## 9. What is done and what is left
 
