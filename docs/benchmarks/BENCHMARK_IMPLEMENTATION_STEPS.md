@@ -479,10 +479,13 @@ every case is:
    under mandatory markers that keep a mirror impossible to confuse
    with evidence: the replay's root span is named `stjp.replay <arm>`
    and every span in it carries `stjp.replay=true` plus the ORIGINAL
-   local trace ID; a replay makes zero model calls and reports zero
-   token usage of its own (the original run's usage rides along as
-   metadata only); and no grading, cost, or report table may ever read
-   a replay trace — evidence remains the run folder and the original
+   local trace ID; a replay makes zero model calls and never invents
+   usage — its turn spans carry the ORIGINAL recording's token counts
+   (so the portal shows what the real run actually consumed), marked
+   `stjp.usage_source=original_recording`; every aggregation over the
+   telemetry store MUST exclude `stjp.replay=true` spans or it will
+   double-count; and no grading, cost, or report table may ever read a
+   replay trace — evidence remains the run folder and the original
    live-labeled recording. For the portal to actually render the
    conversation, replayed turns must use the standard gen-AI span shape
    (an `invoke_agent`-style span per turn carrying
