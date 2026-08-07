@@ -71,7 +71,16 @@ def test_usage_and_trace_validation() -> None:
         },
         "trace_id": "0123456789abcdef0123456789abcdef",
     }
-    assert _validated_usage(record) == (12, 2, 1)
+    # cached_tokens is optional (pre-2026-08-07 builds) and defaults to 0
+    assert _validated_usage(record) == (12, 2, 1, 0)
+    record_cached = {
+        "usage": {
+            "prompt_tokens": 12, "completion_tokens": 2, "cached_tokens": 8,
+            "total_tokens": 14, "calls": 1,
+            "capture_scope": "all_chat_client_calls",
+        },
+    }
+    assert _validated_usage(record_cached) == (12, 2, 1, 8)
     assert _validated_trace_id(record, object()) == record["trace_id"]
     for bad in (
         {"usage": {"prompt_tokens": 0, "completion_tokens": 2, "calls": 1,
@@ -79,6 +88,13 @@ def test_usage_and_trace_validation() -> None:
         {"usage": {"prompt_tokens": 12, "completion_tokens": 0, "calls": 1,
                    "capture_scope": "all_chat_client_calls"}},
         {"usage": {"prompt_tokens": 12, "completion_tokens": 2, "calls": 0,
+                   "capture_scope": "all_chat_client_calls"}},
+        # cached_tokens must be a non-negative int no larger than prompt_tokens
+        {"usage": {"prompt_tokens": 12, "completion_tokens": 2, "calls": 1,
+                   "cached_tokens": -1,
+                   "capture_scope": "all_chat_client_calls"}},
+        {"usage": {"prompt_tokens": 12, "completion_tokens": 2, "calls": 1,
+                   "cached_tokens": 13,
                    "capture_scope": "all_chat_client_calls"}},
     ):
         try:

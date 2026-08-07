@@ -76,6 +76,34 @@ def test_invalid_cells_are_listed_not_priced(tmp_path):
     assert "a/armY/0000" not in summary["cells"]
 
 
+def test_cached_tokens_priced_at_cached_meter(tmp_path):
+    run_dir = tmp_path / "run_cached"
+    run_dir.mkdir()
+    _write(run_dir / "campaign_manifest.json", {
+        "preflight": {"c": {"model": "Model-C"}},
+        "cells": {"c/armZ/0000": {"status": "valid", "usage": {
+            "prompt_tokens": 1_000_000, "completion_tokens": 100_000,
+            "cached_tokens": 500_000,
+            "total_tokens": 1_100_000, "calls": 10}}},
+    })
+    prices = tmp_path / "prices_cached.json"
+    _write(prices, {"models": {"Model-C": {
+        "input_usd_per_1m": 2.0, "output_usd_per_1m": 10.0,
+        "cached_input_usd_per_1m": 0.2, "source": "test"}}})
+    summary = cost_summary.summarize(run_dir, prices)
+    # 0.5M uncached x $2 + 0.5M cached x $0.2 + 0.1M out x $10 = 1.0+0.1+1.0
+    assert summary["cells"]["c/armZ/0000"]["cost_usd"] == pytest.approx(2.1)
+    assert summary["per_model"]["Model-C"]["cached_tokens"] == 500_000
+
+
+def test_cached_tokens_absent_is_full_rate_upper_bound(tmp_path):
+    # Same cell without cached_tokens: all prompt tokens at the full rate.
+    run_dir, prices = _make_run(tmp_path)
+    summary = cost_summary.summarize(run_dir, prices)
+    assert summary["cells"]["a/armX/0000"]["usage"]["cached_tokens"] == 0
+    assert summary["cells"]["a/armX/0000"]["cost_usd"] == pytest.approx(3.0)
+
+
 def test_missing_price_entry_fails_closed(tmp_path):
     run_dir, prices = _make_run(tmp_path)
     table = json.loads(prices.read_text(encoding="utf-8"))

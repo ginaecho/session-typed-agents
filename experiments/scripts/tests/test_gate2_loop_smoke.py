@@ -443,8 +443,25 @@ async def smoke_usage_interceptor_counts_internal_calls():
     client = main.RetryingChatClient(inner)
     await client.get_response([])
     await client.get_response([])
-    assert client.captured_usage() == (22, 8, 2)
-    print("  PASS: chat-client interceptor counts calls hidden inside MAF.\n")
+    # 4th element: cached_tokens (0 — ScriptedChatClient reports no cache)
+    assert client.captured_usage() == (22, 8, 2, 0)
+
+    class CachedChatClient(ScriptedChatClient):
+        async def get_response(self, *args, **kwargs):
+            from agent_framework import ChatResponse, Message, UsageDetails
+            self.call_count += 1
+            return ChatResponse(
+                messages=Message(role="assistant", contents=["ok"]),
+                usage_details=UsageDetails(input_token_count=11,
+                                           output_token_count=4,
+                                           cache_read_input_token_count=7),
+            )
+
+    cached_client = main.RetryingChatClient(CachedChatClient(["ok"]))
+    await cached_client.get_response([])
+    assert cached_client.captured_usage() == (11, 4, 1, 7)
+    print("  PASS: chat-client interceptor counts calls hidden inside MAF "
+          "and captures cached-input tokens.\n")
 
 
 async def _run() -> None:

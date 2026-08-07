@@ -186,8 +186,12 @@ applies to dollars too** (per-arm pooled rows carry a `comparable` flag
 that is false when arms pool different model mixes — never compare those);
 invalid/pending cells burned real money that local evidence cannot price,
 so they are listed as `unpriced_cells` rather than silently omitted; and
-rates assume uncached input, so dollars are an upper bound while token
-counts remain the primary, hardware-independent metric.
+rates assume uncached input for runs recorded before 2026-08-07, so their
+dollars are an upper bound; from that date on the runtime records
+`usage.cached_tokens` (the prompt-token share served from the provider's
+prompt cache) and the summarizer prices that share at the ~10× cheaper
+cached-input meter automatically. Token counts are unaffected by caching
+either way and remain the primary, hardware-independent metric.
 
 ## 6. How we keep the comparison fair and comparable
 

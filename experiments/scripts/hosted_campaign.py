@@ -302,8 +302,12 @@ class WorkflowBusyError(RuntimeError):
     on the same instance.') -- transport-level condition, never an attempt."""
 
 
-def _validated_usage(record: dict) -> tuple[int, int, int]:
-    """Return trustworthy usage or reject the response as benchmark evidence."""
+def _validated_usage(record: dict) -> tuple[int, int, int, int]:
+    """Return trustworthy usage (prompt, completion, calls, cached) or reject
+    the response as benchmark evidence. ``cached_tokens`` — the prompt-token
+    subset served from the provider's prompt cache — is optional (workflow
+    builds before 2026-08-07 don't report it; treated as 0) but validated
+    when present."""
     if record.get("error"):
         raise RuntimeError(f"workflow returned an error: {record['error']}")
     usage = record.get("usage")
@@ -331,8 +335,17 @@ def _validated_usage(record: dict) -> tuple[int, int, int]:
         raise RuntimeError(
             "workflow usage.total_tokens does not equal prompt + completion "
             f"({reported_total!r} != {computed_total})")
+    cached = usage.get("cached_tokens", 0)
+    if isinstance(cached, bool) or not isinstance(cached, int) or cached < 0:
+        raise RuntimeError(
+            "workflow usage.cached_tokens must be a non-negative integer, "
+            f"got {cached!r}")
+    if cached > values["prompt_tokens"]:
+        raise RuntimeError(
+            "workflow usage.cached_tokens exceeds prompt_tokens "
+            f"({cached} > {values['prompt_tokens']})")
     return (values["prompt_tokens"], values["completion_tokens"],
-            values["calls"])
+            values["calls"], cached)
 
 
 def _validated_trace_id(record: dict, invoker) -> str:
@@ -356,7 +369,7 @@ def _run_preflight(invoker, *, expected_model: str, model_key: str,
             raise RuntimeError(
                 f"preflight model mismatch: {record.get('model')!r} "
                 f"!= {expected_model!r}")
-        prompt_tokens, completion_tokens, calls = _validated_usage(record)
+        prompt_tokens, completion_tokens, calls, cached_tokens = _validated_usage(record)
         trace_id = _validated_trace_id(record, invoker)
         evidence = {
             "status": "valid",
@@ -365,6 +378,7 @@ def _run_preflight(invoker, *, expected_model: str, model_key: str,
             "usage": {
                 "prompt_tokens": prompt_tokens,
                 "completion_tokens": completion_tokens,
+                "cached_tokens": cached_tokens,
                 "total_tokens": prompt_tokens + completion_tokens,
                 "calls": calls,
             },
@@ -748,7 +762,7 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
     four model waves append to the SAME events_<arm>.jsonl — stays cleanly
     attributable per (arm, model) when the run is summarized. Without it the
     interleaved markers cannot be split back out by model."""
-    cum_prompt = cum_completion = cum_calls = 0
+    cum_prompt = cum_completion = cum_calls = cum_cached = 0
     succeeded = False
     attempts_used = 0
     final_record: dict = {}
@@ -791,13 +805,14 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
         n_goals_ok_strict = sum(1 for ok, _ in strict_results.values() if ok)
 
         try:
-            prompt_tk, completion_tk, calls = _validated_usage(record)
+            prompt_tk, completion_tk, calls, cached_tk = _validated_usage(record)
         except RuntimeError as exc:
             emitter.emit_marker(
                 "attempt_end", trial=trial, attempt=attempt, events=0,
                 model=model_key, evidence_valid=False,
                 invalid_reason=str(exc),
                 tokens={"prompt_tokens": 0, "completion_tokens": 0,
+                        "cached_tokens": 0,
                         "total_tokens": 0, "calls": 0})
             raise RuntimeError(
                 f"INVALID BENCHMARK EVIDENCE arm={arm} model={model_key} "
@@ -805,6 +820,7 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
         cum_prompt += prompt_tk
         cum_completion += completion_tk
         cum_calls += calls
+        cum_cached += cached_tk
 
         # Re-emit each delivered event through the shared LiveEventEmitter
         # so events_<arm>.jsonl gets the EXACT case_runner.py schema
@@ -826,6 +842,7 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
             goals_pass_strict=n_goals_ok_strict, success_rule=success_rule,
             all_goals_pass=all_goals_pass,
             tokens={"prompt_tokens": prompt_tk, "completion_tokens": completion_tk,
+                    "cached_tokens": cached_tk,
                     "total_tokens": prompt_tk + completion_tk, "calls": calls},
             extra={"terminated_by": record.get("terminated_by"),
                    "model": record.get("model"),
@@ -846,11 +863,13 @@ def run_one_trial(case: Case, invoker, arm: str, trial: int,
                         trace_ids=trace_ids,
                         tokens={"prompt_tokens": cum_prompt,
                                 "completion_tokens": cum_completion,
+                                "cached_tokens": cum_cached,
                                 "total_tokens": cum_total, "calls": cum_calls})
     return {"trial": trial, "branch": branch_hint, "succeeded": succeeded,
             "attempts": attempts_used, "trace_ids": trace_ids,
             "usage": {"prompt_tokens": cum_prompt,
                       "completion_tokens": cum_completion,
+                      "cached_tokens": cum_cached,
                       "total_tokens": cum_total, "calls": cum_calls},
             "record": final_record}
 

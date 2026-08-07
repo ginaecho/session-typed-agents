@@ -78,7 +78,21 @@ def load_prices(path: Path) -> dict:
 
 
 def cell_cost_usd(usage: dict, price_entry: dict) -> float:
-    return (usage["prompt_tokens"] * price_entry["input_usd_per_1m"]
+    """Price one cell. When the runtime recorded ``cached_tokens`` (the
+    prompt-token subset served from the provider's prompt cache, captured
+    from 2026-08-07 on) and the price table carries a cached-input meter,
+    that subset is priced at the cheaper meter; otherwise every prompt token
+    is billed at the full input rate — an upper bound for older runs."""
+    prompt = usage["prompt_tokens"]
+    cached = int(usage.get("cached_tokens") or 0)
+    cached_rate = price_entry.get("cached_input_usd_per_1m")
+    if cached > 0 and cached_rate is not None:
+        cached = min(cached, prompt)
+        input_cost = ((prompt - cached) * price_entry["input_usd_per_1m"]
+                      + cached * cached_rate)
+    else:
+        input_cost = prompt * price_entry["input_usd_per_1m"]
+    return (input_cost
             + usage["completion_tokens"] * price_entry["output_usd_per_1m"]) / 1e6
 
 
@@ -133,16 +147,20 @@ def summarize(run_dir: Path, prices_path: Path) -> dict:
         cells_out[cell_id] = {
             "model": model_name,
             "arm": arm,
-            "usage": {k: usage[k] for k in
-                      ("prompt_tokens", "completion_tokens",
-                       "total_tokens", "calls")},
+            "usage": {"prompt_tokens": usage["prompt_tokens"],
+                      "completion_tokens": usage["completion_tokens"],
+                      "cached_tokens": int(usage.get("cached_tokens") or 0),
+                      "total_tokens": usage["total_tokens"],
+                      "calls": usage["calls"]},
             "cost_usd": round(cost, 4),
             "price_estimate": bool(entry.get("estimate")),
         }
         bucket = per_model.setdefault(model_name, {
-            "cells": 0, "total_tokens": 0, "calls": 0, "cost_usd": 0.0})
+            "cells": 0, "total_tokens": 0, "cached_tokens": 0, "calls": 0,
+            "cost_usd": 0.0})
         bucket["cells"] += 1
         bucket["total_tokens"] += usage["total_tokens"]
+        bucket["cached_tokens"] += int(usage.get("cached_tokens") or 0)
         bucket["calls"] += usage["calls"]
         bucket["cost_usd"] += cost
         per_arm_models.setdefault(arm, set()).add(model_name)
@@ -193,9 +211,12 @@ def print_report(summary: dict) -> None:
     print(f"Cost summary for {summary['run_dir']}{est}")
     print(f"\nPer model ({summary['currency']}):")
     for model, row in sorted(summary["per_model"].items()):
+        cached_note = (f" cached={row['cached_tokens']:,}"
+                       if row.get("cached_tokens") else "")
         print(f"  {model:20s} cells={row['cells']:3d} "
               f"tokens={row['total_tokens']:>12,} "
-              f"calls={row['calls']:>6,} cost=${row['cost_usd']:>10,.2f}")
+              f"calls={row['calls']:>6,} cost=${row['cost_usd']:>10,.2f}"
+              f"{cached_note}")
     print("\nPer arm (pooled - rows with comparable=False must NOT be "
           "compared to each other):")
     for arm, row in summary["per_arm"].items():

@@ -167,6 +167,7 @@ class RetryingChatClient:
         self._max_tries = max_tries
         self._prompt_tokens = 0
         self._completion_tokens = 0
+        self._cached_tokens = 0
         self._calls = 0
 
     def __getattr__(self, name):
@@ -181,9 +182,10 @@ class RetryingChatClient:
             try:
                 call = self._inner.get_response(*args, **kwargs)
                 response = await call if hasattr(call, "__await__") else call
-                prompt_tokens, completion_tokens = _extract_usage(response)
+                prompt_tokens, completion_tokens, cached_tokens = _extract_usage(response)
                 self._prompt_tokens += prompt_tokens
                 self._completion_tokens += completion_tokens
+                self._cached_tokens += cached_tokens
                 self._calls += 1
                 return response
             except Exception as e:  # noqa: BLE001 - must inspect any client's error type
@@ -198,25 +200,36 @@ class RetryingChatClient:
         assert last_exc is not None
         raise last_exc
 
-    def captured_usage(self) -> tuple[int, int, int]:
-        return self._prompt_tokens, self._completion_tokens, self._calls
+    def captured_usage(self) -> tuple[int, int, int, int]:
+        return (self._prompt_tokens, self._completion_tokens, self._calls,
+                self._cached_tokens)
 
 
-def _extract_usage(response) -> tuple[int, int]:
-    """(prompt_tokens, completion_tokens) — same key-normalisation as
-    experiments/baselines/maf_groupchat.py::_extract_usage."""
+def _extract_usage(response) -> tuple[int, int, int]:
+    """(prompt_tokens, completion_tokens, cached_tokens) — same
+    key-normalisation as experiments/baselines/maf_groupchat.py::_extract_usage,
+    plus cached_tokens: the subset of prompt tokens served from the provider's
+    prompt cache (billed at the cheaper cached-input meter). UsageDetails is an
+    open int map; the key list below mirrors agent_framework's observability
+    mapping to gen_ai.usage.cache_read.input_tokens, so whatever the chat
+    client reports lands here without loss."""
     ud = getattr(response, "usage_details", None) or {}
     prompt = int(ud.get("input_token_count") or ud.get("prompt_tokens") or
                  ud.get("input_tokens") or 0)
     completion = int(ud.get("output_token_count") or ud.get("completion_tokens") or
                       ud.get("output_tokens") or 0)
-    return prompt, completion
+    cached = int(ud.get("cache_read_input_token_count")
+                 or ud.get("openai.cached_input_tokens")
+                 or ud.get("prompt/cached_tokens")
+                 or ud.get("anthropic.cache_read_input_tokens")
+                 or ud.get("cached_tokens") or 0)
+    return prompt, completion, cached
 
 
-async def _agent_turn(agent, view_text: str) -> tuple[str, int, int]:
+async def _agent_turn(agent, view_text: str) -> tuple[str, int, int, int]:
     resp = await agent.run(view_text)
-    ptk, ctk = _extract_usage(resp)
-    return resp.text or "", ptk, ctk
+    ptk, ctk, cch = _extract_usage(resp)
+    return resp.text or "", ptk, ctk, cch
 
 
 # ---------------------------------------------------------------------------
@@ -229,6 +242,7 @@ class RoleLoopResult:
     blocked_attempts: list = field(default_factory=list)
     prompt_tokens: int = 0
     completion_tokens: int = 0
+    cached_tokens: int = 0
     calls: int = 0
     terminated_by: Optional[str] = None   # terminal_label|max_steps|efsm_end|error
     error: Optional[str] = None
@@ -319,10 +333,11 @@ class RoundRobinGateLoop:
 
             # -- call the actor ---------------------------------------------------
             try:
-                reply_text, ptk, ctk = await _agent_turn(self.role_agents[actor], view)
+                reply_text, ptk, ctk, cch = await _agent_turn(self.role_agents[actor], view)
                 result.calls += 1
                 result.prompt_tokens += ptk
                 result.completion_tokens += ctk
+                result.cached_tokens += cch
                 action = session_view.parse_action(reply_text)
             except Exception as e:
                 self.log_fn(event="parse_error", actor=actor, error=str(e))
@@ -789,16 +804,18 @@ class MafGroupChatLoop:
         for wev in wf_result:
             data = getattr(wev, "data", None)
             if isinstance(data, AgentResponse):
-                ptk, ctk = _extract_usage(data)
+                ptk, ctk, cch = _extract_usage(data)
                 result.prompt_tokens += ptk
                 result.completion_tokens += ctk
+                result.cached_tokens += cch
                 result.calls += 1
                 continue
             if isinstance(data, AgentExecutorResponse):
                 ar = data.agent_response
-                ptk, ctk = _extract_usage(ar)
+                ptk, ctk, cch = _extract_usage(ar)
                 result.prompt_tokens += ptk
                 result.completion_tokens += ctk
+                result.cached_tokens += cch
                 result.calls += 1
                 if (gated_orchestrator is not None
                         and gated_orchestrator.consume_rejected(data)):
@@ -881,6 +898,7 @@ def build_trial_record(arm: str, model: str, trial: int, case_meta: dict,
         "blocked_attempts": result.blocked_attempts,
         "usage": {"prompt_tokens": result.prompt_tokens,
                   "completion_tokens": result.completion_tokens,
+                  "cached_tokens": result.cached_tokens,
                   "total_tokens": result.prompt_tokens + result.completion_tokens,
                   "calls": result.calls,
                   "capture_scope": "all_chat_client_calls"},
@@ -960,7 +978,7 @@ class Coordinator(af.Executor):
                 name="STJPPreflight",
             )
             try:
-                text, prompt_tokens, completion_tokens = await _agent_turn(
+                text, prompt_tokens, completion_tokens, cached_tokens = await _agent_turn(
                     probe, "Reply now.")
                 record = {
                     "preflight": True,
@@ -969,6 +987,7 @@ class Coordinator(af.Executor):
                     "usage": {
                         "prompt_tokens": prompt_tokens,
                         "completion_tokens": completion_tokens,
+                        "cached_tokens": cached_tokens,
                         "total_tokens": prompt_tokens + completion_tokens,
                         "calls": 1,
                         "capture_scope": "all_chat_client_calls",
@@ -983,6 +1002,7 @@ class Coordinator(af.Executor):
                     "usage": {
                         "prompt_tokens": 0,
                         "completion_tokens": 0,
+                        "cached_tokens": 0,
                         "total_tokens": 0,
                         "calls": 0,
                         "capture_scope": "all_chat_client_calls",
@@ -1045,10 +1065,11 @@ class Coordinator(af.Executor):
             result = RoleLoopResult(terminated_by="error",
                                     error=f"{type(e).__name__}: {e}")
 
-        prompt_tokens, completion_tokens, calls = client.captured_usage()
+        prompt_tokens, completion_tokens, calls, cached_tokens = client.captured_usage()
         result.prompt_tokens = prompt_tokens
         result.completion_tokens = completion_tokens
         result.calls = calls
+        result.cached_tokens = cached_tokens
         record = build_trial_record(arm, model, trial, self._case_meta, result)
         record["trace_id"] = _current_trace_id()
         await ctx.yield_output(json.dumps(record))
