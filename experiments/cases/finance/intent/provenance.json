@@ -1,0 +1,51 @@
+{
+  "source": "llm_authored",
+  "author_model": "gpt-5-mini",
+  "authored_at": "2026-08-05T12:24:52",
+  "intent_sha256": "625d8782acd680b5de6db317837b7bd3e36abc8d5d820313297898d28ba7c0a1",
+  "intent_chars": 8938,
+  "author_meter": {
+    "llm_calls": 1,
+    "prompt_chars": 2226,
+    "completion_chars": 8937,
+    "approx_tokens": 2790,
+    "metering_note": "chars/4 approximation; Foundry utility path exposes no usage counts"
+  },
+  "distill": {
+    "distilled_at": "2026-08-05T12:25:25",
+    "distilled_sha256": "4357c94cf9f5746cf4a2786ede1a316428f4c1ba358db19e990237ccd0121014",
+    "briefs_sha256": "606c5281aae599d451669199320b6e5666047e400d8fff68da5e15bbdbfb01ba",
+    "max_brief_chars": 700,
+    "brief_chars": {
+      "Fetcher": 438,
+      "RevenueAnalyst": 471,
+      "ExpenseAnalyst": 342,
+      "Writer": 442,
+      "TaxVerifier": 351,
+      "TaxSpecialist": 358
+    },
+    "llm_calls": 2,
+    "prompt_chars": 12932,
+    "completion_chars": 4618,
+    "approx_tokens": 4387,
+    "metering_note": "chars/4 approximation; Foundry utility path exposes no usage counts"
+  },
+  "goals_coverage_approved": true,
+  "approved_by": "auto-llm",
+  "approved_at": "2026-08-05T12:25:47",
+  "auto_coverage": {
+    "verdicts": {
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G5": true,
+      "G6": true
+    },
+    "llm_calls": 1,
+    "prompt_chars": 3001,
+    "completion_chars": 72,
+    "approx_tokens": 768,
+    "metering_note": "chars/4 approximation; Foundry utility path exposes no usage counts"
+  }
+}

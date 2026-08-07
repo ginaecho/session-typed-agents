@@ -28,13 +28,24 @@ class LiveEventEmitter:
     the mirror so case-runs render in the existing live UI.
     """
 
+    _path_locks_guard = threading.Lock()
+    _path_locks: dict[Path, threading.Lock] = {}
+
+    @classmethod
+    def _path_lock(cls, path: Path) -> threading.Lock:
+        resolved = path.resolve()
+        with cls._path_locks_guard:
+            return cls._path_locks.setdefault(resolved, threading.Lock())
+
     def __init__(self, jsonl_path: Path, efsms, refinements,
-                 mirror_path: Optional[Path] = None):
+                 mirror_path: Optional[Path] = None, *,
+                 truncate: bool = True):
         self.path = Path(jsonl_path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        # Truncate at start so the HTML sees a fresh stream
-        self.path.write_text("", encoding="utf-8")
+        if truncate:
+            self.path.write_text("", encoding="utf-8")
         self._fh = open(self.path, "a", encoding="utf-8", buffering=1)  # line-buffered
+        self._lock = self._path_lock(self.path)
         self._mirror_fh = None
         if mirror_path is not None:
             self.mirror_path = Path(mirror_path)
@@ -42,7 +53,6 @@ class LiveEventEmitter:
             self.mirror_path.write_text("", encoding="utf-8")
             self._mirror_fh = open(self.mirror_path, "a",
                                    encoding="utf-8", buffering=1)
-        self._lock = threading.Lock()
         self._efsms = efsms
         self._refinements = refinements
         self._sm = SessionMonitor(efsms, refinements)

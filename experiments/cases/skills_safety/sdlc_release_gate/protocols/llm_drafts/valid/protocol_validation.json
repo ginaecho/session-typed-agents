@@ -1,0 +1,86 @@
+{
+  "case_id": "sdlc_release_gate",
+  "nuscr": {
+    "message": "",
+    "projection_mode": "coinductive-full",
+    "projections": {
+      "ArchReviewer": {
+        "chars": 222,
+        "sha256": "27310c426a8ce1360f22cf9ef017e8a2672e59ba382f3744cb83b17da922e598"
+      },
+      "Author": {
+        "chars": 186,
+        "sha256": "18124a1618c054c10bd1e1e1031bda1b6fe5e990b540ca12a9c8630881124474"
+      },
+      "DevOps": {
+        "chars": 172,
+        "sha256": "cd80782a0c1c05b3144151ccacdb2a5a7089bcf9b0cd00655b5dec688070c73a"
+      },
+      "Merger": {
+        "chars": 643,
+        "sha256": "fe7dd653c76c87bfe2e52c17a2a1ce689ef1f910c82b49965e42e256fbd85b66"
+      },
+      "QualityReviewer": {
+        "chars": 218,
+        "sha256": "1f93cb569aa5d70c30d367fa8db748ca1540d1802e944babbd6f82bd4dd551f5"
+      },
+      "ResponsibleAIReviewer": {
+        "chars": 203,
+        "sha256": "dd403522736af76e490627fc1e507156ff3d20fe11a270bfe4e5afa3eada25e4"
+      },
+      "SecurityReviewer": {
+        "chars": 225,
+        "sha256": "fee47c00f2233274921ee610db2f7bed45e35b238357ba5d88cd240679aa8a25"
+      }
+    },
+    "verdict": "pass"
+  },
+  "protocol_name": "SdlcReleaseGate",
+  "protocol_path": "protocols\\llm_drafts\\valid\\v1.scr",
+  "protocol_sha256": "06356b45474be47069ebfddc889376bd42801541e12fad8401cc337102f6b93f",
+  "roles": [
+    "Author",
+    "QualityReviewer",
+    "SecurityReviewer",
+    "ArchReviewer",
+    "ResponsibleAIReviewer",
+    "Merger",
+    "DevOps"
+  ],
+  "schema_version": 1,
+  "scribble": {
+    "message": "",
+    "projections": {
+      "ArchReviewer": {
+        "states": 4,
+        "transitions": 4
+      },
+      "Author": {
+        "states": 3,
+        "transitions": 3
+      },
+      "DevOps": {
+        "states": 3,
+        "transitions": 3
+      },
+      "Merger": {
+        "states": 14,
+        "transitions": 14
+      },
+      "QualityReviewer": {
+        "states": 4,
+        "transitions": 4
+      },
+      "ResponsibleAIReviewer": {
+        "states": 4,
+        "transitions": 4
+      },
+      "SecurityReviewer": {
+        "states": 4,
+        "transitions": 4
+      }
+    },
+    "verdict": "pass"
+  },
+  "validated_at": "2026-08-06T07:44:06.863091+00:00"
+}

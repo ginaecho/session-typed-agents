@@ -1,8 +1,12 @@
 """Per-role instruction builders.
 
-Three builder functions, one per scenario family on the "Foundry stack":
+Builder functions, one per scenario family on the "Foundry stack":
 
   - build_bare_instructions       : intent + role list, no protocol spec
+  - build_bare_fairintent_instructions : like bare, but the worker carries a
+                                    distilled per-role task brief instead of
+                                    the full user intent (fair intent-carrying
+                                    policy; single-variable delta vs bare)
   - build_spec_instructions       : full projected EFSM + refinement guards
                                     via generate_claude_subagent (verbose)
   - build_spec_minimal_instructions : minimal SEND/RECV per-state table
@@ -11,6 +15,15 @@ Three builder functions, one per scenario family on the "Foundry stack":
 The MAF runners (maf_native, maf_foundry) also use build_bare_instructions
 so that the WITHOUT-side comparison is apples-to-apples on the prompt:
 only the orchestration layer differs across bare / maf_native / maf_foundry.
+
+Intent-carrying policy (docs/benchmarks/BENCHMARK_PLAN_V3.md, V3.1 amendment): builders
+that put the user intent into a WORKER prompt use ``case.intent_effective`` —
+identical to ``case.intent`` at the default short scale, but the full
+intent/intent.md document at --intent-scale doc. Fair-intent arms never put
+the intent document into worker prompts at all; workers get the distilled
+role brief and the intent is carried only by that architecture's planner
+(MAF orchestrator at runtime / STJP drafter at compile time / the
+distillation step for bare teams).
 """
 from __future__ import annotations
 
@@ -70,14 +83,61 @@ def _termination_block(case: "Case") -> str:
 def build_bare_instructions(case: "Case", role: str) -> str:
     """WITHOUT instructions: intent + goals + peer list, no protocol spec.
 
-    Used by 'bare', 'maf_native', 'maf_foundry' — so that the WITHOUT-side
-    comparison isolates the orchestration layer, not the prompt.
+    Used by 'bare_legacy', 'maf_groupchat_legacy', 'maf_native',
+    'maf_foundry' — so that the WITHOUT-side comparison isolates the
+    orchestration layer, not the prompt.
+
+    NOTE this is the BROADCAST-intent builder: every worker carries the
+    whole user intent. Since the 2026-08-05 repair the default `bare` /
+    `maf_groupchat` arms use build_bare_fairintent_instructions instead;
+    this builder survives in the *_legacy arms to price that confound.
     """
     peer_list = ", ".join(r for r in case.roles if r != role)
     return f"""You are the **{role}** in a small multi-agent {case.case_id} pipeline.
 
 User intent:
-{case.intent}
+{case.intent_effective}
+
+Goals:
+{case.goals_text()}
+
+{_roles_block(case)}You communicate with the other agents ({peer_list}).
+
+{_termination_block(case)}
+
+Output rules:
+- Reply with a SINGLE JSON object, no prose, no fences.
+- Schema: {{"send_to": "<RoleName or null>", "label": "<MessageLabel>", "payload": "<value or empty>", "rationale": "<one sentence>"}}
+- If nothing to send, reply: {{"send_to": null, "label": "WAIT", "payload": "", "rationale": "..."}}
+"""
+
+
+def build_bare_fairintent_instructions(case: "Case", role: str) -> str:
+    """FAIR-INTENT bare worker: distilled role brief instead of the full intent.
+
+    Single-variable delta vs build_bare_instructions: the ``User intent:``
+    block is replaced by the role's distilled task brief (produced once, at
+    team set-up, by the interrogation/distillation front-end —
+    scripts/intent_pipeline.py). Goals, role descriptions, termination hint
+    and output rules are byte-identical to the bare arm.
+
+    Rationale (docs/benchmarks/BENCHMARK_PLAN_V3.md V3.1): no practitioner pastes a
+    handbook-sized intent into all N worker prompts — someone (a human or a
+    front-end LLM) distills it into per-role instructions first. Charging
+    the baselines for the broadcast is a confound; this arm charges them
+    only for the distilled brief, plus the disclosed one-time distillation
+    cost. Fail-fast if the case has no role_briefs.yaml yet.
+
+    Since the 2026-08-05 repair this builder IS the `bare` arm (and the MAF
+    participants of `maf_groupchat`); the broadcast original lives on as
+    `bare_legacy` via build_bare_instructions.
+    """
+    brief = case.require_role_brief(role)
+    peer_list = ", ".join(r for r in case.roles if r != role)
+    return f"""You are the **{role}** in a small multi-agent {case.case_id} pipeline.
+
+Your task brief (distilled from the user intent at team set-up):
+{brief}
 
 Goals:
 {case.goals_text()}
@@ -178,7 +238,64 @@ def build_global_spec_instructions(case: "Case", role: str,
     return f"""You are the **{role}** in the {case.case_id} pipeline.
 
 User intent:
-{case.intent}
+{case.intent_effective}
+
+Goals:
+{case.goals_text()}
+
+{_roles_block(case)}You communicate with the other agents ({peer_list}).
+
+Global protocol (Scribble source — authoritative):
+---
+{parsed.raw_content}
+---
+
+Global protocol (natural-language summary of the message sequence):
+{paraphrase}
+
+It is YOUR responsibility to:
+- Figure out which messages YOU ({role}) send and which messages YOU receive
+  by reading the global protocol above.
+- Emit messages in the correct protocol order.
+- Use the EXACT message labels from the protocol (case-sensitive), not paraphrases.
+- Stop participating once you have sent every message the protocol requires of you.
+
+{_termination_block(case)}
+
+Output rules:
+- Reply with a SINGLE JSON object, no prose, no fences.
+- Schema: {{"send_to": "<RoleName or null>", "label": "<MessageLabel>", "payload": "<value or empty>", "rationale": "<one sentence>"}}
+- If nothing to send (waiting for an incoming message), reply:
+  {{"send_to": null, "label": "WAIT", "payload": "", "rationale": "<reason>"}}
+"""
+
+
+def build_global_spec_fairintent_instructions(case: "Case", role: str,
+                                              protocol_path_override:
+                                              Optional[Path] = None) -> str:
+    """FAIR-INTENT global-text worker: brief + full global protocol.
+
+    Single-variable delta vs build_global_spec_instructions: the ``User
+    intent:`` block is replaced by the role's distilled brief; the global
+    protocol text (Scribble source + paraphrase) stays broadcast — that
+    broadcast IS this arm's treatment. Since the 2026-08-05 repair this
+    builder IS `global_decentralized` (ladder setting 3) and
+    `maf_groupchat_llmvalid` (MAF kind); the broadcast-intent originals
+    live on as the `*_legacy` arms. Isolates "global text vs projected
+    local contract" from "who carries the intent document"
+    (BENCHMARK_PLAN_V3 §10.2).
+    """
+    brief = case.require_role_brief(role)
+    peer_list = ", ".join(r for r in case.roles if r != role)
+    path = protocol_path_override if protocol_path_override is not None \
+        else case.protocol_path
+    parsed = parse_protocol_file(path)
+    paraphrase = _paraphrase_global_protocol(case, protocol_path=path)
+
+    return f"""You are the **{role}** in the {case.case_id} pipeline.
+
+Your task brief (distilled from the user intent at team set-up):
+{brief}
 
 Goals:
 {case.goals_text()}
@@ -227,7 +344,7 @@ def build_unchecked_skills_instructions(case: "Case", role: str) -> str:
     return f"""You are the **{role}** in the {case.case_id} pipeline.
 
 User intent:
-{case.intent}
+{case.intent_effective}
 
 {_roles_block(case)}Your skill (your per-agent contract — follow it strictly):
 ---
@@ -288,7 +405,7 @@ def build_spec_instructions(case: "Case", role: str,
     return f"""You are the **{role}** in the {case.case_id} pipeline.
 
 User intent:
-{case.intent}
+{case.intent_effective}
 
 Goals:
 {case.goals_text()}

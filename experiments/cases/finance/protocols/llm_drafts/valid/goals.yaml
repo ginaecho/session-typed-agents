@@ -10,7 +10,7 @@ dropped: []
 # accepted) were scored as goal failures. Also restored the branch tags that
 # the canonical case.yaml goals carry (G1/G2 are high-branch-only).
 #
-# Invariance pass 2026-07-17 (see docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 2):
+# Invariance pass 2026-07-17 (see docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md, Problem 2):
 # re-anchoring may only re-point ANCHORS; pass conditions must match
 # case.yaml so every arm sits the same exam. Two predicates legitimately
 # differ because the drafted protocol carries a different payload TYPE than

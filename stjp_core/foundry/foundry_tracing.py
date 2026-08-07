@@ -23,9 +23,12 @@ def enable_foundry_tracing(service_name: str = "stjp-experiment") -> str | None:
     Returns the connection string used (None if disabled / failed).
     """
     global _INSTRUMENTED
+    if os.environ.get("STJP_DISABLE_TRACING") == "1":
+        return None
     if _INSTRUMENTED:
         return os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
     # Required so genai content (prompts/responses) is captured in spans
+    os.environ.setdefault("AZURE_EXPERIMENTAL_ENABLE_GENAI_TRACING", "true")
     os.environ.setdefault("OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT", "true")
     os.environ.setdefault("AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED", "true")
 

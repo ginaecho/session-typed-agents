@@ -19,6 +19,9 @@ Current scenarios:
 """
 
 from baselines.base import BaselineRunner, AttemptResult
-from baselines.registry import SCENARIOS, make_runner
+from baselines.registry import (SCENARIOS, ABLATION_SCENARIOS,
+                                LEGACY_SCENARIOS, ALL_SCENARIOS, make_runner)
 
-__all__ = ["BaselineRunner", "AttemptResult", "SCENARIOS", "make_runner"]
+__all__ = ["BaselineRunner", "AttemptResult", "SCENARIOS",
+           "ABLATION_SCENARIOS", "LEGACY_SCENARIOS", "ALL_SCENARIOS",
+           "make_runner"]

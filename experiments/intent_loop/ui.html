@@ -1,0 +1,2090 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STJP Intent Loop</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface:#fcfcfb; --plane:#f9f9f7; --raised:#ffffff;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --line:#e1e0d9; --ring:rgba(11,11,11,.10);
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --accent:#2a78d6; --accent-soft:#cde2fb;
+  --mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface:#1a1a19; --plane:#0d0d0d; --raised:#222220;
+    --ink:#fff; --ink-2:#c3c2b7; --muted:#898781;
+    --line:#2c2c2a; --ring:rgba(255,255,255,.10);
+    --accent:#3987e5; --accent-soft:#184f95;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--accent)}
+header{padding:18px 22px;border-bottom:1px solid var(--line);
+  background:var(--surface);display:flex;gap:16px;align-items:baseline;
+  flex-wrap:wrap;position:sticky;top:0;z-index:5}
+h1{font-size:17px;margin:0;letter-spacing:-.01em}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);margin:26px 0 10px;font-weight:600}
+h3{font-size:14px;margin:16px 0 6px}
+.sub{color:var(--ink-2);font-size:13px}
+.grow{flex:1}
+.layout{display:grid;grid-template-columns:288px 1fr;min-height:calc(100vh - 61px)}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+aside{border-right:1px solid var(--line);background:var(--surface);
+  padding:14px;overflow-y:auto;max-height:calc(100vh - 61px)}
+main{padding:20px 24px;overflow-x:hidden;min-width:0}
+
+/* pipeline */
+.pipe{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 18px}
+.stage{flex:1 1 130px;min-width:130px;border:1px solid var(--line);
+  border-radius:9px;padding:9px 11px;background:var(--surface)}
+.stage .n{font-size:10px;color:var(--muted);letter-spacing:.08em;
+  text-transform:uppercase}
+.stage .t{font-weight:600;margin-top:2px}
+.stage .d{color:var(--ink-2);font-size:12px;margin-top:3px;
+  font-variant-numeric:tabular-nums}
+.stage.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:10px;margin-bottom:6px}
+.tile{border:1px solid var(--line);border-radius:9px;padding:11px 13px;
+  background:var(--surface)}
+.tile .v{font-size:23px;font-weight:650;letter-spacing:-.02em}
+.tile .k{font-size:11px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.06em;margin-top:2px}
+
+/* episode list */
+.ep{display:block;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:9px;padding:9px 11px;margin-bottom:7px;cursor:pointer;
+  background:var(--surface);color:inherit;font:inherit}
+.ep:hover{border-color:var(--accent)}
+.ep[aria-current="true"]{border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent) inset}
+.ep .id{font-family:var(--mono);font-size:11px;color:var(--ink-2);
+  word-break:break-all}
+.ep .meta{font-size:11px;color:var(--muted);margin-top:3px;
+  font-variant-numeric:tabular-nums}
+
+/* badges: status colour NEVER alone — always icon + label */
+.b{display:inline-flex;align-items:center;gap:4px;font-size:11px;
+  padding:1px 7px;border-radius:999px;border:1px solid var(--ring);
+  background:var(--plane);color:var(--ink-2);white-space:nowrap;
+  font-weight:500}
+.b .dot{width:7px;height:7px;border-radius:50%;flex:none}
+.b.good .dot{background:var(--good)} .b.warn .dot{background:var(--warning)}
+.b.bad .dot{background:var(--critical)} .b.oos .dot{background:var(--muted)}
+.b.info .dot{background:var(--accent)}
+
+pre{font-family:var(--mono);font-size:12px;line-height:1.5;
+  background:var(--surface);border:1px solid var(--line);border-radius:9px;
+  padding:12px;overflow-x:auto;white-space:pre;margin:0}
+pre.wrap{white-space:pre-wrap;word-break:break-word}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);font-weight:600;
+  padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.rid{font-family:var(--mono);font-size:12px;color:var(--ink-2);
+  white-space:nowrap}
+details{border:1px solid var(--line);border-radius:9px;background:var(--surface);
+  padding:10px 12px;margin-bottom:9px}
+summary{cursor:pointer;font-weight:600;font-size:13px}
+details[open] summary{margin-bottom:9px}
+.qa{border-left:2px solid var(--accent-soft);padding-left:12px;margin:12px 0}
+.qa .role{font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);margin-bottom:3px}
+button{font:inherit;padding:7px 13px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--ring);background:var(--surface);color:var(--ink)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,textarea,select{font:inherit;width:100%;padding:7px 9px;
+  border-radius:8px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink)}
+textarea{min-height:120px;font-family:var(--mono);font-size:12px;resize:vertical}
+label{display:block;font-size:11px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);margin:10px 0 4px;font-weight:600}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.card{border:1px solid var(--line);border-radius:9px;background:var(--surface);
+  padding:14px;margin-bottom:12px}
+.empty{color:var(--muted);padding:26px;text-align:center;
+  border:1px dashed var(--line);border-radius:9px}
+.note{font-size:12px;color:var(--ink-2);margin:6px 0 0}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:6px 0 14px;
+  flex-wrap:wrap}
+.tab{border:none;background:none;padding:8px 12px;border-radius:0;
+  border-bottom:2px solid transparent;color:var(--ink-2)}
+.tab[aria-selected="true"]{border-bottom-color:var(--accent);color:var(--ink);
+  font-weight:600}
+code{font-family:var(--mono);font-size:12px;background:var(--plane);
+  padding:1px 5px;border-radius:4px}
+.warnbar{border:1px solid var(--warning);border-radius:9px;padding:9px 12px;
+  margin-bottom:12px;font-size:13px;background:var(--surface)}
+
+/* interactive force graph */
+.gwrap{position:relative;border:1px solid var(--line);border-radius:9px;
+  background:var(--surface);overflow:hidden;display:grid;
+  grid-template-columns:minmax(0,1fr) 320px;
+  grid-template-areas:"controls controls" "canvas info"}
+.gwrap svg{display:block;width:100%;height:680px;touch-action:none;
+  cursor:grab}
+#gcanvas,#pgcanvas{grid-area:canvas;min-width:0;overflow:hidden}
+.gwrap svg.dragging{cursor:grabbing}
+.gctl{grid-area:controls;display:flex;gap:6px;
+  align-items:center;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--line);border-radius:8px;
+  padding:8px 10px;font-size:12px;margin:8px}
+.gctl button{padding:3px 9px;font-size:12px}
+.gctl label{margin:0;text-transform:none;letter-spacing:0;font-size:12px;
+  color:var(--ink-2);display:flex;align-items:center;gap:5px;font-weight:500}
+.gctl input[type=checkbox]{width:auto}
+.ginfo{grid-area:info;width:auto;max-width:none;max-height:680px;
+  overflow-y:auto;background:var(--surface);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;font-size:12px;margin:0 8px 8px 0}
+.ginfo h4{margin:0 0 6px;font-size:12px}
+.ginfo .sub{font-size:11px}
+.node{cursor:pointer}
+.node.pinned circle{stroke-width:4}
+.node circle{transition:opacity .15s}
+.node text{font-size:11px;font-weight:600;pointer-events:none;
+  fill:var(--ink)}
+.node.msg text{font-weight:500;font-size:10px;fill:var(--ink-2)}
+.link{stroke:var(--muted);fill:none;transition:opacity .15s}
+.dim{opacity:.09}
+.hot{opacity:1}
+.linklabel{font-size:10px;fill:var(--ink-2);pointer-events:none}
+.glegend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px;
+  color:var(--ink-2);background:var(--plane)}
+.glegend span{display:flex;align-items:center;gap:6px}
+.legend-role,.legend-message{display:inline-block;border:2px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 18%,transparent);border-radius:50%}
+.legend-role{width:18px;height:18px}.legend-message{width:9px;height:9px}
+.legend-line{display:inline-block;width:28px;height:0;border-top:2px solid var(--muted)}
+.legend-line.conditional{border-top-style:dashed}
+@media(max-width:900px){
+  .gwrap{grid-template-columns:1fr;
+    grid-template-areas:"controls" "canvas" "info"}
+  .ginfo{margin:0 8px 8px;max-height:320px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>STJP Intent Loop</h1>
+    <div class="sub">Interrogate → distil → draft → validate → grade faithfulness → train</div>
+  </div>
+  <div class="grow"></div>
+  <div id="health" class="row"></div>
+</header>
+
+<noscript>
+  <div style="margin:20px;padding:16px;border:1px solid var(--warning);
+              border-radius:9px;background:var(--surface)">
+    <b>JavaScript is disabled in this viewer, so this page cannot load.</b>
+    <p class="note">Some embedded browsers (including VS Code's Simple
+    Browser in certain configurations) sandbox scripts. Two options:
+    open <code>http://127.0.0.1:8765</code> in a normal browser, or use the
+    no-JavaScript view at <a href="/report">/report</a>, which renders the
+    same episodes server-side.</p>
+  </div>
+</noscript>
+
+<div class="layout">
+  <aside>
+    <div class="row" style="margin-bottom:10px">
+      <button class="primary" id="btn-new">New run</button>
+      <button id="btn-settings">Settings</button>
+      <button id="btn-refresh">Reload episodes</button>
+    </div>
+    <div id="active-runs"></div>
+    <h2 style="margin-top:6px">Episodes</h2>
+    <div id="eplist"></div>
+  </aside>
+  <main id="main"><div class="empty">Loading…</div></main>
+</div>
+
+<script>
+const $ = (s,r=document)=>r.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>(
+  {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const api = async (p,o) => {
+  const r = await fetch(p, o); const j = await r.json().catch(()=>({}));
+  if(!r.ok && !j.error) j.error = "HTTP "+r.status; return j;
+};
+const badge=(cls,label)=>`<span class="b ${cls}"><span class="dot"></span>${esc(label)}</span>`;
+const pct = v => v==null ? "—" : Math.round(v*100)+"%";
+let state={episodes:[],current:null,view:"episode",poll:null,askKey:""};
+
+function validatorLesson(message){
+  const text=String(message||"");
+  if(/external choice subjects/i.test(text)) return "Use one consistent role to inform this participant which branch was chosen before it acts.";
+  if(/role not enabled|subject not enabled/i.test(text)) return "Notify the named role inside every relevant branch before that role sends or makes a decision.";
+  if(/safety violation/i.test(text)) return "A protocol path leaves a role unfinished. Add the missing terminal or branch notification so every active role can complete.";
+  if(/missing required refinement-guard/i.test(text)) return "Emit the required guard sidecar and bind each value constraint to the final message label and field.";
+  if(/mismatched input|cannot disambiguate|syntax/i.test(text)) return "Correct the Scribble syntax or declared payload sort without changing the endorsed interaction meaning.";
+  return "Treat this exact compiler rejection as a constraint on the next repair; do not repeat the rejected structure.";
+}
+
+/* ---------- health ---------- */
+async function loadHealth(){
+  const h = await api("/api/health");
+  const v = h.validator||{}, l = h.llm||{};
+  $("#health").innerHTML =
+    badge(v.available?"good":"warn", v.available?"Scribble validator":"no Scribble toolchain")
+    + badge(l.configured?"good":"warn", l.configured
+        ? `LLM: ${l.deployment||"?"}` : "LLM not configured — open Settings")
+    + badge("info", (h.episodes||0)+" episodes");
+}
+
+/* ---------- episode list ---------- */
+async function loadEpisodes(select){
+  const d = await api("/api/episodes");
+  state.episodes = d.episodes||[];
+  $("#eplist").innerHTML = state.episodes.length ? state.episodes.map(e=>`
+    <button class="ep" data-s="${esc(e.session)}"
+      aria-current="${e.session===state.current}">
+      <div class="row" style="gap:5px">
+        ${e.complete===false ? badge("warn","unfinished")
+          : badge(e.valid?"good":"bad", e.valid?"valid":"invalid")}
+        ${e.complete===false ? "" : (e.graded
+          ? badge(e.faithful?"good":"warn", e.faithful?"faithful":"unfaithful")
+          : badge("oos","ungraded"))}
+      </div>
+      <div class="id" style="margin-top:5px">${esc(e.session)}</div>
+      <div class="meta">${e.requirements} reqs · ${e.qa_rounds} Q&amp;A ·
+        ${e.attempts} attempt${e.attempts===1?"":"s"} · ${esc(e.validator)}</div>
+    </button>`).join("") : `<div class="empty">No episodes yet.<br>Run one →</div>`;
+  document.querySelectorAll(".ep").forEach(b=>b.onclick=()=>{
+    const episode=state.episodes.find(item=>item.session===b.dataset.s);
+    if(episode && episode.complete!==false) showEpisode(b.dataset.s);
+  });
+  const completeSessions=state.episodes.filter(item=>item.complete!==false);
+  const requested=[select,state.current].find(session=>
+    session && completeSessions.some(item=>item.session===session));
+  const pick=requested||(completeSessions[0]&&completeSessions[0].session);
+  if(pick && state.view==="episode") showEpisode(pick);
+}
+
+async function loadActiveRuns(){
+  const response=await api("/api/runs");
+  const active=(response.jobs||[]).filter(job=>
+    job.state==="queued"||job.state==="running");
+  const host=$("#active-runs");
+  host.innerHTML=active.length?`<div class="card">
+    <b>Active job${active.length===1?"":"s"}</b>
+    ${active.map(job=>`<div style="margin-top:8px">
+      ${badge(job.awaiting?"warn":"info",job.awaiting?"waiting for you":
+        job.stage||job.state)}
+      <div><b>${job.kind==="formalize"?"Formalising and validating":
+        job.kind==="refine"?"Reviewing and redrafting":"Interrogating intent"}</b></div>
+      <div class="sub">${job.kind==="run"
+        ?`maximum ${job.params.max_rounds} turn(s)`
+        :`${job.params.max_repair_rounds||"?"} repairs per validation wave`} ·
+        ${esc(job.params.session||"")}</div>
+      <div class="row" style="margin-top:5px">
+        <button data-openjob="${job.id}" data-kind="${job.kind}"
+          data-session="${esc(job.params.session||"")}">Open</button>
+        <button data-canceljob="${job.id}">Cancel</button>
+      </div></div>`).join("")}</div>`:"";
+  host.querySelectorAll("[data-openjob]").forEach(button=>button.onclick=async()=>{
+    state.askKey="";
+    if(button.dataset.kind==="run"){
+      showRunForm();pollJob(button.dataset.openjob,button.dataset.session);
+    }else{
+      await showEpisode(button.dataset.session);
+      const protocolTab=document.querySelector('.tab[data-t="Protocol"]');
+      if(protocolTab) protocolTab.click();
+      if(button.dataset.kind==="formalize")
+        pollFormalize(button.dataset.openjob,button.dataset.session);
+      else pollRefine(button.dataset.openjob);
+    }
+  });
+  host.querySelectorAll("[data-canceljob]").forEach(button=>button.onclick=async()=>{
+    button.disabled=true;button.textContent="cancelling…";
+    await api(`/api/runs/${encodeURIComponent(button.dataset.canceljob)}/cancel`,
+      {method:"POST"});
+    await loadActiveRuns();await loadEpisodes();
+  });
+}
+
+/* ---------- pipeline strip ---------- */
+function pipeline(ep){
+  const f = ep.faithfulness||{}, d = ep.distilled||{};
+  const ranked = ((f.scope||{}).ranking||{}).overall_coverage_pct;
+  const reqs = d.requirements||[];
+  const asked = reqs.filter(r=>r.source==="answer").length;
+  const s = [
+    ["01","Interrogate",`${(ep.transcript||[]).length} round(s)`],
+    ["02","Distil",`${reqs.length} requirements · ${asked} from asking`],
+    ["03","Draft",`${(ep.draft_attempts||[]).length} attempt(s)`],
+    ["04","Validate",ep.valid?"accepted":"never validated"],
+    ["05","Grade",Object.keys(f).length?
+      `STJP coverage ${ranked==null?pct(f.recall):ranked+"%"}`:"not graded"],
+  ];
+  return `<div class="pipe">${s.map(([n,t,dd])=>`
+    <div class="stage on"><div class="n">${n}</div><div class="t">${t}</div>
+      <div class="d">${esc(dd)}</div></div>`).join("")}</div>`;
+}
+
+/* ---------- episode view ---------- */
+const COVER = {yes:["good","covered"],partial:["warn","partial"],
+  no:["bad","missing"],out_of_scope:["oos","not protocol-scored"]};
+
+async function showEpisode(session){
+  state.current=session; state.view="episode";
+  document.querySelectorAll(".ep").forEach(b=>
+    b.setAttribute("aria-current", b.dataset.s===session));
+  const ep = await api("/api/episodes/"+encodeURIComponent(session));
+  if(ep.error){ $("#main").innerHTML=`<div class="empty">${esc(ep.error)}</div>`; return; }
+  const d = ep.distilled||{}, f = ep.faithfulness||{}, bt = f.backtranslation||{};
+  const reqs = d.requirements||[];
+  const asked = reqs.filter(r=>r.source==="answer").length;
+  const graded = Object.keys(f).length>0;
+  const mock = (ep.meter||{}).validator==="mock";
+
+  $("#main").innerHTML = `
+    <div class="row" style="margin-bottom:4px">
+      <button id="backnew">← New run</button>
+      <h1 style="font-size:15px">${esc(ep.session)}</h1>
+      ${badge(ep.valid?"good":"bad", ep.valid?"validator accepted":"never validated")}
+      ${graded?badge(f.faithful?"good":"warn", f.faithful?"faithful":"not faithful")
+              :badge("oos","not graded")}
+      <span class="sub">${esc(ep.ts||"")}</span>
+    </div>
+    ${mock?`<div class="warnbar">${badge("warn","validator: mock")}
+      This episode used the crude structural check, not Scribble — a
+      development run, never evidence.</div>`:""}
+    ${pipeline(ep)}
+
+    <div class="tiles">
+      <div class="tile"><div class="v">${reqs.length}</div><div class="k">Requirements</div></div>
+      <div class="tile"><div class="v">${asked}</div><div class="k">Only by asking</div></div>
+      <div class="tile"><div class="v">${(ep.draft_attempts||[]).length}</div><div class="k">Draft attempts</div></div>
+      <div class="tile"><div class="v">${((f.scope||{}).ranking||{}).overall_coverage_pct??"—"}%</div><div class="k">Ranked STJP coverage</div></div>
+      <div class="tile"><div class="v">${bt.score??"—"}</div><div class="k">Back-translation</div></div>
+      <div class="tile"><div class="v">${(f.ungrounded||[]).length}</div><div class="k">Ungrounded steps</div></div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      ${["Protocol","Requirements","Interrogation","Faithfulness","Review loop","Intent","Raw"]
+        .map((t,i)=>`<button class="tab" role="tab" data-t="${t}"
+          aria-selected="${i===0}">${t}</button>`).join("")}
+    </div>
+    <div id="tabbody"></div>`;
+
+  const tabs = {
+    "Review loop": ()=>`<div id="refinebody"><div class="empty">Loading…</div></div>`,
+
+    Requirements: ()=>`
+      <h2>Distilled requirements</h2>
+      <p class="note">Provenance is tracked per item: <b>document</b> = stated in
+      the brief, <b>answer</b> = recovered only by interrogating,
+      <b>assumption</b> = chosen because the stakeholder could not say.
+      <code>policy</code> requirements are reported but never graded — no
+      session type can express who may inhabit a role.</p>
+      <table><thead><tr><th>ID</th><th>Kind</th><th>Source</th>
+        <th>Requirement</th></tr></thead><tbody>
+        ${reqs.map(r=>`<tr><td class="rid">${esc(r.rid)}</td>
+          <td>${badge(r.kind==="policy"?"oos":"info", r.kind)}</td>
+          <td>${badge(r.source==="answer"?"good":r.source==="assumption"?"warn":"oos", r.source)}</td>
+          <td>${esc(r.text)}</td></tr>`).join("")}
+      </tbody></table>
+      ${(d.open_questions||[]).length?`<h3>Open questions (left unresolved, not invented)</h3>
+        <ul>${d.open_questions.map(q=>`<li>${esc(q)}</li>`).join("")}</ul>`:""}
+      <h3>Completion signal</h3><p>${esc(d.completion_signal||"—")}</p>`,
+
+    Interrogation: ()=>(ep.transcript||[]).length ? (ep.transcript||[]).map(t=>`
+      <div class="card"><h3 style="margin-top:0">Round ${t.round}</h3>
+        <div class="qa"><div class="role">Interrogator asks</div>
+          <pre class="wrap">${esc(t.question)}</pre></div>
+        <div class="qa"><div class="role">Stakeholder answers</div>
+          <pre class="wrap">${esc(t.answer)}</pre></div>
+      </div>`).join("") : `<div class="empty">No questions were asked.</div>`,
+
+    Protocol: ()=>`
+      ${ep.final_protocol?`<h2>Validated protocol
+        <span class="sub">— accepted by
+        ${esc((ep.meter||{}).validator||"the configured validator")}</span></h2>
+        <div class="warnbar">${badge("good","validated source")}
+          Every graph, arrow, branch and per-role contract below is drawn
+          from this final accepted Scribble, not from an earlier draft or
+          the intended-interaction checklist.</div>
+        <div id="protocolgraphbody"><div class="empty">Drawing the validated
+          protocol…</div></div>
+        <h2>Final accepted Scribble</h2>
+        <pre>${esc(ep.final_protocol)}</pre>`
+       : `<div class="card">
+        <b>No Scribble yet — and that is deliberate.</b>
+        <p class="note">This episode stopped after the UNDERSTANDING so you
+        could check it first. Review Requirements, then formalise it; the
+        validated graph and message sequence will appear here in Protocol.</p>
+        <div class="row">
+          <button class="primary" id="formalize">Formalise and validate
+            until accepted</button>
+          <label style="margin:0;text-transform:none;letter-spacing:0">
+            <input type="checkbox" id="fmock" style="width:auto"> use only
+            the basic text check, without formal Scribble validation
+            (development only)</label>
+          <span class="sub" id="fstatus"></span>
+        </div>
+        <div class="card"><b>How validation proceeds</b>
+          <p class="note">GPT-5.4 drafts Scribble, the real Scribble compiler
+          validates it, and every rejection is returned to GPT-5.4 with the
+          exact reason. GPT-5.4 repairs and validates again. If one protocol
+          shape does not converge after 12 repairs, it starts a structurally
+          fresh draft using all prior rejection lessons.</p>
+          <p class="note">One click runs up to four validation waves: at most
+          52 attempts. The ceiling prevents an unbounded paid loop; you can
+          cancel while it runs or press Formalise again to continue with the
+          accumulated learner rules. Every rejected attempt and reason is
+          saved. Only a final <b>Scribble ACCEPTED</b> result creates or
+          replaces the validated protocol, graph, sequence chart, and role
+          projections.</p></div>
+        <div class="warnbar"><b>What this development check means:</b>
+          it only checks that the draft contains <code>global protocol</code>
+          and has balanced braces. It does not prove role projection,
+          interaction order, branch knowledge, payload types, deadlock
+          freedom, or session-type correctness. Its result is not research
+          evidence.</div>
+        <div id="flog"></div></div>`}
+      <h2>Attempts</h2>
+      ${(ep.draft_attempts||[]).map(a=>`
+        <details ${a.valid?"":"open"}>
+          <summary>Attempt ${a.k} ${a.valid?"— accepted":"— rejected"}
+            ${badge(a.valid?"good":"bad", a.valid?"valid":"invalid")}</summary>
+          ${a.validator_msg?`<p class="note"><b>Validator:</b>
+            <code>${esc(a.validator_msg)}</code></p>`:""}
+          <pre>${esc(a.text||"(text not on disk)")}</pre>
+        </details>`).join("")}`,
+
+    Faithfulness: ()=>!graded ? `<div class="empty">Not graded — a protocol
+      must validate before it can be checked for faithfulness.</div>` : `
+      <div class="card"><b>Verdict rule.</b>
+        <p class="note">${esc(f.rule||"")}</p>
+        <p class="note">Every ranked gate must hold, and <b>partial counts as a
+        miss</b> — deliberately strict, because the per-item evidence below
+        is there for you to overrule it.</p></div>
+      ${rankingPanel(f)}
+      ${dimsPanel(f)}
+      <h2>Per-requirement coverage</h2>
+      <table><thead><tr><th>ID</th><th>Verdict</th><th>Evidence</th></tr></thead>
+      <tbody>${(f.coverage||[]).map(c=>{
+        const [cls,label]=COVER[c.covered]||["oos",c.covered];
+        return `<tr><td class="rid">${esc(c.rid)}</td>
+          <td>${badge(cls,label)}</td><td>${esc(c.evidence)}</td></tr>`;
+      }).join("")}</tbody></table>
+      ${(f.ungrounded||[]).length?`<h2>Ungrounded structure
+        <span class="sub">— in the protocol, required by nothing</span></h2>
+        <ul>${f.ungrounded.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>`:""}
+      <h2>Back-translation <span class="sub">— reconstructed from the protocol
+        alone, then compared</span></h2>
+      <div class="card"><div class="row">
+        ${badge(bt.score>=70?"good":"warn","score "+(bt.score??"—"))}</div>
+        ${(bt.missing||[]).length?`<h3>Lost in translation</h3>
+          <ul>${bt.missing.map(m=>`<li>${esc(m)}</li>`).join("")}</ul>`:""}
+        ${(bt.added||[]).length?`<h3>Added by the protocol</h3>
+          <ul>${bt.added.map(m=>`<li>${esc(m)}</li>`).join("")}</ul>`:""}
+        <h3>Reconstruction</h3><pre class="wrap">${esc(bt.reconstructed||"")}</pre>
+      </div>`,
+
+    Intent: ()=>`<h2>Intent document
+      <span class="sub">${ep.intent_chars} chars</span></h2>
+      <pre class="wrap">${esc(ep.document||"")}</pre>`,
+
+    Raw: ()=>`${meterPanel(ep.meter||{})}
+      <h2>Meter (raw)</h2><pre class="wrap">${esc(JSON.stringify(ep.meter,null,2))}</pre>
+      <h2>Record</h2><pre class="wrap">${esc(JSON.stringify(ep,null,2).slice(0,20000))}</pre>`,
+  };
+  const back = $("#backnew");
+  if(back) back.onclick = showRunForm;
+  const paint = name => {
+    $("#tabbody").innerHTML = tabs[name]();
+    if(name==="Review loop") loadRefine(session, ep);
+    if(name==="Protocol") {
+      wireFormalize(session);
+      if(ep.final_protocol) loadProtocolVisuals(session);
+    }
+  };
+  document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(x=>
+      x.setAttribute("aria-selected", x===b));
+    paint(b.dataset.t);
+  });
+  paint("Protocol");
+  const jobs=await api("/api/runs");
+  const formalizing=(jobs.jobs||[]).find(job=>job.kind==="formalize"&&
+    (job.state==="queued"||job.state==="running")&&
+    job.params.session===session);
+  if(formalizing) pollFormalize(formalizing.id,session);
+}
+
+async function loadProtocolVisuals(session){
+  const host=$("#protocolgraphbody"); if(!host) return;
+  const g=await api(`/api/episodes/${encodeURIComponent(session)}/graph`);
+  if(g.error){ host.innerHTML=`<div class="warnbar">${esc(g.error)}</div>`;
+    return; }
+  if(!g.from_valid_draft){
+    host.innerHTML=`<div class="warnbar">No final validated protocol is
+      available, so no protocol graph was drawn.</div>`; return;
+  }
+  const s=g.stats||{};
+  host.innerHTML=`
+    <h2>Validated protocol graph</h2>
+    <div class="tiles">
+      <div class="tile"><div class="v">${s.roles}</div><div class="k">Roles</div></div>
+      <div class="tile"><div class="v">${s.messages}</div><div class="k">Messages</div></div>
+      <div class="tile"><div class="v">${s.choices}</div><div class="k">Decision points</div></div>
+      <div class="tile"><div class="v">${s.loops}</div><div class="k">Loops</div></div>
+    </div>
+    <div class="card"><b>Does this validated protocol miss your intent?</b>
+      <p class="note">Open the review conversation. GPT-5.4 will check your
+      observation against the original intent and ask you to confirm it before
+      changing the roles, interactions, constraints, or Scribble.</p>
+      <button class="primary" id="reviewprotocol">Review or correct this
+        protocol</button></div>
+    <h3>Who talks to whom</h3>
+    <p class="note">Obsidian-style graph: drag nodes to rearrange, drag the
+      background to pan, use the wheel to zoom, and hover a role to isolate
+      its neighbourhood. Switch on message nodes to inspect every handover.</p>
+    <div class="gwrap">
+      <div class="gctl">
+        <label><input type="checkbox" id="pgmode"> show every message as a
+          node</label>
+        <button id="pgzin">+</button><button id="pgzout">−</button>
+        <button id="pgspread">spread</button><button id="pgfit">fit</button>
+        <button id="pgrelease">release all</button>
+        <button id="pgtaller">taller</button><button id="pgshorter">shorter</button>
+        <button id="pgreset">reset</button><button id="pgfreeze">pause</button>
+      </div>
+      <div class="ginfo"></div><div id="pgcanvas"></div>
+    </div>
+    <h3>Message sequence</h3>
+    <p class="note">Top to bottom is protocol order. Grey bands mark choices
+      and loops, so conditional and repeated interactions remain visible.</p>
+    <div class="card" style="overflow-x:auto">${g.svg.sequence}</div>
+    ${Object.keys(g.svg.fsm||{}).length?`
+      <h3>Each role's projected contract</h3>
+      <p class="note"><code>!</code> means send; <code>?</code> means receive.
+        Each view contains only that role's boundary in the validated protocol.</p>
+      <div class="row" id="pgroles">
+        ${g.roles.map((role,index)=>`<button class="tab" data-prole="${esc(role)}"
+          aria-selected="${index===0}">${esc(role)}</button>`).join("")}
+      </div>
+      <div class="card" style="overflow-x:auto" id="pgfsm">
+        ${g.svg.fsm[g.roles[0]]||""}</div>`:""}`;
+
+  let simulation=null;
+  const mount=()=>{
+    if(simulation) simulation.destroy();
+    const canvas=$("#pgcanvas"); canvas.innerHTML="";
+    simulation=forceGraph(canvas,g.roles,g.edges,
+      $("#pgmode").checked?"messages":"roles",g);
+  };
+  mount();
+  $("#reviewprotocol").onclick=()=>{
+    const tab=document.querySelector('.tab[data-t="Review loop"]');
+    if(tab) tab.click();
+  };
+  $("#pgmode").onchange=mount;
+  $("#pgzin").onclick=()=>simulation.zoom(1.25);
+  $("#pgzout").onclick=()=>simulation.zoom(1/1.25);
+  $("#pgreset").onclick=()=>simulation.reset();
+  $("#pgspread").onclick=()=>simulation.spread();
+  $("#pgfit").onclick=()=>simulation.fit();
+  $("#pgrelease").onclick=()=>simulation.releaseAll();
+  $("#pgtaller").onclick=()=>simulation.resizeHeight(160);
+  $("#pgshorter").onclick=()=>simulation.resizeHeight(-160);
+  $("#pgfreeze").onclick=event=>{
+    event.target.textContent=simulation.freeze()?"pause":"resume";
+  };
+  host.querySelectorAll("[data-prole]").forEach(button=>button.onclick=()=>{
+    host.querySelectorAll("[data-prole]").forEach(item=>
+      item.setAttribute("aria-selected",item===button));
+    $("#pgfsm").innerHTML=g.svg.fsm[button.dataset.prole]||"";
+  });
+}
+
+/* ---------- interactive force-directed graph ----------------------------
+   Obsidian-style: nodes repel, links pull, drag to rearrange, wheel to
+   zoom, hover to focus a neighbourhood. Written from scratch (~150 lines)
+   because the page must stay offline — no d3, no CDN.
+
+   Two modes answer different questions:
+     roles     4 nodes, one per role; an arc per direction, thickness by
+               traffic. "Who talks to whom."
+     messages  every message is its own node between its sender and
+               receiver. This is the Obsidian-like view: with 53 messages
+               the clusters show which roles carry the conversation.
+------------------------------------------------------------------------ */
+const SERIES = ["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4","#008300",
+  "#4a3aa7","#e34948"];
+
+function forceGraph(host, roles, edges, mode, evidence={}){
+  const NS = "http://www.w3.org/2000/svg";
+  const mk = (n,a={})=>{const e=document.createElementNS(NS,n);
+    for(const k in a) e.setAttribute(k,a[k]); return e;};
+
+  // ---- build nodes + links for the chosen mode ----
+  const nodes = [], links = [];
+  const byId = {};
+  const addNode = n => { byId[n.id]=n; nodes.push(n); return n; };
+  const roleDetail = Object.fromEntries((evidence.role_details||[]).map(
+    item=>[item.name,item.intent_role]));
+  roles.forEach((r,i)=>addNode({id:r, label:r, kind:"role", color:SERIES[i%8],
+    r:22, x:0, y:0, vx:0, vy:0, intentRole:roleDetail[r]||null}));
+
+  if(mode==="messages"){
+    let k=0;
+    edges.forEach(e=>e.labels.forEach(lab=>{
+      const id = `${e.from}|${lab}|${e.to}|${k++}`;
+      const message=(e.messages||[]).find(item=>item.label===lab)||null;
+      const n = addNode({id, label:lab, kind:"msg", r:6,
+        color: byId[e.from] ? byId[e.from].color : SERIES[0],
+        conditional:e.conditional, x:0, y:0, vx:0, vy:0,
+        message, edge:e});
+      if(byId[e.from]) links.push({s:byId[e.from], t:n, w:1,
+        cond:e.conditional,edge:e});
+      if(byId[e.to])   links.push({s:n, t:byId[e.to], w:1, cond:e.conditional,
+        arrow:true,edge:e});
+    }));
+  } else {
+    edges.forEach(e=>{
+      if(!byId[e.from]||!byId[e.to]) return;
+      links.push({s:byId[e.from], t:byId[e.to], w:e.count,
+        cond:e.conditional, arrow:true, labels:e.labels,edge:e});
+    });
+  }
+  // node radius by traffic so a hub reads as a hub
+  const deg = {};
+  links.forEach(l=>{deg[l.s.id]=(deg[l.s.id]||0)+l.w; deg[l.t.id]=(deg[l.t.id]||0)+l.w;});
+  nodes.forEach(n=>{ if(n.kind==="role")
+    n.r = 18 + Math.min(20, Math.sqrt(deg[n.id]||1)*3.2); });
+
+  // seed on a circle (deterministic — no Math.random, so a reload gives
+  // the same layout and the picture is stable between sessions)
+  const W = host.clientWidth||900;
+  let H = 680;
+  nodes.forEach((n,i)=>{
+    const a = 2*Math.PI*i/nodes.length;
+    const rad = n.kind==="role" ? 150 : 240;
+    n.x = W/2 + rad*Math.cos(a); n.y = H/2 + rad*Math.sin(a);
+  });
+
+  // ---- svg scaffold ----
+  const svg = mk("svg",{viewBox:`0 0 ${W} ${H}`});
+  const defs = mk("defs");
+  defs.innerHTML = `<marker id="fgar" viewBox="0 0 10 10" refX="10" refY="5"
+    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#898781"/></marker>`;
+  svg.appendChild(defs);
+  const view = mk("g");            // pan/zoom container
+  svg.appendChild(view);
+  const linkG = mk("g"), labelG = mk("g"), nodeG = mk("g");
+  view.appendChild(linkG); view.appendChild(labelG); view.appendChild(nodeG);
+  const legend=document.createElement("div");
+  legend.className="glegend";
+  legend.innerHTML=`<span><i class="legend-role"></i>large circle: role</span>
+    <span><i class="legend-message"></i>small circle: message</span>
+    <span><i class="legend-line"></i>arrow: sender → receiver</span>
+    <span><i class="legend-line conditional"></i>dashed: conditional branch</span>`;
+  host.appendChild(legend);
+  host.appendChild(svg);
+
+  const linkEls = links.map(l=>{
+    const p = mk("path",{class:"link","stroke-width":Math.min(5,1+l.w*0.35)});
+    if(l.cond) p.setAttribute("stroke-dasharray","5,4");
+    if(l.arrow) p.setAttribute("marker-end","url(#fgar)");
+    linkG.appendChild(p); return p;
+  });
+  const nodeEls = nodes.map(n=>{
+    const g = mk("g",{class:"node"+(n.kind==="msg"?" msg":"")});
+    const c = mk("circle",{r:n.r, fill:n.color, "fill-opacity":
+      n.kind==="role"?0.18:0.5, stroke:n.color,
+      "stroke-width":n.kind==="role"?2:1});
+    const t = mk("text",{"text-anchor":"middle",
+      y: n.kind==="role" ? n.r+15 : -9});
+    t.textContent = n.label;
+    g.appendChild(c); g.appendChild(t); nodeG.appendChild(g);
+    g.addEventListener("pointerenter",()=>focus(n));
+    g.addEventListener("pointerleave",()=>focus(null));
+    g.addEventListener("pointerdown",ev=>startDrag(ev,n));
+    g.addEventListener("click",ev=>{ev.stopPropagation();selectNode(n);});
+    g.addEventListener("dblclick",ev=>{ev.stopPropagation();n.pinned=false;
+      g.classList.remove("pinned");reheat(0.5);selectNode(n);});
+    return g;
+  });
+  linkEls.forEach((path,index)=>{
+    path.style.cursor="pointer";
+    path.style.pointerEvents="stroke";
+    path.addEventListener("pointerdown",event=>event.stopPropagation());
+    path.addEventListener("click",ev=>{ev.stopPropagation();
+      selectEdge(links[index]);});
+  });
+
+  // ---- physics ----
+  let alpha = 1, running = true, dragging = null, selected=null;
+  const REP = mode==="messages" ? 5200 : 26000;   // node-node repulsion
+  const LEN = mode==="messages" ? 62 : 210;       // spring rest length
+  function step(){
+    for(let i=0;i<nodes.length;i++){
+      const a=nodes[i];
+      for(let j=i+1;j<nodes.length;j++){
+        const b=nodes[j];
+        let dx=b.x-a.x, dy=b.y-a.y, d2=dx*dx+dy*dy||1;
+        const d=Math.sqrt(d2), f=REP/d2;
+        const ux=dx/d, uy=dy/d;
+        a.vx-=ux*f; a.vy-=uy*f; b.vx+=ux*f; b.vy+=uy*f;
+      }
+    }
+    links.forEach(l=>{
+      let dx=l.t.x-l.s.x, dy=l.t.y-l.s.y;
+      const d=Math.sqrt(dx*dx+dy*dy)||1, f=(d-LEN)*0.02;
+      const ux=dx/d, uy=dy/d;
+      l.s.vx+=ux*f; l.s.vy+=uy*f; l.t.vx-=ux*f; l.t.vy-=uy*f;
+    });
+    nodes.forEach(n=>{                      // gentle pull to centre
+      n.vx += (W/2-n.x)*0.0003; n.vy += (H/2-n.y)*0.0003;
+      if(n===dragging || n.pinned){ n.vx=n.vy=0; return; }
+      n.x += (n.vx*=0.86)*alpha; n.y += (n.vy*=0.86)*alpha;
+    });
+    alpha = Math.max(0.02, alpha*0.994);
+  }
+  function draw(){
+    links.forEach((l,i)=>{
+      const dx=l.t.x-l.s.x, dy=l.t.y-l.s.y;
+      const d=Math.hypot(dx,dy)||1;
+      // stop the arc at the node edge so the arrowhead is visible
+      const sx=l.s.x+dx/d*l.s.r, sy=l.s.y+dy/d*l.s.r;
+      const tx=l.t.x-dx/d*(l.t.r+4), ty=l.t.y-dy/d*(l.t.r+4);
+      const mx=(sx+tx)/2 - dy/d*d*0.12, my=(sy+ty)/2 + dx/d*d*0.12;
+      linkEls[i].setAttribute("d",`M${sx},${sy} Q${mx},${my} ${tx},${ty}`);
+    });
+    nodeEls.forEach((g,i)=>g.setAttribute("transform",
+      `translate(${nodes[i].x.toFixed(1)},${nodes[i].y.toFixed(1)})`));
+  }
+  function loop(){
+    if(running){ step(); draw(); }
+    requestAnimationFrame(loop);
+  }
+  loop();
+  const reheat = a => { alpha = Math.max(alpha, a); };
+
+  // ---- focus / hover ----
+  const info = host.parentElement.querySelector(".ginfo");
+  function focus(n){
+    if(!n){
+      nodeEls.forEach(g=>g.classList.remove("dim","hot"));
+      linkEls.forEach(p=>p.classList.remove("dim","hot"));
+      if(info && !selected) info.innerHTML = infoDefault;
+      return;
+    }
+    const near = new Set([n]);
+    links.forEach(l=>{ if(l.s===n) near.add(l.t); if(l.t===n) near.add(l.s); });
+    nodeEls.forEach((g,i)=>g.classList.toggle("dim",!near.has(nodes[i])));
+    linkEls.forEach((p,i)=>p.classList.toggle("dim",
+      links[i].s!==n && links[i].t!==n));
+    if(info){
+      const outg = links.filter(l=>l.s===n), inc = links.filter(l=>l.t===n);
+      const nameOf = x => x.kind==="msg" ? x.label : x.id;
+      info.innerHTML = `<h4>${esc(n.label)}</h4>
+        <div class="sub">${n.kind==="role"?"role":"message"}</div>
+        ${mode==="roles" ? `
+          ${outg.map(l=>`<div style="margin-top:7px">
+            <b>→ ${esc(l.t.id)}</b> <span class="sub">${l.w} msg</span>
+            <div class="sub">${(l.labels||[]).map(esc).join(", ")}</div>
+          </div>`).join("")}
+          ${inc.map(l=>`<div style="margin-top:7px">
+            <b>← ${esc(l.s.id)}</b> <span class="sub">${l.w} msg</span>
+            <div class="sub">${(l.labels||[]).map(esc).join(", ")}</div>
+          </div>`).join("")}`
+        : `<div style="margin-top:6px" class="sub">
+            ${inc.map(l=>"from "+esc(nameOf(l.s))).join("<br>")}
+            ${outg.map(l=>"to "+esc(nameOf(l.t))).join("<br>")}</div>`}`;
+    }
+  }
+  const intentHtml = interactions => (interactions||[]).length
+    ? interactions.map(item=>`<div class="intentmap">
+        <b>${esc(item.iid||"Intent interaction")}</b>: ${esc(item.what||"")}
+        <div class="sub">${esc(item.sender||item.from||"")} →
+          ${esc(item.receiver||item.to||"")}</div>
+        ${item.when?`<div><b>When:</b> ${esc(item.when)}</div>`:""}
+        ${item.cardinality?`<div><b>How often:</b> ${esc(item.cardinality)}</div>`:""}
+        ${(item.waits_for||[]).length?`<div><b>Waits for:</b>
+          ${item.waits_for.map(esc).join(", ")}</div>`:""}
+        ${(item.carries||[]).length?`<div><b>Carries:</b><ul>
+          ${item.carries.map(field=>`<li>${esc(field.name)}: ${esc(field.type||"string")}
+            ${field.constraint?` — ${esc(field.constraint)}`:""}</li>`).join("")}
+          </ul></div>`:""}</div>`).join("")
+    : `<div class="warnbar">No endorsed user-intent interaction has this
+        sender → receiver direction. It may be invented or the intent model
+        may be incomplete.</div>`;
+  function showNode(n){
+    if(!info) return;
+    if(n.kind==="role"){
+      const role=n.intentRole;
+      const related=(evidence.messages||[]).filter(message=>
+        message.sender===n.id||message.receiver===n.id);
+      info.innerHTML=`<h4>${esc(n.label)}</h4>${badge("info","role")}
+        ${role?`<p>${esc(role.description||"")}</p>
+          ${(role.must_not||[]).length?`<b>Must not</b><ul>${role.must_not.map(
+            item=>`<li>${esc(item)}</li>`).join("")}</ul>`:""}`:
+          `<div class="warnbar">This protocol role is not declared in the
+            endorsed user intent.</div>`}
+        <b>Accepted Scribble participation</b>
+        <p class="sub">${related.length} message(s), lines
+          ${[...new Set(related.map(item=>item.line))].join(", ")||"—"}</p>
+        <p class="sub">Drag to move and pin. Double-click to release.</p>`;
+      return;
+    }
+    const message=n.message||{};
+    info.innerHTML=`<h4>${esc(n.label)}</h4>${badge("info","message")}
+      <p><b>${esc(message.sender||n.edge?.from||"")} →
+        ${esc(message.receiver||n.edge?.to||"")}</b></p>
+      <b>Accepted Scribble</b>
+      <pre class="wrap">line ${message.line||"?"}: ${esc(message.scribble||n.label)}</pre>
+      ${(message.path||[]).length?`<div><b>Branch/loop:</b>
+        ${message.path.map(esc).join(" / ")}</div>`:""}
+      <h4>User intent correspondence</h4>
+      ${intentHtml(message.intent_interactions||n.edge?.intent_interactions)}
+      <p class="sub">Drag to move and pin. Double-click to release.</p>`;
+  }
+  function showEdge(link){
+    if(!info) return;
+    const edge=link.edge||edges.find(item=>item.from===link.s.id&&
+      item.to===link.t.id)||{};
+    info.innerHTML=`<h4>${esc(edge.from||link.s.label)} →
+      ${esc(edge.to||link.t.label)}</h4>${badge("info","interaction edge")}
+      <h4>User intent correspondence</h4>${intentHtml(edge.intent_interactions)}
+      <h4>Accepted Scribble messages</h4>
+      ${(edge.messages||[]).map(message=>`<pre class="wrap">line
+        ${message.line}: ${esc(message.scribble)}</pre>`).join("")||
+        `<p class="sub">No direct Scribble message evidence.</p>`}`;
+  }
+  function selectNode(n){ selected={kind:"node",value:n}; showNode(n);
+    nodeEls.forEach((element,index)=>element.classList.toggle("hot",nodes[index]===n)); }
+  function selectEdge(link){ selected={kind:"edge",value:link}; showEdge(link); }
+  const infoDefault = `<h4>Graph inspector</h4><div class="sub">Click a role,
+    message node, or edge to pin its details here. Dragging a node pins its
+    position. Double-click releases one node; Release all restores physics.</div>`;
+  if(info) info.innerHTML = infoDefault;
+
+  // ---- pan / zoom / drag ----
+  let k=1, tx=0, ty=0, panning=null;
+  const apply = ()=>view.setAttribute("transform",
+    `translate(${tx},${ty}) scale(${k})`);
+  const toWorld = ev => {
+    const r = svg.getBoundingClientRect();
+    const sx = (ev.clientX-r.left)*(W/r.width), sy = (ev.clientY-r.top)*(H/r.height);
+    return {x:(sx-tx)/k, y:(sy-ty)/k, sx, sy};
+  };
+  function startDrag(ev,n){
+    ev.stopPropagation(); ev.preventDefault();
+    selectNode(n);
+    dragging = n; svg.classList.add("dragging");
+    svg.setPointerCapture(ev.pointerId); reheat(0.5);
+  }
+  svg.addEventListener("pointerdown",ev=>{
+    if(dragging) return;
+    const p = toWorld(ev); panning = {x:p.sx-tx, y:p.sy-ty};
+    svg.classList.add("dragging"); svg.setPointerCapture(ev.pointerId);
+  });
+  svg.addEventListener("pointermove",ev=>{
+    if(dragging){ const p=toWorld(ev); dragging.x=p.x; dragging.y=p.y;
+      reheat(0.3); }
+    else if(panning){ const p=toWorld(ev);
+      tx=p.sx-panning.x; ty=p.sy-panning.y; apply(); }
+  });
+  const endPointer = ()=>{ if(dragging){dragging.pinned=true;
+      const index=nodes.indexOf(dragging);if(index>=0)nodeEls[index].classList.add("pinned");}
+    dragging=null; panning=null;
+    svg.classList.remove("dragging"); };
+  svg.addEventListener("pointerup",endPointer);
+  svg.addEventListener("pointercancel",endPointer);
+  svg.addEventListener("wheel",ev=>{
+    ev.preventDefault();
+    const p = toWorld(ev);
+    const nk = Math.min(4, Math.max(0.25, k*(ev.deltaY<0?1.12:1/1.12)));
+    tx = p.sx - p.x*nk; ty = p.sy - p.y*nk; k = nk; apply();
+  },{passive:false});
+
+  return {
+    zoom(f){ k = Math.min(4, Math.max(0.25, k*f)); apply(); },
+    reset(){ k=1; tx=0; ty=0; apply(); alpha=1;
+      nodes.forEach((n,i)=>{ const a=2*Math.PI*i/nodes.length;
+        const rad = n.kind==="role"?150:240;
+        n.x=W/2+rad*Math.cos(a); n.y=H/2+rad*Math.sin(a); n.vx=n.vy=0;
+        n.pinned=false;nodeEls[i].classList.remove("pinned"); }); },
+    spread(){ const cx=nodes.reduce((sum,n)=>sum+n.x,0)/nodes.length;
+      const cy=nodes.reduce((sum,n)=>sum+n.y,0)/nodes.length;
+      nodes.forEach((n,index)=>{n.x=cx+(n.x-cx)*1.45;
+        n.y=cy+(n.y-cy)*1.45;n.pinned=true;
+        nodeEls[index].classList.add("pinned");});draw();this.fit(); },
+    fit(){ const xs=nodes.map(n=>n.x),ys=nodes.map(n=>n.y);
+      const minX=Math.min(...xs)-60,maxX=Math.max(...xs)+60;
+      const minY=Math.min(...ys)-60,maxY=Math.max(...ys)+60;
+      k=Math.min(2,Math.max(0.2,Math.min(W/(maxX-minX),H/(maxY-minY))));
+      tx=W/2-k*(minX+maxX)/2;ty=H/2-k*(minY+maxY)/2;apply(); },
+    releaseAll(){nodes.forEach((n,index)=>{n.pinned=false;
+      nodeEls[index].classList.remove("pinned");});alpha=0.7;},
+    resizeHeight(delta){H=Math.max(400,Math.min(1400,H+delta));
+      svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.style.height=`${H}px`;
+      draw();},
+    freeze(){ running = !running; return running; },
+    destroy(){ running=false; },
+  };
+}
+
+/* ---------- phase 2: formalise an endorsed understanding ---------- */
+async function wireFormalize(session){
+  const btn = $("#formalize"); if(!btn) return;      // already has a protocol
+  btn.onclick = async ()=>{
+    btn.disabled = true;
+    $("#fstatus").textContent = "drafting and checking…";
+    const r = await api(
+      `/api/episodes/${encodeURIComponent(session)}/formalize`,
+      {method:"POST", headers:{"Content-Type":"application/json"},
+       body: JSON.stringify({validator: $("#fmock").checked?"mock":"real"})});
+    if(r.error){
+      btn.disabled=false;
+      $("#fstatus").innerHTML = badge("bad", esc(r.error));
+      if(r.detail) $("#flog").innerHTML =
+        `<p class="note">${esc(r.detail)}</p>`;
+      return;
+    }
+    $("#fstatus").innerHTML = badge("info","job "+r.job_id);
+    pollFormalize(r.job_id, session);
+  };
+}
+
+async function pollFormalize(id, session){
+  clearInterval(state.poll);
+  state.poll = setInterval(async ()=>{
+    const j = await api("/api/runs/"+id);
+    if(j.error || !j.state){
+      clearInterval(state.poll);
+      $("#flog").innerHTML = `<div class="warnbar">${badge("bad","job lost")}
+        ${esc(j.error||"no state")} — reload and check the episode.</div>`;
+      return;
+    }
+    const labels={draft_started:"GPT-5.4 is drafting Scribble",
+      draft_completed:"Draft ready",validation_wave_started:"Validation wave",
+      validation_started:"Scribble validation started",
+      validation_infrastructure_retry:"Validator timed out; retrying the same draft",
+      validation_result:"Scribble validation result",
+      repair_started:"GPT-5.4 is repairing the rejection",
+      repair_completed:"Repair draft ready",
+      fresh_redraft_started:"GPT-5.4 is starting a different protocol shape",
+      fresh_redraft_completed:"Fresh protocol shape ready",
+      validation_exhausted:"Automatic validation budget exhausted",
+      drafted:"Drafting and validation finished",evaluated:"Faithfulness checked",
+      done:"Formalization completed",error:"Formalization failed"};
+    const row=e=>{const {stage,at,...detail}=e;
+      const status=stage==="validation_result"
+        ?badge(e.valid?"good":"bad",e.valid?"Scribble ACCEPTED":"Scribble REJECTED")
+        :badge(stage==="validation_exhausted"||stage==="error"?"bad":"info",
+          labels[stage]||stage);
+      return `<tr><td class="rid">${esc(at||"")}</td><td>${status}
+        ${e.wave?`<span class="sub">wave ${e.wave}</span>`:""}
+        ${e.attempt?`<span class="sub">attempt ${e.attempt}</span>`:""}
+        ${e.validator_message?`<div class="sub"><b>Why rejected:</b>
+          ${esc(e.validator_message)}</div>
+          ${!e.valid?`<div><b>What GPT-5.4 learns:</b>
+          ${esc(validatorLesson(e.validator_message))}</div>`:""}`:""}
+        <details><summary>details</summary><code>${esc(JSON.stringify(detail))}</code></details>
+        </td></tr>`;};
+    $("#flog").innerHTML = `<div class="card" style="margin-top:10px">
+      <div class="row">${badge(j.state==="succeeded"?"good":
+        j.state==="failed"?"bad":"info", j.state)}
+        <b>${esc(labels[j.stage]||j.stage||"queued")}</b></div>
+      <p class="note">GPT-5.4 drafts and learns from every rejected attempt.
+        Scribble is invoked on every row marked validation. If local repairs
+        do not converge, GPT-5.4 starts a fresh protocol shape automatically.</p>
+      <table style="margin-top:8px"><tbody>${(j.events||[]).map(row).join("")}</tbody></table>
+      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
+    if(j.state==="succeeded"||j.state==="failed"){
+      clearInterval(state.poll);
+      if(j.result) $("#flog").innerHTML += `<div class="card">
+        <b>${j.result.valid?"Scribble ACCEPTED it":"Scribble rejected every attempt"}</b>
+        <p class="note">${j.result.attempts} attempt(s) ·
+          ${j.result.valid?`faithful: ${j.result.faithful} · recall
+          ${pct(j.result.recall)}`:`no validated protocol or graph replaced;
+          all rejection evidence was saved as learner feedback`}</p>
+        <button class="primary" id="reopen">Reload this episode</button>
+        </div>`;
+      const b = $("#reopen"); if(b) b.onclick = ()=>showEpisode(session);
+      await loadEpisodesKeepView();
+    }
+  }, 2500);
+}
+
+/* Structure and values are satisfied by DIFFERENT parts of the artifact —
+   the protocol's shape, and the refinement-guard sidecar. One blended
+   percentage hid the actual finding, so both are shown. */
+/* The headline is MUST, not the blended average: a protocol can be 30%
+   "covered" and still hold every obligation, or 90% and be missing an
+   authorization guard. */
+/* What the run actually cost. Real API usage where the provider reported
+   it; cost only from prices YOU configured, never a guessed list price. */
+function meterPanel(m){
+  const measured = (m.measured_calls||0) > 0;
+  const cost = m.cost||{};
+  return `<h2>What this run cost</h2>
+    <div class="tiles">
+      <div class="tile"><div class="v">${m.calls||0}</div>
+        <div class="k">Model calls</div></div>
+      <div class="tile"><div class="v">${measured
+        ? (m.tokens_total||0).toLocaleString() : "—"}</div>
+        <div class="k">Tokens (real)</div></div>
+      <div class="tile"><div class="v">${measured
+        ? (m.tokens_in||0).toLocaleString() : "—"}</div>
+        <div class="k">In</div></div>
+      <div class="tile"><div class="v">${measured
+        ? (m.tokens_out||0).toLocaleString() : "—"}</div>
+        <div class="k">Out</div></div>
+      <div class="tile"><div class="v">${cost.usd!=null
+        ? "$"+cost.usd : "—"}</div><div class="k">Cost (USD)</div></div>
+    </div>
+    ${Object.keys(m.by_model||{}).length?`<table style="margin-top:10px">
+      <thead><tr><th>Deployment</th><th>Calls</th><th>In</th><th>Out</th>
+      </tr></thead><tbody>${Object.entries(m.by_model).map(([k,v])=>
+        `<tr><td class="rid">${esc(k)}</td><td>${v.calls}</td>
+         <td>${v.in.toLocaleString()}</td>
+         <td>${v.out.toLocaleString()}</td></tr>`).join("")}
+      </tbody></table>`:""}
+    ${Object.keys(m.by_stage||{}).length?`<p class="note">Calls per stage:
+      ${Object.entries(m.by_stage).map(([k,v])=>`${esc(k)} ${v}`).join(" · ")}
+      </p>`:""}
+    ${cost.usd==null?`<div class="warnbar" style="margin-top:8px">
+      ${badge("warn","cost unknown")} ${esc(cost.note||"")}</div>`
+      :`<p class="note">${esc(cost.note||"")}</p>`}
+    <p class="note">${esc(m.note||"")}</p>`;
+}
+
+function mustPanel(f){
+  const sc = f.scope||{};
+  if(sc.must_total==null) return "";
+  const ok = (sc.must_unmet||[]).length===0;
+  return `<div class="tiles" style="margin-bottom:12px">
+    <div class="tile"><div class="v">${sc.must_covered}/${sc.must_total}</div>
+      <div class="k">MUST covered</div></div>
+    <div class="tile"><div class="v">${sc.must_recall_pct}%</div>
+      <div class="k">Obligation recall</div></div>
+    <div class="tile"><div class="v">${sc.all_recall_pct}%</div>
+      <div class="k">All requirements</div></div>
+    </div>
+    ${ok?`<div class="card">${badge("good","every obligation covered")}
+      <p class="note">What remains unmet is desirable detail, not an
+      obligation.</p></div>`
+      :`<div class="warnbar">${badge("bad","obligations unmet")}
+      <b>${(sc.must_unmet||[]).join(", ")}</b> are marked MUST and are not
+      covered. These decide whether the protocol is safe; the rest is
+      polish.</div>`}
+    ${Object.keys(sc.by_priority||{}).length?`<table><thead><tr>
+      <th>Priority</th><th>Covered</th><th>Detail</th></tr></thead><tbody>
+      ${["must","should","nice"].filter(k=>sc.by_priority[k]).map(k=>{
+        const v = sc.by_priority[k];
+        return `<tr><td><b>${k.toUpperCase()}</b></td>
+          <td>${badge(k==="must"?(v.recall_pct===100?"good":"bad")
+                      :v.recall_pct===100?"good":"warn", v.recall_pct+"%")}</td>
+          <td class="sub">${v.yes} covered · ${v.partial} partial ·
+            ${v.no} missing (of ${v.total})</td></tr>`;}).join("")}
+      </tbody></table>`:""}`;
+}
+
+function rankingPanel(f){
+  const ranking=(f.scope||{}).ranking||{};
+  if(ranking.overall_coverage_pct==null) return "";
+  const row=(key,label,description)=>{
+    const d=ranking[key]||{};
+    const score=d.score_pct??0;
+    const detail=key==="roles"
+      ? `${d.matched}/${d.expected} expected roles matched`
+      :key==="directions"
+        ? `${d.covered}/${d.expected} intended handovers have the correct direction`
+        :`${d.yes} covered · ${d.partial} partial · ${d.no} missing`;
+    const gaps=key==="roles"?[...(d.missing||[]),...(d.unexpected||[])]:
+      key==="directions"?[...(d.missing_interactions||[]),
+                            ...(d.unexpected_pairs||[])]:d.unmet||[];
+    const priority=d.priority==="critical"?"Critical":"High priority";
+    return `<tr><td><b>${priority} · ${label}</b>
+        <div class="sub">${description}</div></td>
+      <td>${badge(score===100?"good":score>=70?"warn":"bad",score+"%")}</td>
+      <td class="sub">weight ${d.weight_pct}% · ${detail}
+        ${gaps.length?`<div>Gaps: ${gaps.map(esc).join(", ")}</div>`:""}</td></tr>`;
+  };
+  return `<h2>Ranked STJP coverage</h2>
+    <div class="tiles"><div class="tile"><div class="v">
+      ${ranking.overall_coverage_pct}%</div><div class="k">Weighted coverage</div>
+    </div></div>
+    <table><tbody>
+      ${row("roles","Roles","the exact participant set")}
+      ${row("directions","Interaction direction",
+            "each intended sender must hand off to the intended receiver")}
+      ${row("interaction_constraints","Interaction constraints",
+            "payload guards, order, authorization, branches, and termination")}
+    </tbody></table>`;
+}
+
+function dimsPanel(f){
+  const sc = f.scope||{}, dims = sc.dimensions||{};
+  if(!Object.keys(dims).length) return "";
+  const row = (k,label,why) => {
+    const d = dims[k]; if(!d) return "";
+    const ok = d.recall_pct===100;
+    return `<tr><td><b>${label}</b><div class="sub">${why}</div></td>
+      <td>${badge(ok?"good":d.recall_pct>=50?"warn":"bad",
+        d.recall_pct+"%")}</td>
+      <td class="sub">${d.yes} covered · ${d.partial} partial ·
+        ${d.no} missing (of ${d.total})</td></tr>`;
+  };
+  return `<h2>Where the gap is</h2>
+    <table><tbody>
+      ${row("structure","Interactions &amp; ordering",
+            "what the protocol's shape can express — roles, order, "
+            +"authorization, branches, termination")}
+      ${row("values","Value constraints",
+            "only a refinement guard can express these; no arrangement of "
+            +"messages will do")}
+    </tbody></table>
+    ${sc.guards_emitted===false?`<div class="warnbar">
+      ${badge("warn","no guard sidecar")} The drafter emitted no
+      <code>.refn</code> guards, so every value requirement is unenforced.
+      That is one repair (add guards), not a dozen — and it is not a problem
+      with the interactions.</div>`:""}
+    <p class="note">${esc(sc.note||"")}</p>`;
+}
+
+/* ---------- graph tab ---------- */
+async function loadGraph(session){
+  const g = await api(`/api/episodes/${encodeURIComponent(session)}/graph`);
+  const el = $("#graphbody"); if(!el) return;
+  if(g.error){ el.innerHTML=`<div class="empty">${esc(g.error)}</div>`; return; }
+  const s = g.stats||{};
+  el.innerHTML = `
+    <div class="tiles" style="margin-bottom:12px">
+      <div class="tile"><div class="v">${s.roles}</div><div class="k">Roles</div></div>
+      <div class="tile"><div class="v">${s.messages}</div><div class="k">Messages</div></div>
+      <div class="tile"><div class="v">${s.choices}</div><div class="k">Decision points</div></div>
+      <div class="tile"><div class="v">${s.loops}</div><div class="k">Loops</div></div>
+      <div class="tile"><div class="v">${s.branched_messages}</div><div class="k">Conditional msgs</div></div>
+    </div>
+    <div class="warnbar">${badge("info","source")}
+      Drawn from <b>${esc(g.source||"the drafted protocol")}</b>.</div>
+    <div class="card"><b>Something is missing or pointing the wrong way?</b>
+      <p class="note">Reopen the understanding instead of accepting this
+      graph as final. The learner will check your observation and ask you to
+      confirm it before changing anything.</p>
+      <button class="primary" id="reviewgraph">Review or correct this
+        graph</button></div>
+    ${(g.unparsed||[]).length?`<div class="warnbar">${badge("warn","unread lines")}
+      ${g.unparsed.length} line(s) could not be read and are NOT in the
+      diagrams: ${g.unparsed.map(u=>`<code>${esc(u.text.slice(0,80))}</code>`).join(" ")}
+      </div>`:""}
+
+    <h2>Who talks to whom</h2>
+    <p class="note">Drag nodes to pull the graph apart · wheel to zoom ·
+    drag the background to pan · hover a node to isolate its neighbourhood.
+    Dashed links only happen on some branch.</p>
+    <div class="gwrap">
+      <div class="gctl">
+        <label><input type="checkbox" id="gmode"> show every message as a
+          node</label>
+        <button id="gzin">+</button><button id="gzout">−</button>
+        <button id="gspread">spread</button><button id="gfit">fit</button>
+        <button id="grelease">release all</button>
+        <button id="gtaller">taller</button><button id="gshorter">shorter</button>
+        <button id="greset">reset</button><button id="gfreeze">pause</button>
+      </div>
+      <div class="ginfo"></div>
+      <div id="gcanvas"></div>
+    </div>
+
+    <h2>In what order — and what is conditional</h2>
+    <p class="note">Top to bottom is time. Grey bands are decision points and
+    loops: everything inside one happens only on that branch. That is where
+    "when NOT to do it" lives.</p>
+    <div class="card" style="overflow-x:auto">${g.svg.sequence}</div>
+
+    ${Object.keys(g.svg.fsm||{}).length?`<h2>One role's own contract</h2>
+    <p class="note">Each role's obligations in order — <code>!</code> it must
+    send, <code>?</code> it waits to receive. This is the projection idea:
+    the role sees only its own boundary.</p>
+    <div class="row" style="margin-bottom:8px">
+      ${g.roles.map((r,i)=>`<button class="tab" data-role="${esc(r)}"
+        aria-selected="${i===0}">${esc(r)}</button>`).join("")}
+    </div>
+    <div class="card" style="overflow-x:auto" id="fsmbox">
+      ${g.svg.fsm[g.roles[0]]||""}</div>`:""}
+
+    <h2>Why is it presented this way?</h2>
+    <div class="row"><button class="primary" id="explain">Explain each
+      message</button><span class="sub" id="explainstatus"></span></div>
+    <div id="explainbody"></div>`;
+
+  // interactive graph — rebuilt on mode change so the simulation is clean
+  let sim = null;
+  const mountGraph = ()=>{
+    if(sim) sim.destroy();
+    const host = $("#gcanvas"); host.innerHTML = "";
+    sim = forceGraph(host, g.roles, g.edges,
+      $("#gmode").checked ? "messages" : "roles",g);
+  };
+  mountGraph();
+  $("#gmode").onchange = mountGraph;
+  $("#gzin").onclick = ()=>sim.zoom(1.25);
+  $("#gzout").onclick = ()=>sim.zoom(1/1.25);
+  $("#greset").onclick = ()=>sim.reset();
+  $("#gspread").onclick = ()=>sim.spread();
+  $("#gfit").onclick = ()=>sim.fit();
+  $("#grelease").onclick = ()=>sim.releaseAll();
+  $("#gtaller").onclick = ()=>sim.resizeHeight(160);
+  $("#gshorter").onclick = ()=>sim.resizeHeight(-160);
+  $("#gfreeze").onclick = e=>{ e.target.textContent =
+    sim.freeze() ? "pause" : "resume"; };
+  $("#reviewgraph").onclick = ()=>{
+    const tab=document.querySelector('.tab[data-t="Review loop"]');
+    if(tab) tab.click();
+  };
+
+  el.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{
+    el.querySelectorAll("[data-role]").forEach(x=>
+      x.setAttribute("aria-selected", x===b));
+    $("#fsmbox").innerHTML = g.svg.fsm[b.dataset.role]||"";
+  });
+  $("#explain").onclick = async ()=>{
+    $("#explain").disabled=true;
+    $("#explainstatus").textContent = "asking the model…";
+    const r = await api(`/api/episodes/${encodeURIComponent(session)}/explain`,
+      {method:"POST"});
+    $("#explain").disabled=false; $("#explainstatus").textContent="";
+    if(r.error){ $("#explainbody").innerHTML =
+      `<div class="warnbar">${esc(r.error)}</div>`; return; }
+    $("#explainbody").innerHTML = `
+      <div class="card"><b>Overall ordering</b>
+        <p class="note">${esc(r.ordering_rationale||"")}</p></div>
+      <table><thead><tr><th>Message</th><th>Realizes</th><th>Why here</th>
+        </tr></thead><tbody>
+        ${(r.messages||[]).map(m=>`<tr>
+          <td class="rid">${esc(m.label)}<br><span class="sub">${esc(m.from||"")}
+            → ${esc(m.to||"")}</span></td>
+          <td>${(m.realizes||[]).map(x=>badge("info",x)).join(" ")||
+            badge("warn","nothing")}</td>
+          <td>${esc(m.why||"")}</td></tr>`).join("")}
+      </tbody></table>
+      ${(r.unexplained||[]).length?`<p class="note">Not explained:
+        ${r.unexplained.map(u=>`<code>${esc(u)}</code>`).join(" ")}</p>`:""}`;
+  };
+}
+
+/* ---------- refine tab ---------- */
+async function loadRefine(session, ep){
+  const el = $("#refinebody"); if(!el) return;
+  el.innerHTML = `
+    <button id="backtoprotocol">Return to the validated protocol</button>
+    ${ep.review?`<div class="card"><b>What changed in the previous review</b>
+      <p class="note">${esc(ep.review.critique||"")}</p>
+      ${(ep.review.changes||[]).length?`<ul>${ep.review.changes.map(change=>
+        `<li>${esc(change)}</li>`).join("")}</ul>`:""}
+      ${ep.review.lesson?`<p class="note"><b>Learner rule:</b>
+        ${esc(ep.review.lesson)}</p>`:""}</div>`:""}
+    <div class="card"><b>How the review works</b>
+      <p class="note">Tell the learner what looks missing or wrong in the
+      graph or Scribble. GPT-5.4 checks your observation against the original
+      intent and asks you to confirm what you mean. Confirmed answers revise
+      the roles, interaction directions, goals and constraints, redraw the
+      graph, and draft a new checked Scribble episode. You can repeat this
+      loop until the graph and protocol match your intent.</p></div>
+    <label>What do you see missing or wrong?</label>
+    <textarea id="reviewcritique" style="min-height:110px"
+      placeholder="Example: The Inspector should report only to the Orchestrator, not directly to the requesting user. Ask me before changing it."></textarea>
+    <div class="row" style="margin-bottom:10px">
+      <button id="ask">Analyze my review and ask confirmation questions</button>
+      <button id="expertask">Ask GPT-5.6-sol to review first</button>
+      <button id="gapask">Ask about measured gaps</button>
+      <span class="sub" id="askstatus"></span>
+    </div>
+    <div id="reviewassessment"></div>
+    <div id="qlist"></div>
+    <label style="margin-top:12px;text-transform:none;letter-spacing:0">
+      <input type="checkbox" id="refinemock" style="width:auto"> use only
+      the basic text check, without formal Scribble validation
+      (development only)</label>
+    <div class="warnbar"><b>What this development check means:</b>
+      it only checks that the draft contains <code>global protocol</code> and
+      has balanced braces. It does not prove role projection, interaction
+      order, branch knowledge, payload types, deadlock freedom, or
+      session-type correctness. Its result is not research evidence.</div>
+    <div class="row" style="margin-top:12px">
+      <button class="primary" id="dorefine" disabled>Apply review, redraw,
+        and redraft</button>
+      <span class="sub" id="refinestatus"></span>
+    </div>
+    <div id="refinelog"></div>`;
+
+  const backToProtocol = $("#backtoprotocol");
+  if(backToProtocol) backToProtocol.onclick=()=>{
+    const tab=document.querySelector('.tab[data-t="Protocol"]');
+    if(tab) tab.click();
+  };
+
+  const questions = [];
+  let activeCritique = "";
+  const syncActions=()=>{
+    const hasAnswers=questions.some(item=>(item.answer||"").trim());
+    const hasReview=$("#reviewcritique").value.trim().length>0;
+    $("#dorefine").disabled=!(hasAnswers||hasReview);
+    $("#dorefine").textContent=hasAnswers
+      ? "Apply confirmed answers, redraw, and redraft"
+      : "Apply written review, redraw, and redraft";
+  };
+  const render = ()=>{
+    $("#qlist").innerHTML = questions.length ? questions.map((q,i)=>`
+      <div class="card">
+        <div><b>${esc(q.q)}</b></div>
+        ${q.because?`<p class="note">Asked because: ${esc(q.because)}
+          ${q.kind?badge("info",q.kind):""}</p>`:""}
+        <textarea data-a="${i}" style="min-height:64px"
+          placeholder="Your answer — one or two sentences.">${esc(q.answer||"")}</textarea>
+      </div>`).join("") : `<div class="empty">No questions yet.</div>`;
+    $("#qlist").querySelectorAll("[data-a]").forEach(t=>t.oninput=()=>{
+      questions[+t.dataset.a].answer = t.value;
+      syncActions();
+    });
+    syncActions();
+  };
+  render();
+  $("#reviewcritique").oninput=syncActions;
+
+  const saved = await api(
+    `/api/episodes/${encodeURIComponent(session)}/review-state`);
+  if(!saved.error){
+    const prior=saved.questions||{};
+    if(prior.critique){
+      activeCritique=prior.critique;
+      $("#reviewcritique").value=prior.critique;
+      $("#reviewassessment").innerHTML=`<div class="card">
+        ${badge("info","saved review restored")}
+        <p>${esc(prior.assessment||"")}</p></div>`;
+      (prior.questions||[]).forEach(item=>questions.push({...item,answer:""}));
+    }
+    const submission=saved.latest_submission;
+    if(submission && !submission.completed){
+      activeCritique=submission.review_critique||activeCritique;
+      const byQuestion=Object.fromEntries((submission.answers||[]).map(
+        item=>[item.question,item.answer]));
+      questions.forEach(item=>item.answer=byQuestion[item.q]||item.answer||"");
+      $("#refinelog").innerHTML=`<div class="warnbar">
+        ${badge("warn","previous refinement interrupted")}
+        Your submitted answers were saved before processing. Review them and
+        press <b>Update understanding, redraw, and redraft</b> to resume as a
+        new job.</div>`;
+    }
+    render();
+  }
+
+  const runReview = async expert =>{
+    const critique = $("#reviewcritique").value.trim();
+    if(!expert && !critique){
+      $("#askstatus").innerHTML=badge("bad","describe what you noticed");
+      return;
+    }
+    $("#ask").disabled=true; $("#expertask").disabled=true;
+    $("#askstatus").textContent=expert?
+      "expert reviewing, then learner checking…":"learner checking…";
+    const r = await api(
+      `/api/episodes/${encodeURIComponent(session)}/review-questions`,
+      {method:"POST",headers:{"Content-Type":"application/json"},
+       body:JSON.stringify({critique,expert_review:expert})});
+    $("#ask").disabled=false; $("#expertask").disabled=false;
+    $("#askstatus").textContent="";
+    if(r.error){ $("#qlist").innerHTML=`<div class="warnbar">${esc(r.error)}</div>`;
+      return; }
+    activeCritique=r.critique||critique;
+    $("#reviewcritique").value=activeCritique;
+    $("#reviewassessment").innerHTML=`<div class="card">
+      ${badge("info",r.reviewed_by==="expert"?"expert critique checked":"your critique checked")}
+      <p>${esc(r.assessment||"")}</p></div>`;
+    questions.splice(0,questions.length);
+    (r.questions||[]).forEach(q=>questions.push({...q, answer:""}));
+    render();
+  };
+  $("#ask").onclick=()=>runReview(false);
+  $("#expertask").onclick=()=>runReview(true);
+  $("#gapask").onclick = async ()=>{
+    $("#gapask").disabled=true; $("#askstatus").textContent="thinking…";
+    const r=await api(`/api/episodes/${encodeURIComponent(session)}/questions`,
+      {method:"POST"});
+    $("#gapask").disabled=false; $("#askstatus").textContent="";
+    if(r.error){ $("#qlist").innerHTML=`<div class="warnbar">${esc(r.error)}</div>`;
+      return; }
+    activeCritique="Measured faithfulness gaps need stakeholder decisions.";
+    questions.splice(0,questions.length);
+    (r.questions||[]).forEach(q=>questions.push({...q,answer:""})); render();
+  };
+  const submitRefinement = async ()=>{
+    $("#dorefine").disabled=true;
+    $("#refinestatus").textContent="redrafting…";
+    const critique=$("#reviewcritique").value.trim();
+    const answered=questions.filter(q=>(q.answer||"").trim())
+      .map(q=>({question:q.q,answer:q.answer}));
+    const submittedAnswers=answered.length?answered:
+      [{question:"What correction did the user confirm?",answer:critique}];
+    const r = await api(`/api/episodes/${encodeURIComponent(session)}/refine`,
+      {method:"POST", headers:{"Content-Type":"application/json"},
+       body: JSON.stringify({validator:$("#refinemock").checked?"mock":"real",
+         review_critique:critique||activeCritique,
+         answers:submittedAnswers})});
+    if(r.error){ $("#refinestatus").innerHTML=badge("bad",esc(r.error));
+      syncActions(); return; }
+    $("#refinestatus").innerHTML = badge("info","job "+r.job_id);
+    pollRefine(r.job_id);
+  };
+  $("#dorefine").onclick=submitRefinement;
+}
+
+async function pollRefine(id){
+  clearInterval(state.poll);
+  state.poll = setInterval(async ()=>{
+    const j = await api("/api/runs/"+id);
+    if(j.error || !j.state){          // same lost-job case as pollJob
+      clearInterval(state.poll); $("#dorefine").disabled=false;
+      $("#refinelog").innerHTML = `<div class="card">
+        ${badge("bad","run record lost")}
+        <p class="note">${esc(j.error||"no state")} — the server was
+        probably restarted mid-run. Check the episode list for a new
+        <code>refine_…</code> session.</p></div>`;
+      await loadEpisodesKeepView();
+      return;
+    }
+    const LABELS={
+      start:"Starting refinement",
+      intent_revision_started:"GPT-5.4 is revising the understanding",
+      understanding_revised:"Understanding revised",
+      requirements_added:"Requirements updated",
+      draft_started:"GPT-5.4 is drafting Scribble",
+      draft_completed:"Initial Scribble draft ready",
+      validation_started:"Scribble validation started",
+      validation_result:"Scribble validation result",
+      repair_started:"GPT-5.4 is repairing rejected Scribble",
+      repair_completed:"Repaired Scribble draft ready",
+      drafted:"Draft and validation loop finished",
+      faithfulness_started:"Faithfulness judging started",
+      evaluated:"Faithfulness judging finished",
+      artifacts_writing:"Saving learned artifacts",
+      done:"Refinement completed",error:"Refinement failed"};
+    const started=Date.parse(j.created||"");
+    const elapsed=Number.isFinite(started)?Math.max(0,Math.round(
+      (Date.now()-started)/1000)):null;
+    const eventRow=e=>{
+      const {stage,at,...rest}=e;
+      const validation=stage==="validation_result";
+      const status=validation
+        ? badge(e.valid?"good":"bad",e.valid?"Scribble ACCEPTED":"Scribble REJECTED")
+        : badge(stage==="error"?"bad":stage==="done"?"good":"info",
+                LABELS[stage]||stage);
+      const summary=e.activity||
+        (stage==="validation_started"?`Attempt ${e.attempt} is running through ${e.validator}`:
+        stage==="repair_started"?`Attempt ${e.attempt}: repairing the previous rejection`:
+        stage==="validation_result"?`Attempt ${e.attempt}: ${e.verdict}`:"");
+      return `<tr><td class="rid">${esc(at||"")}</td><td>${status}
+        ${summary?`<div>${esc(summary)}</div>`:""}
+        ${e.validator_message?`<div class="sub"><b>Why rejected:</b>
+          ${esc(e.validator_message)}</div>
+          ${!e.valid?`<div><b>What GPT-5.4 learns:</b>
+          ${esc(validatorLesson(e.validator_message))}</div>`:""}`:""}
+        <details><summary>details</summary><code>${esc(JSON.stringify(rest))}</code></details>
+        </td></tr>`;
+    };
+    $("#refinelog").innerHTML = `<div class="card">
+      <div class="row">${badge(j.state==="succeeded"?"good":
+        j.state==="failed"?"bad":"info", j.state)}
+        <b>${esc(LABELS[j.stage]||j.stage||"queued")}</b>
+        <span class="sub">${elapsed==null?"":`${elapsed}s elapsed`}</span></div>
+      <p class="note">This panel updates while GPT-5.4 drafts or repairs and
+        while Scribble validates each attempt. Do not restart the server while
+        the job is running.</p>
+      <table style="margin-top:8px"><tbody>${(j.events||[]).map(eventRow).join("")}</tbody></table>
+      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>`;
+    if(j.state==="succeeded"||j.state==="failed"){
+      clearInterval(state.poll); $("#dorefine").disabled=false;
+      if(j.result){
+        const R=j.result;
+        $("#refinelog").innerHTML += `<div class="card">
+          <b>${R.valid?"New validated protocol":"No new valid protocol"}</b>
+          <p class="note">${R.attempts} attempt(s) through
+            ${esc(R.validator||"the validator")} · ${R.requirements}
+            requirements · ${R.valid?`coverage ${pct(R.recall_before)} →
+            <b>${pct(R.recall)}</b>`:`every attempt was rejected; the current
+            validated protocol and graph were not replaced`}</p>
+          <button class="primary" id="openrefined">Open
+            ${R.valid?"new protocol":"revised understanding and rejected attempts"}
+            </button></div>`;
+        await loadEpisodesKeepView();
+        $("#openrefined").onclick=()=>showEpisode(R.session);
+        if(j.state==="succeeded"&&R.valid) await showEpisode(R.session);
+      }
+    }
+  }, 1500);
+}
+
+/* ---------- settings: bring your own LLM ---------- */
+async function showSettings(){
+  state.view="settings";
+  const s = await api("/api/settings");
+  $("#main").innerHTML = `
+    <h1 style="font-size:15px">Settings — your LLM</h1>
+    <p class="sub">Anyone with an API can run this. Nothing here leaves your
+      machine: the key is stored beside the app and is never returned by the
+      API — only a last-four fingerprint, so you can tell which key is
+      loaded.</p>
+    <div class="warnbar">${badge("warn","local tool")} This server has no
+      authentication and can spend your key. Keep it on 127.0.0.1. On Azure
+      you can leave the key empty and use <code>az login</code> instead.</div>
+    <div class="card">
+      <label>Provider</label>
+      <select id="s-provider">
+        <option value="azure">Azure OpenAI / AI Foundry</option>
+        <option value="openai">OpenAI-compatible (openai.com, vLLM,
+          LiteLLM, gateway)</option>
+      </select>
+      <label id="s-eplabel">Endpoint</label>
+      <input id="s-endpoint" placeholder="https://your-resource.cognitiveservices.azure.com/">
+      <label>API key <span class="sub" style="text-transform:none">
+        ${s.has_api_key?`— stored ${esc(s.api_key_fingerprint)}; leave blank
+        to keep it`:"— optional on Azure (uses az login)"}</span></label>
+      <input id="s-key" type="password" placeholder="${s.has_api_key?
+        "unchanged":"paste your key"}">
+      <div class="row">
+        <div style="flex:1"><label id="s-modellabel">Deployment / model</label>
+          <input id="s-model" placeholder="gpt-5.4"></div>
+        <div style="width:150px"><label>Max tokens</label>
+          <input id="s-maxtok" type="number" min="1024" step="1024"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" id="s-save">Save</button>
+        <button id="s-test">Test connection</button>
+        <button id="s-clearkey">Clear stored key</button>
+        <span id="s-status" class="sub"></span>
+      </div>
+    </div>
+    <div id="s-result"></div>`;
+
+  $("#s-provider").value = s.provider || "azure";
+  $("#s-endpoint").value = s.endpoint || "";
+  $("#s-model").value = s.model || "gpt-5.4";
+  $("#s-maxtok").value = s.max_tokens || 16384;
+  const syncLabels = ()=>{
+    const az = $("#s-provider").value === "azure";
+    $("#s-eplabel").textContent = az ? "Endpoint" : "Base URL";
+    $("#s-modellabel").textContent = az ? "Deployment name" : "Model id";
+    $("#s-endpoint").placeholder = az
+      ? "https://your-resource.cognitiveservices.azure.com/"
+      : "https://api.openai.com/v1";
+  };
+  $("#s-provider").onchange = syncLabels; syncLabels();
+
+  const body = (extra={}) => {
+    const b = {provider:$("#s-provider").value,
+      endpoint:$("#s-endpoint").value.trim(),
+      model:$("#s-model").value.trim(),
+      max_tokens:+$("#s-maxtok").value, ...extra};
+    const k = $("#s-key").value;
+    if(k) b.api_key = k;               // blank keeps the stored key
+    return b;
+  };
+  const show = (ok,msg) => $("#s-status").innerHTML =
+    badge(ok?"good":"bad", msg);
+
+  $("#s-save").onclick = async ()=>{
+    const r = await api("/api/settings",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body())});
+    if(r.error){ show(false, r.error); return; }
+    show(true, r.configured?"saved":"saved — incomplete");
+    $("#s-key").value = "";
+    await loadHealth();
+  };
+  $("#s-test").onclick = async ()=>{
+    $("#s-status").textContent = "calling the model…";
+    const r = await api("/api/settings/test",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body())});
+    show(!!r.ok, r.ok?`works — ${esc(r.model)}`:"failed");
+    $("#s-result").innerHTML = r.ok
+      ? `<div class="card">${badge("good","connected")}
+         <b>${esc(r.provider)} · ${esc(r.model)}</b>
+         <p class="note">Model replied: <code>${esc(r.reply)}</code></p></div>`
+      : `<div class="card">${badge("bad","not connected")}
+         <pre class="wrap">${esc(r.error||r.detail||"unknown error")}</pre></div>`;
+  };
+  $("#s-clearkey").onclick = async ()=>{
+    await api("/api/settings",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({api_key:""})});
+    show(true,"key cleared"); await showSettings();
+  };
+}
+
+/* ---------- new run ---------- */
+function showRunForm(){
+  state.view="run";
+  $("#main").innerHTML = `
+    <h1 style="font-size:15px">New episode</h1>
+    <p class="sub">The same endpoint an agent calls:
+      <code>POST /api/runs</code>. Discovery: <code>GET /api/manifest</code>.</p>
+    <div class="card">
+      <div class="row">
+        <label style="margin:0"><input type="checkbox" id="mock"
+          style="width:auto"> scripted demo — ignores your text, replies
+          from a fixed script (offline, free)</label>
+      </div>
+      <div id="mockwarn"></div>
+      <label>Intent document</label>
+      <textarea id="intent" placeholder="Paste the stakeholder's brief — a
+document-scale intent is the point; a handbook is fine."></textarea>
+      <label>Who answers the learner's questions?</label>
+      <select id="answeredby">
+        <option value="expert_reviewed">gpt-5.6-sol drafts, I approve —
+          one question at a time (recommended)</option>
+        <option value="human">I answer myself — nothing drafted for
+          me</option>
+        <option value="expert">Let gpt-5.6-sol answer unreviewed — watch
+          only</option>
+        <option value="document">Strict document quoting — replies NOT
+          SPECIFIED when the text is silent</option>
+      </select>
+      <p class="note" id="answeredby-note"></p>
+      <label>Hidden stakeholder facts (not in the document — tests whether
+        interrogation recovers them)</label>
+      <textarea id="hidden" style="min-height:80px"></textarea>
+      <div class="row" style="margin-top:12px">
+        <div style="max-width:220px"><label>Interrogation turns (max)</label>
+          <input id="rounds" type="number" value="8" min="1" max="20"></div>
+      </div>
+      <label style="margin-top:12px;text-transform:none;letter-spacing:0">
+        <input type="checkbox" id="startfresh" style="width:auto" checked>
+        Start fresh: if this same intent is already running, cancel the old
+        interrogation and use these new settings instead</label>
+      <p class="note">Cancellation takes effect immediately while waiting for
+        your answer, or after the current model call returns. The old run will
+        not continue into another interrogation turn.</p>
+      <p class="note">This run does the UNDERSTANDING only: gpt-5.4
+      questions you, then shows the roles, interactions and goals it
+      arrived at. No protocol is written and Scribble is not run — you
+      decide whether the understanding is right first, because the checker
+      cannot tell a faithful protocol from a plausible misreading.</p>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" id="go">Start the interrogation</button>
+        <span id="runstatus" class="sub"></span>
+      </div>
+    </div>
+    <!-- The reply box lives OUTSIDE #joblog: that panel is rebuilt on every
+         poll, which would wipe whatever you were typing. -->
+    <div id="askpanel"></div>
+    <div id="joblog"></div>`;
+  $("#go").onclick = startRun;
+  // The scripted demo answers from a fixed script, so it cannot say
+  // anything about a pasted document. Make that impossible to miss.
+  const syncMock = ()=>{
+    const on = $("#mock").checked;
+    $("#intent").disabled = on; $("#hidden").disabled = on;
+    $("#mockwarn").innerHTML = on
+      ? `<div class="warnbar" style="margin:9px 0 0">${badge("warn","scripted")}
+         Your document is ignored in this mode — the run replays a fixed
+         demo. Untick it to send your text to the model.</div>` : "";
+    $("#go").textContent = on ? "Run scripted demo"
+                              : "Start the interrogation";
+  };
+  $("#mock").onchange = syncMock; syncMock();
+
+  const NOTES = {
+    expert_reviewed: "gpt-5.4 asks ONE question; gpt-5.6-sol drafts an "
+      + "answer; you edit or approve it. Nothing counts until you send — "
+      + "the expert states things your document never said, and an "
+      + "unreviewed decision becomes a requirement the checker cannot "
+      + "question.",
+    human: "gpt-5.4 asks one question at a time and the run PAUSES for you. "
+      + "Nothing is drafted — the answers are yours.",
+    expert: "gpt-5.6-sol answers unreviewed and you only watch. Fast, but "
+      + "its inventions go straight into the requirements.",
+    document: "The stakeholder may only quote your document, and says NOT "
+      + "SPECIFIED otherwise. Use this to measure what the document alone "
+      + "supports.",
+  };
+  const syncAnswered = ()=>{
+    $("#answeredby-note").textContent = NOTES[$("#answeredby").value] || "";
+  };
+  $("#answeredby").onchange = syncAnswered; syncAnswered();
+}
+
+async function startRun(){
+  $("#go").disabled = true;
+  const body = {
+    mock: $("#mock").checked,
+    // No validator here on purpose: this phase writes no protocol, so
+    // there is nothing to check yet. The validator is chosen when you
+    // formalise an understanding you have endorsed.
+    max_rounds: +$("#rounds").value,
+    answered_by: $("#answeredby").value,
+    replace_existing: $("#startfresh").checked,
+  };
+  // The scripted demo runs the whole pipeline as a smoke check, so it does
+  // need a validator — the crude one, since it is not evidence anyway.
+  if(body.mock){ body.validator = "mock"; body.stop_after = "all"; }
+  if($("#intent").value.trim()) body.intent_text = $("#intent").value;
+  if($("#hidden").value.trim()) body.hidden_notes_text = $("#hidden").value;
+  const r = await api("/api/runs",{method:"POST",
+    headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  if(r.error){
+    $("#runstatus").innerHTML = badge("bad","failed")+" "+esc(r.error)
+      +(r.detail?` — ${esc(r.detail)}`:"");
+    // A run already in flight is recoverable: open it, or abandon it. A
+    // conversation waiting for an answer waits forever, so refusing
+    // without an escape hatch is a dead end.
+    if(r.job_id){
+      $("#askpanel").innerHTML = `<div class="card">
+        <b>There is already a run of this document.</b>
+        <p class="note">${esc(r.hint||"")}</p>
+        <div class="row">
+          <button class="primary" id="resume">Open that run</button>
+          <button id="killrun">Cancel it and start fresh</button>
+          <span class="sub" id="killstatus"></span>
+        </div></div>`;
+      $("#resume").onclick = ()=>{ $("#askpanel").innerHTML="";
+        state.askKey=""; pollJob(r.job_id, r.session); };
+      $("#killrun").onclick = async ()=>{
+        $("#killstatus").textContent = "cancelling…";
+        const c = await api(`/api/runs/${encodeURIComponent(r.job_id)}/cancel`,
+          {method:"POST"});
+        $("#killstatus").innerHTML = c.error ? badge("bad", esc(c.error))
+          : badge("good","cancelled");
+        if(!c.error){ $("#go").disabled=false; await startRun(); }
+      };
+    }
+    $("#go").disabled=false; return;
+  }
+  $("#runstatus").innerHTML = badge("info","job "+r.job_id)
+    + ` <span class="sub">watch it below — the questions and the graph
+        appear as soon as they exist</span>`;
+  pollJob(r.job_id, r.session);
+}
+
+/* Live view of a run: stages, then the Q&A and the graph AS THEY LAND.
+   A live episode takes minutes; the transcript is on disk once
+   interrogation ends and each draft as it is attempted, so there is no
+   reason to show a spinner until the very end. */
+const STAGE_ORDER = ["start","interrogated","drafted","evaluated","done"];
+const STAGE_LABEL = {start:"Reading the document",
+  interrogated:"Interrogating the stakeholder", drafted:"Drafting the protocol",
+  evaluated:"Grading faithfulness", done:"Finished"};
+
+async function pollJob(id, session){
+  clearInterval(state.poll);
+  const t0 = Date.now();
+  let drewGraph = false, drewIntent = false;
+  state.poll = setInterval(async ()=>{
+    const j = await api("/api/runs/"+id);
+
+    // The job record is gone — the server restarted, or the job was
+    // evicted. Job state is in memory by design; the DURABLE record is the
+    // session directory. Polling a 404 forever is what made a dead run
+    // look like a running one, so stop, say so, and recover whatever
+    // reached disk.
+    if(j.error || !j.state){
+      clearInterval(state.poll); $("#go").disabled=false;
+      const sess = session || "";
+      const p = sess ? await api(
+        `/api/episodes/${encodeURIComponent(sess)}/partial`) : {error:"none"};
+      const salvage = !p.error;
+      $("#joblog").innerHTML = `<div class="card">
+        ${badge("bad","run record lost")}
+        <p class="note">This job is no longer known to the server
+        (${esc(j.error||"no state")}) — it was most likely restarted while
+        the run was in flight. Job tracking is in memory; anything the run
+        finished is on disk.</p>
+        ${salvage?`<p class="note">Recovered from
+          <code>${esc(sess)}</code>: ${(p.transcript||[]).length} Q&amp;A
+          round(s), ${((p.distilled||{}).requirements||[]).length}
+          requirements, ${(p.draft_attempts||[]).length} draft attempt(s)
+          ${p.complete?"— the episode COMPLETED":"— the episode did NOT finish"}.
+          </p>
+          <button class="primary" id="salvage">Open ${esc(sess)}</button>`
+         : `<p class="note">Nothing was recovered for this session.</p>`}
+        </div>`;
+      if(salvage){
+        renderLive(p);
+        const b = $("#salvage");
+        if(b) b.onclick = ()=>showEpisode(sess);
+        await loadEpisodesKeepView();
+      }
+      return;
+    }
+
+    const done = j.state==="succeeded"||j.state==="failed"||
+      j.state==="cancelled";
+    const secs = Math.round((Date.now()-t0)/1000);
+    const reached = new Set((j.events||[]).map(e=>e.stage));
+    const cur = j.stage||"start";
+
+    // The reply box is rendered ONCE per question, into its own panel, and
+    // left alone afterwards — the 2-second poll must never touch the field
+    // you are typing in. Rebuilding it was destroying every keystroke.
+    const askKey = j.awaiting ? JSON.stringify(j.awaiting) : "";
+    if(askKey !== state.askKey){
+      state.askKey = askKey;
+      const panel = $("#askpanel");
+      if(panel){
+        panel.innerHTML = j.awaiting ? askBox(id, j.awaiting) : "";
+        const btn = $("#ansbtn");
+        if(btn) btn.onclick = ()=>sendAnswer(id);
+        const box = $("#ansbox");
+        if(box){ box.focus(); box.setSelectionRange(box.value.length,
+                                                    box.value.length); }
+      }
+    }
+
+    // Seconds on the CURRENT stage. A single model call over a large
+    // document can take minutes; without this the run reads as frozen.
+    const since = j.stage_since ? Math.round(
+      (Date.now() - new Date(j.stage_since).getTime())/1000) : null;
+    const chars = (j.params||{}).intent_chars || 0;
+    $("#joblog").innerHTML = `<div class="card">
+      <div class="row">${badge(j.awaiting?"warn":
+        j.state==="succeeded"?"good":j.state==="failed"?"bad":
+        j.state==="cancelled"?"warn":"info",
+        j.awaiting?"waiting for your answer":j.state)}
+        <span class="sub">${secs}s total${since!=null&&!done
+          ? ` · ${since}s on this step` : ""}
+          ${chars?` · ${(chars/1000).toFixed(0)}k-char document — one model
+          call over it takes 1–3 min`:""}</span></div>
+      <div class="pipe" style="margin:10px 0 0">
+        ${STAGE_ORDER.map(s=>`<div class="stage${reached.has(s)?" on":""}">
+          <div class="t">${STAGE_LABEL[s]}</div>
+          <div class="d">${reached.has(s)?"done":
+            (s===firstPending(reached)?"in progress…":"waiting")}</div>
+          </div>`).join("")}
+      </div>
+      ${subEvent(j)}
+      <table style="margin-top:10px"><tbody>${(j.events||[]).map(e=>{
+        const {stage,at,...rest}=e;
+        return `<tr><td class="rid">${esc(stage)}</td>
+          <td><code>${esc(JSON.stringify(rest))}</code></td></tr>`;
+      }).join("")}</tbody></table>
+      ${j.error?`<p class="note">${esc(j.error)}</p>`:""}</div>
+      <div id="livebody"></div>`;
+
+    // Partial artifacts — show them the moment they exist. The Q&A lands
+    // round by round, long before the phase ends.
+    const sess = session || (j.params||{}).session;
+    if(sess){
+      const p = await api(`/api/episodes/${encodeURIComponent(sess)}/partial`);
+      if(!p.error) renderLive(p);
+      if(!drewIntent && reached.has("interrogated")){
+        const ig = await api(
+          `/api/episodes/${encodeURIComponent(sess)}/intent-graph`);
+        if(!ig.error){
+          drewIntent = true;
+          $("#livebody").innerHTML += `
+            <h2>Intended interactions <span class="sub">— from the
+              checklist, before any protocol was written</span></h2>
+            <div class="card" style="overflow-x:auto">${ig.svg.roles}</div>`;
+        }
+      }
+      if(!drewGraph && (reached.has("drafted")||done)){
+        const g = await api(`/api/episodes/${encodeURIComponent(sess)}/graph`);
+        if(!g.error){
+          drewGraph = true;
+          $("#livebody").innerHTML += `
+            <h2>First draft — who talks to whom</h2>
+            <div class="card" style="overflow-x:auto">${g.svg.roles}</div>
+            <h2>In what order</h2>
+            <div class="card" style="overflow-x:auto">${g.svg.sequence}</div>`;
+        }
+      }
+    }
+
+    if(done){
+      clearInterval(state.poll); $("#go").disabled=false;
+      await loadHealth();
+      if(j.state==="succeeded" && j.result){
+        const s=j.result.session;
+        await loadEpisodesKeepView();
+        $("#joblog").innerHTML += `<div class="card">
+          <button class="primary" id="open">Open full episode
+            ${esc(s)}</button></div>`;
+        $("#open").onclick=()=>showEpisode(s);
+      }
+    }
+  }, 2000);
+}
+// The first phase not yet reached is the one in progress. Derived from the
+// reached-set rather than from the last event, because the loop also emits
+// SUB-events (asked/answered/thinking) that are not phases — reading the
+// last event alone used to mark a running phase "waiting".
+const firstPending = reached => STAGE_ORDER.find(s=>!reached.has(s));
+
+/* The learner's open question, with a box to answer it. The run thread is
+   blocked on exactly this, so the conversation continues the moment you
+   send — nothing is queued or replayed later. */
+function askBox(jobId, awaiting){
+  const q = typeof awaiting === "string" ? awaiting : (awaiting.questions||"");
+  const proposal = (awaiting && awaiting.proposal) || "";
+  return `<div class="warnbar" style="margin:10px 0 0">
+    <b>gpt-5.4 asks:</b>
+    <pre class="wrap" style="margin:8px 0">${esc(q)}</pre>
+    ${proposal?`<div class="row" style="gap:6px">
+      ${badge("warn","drafted by gpt-5.6-sol — review before it counts")}
+      </div>
+      <p class="note">Nothing here is agreed until you send it. The expert
+      states things the document never said; edit anything you disagree with,
+      or delete it and answer yourself.</p>`:""}
+    <textarea id="ansbox" style="min-height:${proposal?"200px":"90px"}"
+      placeholder="Answer in your own words. The run is paused until you send."
+      >${esc(proposal)}</textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="primary" id="ansbtn">${proposal
+        ? "Approve &amp; send" : "Send answer"}</button>
+      <span class="sub" id="anssent"></span>
+    </div></div>`;
+}
+
+async function sendAnswer(jobId){
+  const box = $("#ansbox"); if(!box || !box.value.trim()) return;
+  const btn = $("#ansbtn"); if(btn) btn.disabled = true;
+  $("#anssent").textContent = "sending…";
+  const r = await api(`/api/runs/${encodeURIComponent(jobId)}/answer`,
+    {method:"POST", headers:{"Content-Type":"application/json"},
+     body: JSON.stringify({answer: box.value})});
+  if(r.error){
+    if(btn) btn.disabled = false;
+    $("#anssent").innerHTML = badge("bad", esc(r.error));
+    return;
+  }
+  // Clear the panel and forget the key so the NEXT question renders fresh.
+  state.askKey = "";
+  $("#askpanel").innerHTML = `<div class="card">${badge("good","answer sent")}
+    <p class="note">gpt-5.4 is reading it and deciding what to ask
+    next.</p></div>`;
+}
+
+// The newest sub-event, in words: what the model is doing right now.
+function subEvent(j){
+  const evs = j.events||[];
+  for(let i=evs.length-1;i>=0;i--){
+    const e = evs[i];
+    if(STAGE_ORDER.includes(e.stage)) break;
+    if(e.stage==="thinking")
+      return `<p class="note">Round ${e.round}: ${esc(e.note||"")} —
+        one model call over your whole document, typically 40–120s.</p>`;
+    if(e.stage==="asked")
+      return `<p class="note">Round ${e.round}: asked
+        ${(e.questions||[]).length} question(s); waiting for the
+        stakeholder to answer.</p>`;
+    if(e.stage==="answered")
+      return `<p class="note">Round ${e.round} answered — deciding whether
+        to ask more or finish.</p>`;
+    if(e.stage==="distilling")
+      return `<p class="note">Writing the checklist: roles, goals,
+        interactions, requirements.</p>`;
+  }
+  return "";
+}
+
+/* Two things worth calling out from the interaction list, because both
+   turn into runtime failures a structural type cannot catch: value
+   constraints (become refinement guards) and unbounded repeats (become
+   non-terminating sessions). */
+function guardNote(d){
+  const guards = [];
+  const unbounded = [];
+  (d.interactions||[]).forEach(i=>{
+    (i.carries||[]).forEach(f=>{ if(f.constraint)
+      guards.push(`${i.iid}.${f.name} — ${f.constraint}`); });
+    const c = (i.cardinality||"").toLowerCase();
+    if(c.includes("unbounded")||c.includes("one or more")) unbounded.push(i.iid);
+  });
+  let out = "";
+  if(guards.length) out += `<div class="card">
+    <b>${guards.length} value constraint(s) → refinement guards</b>
+    <p class="note">A structural type cannot express these; they compile
+    into the guard sidecar so the monitor can reject a legal-looking
+    message carrying an illegal value.</p>
+    <ul>${guards.map(g=>`<li><code>${esc(g)}</code></li>`).join("")}</ul>
+    </div>`;
+  if(unbounded.length) out += `<div class="warnbar">
+    ${badge("warn","unbounded repeat")} ${unbounded.map(esc).join(", ")}
+    declared to repeat with no stated bound — that is how a session fails
+    to terminate. Worth pinning down in Refine.</div>`;
+  return out;
+}
+
+function renderLive(p){
+  const el = $("#livebody"); if(!el) return;
+  const d = p.distilled||{}, reqs = d.requirements||[];
+  const t = p.transcript||[];
+  if(!reqs.length && !t.length) return;
+  const asked = reqs.filter(r=>r.source==="answer").length;
+  if(el.dataset.reqs === String(reqs.length)) return;   // avoid reflow churn
+  el.dataset.reqs = String(reqs.length);
+  el.innerHTML = `
+    <h2>Interrogation <span class="sub">— ${t.length} round(s)</span></h2>
+    ${t.map(x=>`<div class="card">
+      <div class="qa"><div class="role">Asked</div>
+        <pre class="wrap">${esc(x.question)}</pre></div>
+      <div class="qa"><div class="role">Answered</div>
+        <pre class="wrap">${esc(x.answer)}</pre></div></div>`).join("")}
+    ${(d.goals||[]).length?`<h2>Goals — what must be true at the end</h2>
+      <ul>${d.goals.map(g=>`<li><b>${esc(g.gid)}</b> ${esc(g.text)}
+        ${g.evidence?`<span class="sub">— evidence: ${esc(g.evidence)}</span>`
+        :""}</li>`).join("")}</ul>`:""}
+    ${(d.interactions||[]).length?`<h2>Intended interactions
+      <span class="sub">— who hands what to whom, carrying what, how
+      often</span></h2>
+      <table><thead><tr><th>ID</th><th>From → To</th><th>What</th>
+        <th>Carries</th><th>How often</th></tr></thead><tbody>
+        ${d.interactions.map(i=>`<tr><td class="rid">${esc(i.iid)}</td>
+          <td>${esc(i.sender||i.from||"")} → ${esc(i.receiver||i.to||"")}
+            ${i.optional?badge("warn","conditional"):""}</td>
+          <td>${esc(i.what)}${i.when?`<div class="sub">when:
+            ${esc(i.when)}</div>`:""}</td>
+          <td class="sub">${(i.carries||[]).map(f=>
+            `<div><code>${esc(f.name)}</code>: ${esc(f.type||"string")}
+             ${f.constraint?badge("warn",esc(f.constraint)):""}</div>`)
+            .join("")||"—"}</td>
+          <td class="sub">${esc(i.cardinality||"—")}</td>
+          </tr>`).join("")}</tbody></table>
+      ${guardNote(d)}`:""}
+    <h2>Distilled so far <span class="sub">— ${reqs.length} requirements,
+      ${asked} recovered by asking</span></h2>
+    <table><thead><tr><th>ID</th><th>Kind</th><th>Source</th>
+      <th>Requirement</th></tr></thead><tbody>
+      ${reqs.map(r=>`<tr><td class="rid">${esc(r.rid)}</td>
+        <td>${badge(r.kind==="policy"?"oos":"info", r.kind)}</td>
+        <td>${badge(r.source==="answer"?"good":"oos", r.source)}</td>
+        <td>${esc(r.text)}</td></tr>`).join("")}
+    </tbody></table>`;
+}
+async function loadEpisodesKeepView(){
+  const v=state.view; await loadEpisodes(); await loadActiveRuns(); state.view=v;
+}
+
+/* ---------- boot ---------- */
+$("#btn-new").onclick = showRunForm;
+$("#btn-settings").onclick = showSettings;
+$("#btn-refresh").onclick = async ()=>{
+  await loadHealth(); await loadActiveRuns(); await loadEpisodes();
+};
+loadHealth(); loadActiveRuns(); loadEpisodes();
+</script>
+</body>
+</html>

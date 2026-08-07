@@ -1,0 +1,56 @@
+{
+  "approved_at": "2026-08-05T12:32:11",
+  "approved_by": "auto-llm",
+  "author_meter": {
+    "approx_tokens": 2890,
+    "completion_chars": 9487,
+    "llm_calls": 1,
+    "metering_note": "chars/4 approximation; Foundry utility path exposes no usage counts",
+    "prompt_chars": 2073
+  },
+  "author_model": "gpt-5-mini",
+  "authored_at": "2026-08-05T12:31:05",
+  "auto_coverage": {
+    "approx_tokens": 762,
+    "completion_chars": 36,
+    "llm_calls": 1,
+    "metering_note": "chars/4 approximation; Foundry utility path exposes no usage counts",
+    "prompt_chars": 3015,
+    "verdicts": {
+      "G1": true,
+      "G2": true,
+      "G3": true
+    }
+  },
+  "distill": {
+    "approx_tokens": 6375,
+    "brief_chars": {
+      "ArchReviewer": 413,
+      "Author": 507,
+      "DevOps": 464,
+      "Merger": 465,
+      "QualityReviewer": 420,
+      "ResponsibleAIReviewer": 424,
+      "SecurityReviewer": 411
+    },
+    "briefs_sha256": "4b2023516690a5f99c002004bcd8170dfb9a41c65fbf4c6a9f19c420ba7506cd",
+    "completion_chars": 8250,
+    "distilled_at": "2026-08-05T12:31:50",
+    "distilled_sha256": "11fe71be92316ca0332a15b8cfd42eb6f935476b5f3272d376e5be9b95fd4324",
+    "llm_calls": 3,
+    "max_brief_chars": 700,
+    "metering_note": "chars/4 approximation; Foundry utility path exposes no usage counts",
+    "prompt_chars": 17251
+  },
+  "goals_coverage_approved": true,
+  "intent_chars": 9488,
+  "intent_sha256": "d28bbec43d1192f49d94771fd89f04fdf800b009eaa24111f0bc36834671546e",
+  "protocol_validation": {
+    "artifact": "protocols\\llm_drafts\\valid\\protocol_validation.json",
+    "nuscr_verdict": "pass",
+    "protocol_sha256": "06356b45474be47069ebfddc889376bd42801541e12fad8401cc337102f6b93f",
+    "scribble_verdict": "pass",
+    "validated_at": "2026-08-06T07:44:06.863091+00:00"
+  },
+  "source": "llm_authored"
+}

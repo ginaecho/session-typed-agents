@@ -477,6 +477,6 @@ When creating a use case, ask:
 
 ## 9. What to read next
 
-- **To understand testing:** Read `2_TESTING_STRATEGIES.md`
+- **To understand testing:** Read `archive/2_TESTING_STRATEGIES.md`
 - **To create your own case:** Read `4_HOW_TO_CREATE_USE_CASES.md`
 - **To see results:** Read `6_RUN_REPORTS_EXPLAINED.md`

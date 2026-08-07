@@ -1,0 +1,84 @@
+{
+  "canonical": [
+    {
+      "id": "G1",
+      "description": "the change is deployed (terminal reached)",
+      "metric": "deployed",
+      "predicate": "True",
+      "anchor": {
+        "sender": "DevOps",
+        "receiver": "Merger",
+        "label": "Deployed"
+      },
+      "threshold": "terminal present",
+      "branch": "",
+      "category": "liveness"
+    },
+    {
+      "id": "G2",
+      "description": "the security review passed (baton reached architecture)",
+      "metric": "security_passed",
+      "predicate": "True",
+      "anchor": {
+        "sender": "SecurityReviewer",
+        "receiver": "ArchReviewer",
+        "label": "ToArch"
+      },
+      "threshold": "present",
+      "branch": "",
+      "category": "ordering"
+    },
+    {
+      "id": "G3",
+      "description": "the merger approved before deploy",
+      "metric": "approved",
+      "predicate": "True",
+      "anchor": {
+        "sender": "Merger",
+        "receiver": "DevOps",
+        "label": "Deploy"
+      },
+      "threshold": "present",
+      "branch": "",
+      "category": "ordering"
+    }
+  ],
+  "llm_valid": [
+    {
+      "id": "G1",
+      "description": "the change is deployed (terminal reached)",
+      "metric": "deployed",
+      "predicate": "True",
+      "anchor": {
+        "sender": "DevOps",
+        "receiver": "Merger",
+        "label": "Deployed"
+      },
+      "threshold": "terminal present"
+    },
+    {
+      "id": "G2",
+      "description": "the security review passed (baton reached architecture)",
+      "metric": "security_passed",
+      "predicate": "True",
+      "anchor": {
+        "sender": "SecurityReviewer",
+        "receiver": "ArchReviewer",
+        "label": "ToArch"
+      },
+      "threshold": "present"
+    },
+    {
+      "id": "G3",
+      "description": "the merger approved before deploy",
+      "metric": "approved",
+      "predicate": "True",
+      "anchor": {
+        "sender": "Merger",
+        "receiver": "DevOps",
+        "label": "Deploy"
+      },
+      "threshold": "present"
+    }
+  ]
+}

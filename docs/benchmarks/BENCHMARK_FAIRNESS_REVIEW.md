@@ -1,9 +1,11 @@
 # Is the STJP Benchmark Fair? — A Review in Plain English
 
+> **Historical (pre-2026-08-05).** Uses the earlier arm names. Current campaign arm names and their mapping: see BENCHMARK_PLAN_V3.md §10.8.
+
 **Date: 2026-07-17.** This review checked whether the benchmark behind the
 headline results ("bare agents: 0% success; full STJP: 100% success, 9×
 cheaper, 4× faster") is a fair comparison, by reading both the documentation
-(`docs/2_TESTING_STRATEGIES.md`, `docs/3_BENCHMARK_DESIGN_EXPLAINED.md`) and
+(`docs/archive/2_TESTING_STRATEGIES.md`, `docs/archive/3_BENCHMARK_DESIGN_EXPLAINED.md`) and
 the code that actually produces the numbers (`experiments/scripts/case_runner.py`,
 `experiments/baselines/`, `experiments/scripts/evaluate_run.py`).
 
@@ -83,7 +85,7 @@ this is rare and it is the right thing to do.
 events that match each goal's expected *sender, receiver, and message label*
 exactly. A message label is the tag on a message, like `RevenueAuditApproval`.
 
-**Why that is unfair to the bare arm.** Take goal G3 of the [`finance`](../experiments/cases/finance/) case.
+**Why that is unfair to the bare arm.** Take goal G3 of the [`finance`](../../experiments/cases/finance/) case.
 The bare team's prompt says, in plain words: *"the tax verifier must approve
 the audit explicitly."* But the scoring rule actually checks: *did TaxVerifier
 send a message labelled exactly `RevenueAuditApproval` to RevenueAnalyst?*
@@ -198,7 +200,7 @@ claim STJP wants to make.
 breaks and the protocol-derived scheduler does not: cases with branching
 (the next actor depends on a decision), fan-in (several agents must all
 report to one), or two agents legitimately active at once. Those cases exist
-in this repo already ([`finance_nested`](../experiments/cases/finance_nested/), [`intel_report`](../experiments/cases/intel_report/), [`auction`](../experiments/cases/auction/)). Winning
+in this repo already ([`finance_nested`](../../experiments/cases/finance_nested/), [`intel_report`](../../experiments/cases/intel_report/), [`auction`](../../experiments/cases/auction/)). Winning
 *there* is the honest — and stronger — version of the scheduling claim.
 
 ---
@@ -318,8 +320,8 @@ rate, external-framework baselines).
   claims only from `--sequential`.
 - **The scaling chart** (convincing-evidence item 2):
   `scripts/scaling_chart.py`. `run` drives the benchmark sequentially over
-  cases of growing team size (6-role [`report_pipeline`](../experiments/cases/report_pipeline/), 10-role
-  [`report_pipeline_large`](../experiments/cases/report_pipeline_large/)); `plot` needs no cloud access and turns the
+  cases of growing team size (6-role [`report_pipeline`](../../experiments/cases/report_pipeline/), 10-role
+  [`report_pipeline_large`](../../experiments/cases/report_pipeline_large/)); `plot` needs no cloud access and turns the
   latest summaries into `scaling_chart.json` + `scaling_chart.png` —
   tokens-per-delivered-result against team size, one line per arm, with
   the no-LLM structural proxy from `roles_sweep.py` embedded for

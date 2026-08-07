@@ -1,0 +1,279 @@
+{
+  "prompts_schema_version": 2,
+  "arms": {
+    "bare": [
+      {
+        "role": "Author",
+        "chars": 1961,
+        "sha256": "a45596b9167f1449a86c266e0f0aaa605377b20d4f71ac9591bff7f130219bb0"
+      },
+      {
+        "role": "QualityReviewer",
+        "chars": 1874,
+        "sha256": "a4b19789b596a25cc9c48a6441bff77e5c929d7a0a0e8f905999c4d5ebf75c58"
+      },
+      {
+        "role": "SecurityReviewer",
+        "chars": 1865,
+        "sha256": "18581b7f502b74a81dcb8daed8223158feeee50600d1e632033c7a125abb203e"
+      },
+      {
+        "role": "ArchReviewer",
+        "chars": 1867,
+        "sha256": "618fa5e00d6ed7fbe75581b6824f67e9aad9d64ab6f501818d02f6630f601d0c"
+      },
+      {
+        "role": "ResponsibleAIReviewer",
+        "chars": 1878,
+        "sha256": "427ab7ebe0ab11ab6001717c652f53a48caf224ffd3ad9863095385249f9394c"
+      },
+      {
+        "role": "Merger",
+        "chars": 1919,
+        "sha256": "32d3f801685064482b57d9d44dcecfe37c6e60eebb1f5c06fb559781cce3aa54"
+      },
+      {
+        "role": "DevOps",
+        "chars": 1918,
+        "sha256": "c7144f59cd9a54b22ac1040074708828818dd5cb1cdf278b58a57b694c81eb62"
+      }
+    ],
+    "min_llmvalid": [
+      {
+        "role": "Author",
+        "chars": 1166,
+        "sha256": "77efe41722f0543d7f009ae15df563a73b26aed77d62d15638c71193c0c185b2"
+      },
+      {
+        "role": "QualityReviewer",
+        "chars": 1239,
+        "sha256": "3b5db0f5781ed3dbe3d653fe87e95c2476f6f19e532447b3ec66816daff332fd"
+      },
+      {
+        "role": "SecurityReviewer",
+        "chars": 1247,
+        "sha256": "bee856f6eb425a25ef14060cb32566effabc5ef6367418d49ed8d59064c33d23"
+      },
+      {
+        "role": "ArchReviewer",
+        "chars": 1240,
+        "sha256": "d2c7fadfac497f7bce3faad47d274de15c4222dfc12b7a99ca209d8ce4487c30"
+      },
+      {
+        "role": "ResponsibleAIReviewer",
+        "chars": 1230,
+        "sha256": "f5a6ea96483d682a3fe9511e7a6103f7bc0f82a398ce7ce1071507ffea8980a9"
+      },
+      {
+        "role": "Merger",
+        "chars": 1893,
+        "sha256": "4f377eea4bcf5735877c9b97325f4028ee135aadf7dc53255f756a8a1b125517"
+      },
+      {
+        "role": "DevOps",
+        "chars": 1164,
+        "sha256": "9befb4bf57973efec239a8aaff6211fac5d40e54fea191d0f2c06fd62cd5ecc8"
+      }
+    ],
+    "min_llmvalid_gate": [
+      {
+        "role": "Author",
+        "chars": 1166,
+        "sha256": "77efe41722f0543d7f009ae15df563a73b26aed77d62d15638c71193c0c185b2"
+      },
+      {
+        "role": "QualityReviewer",
+        "chars": 1239,
+        "sha256": "3b5db0f5781ed3dbe3d653fe87e95c2476f6f19e532447b3ec66816daff332fd"
+      },
+      {
+        "role": "SecurityReviewer",
+        "chars": 1247,
+        "sha256": "bee856f6eb425a25ef14060cb32566effabc5ef6367418d49ed8d59064c33d23"
+      },
+      {
+        "role": "ArchReviewer",
+        "chars": 1240,
+        "sha256": "d2c7fadfac497f7bce3faad47d274de15c4222dfc12b7a99ca209d8ce4487c30"
+      },
+      {
+        "role": "ResponsibleAIReviewer",
+        "chars": 1230,
+        "sha256": "f5a6ea96483d682a3fe9511e7a6103f7bc0f82a398ce7ce1071507ffea8980a9"
+      },
+      {
+        "role": "Merger",
+        "chars": 1893,
+        "sha256": "4f377eea4bcf5735877c9b97325f4028ee135aadf7dc53255f756a8a1b125517"
+      },
+      {
+        "role": "DevOps",
+        "chars": 1164,
+        "sha256": "9befb4bf57973efec239a8aaff6211fac5d40e54fea191d0f2c06fd62cd5ecc8"
+      }
+    ],
+    "min_llmvalid_sched": [
+      {
+        "role": "Author",
+        "chars": 1166,
+        "sha256": "77efe41722f0543d7f009ae15df563a73b26aed77d62d15638c71193c0c185b2"
+      },
+      {
+        "role": "QualityReviewer",
+        "chars": 1239,
+        "sha256": "3b5db0f5781ed3dbe3d653fe87e95c2476f6f19e532447b3ec66816daff332fd"
+      },
+      {
+        "role": "SecurityReviewer",
+        "chars": 1247,
+        "sha256": "bee856f6eb425a25ef14060cb32566effabc5ef6367418d49ed8d59064c33d23"
+      },
+      {
+        "role": "ArchReviewer",
+        "chars": 1240,
+        "sha256": "d2c7fadfac497f7bce3faad47d274de15c4222dfc12b7a99ca209d8ce4487c30"
+      },
+      {
+        "role": "ResponsibleAIReviewer",
+        "chars": 1230,
+        "sha256": "f5a6ea96483d682a3fe9511e7a6103f7bc0f82a398ce7ce1071507ffea8980a9"
+      },
+      {
+        "role": "Merger",
+        "chars": 1893,
+        "sha256": "4f377eea4bcf5735877c9b97325f4028ee135aadf7dc53255f756a8a1b125517"
+      },
+      {
+        "role": "DevOps",
+        "chars": 1164,
+        "sha256": "9befb4bf57973efec239a8aaff6211fac5d40e54fea191d0f2c06fd62cd5ecc8"
+      }
+    ],
+    "maf_groupchat": [
+      {
+        "role": "Author",
+        "chars": 1961,
+        "sha256": "a45596b9167f1449a86c266e0f0aaa605377b20d4f71ac9591bff7f130219bb0"
+      },
+      {
+        "role": "QualityReviewer",
+        "chars": 1874,
+        "sha256": "a4b19789b596a25cc9c48a6441bff77e5c929d7a0a0e8f905999c4d5ebf75c58"
+      },
+      {
+        "role": "SecurityReviewer",
+        "chars": 1865,
+        "sha256": "18581b7f502b74a81dcb8daed8223158feeee50600d1e632033c7a125abb203e"
+      },
+      {
+        "role": "ArchReviewer",
+        "chars": 1867,
+        "sha256": "618fa5e00d6ed7fbe75581b6824f67e9aad9d64ab6f501818d02f6630f601d0c"
+      },
+      {
+        "role": "ResponsibleAIReviewer",
+        "chars": 1878,
+        "sha256": "427ab7ebe0ab11ab6001717c652f53a48caf224ffd3ad9863095385249f9394c"
+      },
+      {
+        "role": "Merger",
+        "chars": 1919,
+        "sha256": "32d3f801685064482b57d9d44dcecfe37c6e60eebb1f5c06fb559781cce3aa54"
+      },
+      {
+        "role": "DevOps",
+        "chars": 1918,
+        "sha256": "c7144f59cd9a54b22ac1040074708828818dd5cb1cdf278b58a57b694c81eb62"
+      },
+      {
+        "role": "__orchestrator__",
+        "chars": 10093,
+        "sha256": "81984182a4d360e325ec8472b775ff733ef1ec5cce3a47234cd4eb141afe69c9"
+      }
+    ],
+    "maf_groupchat_llmvalid": [
+      {
+        "role": "Author",
+        "chars": 6960,
+        "sha256": "5c8bcb69ad9670f557980160c6385f33c2131f8d75b4f4f1a0e6ca352b0d0dbf"
+      },
+      {
+        "role": "QualityReviewer",
+        "chars": 6882,
+        "sha256": "4272e672b7f2158ef7d165f96a63ee7fbf60e6cd3f1e21cd39ee65b945ebf14b"
+      },
+      {
+        "role": "SecurityReviewer",
+        "chars": 6874,
+        "sha256": "2323b57eb94e69855cfb7d21f618e551b77050b81ce07bb1211ccbc8f46ec365"
+      },
+      {
+        "role": "ArchReviewer",
+        "chars": 6872,
+        "sha256": "90367c02185baf4807a2b6ca4088ee3f585322d50d8589d0cdf831ce69e981c0"
+      },
+      {
+        "role": "ResponsibleAIReviewer",
+        "chars": 6892,
+        "sha256": "cc5084621bd9b8dd9d285356e062d41f0cf8d1efe7f288428c0e9dca95dc40ca"
+      },
+      {
+        "role": "Merger",
+        "chars": 6918,
+        "sha256": "a47442a91c125256ec171047e96d170030e6f25a753372ef262a390450563385"
+      },
+      {
+        "role": "DevOps",
+        "chars": 6917,
+        "sha256": "77b399beb4d6020bcc6061fe8e13893ceb2cd52fe53af702b63d90edee344f9e"
+      },
+      {
+        "role": "__orchestrator__",
+        "chars": 10093,
+        "sha256": "81984182a4d360e325ec8472b775ff733ef1ec5cce3a47234cd4eb141afe69c9"
+      }
+    ],
+    "maf_groupchat_llmvalid_orch": [
+      {
+        "role": "Author",
+        "chars": 1166,
+        "sha256": "77efe41722f0543d7f009ae15df563a73b26aed77d62d15638c71193c0c185b2"
+      },
+      {
+        "role": "QualityReviewer",
+        "chars": 1239,
+        "sha256": "3b5db0f5781ed3dbe3d653fe87e95c2476f6f19e532447b3ec66816daff332fd"
+      },
+      {
+        "role": "SecurityReviewer",
+        "chars": 1247,
+        "sha256": "bee856f6eb425a25ef14060cb32566effabc5ef6367418d49ed8d59064c33d23"
+      },
+      {
+        "role": "ArchReviewer",
+        "chars": 1240,
+        "sha256": "d2c7fadfac497f7bce3faad47d274de15c4222dfc12b7a99ca209d8ce4487c30"
+      },
+      {
+        "role": "ResponsibleAIReviewer",
+        "chars": 1230,
+        "sha256": "f5a6ea96483d682a3fe9511e7a6103f7bc0f82a398ce7ce1071507ffea8980a9"
+      },
+      {
+        "role": "Merger",
+        "chars": 1893,
+        "sha256": "4f377eea4bcf5735877c9b97325f4028ee135aadf7dc53255f756a8a1b125517"
+      },
+      {
+        "role": "DevOps",
+        "chars": 1164,
+        "sha256": "9befb4bf57973efec239a8aaff6211fac5d40e54fea191d0f2c06fd62cd5ecc8"
+      },
+      {
+        "role": "__orchestrator__",
+        "chars": 14722,
+        "sha256": "f8bca1f06d08ea9ec639f39c0c97eaf85e35ac82204c4c103c1f363a326cf4c0"
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+agent-framework-foundry
+agent-framework-foundry-hosting>=1.0.0a260630
+# MAF arms (maf_groupchat*) use GroupChatBuilder, which lives in the separate
+# orchestrations package -- without it all three MAF arms fail at trial time
+# with ModuleNotFoundError (found live in the S6 local smoke, 2026-08-05; the
+# gate-2 unit test only exercises the round-robin loops so it never caught it).
+agent-framework-orchestrations

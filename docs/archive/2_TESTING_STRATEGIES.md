@@ -1,5 +1,7 @@
 # Testing Strategies — From Rough to Right
 
+> **ARCHIVED 2026-08-05.** This described the benchmark's earlier (5-configuration) testing design. The current design and fairness rules live in [`../BENCHMARK_PLAN_V3.md`](../BENCHMARK_PLAN_V3.md) (start at §10) and [`../BENCHMARK_HANDOFF.md`](../BENCHMARK_HANDOFF.md).
+
 How we test STJP fairly, and why it took multiple tries to get it right.
 
 **Date: 2026-07-03**

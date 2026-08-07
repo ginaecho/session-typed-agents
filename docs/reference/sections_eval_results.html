@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Evaluation Results</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Evaluation Results</h1>
+</header>
+<h1 id="sec:method">Evaluation Methodology</h1>
+<h2 id="sec:conform">Conformance and goal achievement</h2>
+<p><strong>Protocol conformance (Set A).</strong> Let <span
+class="math inline"><em>T</em></span> be a run’s event trace and <span
+class="math inline"><em>M</em><sub><em>r</em></sub></span> the projected
+EFSM for role <span class="math inline"><em>r</em></span>. A message
+event <span
+class="math inline"><em>e</em> = (<em>s</em>, <em>r</em>, <em>ℓ</em>, <em>v</em>)</span>
+<em>conforms</em> iff it is accepted by <span
+class="math inline"><em>M</em><sub><em>s</em></sub></span> (structurally
+legal send) and satisfies any associated refinement predicate <span
+class="math inline"><em>ϕ</em><sub><em>ℓ</em></sub>(<em>v</em>)</span>
+from the guard sidecar. The <em>violation rate</em> of a trace is the
+fraction of events rejected by at least one role’s monitor. Conformance
+is deterministic, per-message, and requires no LLM judge.</p>
+<p><strong>Goal achievement (Set B).</strong> Each case defines <span
+class="math inline"><em>k</em></span> goals <span
+class="math inline"><em>G</em><sub>1</sub>, …, <em>G</em><sub><em>k</em></sub></span>,
+each anchored to a specific message edge <span
+class="math inline">(<em>s</em>, <em>r</em>, <em>ℓ</em>)</span> and a
+payload predicate <span
+class="math inline"><em>ϕ</em><sub><em>i</em></sub>(<em>v</em>)</span>.
+A trial <em>succeeds</em> iff all <span
+class="math inline"><em>k</em></span> goals are satisfied in at least
+one of its allowed attempts. Goals are graded under two rungs:
+<em>strict</em> requires exact <span
+class="math inline">(<em>s</em>, <em>r</em>, <em>ℓ</em>)</span> match
+plus <span class="math inline"><em>ϕ</em><sub><em>i</em></sub></span>;
+<em>role-pair</em> requires <span
+class="math inline">(<em>s</em>, <em>r</em>)</span> match plus <span
+class="math inline"><em>ϕ</em><sub><em>i</em></sub></span> under any
+label. Configurations shown the protocol vocabulary are graded strictly;
+the bare configuration (never shown the labels) is graded on the
+role-pair rung—a fairness correction adopted after audit (§<a
+href="#sec:fairaudit" data-reference-type="ref"
+data-reference="sec:fairaudit">[sec:fairaudit]</a>).</p>
+<p><strong>Design principle.</strong> The separation into Set A
+(structural conformance) and Set B (task completion) is not
+incidental—it is the empirical instantiation of the theoretical claim
+that <em>type safety and progress are distinct guarantees</em>. A system
+can achieve zero violations while failing its goals (the protocol is
+followed but the session runs out of steps), or achieve all goals while
+accumulating violations (correct outcome, incorrect path). Reporting
+both sets is necessary to distinguish safety from liveness.</p>
+<h2 id="sec:severity">Consequence-graded violations: the severity scale
+S0–S4</h2>
+<p>Each surviving deviation is graded by consequence on five levels:
+<strong>S0</strong> benign (reordering of independent messages; not
+counted); <strong>S1</strong> waste (duplicate message, costs tokens,
+breaks nothing); <strong>S2</strong> broken obligation (skipped read or
+wrong ordering); <strong>S3</strong> non-termination (session exhausts
+its budget); <strong>S4</strong> unauthorized irreversible act (filing
+before approval). The grading is computed against the partial order of
+data and authority dependencies declared in the protocol. Empirical
+validation: across all configurations and runs, every attempt containing
+an S2+ violation went on to fail its goal.</p>
+<h2 id="sec:configs">Experimental configurations</h2>
+<p>Each experiment runs the same task under five <em>configurations</em>
+(arms), forming a ladder of increasing protocol enforcement. All share
+the same intent, role descriptions, model, and retry budget; only the
+protocol information and enforcement mechanism differ.</p>
+<table id="tab:configs">
+<caption>The five experimental configurations. Each adds one mechanism
+to the previous. “Protocol info” = what is pasted into the agent’s
+prompt; “Enforcement” = what the runtime does with off-contract
+messages.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Arm</strong></th>
+<th style="text-align: left;"><strong>Protocol info</strong></th>
+<th style="text-align: left;"><strong>Enforcement</strong></th>
+<th style="text-align: left;"><strong>Scheduling</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>bare</code></td>
+<td style="text-align: left;">Intent only (natural language)</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">Round-robin</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>maf</code></td>
+<td style="text-align: left;">Full validated global type as text</td>
+<td style="text-align: left;">None (MAF GroupChat)</td>
+<td style="text-align: left;">LLM speaker-select</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_llmvalid</code></td>
+<td style="text-align: left;">Projected local type per role</td>
+<td style="text-align: left;">None (observe only)</td>
+<td style="text-align: left;">Round-robin</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gate</code></td>
+<td style="text-align: left;">Projected local type per role</td>
+<td style="text-align: left;">Gate rejects violations</td>
+<td style="text-align: left;">Round-robin</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sched</code></td>
+<td style="text-align: left;">Projected local type per role</td>
+<td style="text-align: left;">Gate rejects violations</td>
+<td style="text-align: left;">EFSM-driven</td>
+</tr>
+</tbody>
+</table>
+<p>The ladder isolates three orthogonal effects: (i) <em>protocol
+knowledge</em> (bare<span class="math inline">→</span>min_llmvalid):
+does telling the agent the protocol help? (ii) <em>enforcement</em>
+(min_llmvalid<span class="math inline">→</span>gate): does blocking
+wrong messages help beyond telling? (iii) <em>scheduling</em> (gate<span
+class="math inline">→</span>sched): does polling only enabled roles help
+beyond blocking? The MAF arm tests an alternative delivery mechanism
+(global text + LLM-based speaker selection) that represents the dominant
+industry pattern.</p>
+<h2 id="statistical-methodology">Statistical methodology</h2>
+<p>All confidence intervals are <strong>Wilson score intervals</strong>
+(95%, <span class="math inline"><em>z</em> = 1.96</span>), appropriate
+for binomial proportions and well-behaved at boundary values (0% and
+100%). Token counts are the primary efficiency metric; wall-clock times
+are reported but labeled indicative due to parallel execution and
+rate-limit contention. Each case uses balanced branch allocation (equal
+trials per protocol branch) to prevent branch-composition confounds.</p>
+<h1 id="sec:results">Experiments and Results</h1>
+<p>We evaluate on two multi-agent coordination tasks spanning different
+protocol complexities, each run under two model capability tiers. The
+design produces a <span class="math inline">2 × 2 × 5</span> matrix:
+2 cases <span class="math inline">×</span> 2 models <span
+class="math inline">×</span> 5 arms, with <span
+class="math inline"><em>n</em> ≥ 26</span> per cell on the primary
+case.</p>
+<h2 id="cases">Cases</h2>
+<p><strong>Finance</strong> (6 roles, branching choice, 6 goals). A
+quarterly revenue report produced by Fetcher, RevenueAnalyst,
+ExpenseAnalyst, Writer, TaxVerifier, and TaxSpecialist. Revenue above
+$50k triggers an audit branch requiring TaxSpecialist analysis and
+TaxVerifier approval before the report can be written. The protocol
+exercises fan-out notifications, value-dependent branching, and
+convergence of parallel analysis streams.</p>
+<p><strong>AgenticPay Settlement</strong> (4 roles, linear, 4 goals). An
+escrow-mediated trade between Buyer, Seller, Escrow, and Carrier. The
+protocol is linear (no branching) but requires strict sequencing:
+deposit <span class="math inline">→</span> ship <span
+class="math inline">→</span> release <span class="math inline">→</span>
+settle. A circular-wait variant (each role waits for the other)
+demonstrates the deadlock the session type prevents.</p>
+<h2 id="models">Models</h2>
+<p><strong>GPT-5.4 Mini</strong>: a cost-efficient model where
+enforcement effects are most visible (weaker models make more
+coordination errors). <strong>GPT-5.4</strong>: a frontier-capability
+model that tests whether enforcement remains necessary as model quality
+improves. Both are deployed on Azure AI Foundry.</p>
+<h2 id="sec:finance-results">Main results: finance (<span
+class="math inline"><em>n</em> = 30</span>)</h2>
+<table id="tab:finance">
+<caption>Finance case: goal completion (strict), violations, and cost.
+<span class="math inline"><em>n</em> = 30</span> per arm on GPT-5.4;
+<span class="math inline"><em>n</em> = 26</span>–<span
+class="math inline">30</span> pooled on GPT-5.4 Mini (two independent
+runs). Wilson 95% CIs in brackets. Token savings computed relative to
+bare. Bold = best in column.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th colspan="2" style="text-align: center;"><strong>Goal completion
+(%)</strong></th>
+<th colspan="2" style="text-align: center;"><strong>Violation rate
+(%)</strong></th>
+<th colspan="2"
+style="text-align: center;"><strong>Tokens/trial</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td
+style="text-align: left;"><span>2-3</span>(lr)<span>4-5</span>(lr)<span>6-7</span>
+<strong>Arm</strong></td>
+<td style="text-align: center;"><strong>Mini</strong></td>
+<td style="text-align: center;"><strong>Full</strong></td>
+<td style="text-align: center;"><strong>Mini</strong></td>
+<td style="text-align: center;"><strong>Full</strong></td>
+<td style="text-align: center;"><strong>Mini</strong></td>
+<td style="text-align: center;"><strong>Full</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>bare</code></td>
+<td style="text-align: center;">42.1 <span>[23,64]</span></td>
+<td style="text-align: center;">0.0 <span>[0,11]</span></td>
+<td style="text-align: center;">97.3</td>
+<td style="text-align: center;">80.1</td>
+<td style="text-align: center;">135<span>,</span>879</td>
+<td style="text-align: center;">58<span>,</span>007</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>maf</code></td>
+<td style="text-align: center;">6.7 <span>[1.8,21]</span></td>
+<td style="text-align: center;"><strong>100.0</strong>
+<span>[89,100]</span></td>
+<td style="text-align: center;">28.7</td>
+<td style="text-align: center;"><strong>0.0</strong></td>
+<td style="text-align: center;">31<span>,</span>519</td>
+<td style="text-align: center;">25<span>,</span>083</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_llmvalid</code></td>
+<td style="text-align: center;">90.0 <span>[74,97]</span></td>
+<td style="text-align: center;">50.0 <span>[32,68]</span></td>
+<td style="text-align: center;">21.9</td>
+<td style="text-align: center;"><strong>0.0</strong></td>
+<td style="text-align: center;">50<span>,</span>200</td>
+<td style="text-align: center;">87<span>,</span>613</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gate</code></td>
+<td style="text-align: center;">52.0 <span>[34,70]</span></td>
+<td style="text-align: center;"><strong>100.0</strong>
+<span>[89,100]</span></td>
+<td style="text-align: center;"><strong>0.0</strong></td>
+<td style="text-align: center;"><strong>0.0</strong></td>
+<td style="text-align: center;">54<span>,</span>633</td>
+<td style="text-align: center;">37<span>,</span>915</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sched</code></td>
+<td style="text-align: center;"><strong>100.0</strong>
+<span>[89,100]</span></td>
+<td style="text-align: center;"><strong>100.0</strong>
+<span>[89,100]</span></td>
+<td style="text-align: center;"><strong>0.0</strong></td>
+<td style="text-align: center;"><strong>0.0</strong></td>
+<td
+style="text-align: center;"><strong>12<span>,</span>652</strong></td>
+<td
+style="text-align: center;"><strong>12<span>,</span>729</strong></td>
+</tr>
+</tbody>
+</table>
+<p><br />
+<span><span class="math inline">†</span> Role-pair rung (no protocol
+vocabulary); strict is N/A.</span></p>
+<p>Five findings emerge from Table <a href="#tab:finance"
+data-reference-type="ref" data-reference="tab:finance">2</a>.</p>
+<p><strong>(1) SCHED is model-invariant.</strong> The EFSM-scheduled arm
+achieves 100% goal completion on both models at near-identical cost
+(<span class="math inline">∼</span>12.7k tokens/trial, 9.5 calls/trial).
+No other arm achieves this: every alternative’s success rate is a
+function of model capability. SCHED’s calls/trial (11 high branch,
+8 standard) matches the protocol’s theoretical minimum message count,
+confirming the scheduler polls <em>only</em> roles with enabled SEND
+transitions.</p>
+<p><strong>(2) Knowledge-only regresses on the stronger model.</strong>
+<code>min_llmvalid</code> drops from 90% (Mini) to 50% (Full)—a
+40-percentage-point regression (<span
+class="math inline"><em>p</em> &lt; 0.01</span>, Fisher exact). The
+mechanism: GPT-5.4 produces zero protocol violations (agents follow
+message ordering correctly) but its verbose outputs consume more turns
+before reaching the terminal goal (G6 = 50%). This demonstrates that
+<em>type safety (conformance) and progress (task completion) are
+orthogonal guarantees</em>: the protocol is followed, but the session
+runs out of steps. Token cost rises 75% (<span
+class="math inline">50, 200 → 87, 613</span>), confirming verbosity as
+the mechanism.</p>
+<p><strong>(3) Gate and MAF scale positively with model
+capability.</strong> <code>gate</code>: <span
+class="math inline">52% → 100%</span> (+48pp). <code>maf</code>: <span
+class="math inline">6.7% → 100%</span> (+93pp). The stronger model’s
+improved instruction-following makes enforcement unnecessary <em>for
+correctness</em>—but not for cost (Finding 4).</p>
+<p><strong>(4) SCHED is 4.6–6.9<span class="math inline">×</span>
+cheaper than every alternative at 100%.</strong> Even when all enforced
+arms succeed, cost differs dramatically: <code>sched</code> at 12.7k
+tokens vs. <code>maf</code> at 25.1k (<span
+class="math inline">2.0×</span>), <code>gate</code> at 37.9k (<span
+class="math inline">3.0×</span>), <code>bare</code> at 58.0k (<span
+class="math inline">4.6×</span>), <code>min_llmvalid</code> at 87.6k
+(<span class="math inline">6.9×</span>). The mechanism is call count:
+sched makes 9.5 calls/trial (protocol minimum) vs. gate’s 34.0
+(round-robin polling of all 6 roles even when 5 are blocked).</p>
+<p><strong>(5) The enforcement gradient is non-monotonic across
+models.</strong> On Mini: <span
+class="math inline">bare(42%) &lt; maf(7%) &lt; gate(52%) &lt; min_llmvalid(90%) &lt; sched(100%)</span>.
+On Full: <span
+class="math inline">bare(0%) &lt; min_llmvalid(50%) &lt; {maf, gate, sched}(100%)</span>.
+Knowledge-only inverts position between models; bare itself
+<em>regresses</em> (<span class="math inline">42% → 0%</span>
+role-pair); only SCHED is monotonically at the top.</p>
+<h2 id="sec:pergol">Per-goal analysis: why min_llmvalid regresses</h2>
+<table id="tab:pergol">
+<caption>Per-goal strict completion (%), finance, GPT-5.4.
+<code>min_llmvalid</code> passes all structural goals (G1–G3, G5) but
+fails G4 (strict label mismatch; role-pair G4 = 100%) and G6 (session
+budget exhaustion). All other protocol-aware arms achieve 100% on every
+goal.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Arm</strong></th>
+<th style="text-align: center;"><strong>G1</strong></th>
+<th style="text-align: center;"><strong>G2</strong></th>
+<th style="text-align: center;"><strong>G3</strong></th>
+<th style="text-align: center;"><strong>G4</strong></th>
+<th style="text-align: center;"><strong>G5</strong></th>
+<th style="text-align: center;"><strong>G6</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>bare</code> (rp)</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">53</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">83</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>maf</code></td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_llmvalid</code></td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gate</code></td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sched</code></td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+</tr>
+</tbody>
+</table>
+<p>The regression mechanism is visible in Table <a href="#tab:pergol"
+data-reference-type="ref" data-reference="tab:pergol">3</a>.
+<code>min_llmvalid</code> achieves perfect structural conformance (zero
+violations) but fails G6 (final report) in 50% of trials. Trace analysis
+reveals the pattern: without scheduling, the runtime polls all 6 roles
+every round via round-robin; GPT-5.4’s longer outputs (each valid, each
+protocol-conforming) consume the step budget before Writer produces the
+terminal <code>GenerateReport</code> message. On Mini, terser outputs
+complete within budget (90%); on Full, verbosity exhausts it. This is
+not a model defect but a <em>structural limitation of observation-only
+enforcement</em>: a monitor can verify that every message is correct,
+but it cannot force progress. The scheduler resolves this by eliminating
+idle polls entirely (9.5 calls vs. 79.0), leaving ample budget for the
+terminal goal.</p>
+<h2 id="sec:agenticpay">AgenticPay settlement (<span
+class="math inline"><em>n</em> = 10</span>)</h2>
+<table id="tab:agenticpay">
+<caption>AgenticPay settlement (4 roles, linear protocol, <span
+class="math inline"><em>n</em> = 10</span> per arm). Wilson 95% CIs at
+<span class="math inline"><em>n</em> = 10</span> are wide ([72,100] at
+100%); the differentiation is on Mini.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th colspan="2" style="text-align: center;"><strong>Strict goal
+completion (%)</strong></th>
+<th colspan="2"
+style="text-align: center;"><strong>Tokens/trial</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span>2-3</span>(lr)<span>4-5</span>
+<strong>Arm</strong></td>
+<td style="text-align: center;"><strong>Mini</strong></td>
+<td style="text-align: center;"><strong>Full</strong></td>
+<td style="text-align: center;"><strong>Mini</strong></td>
+<td style="text-align: center;"><strong>Full</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>bare</code></td>
+<td style="text-align: center;">0.0 <span>[0,28]</span></td>
+<td style="text-align: center;">0.0 <span>[0,28]</span></td>
+<td style="text-align: center;">98<span>,</span>260</td>
+<td style="text-align: center;">82<span>,</span>544</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>maf</code></td>
+<td style="text-align: center;">0.0 <span>[0,28]</span></td>
+<td style="text-align: center;">100.0 <span>[72,100]</span></td>
+<td style="text-align: center;">49<span>,</span>307</td>
+<td style="text-align: center;">22<span>,</span>965</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_llmvalid</code></td>
+<td style="text-align: center;">55.6 <span>[27,81]</span></td>
+<td style="text-align: center;">100.0 <span>[72,100]</span></td>
+<td style="text-align: center;">97<span>,</span>552</td>
+<td style="text-align: center;">46<span>,</span>408</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gate</code></td>
+<td style="text-align: center;">100.0 <span>[72,100]</span></td>
+<td style="text-align: center;">100.0 <span>[72,100]</span></td>
+<td style="text-align: center;">102<span>,</span>630</td>
+<td style="text-align: center;">48<span>,</span>497</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sched</code></td>
+<td style="text-align: center;"><strong>100.0</strong>
+<span>[72,100]</span></td>
+<td style="text-align: center;"><strong>100.0</strong>
+<span>[72,100]</span></td>
+<td
+style="text-align: center;"><strong>44<span>,</span>022</strong></td>
+<td
+style="text-align: center;"><strong>15<span>,</span>441</strong></td>
+</tr>
+</tbody>
+</table>
+<p><br />
+<span><span class="math inline"><sup>*</sup></span> 100% role-pair
+(correct participants), 0% strict (wrong labels).</span></p>
+<p>On the simpler linear protocol, GPT-5.4 achieves 100% across all
+protocol-aware arms (Table <a href="#tab:agenticpay"
+data-reference-type="ref"
+data-reference="tab:agenticpay">4</a>)—confirming that a four-role
+linear sequence is within a frontier model’s coordination capacity even
+without enforcement. The differentiation appears on Mini, where the
+gradient separates: <code>bare</code> (0%) <span
+class="math inline">&lt;</span> <code>maf</code> (0% strict, 100%
+role-pair) <span class="math inline">&lt;</span>
+<code>min_llmvalid</code> (55.6%) <span class="math inline">&lt;</span>
+<code>gate</code>/<code>sched</code> (100%). Cost follows the same
+pattern: <code>sched</code> is 81% cheaper than bare on Full (15.4k
+vs. 82.5k) and 55% cheaper on Mini.</p>
+<p><strong>Deadlock demonstration.</strong> A circular-wait variant of
+the protocol (<code>unchecked_skills</code>: skill-based agents without
+shared protocol) produces <em>zero events</em> across all trials—agents
+wait indefinitely for messages that never arrive. The Scribble checker
+rejects the circular-wait global type before any agent runs, at zero
+token cost.</p>
+<h2 id="sec:scaling">Model-scaling analysis</h2>
+<table id="tab:scaling">
+<caption>Model-scaling effects on finance (primary case, <span
+class="math inline"><em>n</em> ≥ 26</span>). <span
+class="math inline"><em>Δ</em></span> = change from Mini to Full. Only
+SCHED is invariant on both axes (correctness and cost).</caption>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th colspan="2" style="text-align: center;"><strong>Goal
+compl. (%)</strong></th>
+<th style="text-align: center;"></th>
+<th colspan="2"
+style="text-align: center;"><strong>Tokens/trial</strong></th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span>2-3</span>(lr)<span>5-6</span>
+<strong>Arm</strong></td>
+<td style="text-align: right;"><strong>Mini</strong></td>
+<td style="text-align: right;"><strong>Full</strong></td>
+<td style="text-align: center;"><span
+class="math inline"><em>Δ</em></span></td>
+<td style="text-align: right;"><strong>Mini</strong></td>
+<td style="text-align: right;"><strong>Full</strong></td>
+<td style="text-align: center;"><span
+class="math inline"><em>Δ</em></span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>bare</code></td>
+<td style="text-align: right;">42.1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: center;"><span
+class="math inline">−42</span>pp</td>
+<td style="text-align: right;">135<span>,</span>879</td>
+<td style="text-align: right;">58<span>,</span>007</td>
+<td style="text-align: center;"><span
+class="math inline">−57%</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>maf</code></td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: center;"><span
+class="math inline">+93</span>pp</td>
+<td style="text-align: right;">31<span>,</span>519</td>
+<td style="text-align: right;">25<span>,</span>083</td>
+<td style="text-align: center;"><span
+class="math inline">−20%</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_llmvalid</code></td>
+<td style="text-align: right;">90.0</td>
+<td style="text-align: right;">50.0</td>
+<td style="text-align: center;"><span
+class="math inline"><strong>−</strong><strong>40</strong></span>pp</td>
+<td style="text-align: right;">50<span>,</span>200</td>
+<td style="text-align: right;">87<span>,</span>613</td>
+<td style="text-align: center;"><span
+class="math inline">+75%</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gate</code></td>
+<td style="text-align: right;">52.0</td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: center;"><span
+class="math inline">+48</span>pp</td>
+<td style="text-align: right;">54<span>,</span>633</td>
+<td style="text-align: right;">37<span>,</span>915</td>
+<td style="text-align: center;"><span
+class="math inline">−31%</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sched</code></td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: center;"><span
+class="math inline"><strong>0</strong></span>pp</td>
+<td style="text-align: right;">12<span>,</span>652</td>
+<td style="text-align: right;">12<span>,</span>729</td>
+<td style="text-align: center;"><span
+class="math inline">+0.6%</span></td>
+</tr>
+</tbody>
+</table>
+<p>Table <a href="#tab:scaling" data-reference-type="ref"
+data-reference="tab:scaling">5</a> reveals a striking non-monotonicity.
+Most arms improve with model capability (gate: <span
+class="math inline">+48</span>pp, maf: <span
+class="math inline">+93</span>pp), consistent with the intuition that
+stronger models need less enforcement. But <code>min_llmvalid</code>
+<em>regresses</em> (<span class="math inline">−40</span>pp, <span
+class="math inline"><em>p</em> &lt; 0.01</span>)—the
+<strong>capability-without-efficiency trap</strong>—and even bare
+regresses (<span class="math inline">42% → 0%</span> role-pair) as the
+stronger model’s assertiveness breaks the accidental serialization that
+rescued the weaker one. The explanation is that a stronger model with no
+enforcement produces longer, more detailed outputs that are individually
+correct (zero violations) but collectively exhaust the session budget.
+This result falsifies the hypothesis that enforcement becomes
+unnecessary as models scale, and establishes that SCHED—the only arm
+combining type safety (gate) with progress (scheduling)—is the only
+configuration providing model-independent guarantees.</p>
+<p><strong>Three regimes of model scaling:</strong></p>
+<ol>
+<li><p><em>Enforcement-independent</em> (SCHED): 100%/100%, constant
+cost. The guarantee is structural and does not depend on model
+quality.</p></li>
+<li><p><em>Positively scaling</em> (gate, maf): improve with capability
+but require the frontier model. Unsuitable for deployments where model
+quality cannot be guaranteed.</p></li>
+<li><p><em>Negatively scaling</em> (min_llmvalid): degrades with
+capability. Knowledge alone is a trap: the model follows the protocol
+perfectly while exhausting the budget.</p></li>
+</ol>
+<h2 id="sec:cost">Cost analysis: the scheduling dividend</h2>
+<table id="tab:cost">
+<caption>Cost decomposition, finance, GPT-5.4 (<span
+class="math inline"><em>n</em> = 30</span>). SCHED achieves optimal
+calls by polling only enabled roles; its calls/trial matches the
+protocol’s minimum message count.</caption>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Arm</strong></th>
+<th style="text-align: right;"><strong>Calls/trial</strong></th>
+<th style="text-align: right;"><strong>Tok/call</strong></th>
+<th style="text-align: right;"><strong>Tok/trial</strong></th>
+<th style="text-align: right;"><strong>Savings</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>bare</code></td>
+<td style="text-align: right;">45.2</td>
+<td style="text-align: right;">1<span>,</span>283</td>
+<td style="text-align: right;">58<span>,</span>007</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>maf</code></td>
+<td style="text-align: right;">13.7</td>
+<td style="text-align: right;">1<span>,</span>831</td>
+<td style="text-align: right;">25<span>,</span>083</td>
+<td style="text-align: right;">56.8%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_llmvalid</code></td>
+<td style="text-align: right;">79.0</td>
+<td style="text-align: right;">1<span>,</span>109</td>
+<td style="text-align: right;">87<span>,</span>613</td>
+<td style="text-align: right;"><span
+class="math inline">−51%</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gate</code></td>
+<td style="text-align: right;">34.0</td>
+<td style="text-align: right;">1<span>,</span>115</td>
+<td style="text-align: right;">37<span>,</span>915</td>
+<td style="text-align: right;">34.6%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sched</code></td>
+<td style="text-align: right;">9.5</td>
+<td style="text-align: right;">1<span>,</span>340</td>
+<td style="text-align: right;">12<span>,</span>729</td>
+<td style="text-align: right;"><strong>78.1%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Two mechanisms produce the cost differences (Table <a
+href="#tab:cost" data-reference-type="ref"
+data-reference="tab:cost">6</a>). <strong>Call reduction</strong>: SCHED
+makes 9.5 calls/trial (the protocol’s minimum: 11 messages on the high
+branch, 8 on standard, averaged) vs. gate’s 34.0 (round-robin polls all
+6 roles every round) and bare’s 45.2 (retries on failure inflate the
+count). Tokens-per-call is roughly constant across arms (<span
+class="math inline">∼</span>1.1–1.8k), so the entire cost difference
+comes from <em>making fewer calls, not shorter ones</em>. <strong>Budget
+exhaustion</strong>: <code>min_llmvalid</code>’s 79 calls (vs. 9.5) are
+all valid—each produces a conforming message—but most are wasted on
+roles that cannot advance the protocol, consuming budget that would
+otherwise reach G6.</p>
+<p>The per-branch breakdown confirms optimality: <code>sched</code> uses
+11.0 calls on high (protocol has 11 messages) and 8.0 on standard
+(protocol has 8). <code>gate</code> uses 40.0 and 28.0 respectively—the
+difference is pure idle polling overhead.</p>
+<h2 id="sec:crosscase">Cross-case comparison</h2>
+<table id="tab:crosscase">
+<caption>Cross-case comparison (both cases, GPT-5.4 Mini). The
+scheduler’s cost advantage grows with protocol complexity: from 55%
+savings (4-role linear) to 91% (6-role branching).</caption>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th colspan="2" style="text-align: center;"><strong>AgenticPay (4 roles,
+linear)</strong></th>
+<th colspan="2" style="text-align: center;"><strong>Finance (6 roles,
+branching)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span>2-3</span>(lr)<span>4-5</span>
+<strong>Metric</strong></td>
+<td style="text-align: center;"><code>gate</code></td>
+<td style="text-align: center;"><code>sched</code></td>
+<td style="text-align: center;"><code>gate</code></td>
+<td style="text-align: center;"><code>sched</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Goal completion</td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;">52%</td>
+<td style="text-align: center;"><strong>100%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Violations</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tokens/trial</td>
+<td style="text-align: center;">102<span>,</span>630</td>
+<td style="text-align: center;">44<span>,</span>022</td>
+<td style="text-align: center;">54<span>,</span>633</td>
+<td
+style="text-align: center;"><strong>12<span>,</span>652</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Savings vs. bare</td>
+<td style="text-align: center;">0%</td>
+<td style="text-align: center;">55%</td>
+<td style="text-align: center;">60%</td>
+<td style="text-align: center;"><strong>91%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Calls/trial</td>
+<td style="text-align: center;">84.2</td>
+<td style="text-align: center;">36.0</td>
+<td style="text-align: center;">54.9</td>
+<td style="text-align: center;"><strong>9.5</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Table <a href="#tab:crosscase" data-reference-type="ref"
+data-reference="tab:crosscase">7</a> shows the scheduling dividend
+<em>grows</em> with protocol complexity. On the linear 4-role protocol,
+both gate and sched achieve 100% (the linear structure has no
+out-of-turn ambiguity), but sched saves 55% on tokens by eliminating
+idle polls. On the 6-role branching protocol, gate degrades to 52%
+(round-robin polling exhausts retry budget on roles blocked by the
+branch) while sched maintains 100% and saves 91%. The mechanism is
+clear: with more roles, round-robin polling wastes proportionally more
+calls on blocked roles; the EFSM scheduler scales near-optimally because
+it polls only the (at most 2) enabled roles at each state.</p>
+<h2
+id="discussion-implications-for-multi-agent-system-design">Discussion:
+implications for multi-agent system design</h2>
+<p>The results support three design principles:</p>
+<p><strong>Principle 1: Type safety does not imply progress.</strong>
+<code>min_llmvalid</code> on GPT-5.4 demonstrates this formally: zero
+protocol violations, 50% goal completion. A session type guarantees that
+every message that <em>happens</em> is correct; it does not guarantee
+that the <em>right</em> messages happen in time. Progress requires a
+scheduler that restricts polling to enabled roles, preventing budget
+waste on idle ones.</p>
+<p><strong>Principle 2: Model scaling is not a substitute for structural
+enforcement.</strong> The non-monotonic regression of
+<code>min_llmvalid</code> (90%<span class="math inline">→</span>50%)
+shows that “just use a bigger model” can make coordination
+<em>worse</em> when the system lacks enforcement. A stronger model that
+is more verbose, more confident, and produces longer outputs will
+exhaust finite resources faster when nothing constrains it.</p>
+<p><strong>Principle 3: The cheapest correct system is the most
+constrained.</strong> SCHED’s 78–91% cost savings come not from
+compressing outputs but from <em>not making calls whose answers cannot
+advance the protocol</em>. The protocol itself is the scheduling oracle:
+the EFSM’s enabled-set at each state is exactly the set of roles worth
+polling.</p>
+</body>
+</html>

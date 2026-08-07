@@ -58,7 +58,31 @@ class _RawChatLLMClient:
             azure_ad_token_provider=token_provider,
             api_version=os.environ.get("AZURE_OPENAI_API_VERSION", "2024-12-01-preview"),
         )
-        
+        # gpt-5 / o-series deployments reject `max_tokens` ("Unsupported
+        # parameter ... use 'max_completion_tokens' instead"), while older
+        # deployments reject `max_completion_tokens`. Rather than maintain a
+        # model-name table that goes stale with every release, we learn the
+        # right key from the service on the first 400 and remember it.
+        self._token_param = "max_tokens"
+
+    def _create(self, messages: list, max_tokens: int):
+        """One chat completion, retrying once with the other token-limit
+        parameter name if the deployment rejects the one we used."""
+        try:
+            return self.client.chat.completions.create(
+                model=self.deployment, messages=messages,
+                **{self._token_param: max_tokens})
+        except Exception as e:
+            other = ("max_completion_tokens"
+                     if self._token_param == "max_tokens" else "max_tokens")
+            if other not in str(e):
+                raise
+            self._token_param = other
+            return self.client.chat.completions.create(
+                model=self.deployment, messages=messages,
+                **{self._token_param: max_tokens})
+
+
     def generate(self, system_prompt: str, user_prompt: str, max_tokens: int = 4096) -> str:
         """
         Generate a response from Azure OpenAI.
@@ -72,14 +96,9 @@ class _RawChatLLMClient:
             The generated text response
         """
         try:
-            response = self.client.chat.completions.create(
-                model=self.deployment,
-                max_tokens=max_tokens,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ]
-            )
+            response = self._create(
+                [{"role": "system", "content": system_prompt},
+                 {"role": "user", "content": user_prompt}], max_tokens)
             return response.choices[0].message.content
         except Exception as e:
             # Print full error details
@@ -100,11 +119,7 @@ class _RawChatLLMClient:
         """
         full_messages = [{"role": "system", "content": system_prompt}] + messages
 
-        response = self.client.chat.completions.create(
-            model=self.deployment,
-            max_tokens=max_tokens,
-            messages=full_messages
-        )
+        response = self._create(full_messages, max_tokens)
         return response.choices[0].message.content
 
 

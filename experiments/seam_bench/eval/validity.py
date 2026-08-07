@@ -133,6 +133,8 @@ def _run_worker(payload: dict, timeout_s: float) -> dict:
     use_pgroup = hasattr(os, "killpg") and hasattr(os, "getpgid")
     if use_pgroup:
         popen_kwargs["start_new_session"] = True
+    elif os.name == "nt":
+        popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
 
     proc = subprocess.Popen(cmd, **popen_kwargs)
     try:
@@ -143,6 +145,13 @@ def _run_worker(payload: dict, timeout_s: float) -> dict:
                 os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
             except ProcessLookupError:
                 pass
+        elif os.name == "nt":
+            # `proc.kill()` terminates only the Python worker on Windows;
+            # its Java validator child survives and can retain gigabytes.
+            # taskkill /T removes the full worker -> launcher -> JVM tree.
+            subprocess.run(
+                ["taskkill", "/PID", str(proc.pid), "/T", "/F"],
+                capture_output=True, text=True, check=False)
         else:
             proc.kill()
         try:

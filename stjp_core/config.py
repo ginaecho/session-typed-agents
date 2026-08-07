@@ -20,9 +20,24 @@ REPO_ROOT = BASE_DIR.parent               # testing_ideas/
 # Layout: scribble-java/scribble-dist/target/{lib/*.jar, scribblec.sh}
 SCRIBBLE_PATH = REPO_ROOT / "scribble-java" / "scribble-dist" / "target"
 
-# Java for running the Scribble compiler. Honour a real JAVA_HOME from the
-# environment if set; otherwise fall back to a JDK present on this machine.
-JAVA_HOME = os.environ.get("JAVA_HOME") or r"C:\Program Files\Java\jdk-17.0.18"
+# Java for running the Scribble compiler. Honour JAVA_HOME from the
+# environment ONLY if it actually exists on disk — this machine's ambient
+# JAVA_HOME points at a non-existent JDK-11 placeholder path, which used to
+# win over the fallback and break every Scribble invocation (found during
+# the 2026-08-05 toolchain preflight). Otherwise fall back to the first
+# real JDK found.
+def _resolve_java_home() -> str:
+    candidates = [os.environ.get("JAVA_HOME"),
+                  r"C:\Program Files\Java\jdk-17.0.19",
+                  r"C:\Program Files\Java\jdk-17.0.18"]
+    for c in candidates:
+        if c and Path(c).exists():
+            return c
+    # Last resort: whatever `java` resolves to on PATH (empty string keeps
+    # subprocess env untouched so PATH lookup applies).
+    return ""
+
+JAVA_HOME = _resolve_java_home()
 
 # ---------------------------------------------------------------------------
 # Protocol compiler backend selection

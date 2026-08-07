@@ -1,0 +1,66 @@
+{
+  "_readme": [
+    "Per-model price table for turning benchmark token usage into dollars.",
+    "Prices are USD per 1 MILLION tokens, split input (prompt) / output (completion),",
+    "because the models in the campaign differ in price by more than 15x and a",
+    "token count alone hides that. Edited by hand; consumed by",
+    "experiments/scripts/cost_summary.py at summarize time (never at run time),",
+    "so correcting a rate later only requires re-running the summarizer.",
+    "",
+    "VERIFIED 2026-08-06 against the Azure retail price API",
+    "(https://prices.azure.com/api/retail/prices, serviceName 'Foundry Models',",
+    "priceType 'Consumption', paged in full). Each entry names the exact meter.",
+    "All four campaign deployments on account foundary-tzuc06 (rg-tzuc06,",
+    "germanywestcentral) are GlobalStandard, so the GLOBAL meters apply - not",
+    "the Data Zone ('DZ') variants, which run 5-10% higher. Confirmed with",
+    "`az cognitiveservices account deployment list`.",
+    "",
+    "Rates below are UNCACHED input. Every model also has a cached-input meter at",
+    "roughly a tenth of the input rate, recorded as cached_input_usd_per_1m.",
+    "Since 2026-08-07 the runtime records usage.cached_tokens (the prompt-token",
+    "subset served from the provider's prompt cache) and cost_summary.py prices",
+    "that subset at the cached-input meter automatically. Runs recorded BEFORE",
+    "that date carry no cached_tokens, so their dollars remain an UPPER BOUND",
+    "(the cached share is recoverable from server OTel spans via the",
+    "gen_ai.usage.cache_read.input_tokens attribute if a backfill is needed).",
+    "Token counts are unaffected by caching either way, which is why tokens",
+    "remain the benchmark's primary, hardware-independent metric.",
+    "",
+    "gpt-5.6-sol note: the ShortCo (short-context) tier is priced here. The",
+    "LongCo tier is 2x input / 1.5x output ($10.00 / $45.00) and would apply only",
+    "if a single request exceeded the long-context threshold; measured per-call",
+    "prompts in the n=1 pilot averaged ~3-6k tokens, far inside ShortCo."
+  ],
+  "as_of": "2026-08-06",
+  "currency": "USD",
+  "models": {
+    "gpt-5.6-sol": {
+      "input_usd_per_1m": 5.00,
+      "output_usd_per_1m": 30.00,
+      "cached_input_usd_per_1m": 0.50,
+      "source": "azure meter (verified): '5.6 sol ShortCo Inp Std Gl 1M Tokens' / '5.6 sol ShortCo Opt Std Gl 1M Tokens' / '5.6 sol ShortCo Cd Inp Std Gl 1M Tokens'",
+      "estimate": false
+    },
+    "gpt-5-mini": {
+      "input_usd_per_1m": 0.45,
+      "output_usd_per_1m": 3.60,
+      "cached_input_usd_per_1m": 0.045,
+      "source": "azure meter (verified): '5 mini pp Inp Gl 1M Tokens' / '5 mini pp Opt Gl 1M Tokens' / '5 mini pp cd Inp Gl 1M Tokens' - these are the ONLY gpt-5-mini meters in the retail feed; no separate standard-tier meter exists",
+      "estimate": false
+    },
+    "DeepSeek-V4-Pro": {
+      "input_usd_per_1m": 1.74,
+      "output_usd_per_1m": 3.48,
+      "cached_input_usd_per_1m": 0.14,
+      "source": "azure meter (verified): 'V4 Pro Inp glbl Tokens' / 'V4 Pro Outp glbl Tokens' / 'V4 Pro cached glbl Tokens' (product 'Azure Deepseek Models'; NOT the 'FW DeepSeek-V4-Pro ... DZ' Fireworks Data Zone meters, which are ~10% higher)",
+      "estimate": false
+    },
+    "DeepSeek-V4-Flash": {
+      "input_usd_per_1m": 0.19,
+      "output_usd_per_1m": 0.51,
+      "cached_input_usd_per_1m": 0.028,
+      "source": "azure meter (verified): 'V4 Flash Inp glbl Tokens' / 'V4 Flash Outp glbl Tokens' / 'V4 Flash cached glbl Tokens'",
+      "estimate": false
+    }
+  }
+}

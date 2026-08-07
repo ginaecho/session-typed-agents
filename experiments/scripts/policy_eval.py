@@ -53,7 +53,9 @@ from stjp_core.critic.policies import (parse_policy_file, parse_policy_text,
                                         AggregatePolicy, SeparationPolicy)
 from stjp_core.critic.critic import run_runtime_critic, CriticSeverity
 from evaluate_run import _parse_trials  # reuse the exact trial parser
-from baselines.registry import SCENARIOS
+# ALL_SCENARIOS aliased: policy scoring walks whatever events files a run
+# dir holds, including legacy arms from pre-consolidation runs.
+from baselines.registry import ALL_SCENARIOS as SCENARIOS
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,24 @@
+{
+  "case_id": "sdlc_release_gate",
+  "roles": [
+    "Author",
+    "QualityReviewer",
+    "SecurityReviewer",
+    "ArchReviewer",
+    "ResponsibleAIReviewer",
+    "Merger",
+    "DevOps"
+  ],
+  "terminal_label": "Deployed",
+  "max_steps": 48,
+  "branch_hints": [
+    "standard",
+    "standard"
+  ],
+  "intent_scale": "doc",
+  "intent_sha256": "8a6fb49c5e0fd2f23385c8858d53f677414909c334fd0ce3b3d4fe7630490bc5",
+  "intent_chars": 9487,
+  "protocol_name": "SdlcReleaseGate",
+  "llmvalid_protocol_relpath": "protocols/llm_drafts/valid/v1.scr",
+  "prompts_schema_version": 2
+}

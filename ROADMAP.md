@@ -16,7 +16,7 @@ Last updated 2026-05-07. Supersedes the previously fragmented `PROPOSAL.md`, `PL
 > README's "Protocol checker and extensions are opt-in";
 > the benchmark grew to a **15-arm registry** including the
 > gate-without-hints and last-receiver-scheduling ablation controls;
-> the **fairness review and fixes** ([docs/BENCHMARK_FAIRNESS_REVIEW.md](docs/BENCHMARK_FAIRNESS_REVIEW.md)):
+> the **fairness review and fixes** ([docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md](docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md)):
 > per-arm fair success rule, goal re-anchoring invariance guard, Wilson
 > confidence intervals, `--sequential` timing mode;
 > a full **code audit** ([docs/reference/CODE_AUDIT_2026-07-19.md](docs/reference/CODE_AUDIT_2026-07-19.md))

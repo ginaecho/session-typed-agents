@@ -26,14 +26,25 @@ from typing import Callable, Optional
 
 from experiments.seam_bench.eval import validity
 from experiments.seam_bench.eval.schema import RunRecord
-from experiments.seam_bench.t0.drafter import (Drafter, estimate_usage,
+from experiments.seam_bench.t0.drafter import (Drafter,
+                                                GUARD_SIDECAR_SENTINEL,
+                                                estimate_usage,
                                                 split_guard_sidecar)
 
 ValidateFn = Callable[[str], tuple[bool, str]]
 BisimFn = Callable[[str, str], tuple[bool, str]]
+ProgressFn = Callable[[str, dict], None]
 
 #: SEAM_TRAINING_EXECUTION_PLAN.md §2/§4: repair loop caps at 3 rounds.
 MAX_REPAIR_ROUNDS = 3
+MAX_VALIDATOR_INFRA_RETRIES = 2
+
+
+def _is_validator_infrastructure_failure(message: str) -> bool:
+    text = message.lower()
+    return (("exceeded" in text and "killed" in text)
+            or "validator timed out" in text
+            or "verifier worker timed out" in text)
 
 
 def _now() -> str:
@@ -46,6 +57,8 @@ def run_repair_chain(
     max_rounds: int = MAX_REPAIR_ROUNDS,
     validate_fn: ValidateFn = validity.validate,
     bisim_fn: BisimFn = validity.bisim_equivalent,
+    require_guard_sidecar: bool = False,
+    progress: Optional[ProgressFn] = None,
 ) -> list[RunRecord]:
     """Run the T+R loop for one item, return one RunRecord per attempt.
 
@@ -78,14 +91,46 @@ def run_repair_chain(
                 f"expected exactly 1")
         current = drafted[0]
 
-    protocol_text, _refn = split_guard_sidecar(current)
-    valid, msg = validate_fn(protocol_text)
+    def emit(stage: str, **detail) -> None:
+        if progress is not None:
+            progress(stage, detail)
+
+    def validate_attempt(text: str, attempt: int) -> tuple[bool, str]:
+        protocol_text, refn = split_guard_sidecar(text)
+        valid, msg = False, ""
+        for infra_try in range(MAX_VALIDATOR_INFRA_RETRIES + 1):
+            emit("validation_started", attempt=attempt,
+                 protocol_chars=len(protocol_text), guards=bool(refn),
+                 infrastructure_try=infra_try + 1)
+            valid, msg = validate_fn(protocol_text)
+            if not _is_validator_infrastructure_failure(msg):
+                break
+            if infra_try >= MAX_VALIDATOR_INFRA_RETRIES:
+                raise RuntimeError(
+                    "Scribble validator infrastructure failed after "
+                    f"{infra_try + 1} tries: {msg[:500]}")
+            emit("validation_infrastructure_retry", attempt=attempt,
+                 retry=infra_try + 1, reason=msg[:500])
+        if valid and require_guard_sidecar and not refn:
+            valid, msg = False, (
+                "intent-loop: missing required refinement-guard sidecar; "
+                f"append {GUARD_SIDECAR_SENTINEL} and at least one "
+                "<MessageLabel>.<field> :: <predicate> guard")
+        emit("validation_result", attempt=attempt, valid=valid,
+             verdict=("accepted" if valid else "rejected"),
+             validator_message=msg[:500])
+        return valid, msg
+
+    valid, msg = validate_attempt(current, 1)
     attempts: list[tuple[str, bool, str]] = [(current, valid, msg)]
     rounds_used = 0
     while not valid and rounds_used < max_rounds:
+        emit("repair_started", attempt=rounds_used + 2,
+             previous_error=msg[:500])
         current = drafter.repair(intent, current, msg)
-        protocol_text, _refn = split_guard_sidecar(current)
-        valid, msg = validate_fn(protocol_text)
+        emit("repair_completed", attempt=rounds_used + 2,
+             draft_chars=len(current))
+        valid, msg = validate_attempt(current, rounds_used + 2)
         rounds_used += 1
         attempts.append((current, valid, msg))
 

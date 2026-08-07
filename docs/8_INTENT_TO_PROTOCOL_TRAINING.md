@@ -1,5 +1,7 @@
 # Intent → Protocol Training
 
+> **Historical (pre-2026-08-05).** Uses the earlier arm names. Current campaign arm names and their mapping: see BENCHMARK_PLAN_V3.md §10.8.
+
 How the piece of STJP that turns a plain-English request into a
 Scribble-checked coordination plan gets machine-learned — and what you can
 run today, on this repo, to see it in action.
@@ -282,7 +284,7 @@ Every number this training program is allowed to call a "win" — how much
 training helps, how much grammar-constraining costs in output quality,
 whether reinforcement learning clears the bar SFT alone sets — is
 **pre-registered before any run**, exactly like the benchmark predictions
-`3_BENCHMARK_DESIGN_EXPLAINED.md` teaches you to read. The full set of
+`archive/3_BENCHMARK_DESIGN_EXPLAINED.md` teaches you to read. The full set of
 committed go/no-go thresholds (what counts as GCD paying for itself, what
 counts as fine-tuning working, when the faithfulness panel is allowed to
 influence training instead of just observing it) lives in
@@ -310,4 +312,4 @@ missed.
   validator, EFSM): `1_TECH_SETUP.md`
 - **How to read any benchmark table like the ones this program will
   eventually produce** (GCR, confidence intervals, what makes a comparison
-  fair): `3_BENCHMARK_DESIGN_EXPLAINED.md`
+  fair): `archive/3_BENCHMARK_DESIGN_EXPLAINED.md`

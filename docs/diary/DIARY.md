@@ -7,6 +7,93 @@ history reads as it was.
 
 ---
 
+## 2026-08-07 (later) — all benchmark docs consolidated into docs/benchmarks/; checkpoint files untracked
+
+Two housekeeping changes so colleagues can clone the repository and run the
+benchmark from one starting point:
+
+- **One folder for all benchmark guidance.** Every benchmark document —
+  the plan (V3 and the superseded V2), the handoff, the implementation
+  steps, the case ranking, the fairness review, the timelog, the MAF token
+  accounting note, the older runner's procedure (formerly
+  `reference/HOW_TO_RUN_BENCHMARKS.md`), and the per-model analyses
+  (formerly `docs/benchmark/`) — now lives in
+  [`../benchmarks/`](../benchmarks/README.md). A new plain-English
+  `README.md` there is the entry point: what the benchmark measures, the
+  10 setups, the 4 models, the ranked cases with reasons, and the run
+  steps. All cross-links in docs, code comments, and the paper notes were
+  updated; nothing was deleted.
+- **Plan v2 archived.** `BENCHMARK_PLAN_V2.md` moved from the new
+  `benchmarks/` folder to [`../archive/`](../archive/README.md) with a
+  banner: its experiments (E1–E7, the verdict corpus) are complete and
+  reported in RESULT_06/07, so it is a finished design record, not
+  current methodology. Not deleted and not merged into V3 — published
+  results, a preregistration, and seven scripts cite it by name, and the
+  preregistration→design→result audit trail only works if the document
+  stays intact.
+- **Untracked the MAF `.checkpoints/` files.** 28 machine-generated
+  checkpoint files with 192-character paths were tracked in git; paths
+  that long can push a Windows clone past the 260-character limit (this
+  bit a colleague). They are runtime artifacts, now removed from tracking
+  and ignored (`**/.checkpoints/` in `.gitignore`). The longest remaining
+  tracked path is 162 characters — run evidence that stays.
+
+---
+
+## 2026-08-07 — MAF bugs cleared, n=10 campaign launched, dollars in the summary
+
+Both blockers from yesterday's handoff are gone and the `sdlc_release_gate`
+campaign is running at n=10 (10 arms × 4 models × 10 trials = 400 cells,
+`runs/20260807T080010-hosted-n10-4model-10arm-sol-mini-v4pro-v4flash-n10`).
+
+- **Bug A needed no fix.** The guard landed in `5150995` at 16:58 on 08-06,
+  after the pilot began at 09:18 — the failures on disk were produced by code
+  that no longer exists. Confirmed by re-running the exact failing combination.
+  The manifest keeps only an error string and the server logs are not retained,
+  so a stored failure can only be re-diagnosed by re-running it.
+- **Bug B was the superstep ceiling, not the terminal condition.** MAF's runner
+  stops after 100 supersteps and `GroupChatBuilder.build()` hides that knob;
+  52 rounds at several supersteps each exhausted it first. Fixed in `main.py`
+  for all three MAF arms uniformly, plus an `efsm_end` stop so the scheduler
+  matches `RoundRobinGateLoop`. Details in
+  [`../MAF_TOKEN_ACCOUNTING_HANDOFF.md`](../benchmarks/MAF_TOKEN_ACCOUNTING_HANDOFF.md) §8.
+- **Money is now reported next to tokens.** `cost_summary.json` is written on
+  every run, and `experiments/config/model_prices.json` carries verified Azure
+  meter rates (the previous placeholders had DeepSeek-V4-Pro ~7× low).
+- **Corrected two mechanism claims** in the token-accounting note: MAF's LLM
+  orchestrator sends a delta and relies on a server-side session thread, it does
+  not re-send the transcript via `_get_conversation()`; and `context_mode` cannot
+  filter group-chat broadcasts, because those arrive through `run()`, which
+  extends the cache unfiltered.
+- **Early signal:** the `skills` baseline is not a 0% floor — 5 of the first 11
+  trials met their goals. n=1 could not have shown this.
+- **Operational note:** Microsoft Defender raised a "credential theft" alert on
+  the V4-Pro deployment 11 minutes into the run. False positive: the Author role
+  emitted a password-hashing diff (`sha256` → `bcrypt`) as its code change, and
+  the classifier labelled it "General Password". The deployment has no tools, no
+  MCP, no retrieval, and no environment value reaches any prompt. Expect repeat
+  alerts for the duration of any run of this case.
+
+---
+
+## 2026-08-06 — MAF token accounting investigation (handoff)
+
+Investigated the "huge token gap between MAF and non-MAF arms" on the
+`sdlc_release_gate` `n=1` localcheck pilot. Findings, evidence, and next
+steps are written up in full in
+[`../MAF_TOKEN_ACCOUNTING_HANDOFF.md`](../benchmarks/MAF_TOKEN_ACCOUNTING_HANDOFF.md).
+Short version: the gap is real and honest (MAF's LLM orchestrator + broadcast
+vs non-MAF's free round-robin + projected views); the old local counter
+undercounted MAF 2–9× by missing orchestrator calls (fixed `b1252fd`;
+historical cells reconciled from Foundry OTel spans via
+`reconcile_maf_usage.py`, `516ffc5`); the pooled arm-average table is a
+model-mix artifact and must not be used (matched-model shows MAF 3.2–7.0× on
+the projected arms); and the real blocker before `n=30` is two MAF runtime
+bugs (GPT empty-message-list; DeepSeek `maf_localvalid_sched` non-convergence)
+that leave GPT and the MAF scheduler arm with no valid cells.
+
+---
+
 <!-- MENU:START (auto-generated — edit headings, then regenerate) -->
 ## Menu
 

@@ -1,5 +1,7 @@
 # Run Reports V2 — Claims and Evidence (the reorganized benchmark)
 
+> **Historical (pre-2026-08-05).** Uses the earlier arm names. Current campaign arm names and their mapping: see BENCHMARK_PLAN_V3.md §10.8.
+
 **Date: 2026-07-27.** This document supersedes nothing and deletes nothing —
 [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) (the 2026-07-02…08
 campaigns) and [`7_RUN_REPORTS_FOUNDRY_REAL_CASES.md`](7_RUN_REPORTS_FOUNDRY_REAL_CASES.md)

@@ -1,0 +1,35 @@
+briefs:
+  Fetcher: Retrieve accurate and up-to-date raw revenue and expense data each quarter
+    and provide it promptly to the team. Ensure that all requested data is delivered
+    in time to meet deadlines and that no input is missing. If requested, submit
+    the finalized report to stakeholders and archive as needed. Communicate clearly
+    and provide the needed data in formats usable by other roles. You must uphold
+    ethical standards when handling financial data.
+  RevenueAnalyst: Analyze raw revenue data provided by the Fetcher, classifying
+    entries as "high revenue" (above $50,000) or "standard revenue" (up to $50,000).
+    Create detailed analyses for each entry, with meaningful explanation exceeding
+    10 characters. Flag high-revenue entries for tax audits by the Tax Specialist
+    and ensure all classifications are reviewed and approved by the Tax Verifier
+    before sharing results with the Writer. Meet deadlines and ensure accuracy in
+    classifications.
+  ExpenseAnalyst: Analyze raw expense data retrieved by the Fetcher, providing detailed
+    descriptions of trends and insights that exceed 10 characters in meaningful
+    content. Share these analyses with the Writer for inclusion in the quarterly
+    report. Ensure ethical and accurate handling of expense data and communicate
+    promptly with teammates to meet deadlines.
+  Writer: Compile verified analyses into a clear, professional, and compliance-ready
+    quarterly financial report. Include revenue classifications, audit results,
+    and expense trends provided by other roles. Ensure all analyses are explicitly
+    verified before finalizing. Deliver the completed report to the Fetcher for
+    stakeholder review and archiving. Maintain deadlines and communicate with teammates
+    when clarification or missing information is needed.
+  TaxVerifier: Review and verify classifications and tax audits provided by the
+    RevenueAnalyst and TaxSpecialist. Approve only accurate and substantive findings
+    for inclusion in the report. Communicate clearly if corrections are needed,
+    ensuring no delays. Uphold ethical handling and interact effectively with teammates
+    to meet compliance and deadline requirements.
+  TaxSpecialist: Audit all revenue entries flagged as "high revenue" (above $50,000).
+    Ensure findings are substantive, accurate, and non-empty. Share audit results
+    with the TaxVerifier for approval. Uphold ethical standards and clearly communicate
+    audit details exceeding 10 characters to support inclusion in the final report.
+    Meet deadlines and collaborate to avoid delays.
