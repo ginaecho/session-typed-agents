@@ -221,6 +221,19 @@ caused by the one mechanism we are testing:
 
 ### Where runs appear in Azure AI Foundry (added 2026-08-07)
 
+**The goal, stated plainly: every conversation and every trace of this
+benchmark must end up visible in Azure AI Foundry, attributed to the
+hosted agent groups.** Running the campaign locally is ONLY a speed
+workaround — deploying and registering hosted agents takes over an hour
+per iteration, which would make a 400-cell campaign impractical — and it
+must never reduce what Foundry shows. Concretely: every trial streams
+its full recorded conversation (message content included) and its trace
+to the project's Application Insights LIVE while it runs, under the
+hosted group's identity, resolvable by the trace ID saved in the cell;
+and the deployed groups additionally execute their own verification
+sample so genuine hosted runs exist too. If either half is missing, the
+deliverable is not met.
+
 Two different pages in the Foundry portal show "traces", and they show
 different things. Confusing them makes a healthy campaign look missing:
 
@@ -246,12 +259,21 @@ local wave will never populate the agent's own Traces tab, and that must
 not be "fixed" by uploading recordings; that would fabricate hosted
 evidence.
 
-**Known defect and its workaround (2026-08-07 n=10 wave):** the trace ID
-saved in each cell does not match the ID the recording actually landed
-under in Application Insights, so looking a cell up by its saved trace
-ID fails for that wave. Look it up by the `stjp.arm` + `stjp.model` +
-`stjp.trial` tags instead (verified working on 2026-08-07). The code
-fix and the required fail-closed telemetry preflight are specified in
+**False alarm, recorded so it never repeats (2026-08-07):** during the
+first n=10 wave, two agents independently concluded that the trace IDs
+saved in the cells did not resolve in Application Insights, and a
+healthy campaign was stopped mid-run over it. The evidence chain was in
+fact intact the whole time — a corrected query resolved every sampled
+cell to its full recorded conversation, tags and all. The false alarm
+came from the query tool, not the telemetry: `az monitor app-insights
+query` applies a DEFAULT 1-HOUR time window that silently overrides any
+time filter written inside the query text. Two rules now bind every
+telemetry check: (1) always pass an explicit time range (`--offset` or
+`--start-time`); (2) never accept "the recording is missing" from a
+query that has not first proven it can find a recording KNOWN to exist
+(a positive control). The per-trial tags (`stjp.arm` + `stjp.model` +
+`stjp.trial`) are a working alternative lookup, not a workaround for
+any defect. Details and the required preflight:
 `BENCHMARK_IMPLEMENTATION_STEPS.md` §6.
 
 ## 7. Every document you need, and what it is for

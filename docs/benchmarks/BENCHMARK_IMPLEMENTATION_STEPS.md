@@ -533,20 +533,31 @@ needing to watch:
   Filter by the exact trace ID persisted in the cell result and confirm
   the per-model agent identity. Do not use a broad time-window query as
   benchmark evidence.
-- **Known defect (2026-08-07, first n=10 wave) and the fail-closed
-  rule.** In local mode the trace ID persisted in each cell did NOT
-  match the ID the recording actually landed under in Application
-  Insights, so the "filter by the exact trace ID" step fails for that
-  run. The per-trial tags still work: each trial's coordinator recording
-  carries `stjp.arm` / `stjp.model` / `stjp.trial`, and every model call
-  of that trial sits under the same operation ID — attribution is
-  recoverable by filtering on those three tags together (verified
-  2026-08-07). Before any future wave: (a) fix the runner so the
-  persisted trace ID is the exported root ID, and (b) run a fail-closed
-  telemetry preflight — one probe trial, then query Application Insights
-  and refuse to start the wave unless the probe's tagged recording is
-  found under the persisted trace ID. A configured exporter is NOT
-  evidence that telemetry works; only the queried span is.
+- **False-alarm post-mortem (2026-08-07) and the two query rules.**
+  Twice in one day, agents concluded that persisted cell trace IDs "did
+  not resolve" in Application Insights — first a "0 of 32" sweep, then
+  an independent three-cell "confirmation" — and a healthy campaign was
+  stopped mid-run over it. Both negatives were the same instrument
+  error: `az monitor app-insights query` applies a DEFAULT 1-HOUR
+  window that silently intersects (and thereby overrides) any
+  `ago(...)` or `datetime(...)` filter written inside the KQL, so
+  recordings older than an hour "disappear". A corrected query
+  (explicit `--offset P2D`) with a positive control resolved 4 of 4
+  sampled cells — 129 to 691 spans each, full conversations, `stjp.*`
+  tags present. The persisted trace IDs are correct; the per-trial tags
+  (`stjp.arm` / `stjp.model` / `stjp.trial`) are an alternative lookup,
+  not a workaround. Standing rules for every telemetry check, including
+  the preflight below: (1) ALWAYS pass an explicit time range to the
+  CLI; (2) NEVER trust a negative ("recording missing") unless the same
+  query has first found a recording known to exist.
+- **Fail-closed telemetry preflight (required before each wave, with
+  the control).** Run one probe trial, then query Application Insights
+  with an explicit time range for (a) a recording known to exist — the
+  positive control — and (b) the probe's persisted trace ID. Refuse the
+  wave only if (a) succeeds and (b) fails. If (a) fails, the QUERY is
+  broken, not the telemetry — fix the query first. A configured
+  exporter is not evidence that telemetry works, and an empty query
+  result is not evidence that it doesn't.
 - **Live export is best-effort; the disk is the evidence.** The Azure
   Monitor exporter can drop batches on transient network failures
   (observed 2026-08-07: non-retryable connection resets in the server
