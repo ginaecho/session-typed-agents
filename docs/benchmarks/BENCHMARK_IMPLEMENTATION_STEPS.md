@@ -493,6 +493,22 @@ every case is:
    `gen_ai.conversation.id`) — custom span names render only in the
    trajectory tree, not the user view. A replay missing the honesty
    markers is fabrication and must be deleted.
+   **Reflection acceptance test — "reflected" means ALL of these pass
+   for a sampled cell, checked in the portal, not assumed:**
+   1. Opening the trial under its hosted group shows the
+      **Conversation/user view** rendering the protocol messages as
+      recorded — sender, receiver, LABEL, payload (e.g. "Author →
+      QualityReviewer: Submit(...)"), in order, one turn per message.
+   2. The trace shows the trial's **real token consumption** — the
+      original recording's counts, marked
+      `stjp.usage_source=original_recording`.
+   3. Every span carries `stjp.replay=true` + the original local trace
+      ID, and the row is attributed to the right group and arm.
+   4. The original live recording still resolves separately under its
+      own trace ID (the replay never replaces it).
+   Reflection of a wave is complete when a random sample of cells (at
+   least one per model) passes all four checks, and the batch covers
+   every VALID cell of the run.
 4. We start analyzing local results as soon as each model's batch of runs
    starts producing them — we don't wait for everything to finish before
    beginning analysis.
