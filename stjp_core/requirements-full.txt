@@ -10,3 +10,5 @@
 
 -r requirements-core.txt
 -r requirements-demo.txt
+# Baseline runners + hosted agents (moved out of requirements-core.txt 2026-08-07)
+-r ../experiments/requirements-baselines.txt

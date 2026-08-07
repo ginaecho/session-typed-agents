@@ -1,7 +1,13 @@
 # STJP — Core library dependencies
 #
-# SECURITY-FOCUSED: Contains only core STJP library dependencies.
-# Passes Microsoft GitHub Policy Service dependency review.
+# SECURITY-FOCUSED: Contains only what the stjp_core library itself imports:
+# the secure base set, the Azure AI Foundry SDK, and the OpenAI client.
+#
+# The Multi-Agent-Framework baseline runners (experiments/baselines/) and the
+# hosted agents have their own dependency file:
+#   experiments/requirements-baselines.txt
+# Those packages used to live here, which made a fresh install download ~130
+# packages the core never loads. They were moved out on 2026-08-07.
 #
 # Setup:
 #   python -m venv .venv
@@ -15,146 +21,19 @@
 # `asyncio` is a Python standard-library module (since 3.4);
 # the same-named PyPI package is a stale backport that shadows the stdlib.
 
-# Azure SDK — for Foundry integration and LLM backend
-a2a-sdk==0.3.23
+# Base set (compiler, validation, monitoring — no Azure, no known vulns)
+-r requirements-secure.txt
+
+# Azure SDK — Foundry Agent Service (stjp_core/foundry/*)
 azure-ai-agents==1.1.0
-azure-ai-inference==1.0.0b9
 azure-ai-projects==2.1.0
-azure-common==1.1.28
 azure-core==1.40.0
-azure-core-tracing-opentelemetry==1.0.0b13
-azure-cosmos==4.15.0
 azure-identity==1.25.3
+
+# Foundry portal tracing (stjp_core/foundry/foundry_tracing.py)
+azure-core-tracing-opentelemetry==1.0.0b13
 azure-monitor-opentelemetry==1.8.7
 azure-monitor-opentelemetry-exporter==1.0.0b51
-azure-search-documents==11.7.0b2
-azure-storage-blob==12.28.0
 
-# Agent frameworks
-agent-framework==1.2.2
-agent-framework-a2a==1.0.0b260429
-agent-framework-ag-ui==1.0.0b260429
-agent-framework-anthropic==1.0.0b260429
-agent-framework-azure-ai-search==1.0.0b260429
-agent-framework-azure-cosmos==1.0.0b260429
-agent-framework-azurefunctions==1.0.0b260429
-agent-framework-bedrock==1.0.0b260429
-agent-framework-chatkit==1.0.0b260429
-agent-framework-claude==1.0.0b260429
-agent-framework-copilotstudio==1.0.0b260429
-agent-framework-core==1.2.2
-agent-framework-declarative==1.0.0b260429
-agent-framework-devui==1.0.0b260429
-agent-framework-durabletask==1.0.0b260429
-agent-framework-foundry==1.2.2
-agent-framework-foundry-local==1.0.0b260429
-agent-framework-github-copilot==1.0.0b260429
-agent-framework-lab==1.0.0b251024
-agent-framework-mem0==1.0.0b260429
-agent-framework-ollama==1.0.0b260429
-agent-framework-openai==1.2.2
-agent-framework-orchestrations==1.0.0b260429
-agent-framework-purview==1.0.0b260429
-agent-framework-redis==1.0.0b260429
-
-# Config, parsing, validation
-annotated-doc==0.0.4
-annotated-types==0.7.0
-attrs==26.1.0
-backoff==2.2.1
-certifi==2026.4.22
-cffi==2.0.0
-charset-normalizer==3.4.7
-click==8.3.3
-cryptography==49.0.0
-distro==1.9.0
-docstring_parser==0.18.0
-google-api-core==2.30.3
-google-auth==2.51.0
-googleapis-common-protos==1.75.0
-jsonpath-ng==1.8.0
-# lark: pure-Python parser for the Scribble surface grammar + GCD adapter
-# (stjp_core/compiler/scribble_grammar.lark, gcd_adapter.py). No CVEs, no deps.
-lark==1.2.2
-jsonschema==4.26.0
-jsonschema-specifications==2025.9.1
-mcp==1.27.0
-mem0ai==1.0.11
-microsoft-agents-activity==0.3.1
-microsoft-agents-copilotstudio-client==0.3.1
-microsoft-agents-hosting-core==0.3.1
-msal==1.36.0
-msal-extensions==1.3.1
-msrest==0.7.1
-numpy==2.4.4
-oauthlib==3.3.1
-ollama==0.5.3
+# Chat fallback path (STJP_LLM_BACKEND=chat, stjp_core/foundry/llm_client.py)
 openai==2.35.1
-openai-agents==0.16.1
-opentelemetry-api==1.40.0
-opentelemetry-sdk==1.40.0
-opentelemetry-semantic-conventions==0.61b0
-opentelemetry-util-genai==0.4b0
-packaging==26.2
-portalocker==3.2.0
-posthog==7.14.0
-proto-plus==1.28.0
-protobuf==6.33.6
-psutil==7.2.2
-pyasn1==0.6.3
-pyasn1_modules==0.4.2
-pycparser==3.0
-pydantic==2.13.4
-pydantic-settings==2.10.1
-pydantic_core==2.46.4
-PyJWT==2.10.1
-python-dateutil==2.9.0.post0
-python-dotenv==1.2.2
-python-ulid==3.1.0
-pythonnet==3.0.5
-pytz==2026.2
-pywin32==311
-PyYAML==6.0.3
-qdrant-client==1.17.1
-redis==7.1.1
-redisvl==0.15.0
-referencing==0.37.0
-requests==2.33.1
-requests-oauthlib==2.0.0
-rpds-py==0.30.0
-s3transfer==0.17.0
-six==1.17.0
-SQLAlchemy==2.0.49
-tenacity==9.1.4
-tqdm==4.67.3
-types-requests==2.33.0.20260503
-typing-inspection==0.4.2
-typing_extensions==4.15.0
-urllib3==2.5.0
-wrapt==1.17.3
-z3-solver==4.16.0.0
-zipp==3.23.1
-
-# AWS SDK
-boto3==1.43.5
-botocore==1.43.5
-
-# Foundry, OpenTelemetry
-foundry-local-sdk==0.5.1
-claude-agent-sdk==0.1.48
-github-copilot-sdk==0.2.3
-durabletask==1.4.0
-durabletask.azuremanaged==1.4.0
-ml_dtypes==0.5.4
-
-# gRPC (non-web)
-grpcio==1.80.0
-
-# Misc utilities
-isodate==0.7.2
-jiter==0.14.0
-jmespath==1.1.0
-powerfx==0.0.34
-propcache==0.4.1
-clr_loader==0.2.10
-colorama==0.4.6

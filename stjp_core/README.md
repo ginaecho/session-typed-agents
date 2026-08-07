@@ -58,7 +58,8 @@ given task requires — and the default profile is **security-clean**.
 | Install | Command | What you get | Security |
 |---|---|---|---|
 | **Default (recommended)** | `pip install -r requirements.txt` | The verification core: compiler, validator, projection, runtime monitor, goal checking, case loading. | ✅ Zero known vulnerabilities — passes the GitHub Policy Service scan. |
-| **Core / Foundry** | `pip install -r requirements-core.txt` | Adds the Azure AI Foundry + Azure OpenAI + agent-framework stack needed for **any LLM call** (protocol drafting, the benchmark runs). | ⚠️ Pulls transitive vulnerabilities via the Azure / agent SDKs. |
+| **Core / Foundry** | `pip install -r requirements-core.txt` | Adds the Azure AI Foundry SDK + OpenAI client needed for **any LLM call** (protocol drafting, the benchmark runs). | ⚠️ Pulls transitive vulnerabilities via the Azure SDKs. |
+| **Baselines** | `pip install -r ../experiments/requirements-baselines.txt` | The Microsoft Agent Framework stack for `experiments/baselines/` and the hosted agents (on top of core). | ⚠️ Large; many beta-pinned connectors. |
 | **Demo / Full** *(development tree only)* | `requirements-demo.txt` / `requirements-full.txt` | The Flask / ASGI live-demo web layer (on top of core). Shipped only in the development tree, not in this repo. | ⚠️ Experimental; adds further transitive vulnerabilities (aiohttp, Starlette, …). |
 
 `requirements.txt` simply re-exports `requirements-secure.txt` (the audited,
@@ -75,7 +76,7 @@ Verified against a clean virtualenv with `requirements.txt` only:
 | `compiler/` — validate, project, parse, compose, refinements | `authoring/architect.py` — LLM drafts a protocol |
 | `monitor/` — walk each role's local type against a trace | `generation/skills_generator.py`, `skills_synthesizer.py` |
 | `evaluation/` — goal achievement against a trace | `foundry/` — every Foundry / Azure OpenAI call |
-| `generation/` analysis passes (structural / security / completeness) | `../experiments/baselines/` — the benchmark runners |
+| `generation/` analysis passes (structural / security / completeness) | `../experiments/baselines/` — the benchmark runners (also need `../experiments/requirements-baselines.txt`) |
 | `authoring/change_request.py` in mock mode (no Azure) | the full `case_runner.py` benchmark run |
 | case loading + the post-run analyzers (`regrade_conformance`, `criticality_gate`, `severity_grader`, `index_builder`) | the Flask live demo's *draft* / *run* actions (page itself boots on default + Flask) |
 
