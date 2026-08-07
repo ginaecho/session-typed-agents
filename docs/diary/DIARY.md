@@ -7,6 +7,58 @@ history reads as it was.
 
 ---
 
+## 2026-08-07 (merge) — gc/updated_benchmarks merged into main; two benchmark-runner bugs fixed
+
+The parallel branch `gc/updated_benchmarks` (worked on July 31 – Aug 3) is
+now merged into both `main` and `gc/user_intent_validation_loop` (merge
+commit `67dd15a`; the two branches are identical). It had real fixes and
+tools that never reached main. What arrived, and what to watch for:
+
+- **Fix 1 — run folders can no longer collide.** `case_runner.py` run-folder
+  names now include the model deployment and the process ID
+  (`<timestamp>-<deployment>-p<pid>-n<N>-dual`). Before this, two runs
+  launched in the same second wrote into ONE folder and one run's data was
+  silently lost — this actually happened on 2026-07-27 (`airline_seat`,
+  gpt-5-mini vs gpt-5.4). **Bug to watch:** any run started BEFORE this
+  merge that was launched in parallel may have collided; if a pre-merge run
+  folder looks like it mixes two models, that is why.
+- **Fix 2 — a dropped connection can no longer stall a run for long.**
+  `case_runner.py` now sets a 240-second default socket timeout
+  (`socket.setdefaulttimeout(240)`). Before, a silently dropped connection
+  waited on the client library's ~10-minute-per-retry default. The MAF arms
+  (180 s per-attempt cap) and the hosted campaign (60-minute driver cap)
+  already had their own guards; this covers the plain arms.
+- **Fix 3 — orchestrator name clash.** The MAF GroupChat orchestrator agent
+  is now named `StjpProtocolOrchestrator` instead of `Orchestrator`,
+  because the `gem_dev_team` case has a ROLE literally named "Orchestrator"
+  and the duplicate ID broke that case under MAF.
+- **New: hosted-group build.** 13 per-case `group_spec.json` files plus
+  `gen_group_specs.py` and `group_main.py` under `foundry_hosted_agents/…`
+  — run a case as a Foundry hosted agents GROUP. How-to: runbook §6.
+- **New docs.** `docs/8_ANALYSIS_FINDINGS.md` (six numbered findings),
+  `docs/9_EVALUATION_REPORT.md` (paper-style report), and runbook sections
+  6–9 (hosted-group deploy, report format, error-avoidance checklist,
+  Level-1 fairness rules) appended to
+  [`../benchmarks/HOW_TO_RUN_BENCHMARKS.md`](../benchmarks/HOW_TO_RUN_BENCHMARKS.md).
+  Plus `tools/sync_stjp_to_upstream.py` and the July 31 `pr_review_merge`
+  run evidence (51 files).
+- **Conflict rule used in the merge:** main's newer (Aug 5–7) work won every
+  overlap — the 10-arm renamed registry, the orchestrator-holds-protocol
+  topology, and the docs layout (`docs/archive/` + `docs/benchmarks/`, no
+  `docs/guides/`). The branch's older root-level `BENCHMARK_PLAN_V3.md`
+  copy (Aug 1, 8 arms) was dropped in favor of the newer
+  `benchmarks/BENCHMARK_PLAN_V3.md` (10 arms). So: **arm names, arm
+  definitions, and doc locations follow main, not the old branch** — if an
+  old note cites `docs/guides/` or the 8-arm plan, it is stale.
+- **Test state after the merge:** 138 pass; the same 6 `stjp_core` failures
+  (scribble grammar, skill compactor, incremental) existed before the merge
+  on both branches and are unrelated to it.
+
+`gc/updated_benchmarks` and `feat/evaluation` are now fully contained in
+main and can be deleted.
+
+---
+
 ## 2026-08-07 (later) — all benchmark docs consolidated into docs/benchmarks/; checkpoint files untracked
 
 Two housekeeping changes so colleagues can clone the repository and run the
