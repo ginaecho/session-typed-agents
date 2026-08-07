@@ -942,6 +942,37 @@ def _current_trace_id() -> str | None:
     return None
 
 
+def _replay_span(name: str, attrs: dict):
+    """A real recording span, used ONLY by the replay path.
+
+    The trial path deliberately does not use this: its tracing is already
+    verified working (see the note below) and must not change mid-campaign.
+    Replay needs its own spans because it creates conversation/trace rows that
+    did not exist before, rather than annotating an in-flight request.
+    """
+    try:
+        from opentelemetry import trace
+        return trace.get_tracer("stjp.replay").start_as_current_span(
+            name, attributes=attrs)
+    except Exception:  # noqa: BLE001 - reflection must never crash the group
+        from contextlib import nullcontext
+        return nullcontext(None)
+
+
+# NOTE (2026-08-07): tracing here is CORRECT as written and verified end to
+# end — a cell's persisted `trace_id` resolves as the `operation_Id` in
+# Application Insights, and the coordinator span carries the stjp.* tags
+# BENCHMARK_IMPLEMENTATION_STEPS §6 requires (checked on a random sample of 8
+# cells: 8/8 resolved, 348-1348 spans each, all tagged).
+#
+# If you go looking and find "the trace id does not resolve", check your QUERY
+# before changing this code: `az monitor app-insights query` applies a DEFAULT
+# 1-HOUR window, and silently returns nothing for older spans no matter what
+# `ago(...)` you put in the KQL. Pass `--offset P1D` (or an explicit
+# `--start-time`). A false negative from that default caused a healthy campaign
+# to be stopped mid-run and this file to be needlessly rewritten.
+
+
 # ---------------------------------------------------------------------------
 # Coordinator — the single WorkflowAgent executor. Parses the request JSON
 # (spec §2), builds role Agents from prompts.json[arm], drives the arm's
@@ -958,6 +989,166 @@ class Coordinator(af.Executor):
         self._choice_guards = choice_guards
         self._prompts = prompts
         self._build_role_clients_fn = build_role_clients_fn
+
+    async def _handle_replay(self, req: dict, ctx) -> None:
+        """Reflect ONE already-executed local trial into this hosted group.
+
+        Why this exists: the benchmark executes locally for speed (a hosted
+        round-trip costs ~an hour to register), but the agreed deliverable is
+        that every trial's conversation and trace is visible in Azure AI
+        Foundry under the hosted agent group. Telemetry alone does not achieve
+        that — Foundry's conversation objects are minted by the hosted agent
+        through the Responses API, and a local process never creates one.
+
+        This handler replays a recorded trial through the deployed group so the
+        service itself creates the conversation and trace rows. It makes ZERO
+        model calls and invents nothing: every message is taken verbatim from
+        the recorded events, so a reflected conversation cannot diverge from
+        what actually happened.
+
+        Honesty contract (BENCHMARK_IMPLEMENTATION_STEPS §4.5.3 forbids passing
+        a local run off as hosted execution, so every reflected row is marked):
+          * span name  `stjp.replay <arm>`, never `stjp.trial`
+          * `stjp.execution = reflected_from_local`
+          * `stjp.original_trace_id` / `stjp.original_run` point at the real run
+          * usage on the reflected span is 0 tokens — the ORIGINAL usage is
+            carried in the returned record, so cost analysis stays attached to
+            the real numbers and can never be double-counted from mirrors.
+        """
+        record = req.get("record") or {}
+        events = record.get("events") or []
+        arm = record.get("arm") or req.get("stjp_arm") or "unknown"
+        trial = record.get("trial", req.get("trial", 0))
+        if not events:
+            await ctx.yield_output(json.dumps({
+                "replay": True, "arm": arm, "trial": trial,
+                "error": "replay record carries no events; nothing to reflect",
+            }))
+            return
+
+        original_usage = record.get("usage") or {}
+        attrs = {
+            "stjp.arm": arm,
+            "stjp.case": record.get("case") or self._case_meta.get("case_id", ""),
+            "stjp.trial": trial,
+            "stjp.model": record.get("model", ""),
+            "stjp.schema": record.get("prompts_schema_version", 2),
+            "stjp.execution": "reflected_from_local",
+            "stjp.original_trace_id": record.get("trace_id") or "",
+            "stjp.original_run": req.get("run_dir", ""),
+            "stjp.intent_sha": record.get("intent_sha", ""),
+            "stjp.terminated_by": record.get("terminated_by") or "",
+            "stjp.original_total_tokens": int(original_usage.get("total_tokens", 0)),
+            "stjp.original_calls": int(original_usage.get("calls", 0)),
+            "stjp.replay": True,
+            "stjp.usage_source": "original_recording",
+            # The REAL token counts from the local execution, on the standard
+            # gen_ai attributes so Foundry's own token/cost views show what the
+            # trial actually consumed. These are descriptive telemetry, not a
+            # billing signal — Azure bills from the model service meters on real
+            # API calls, so reporting them here cannot cause double charging. It
+            # only makes the reflected trace truthful. (Anyone SUMMING tokens
+            # across both the original and the reflected trace would double
+            # count; filter on stjp.execution == 'reflected_from_local' to
+            # exclude mirrors. The benchmark's own cost_summary.py reads cell
+            # records, not traces, so it is unaffected either way.)
+            "gen_ai.operation.name": "invoke_agent",
+            "gen_ai.provider.name": "microsoft.agent_framework",
+            "gen_ai.request.model": record.get("model", ""),
+            "gen_ai.usage.input_tokens": int(original_usage.get("prompt_tokens", 0)),
+            "gen_ai.usage.output_tokens": int(original_usage.get("completion_tokens", 0)),
+        }
+
+        model_name = record.get("model", "")
+        conversation_id = (record.get("trace_id")
+                           or f"{arm}-{trial}")  # stable per reflected trial
+        # Optional true per-turn token counts, recovered by the reflect script
+        # from the original run's `chat <model>` spans (see fetch_turn_usage).
+        turn_usage = record.get("turn_usage") or []
+
+        def _messages(role: str, content: str) -> str:
+            """The gen_ai message shape Foundry renders as a conversation."""
+            return json.dumps([{"role": role,
+                                "parts": [{"type": "text", "content": content}]}])
+
+        transcript: list[str] = []
+        with _replay_span(f"stjp.replay {arm}", attrs):
+            previous = ("(start of session — this role opened the "
+                        "conversation)")
+            for index, ev in enumerate(events, start=1):
+                sender = ev.get("sender") or ev.get("role") or "?"
+                receiver = ev.get("receiver") or ev.get("send_to") or ""
+                label = ev.get("label", "")
+                payload = ev.get("payload", "")
+                emitted = json.dumps({"send_to": receiver, "label": label,
+                                      "payload": payload})
+                # One span per turn, shaped like a REAL agent turn. Foundry's
+                # conversation/user view renders from the gen_ai.* semantic
+                # conventions — a span carrying only stjp.* attributes shows a
+                # trajectory with nothing to display, which is exactly what the
+                # first version of this produced. `gen_ai.input/output.messages`
+                # give it the messages; `gen_ai.conversation.id` ties the turns
+                # of one trial together.
+                #
+                # NO gen_ai.usage.* on a turn span: the benchmark records token
+                # counts per TRIAL, never per turn, so any per-turn figure would
+                # be invented. A missing attribute says "not measured"; a 0 says
+                # "measured, and it was free" — which is false and was the first
+                # thing that looked wrong in the portal. The trial's real totals
+                # are on the stjp.replay parent span above.
+                turn_attrs = {
+                    "gen_ai.operation.name": "invoke_agent",
+                    "gen_ai.provider.name": "microsoft.agent_framework",
+                    "gen_ai.agent.name": sender,
+                    "gen_ai.conversation.id": conversation_id,
+                    "gen_ai.request.model": model_name,
+                    "gen_ai.input.messages": _messages("user", previous),
+                    "gen_ai.output.messages": _messages("assistant", emitted),
+                    "stjp.execution": "reflected_from_local",
+                    "stjp.replay": True,
+                    "stjp.original_trace_id": record.get("trace_id") or "",
+                    "stjp.arm": arm,
+                    "stjp.trial": trial,
+                    "stjp.step": index,
+                    "stjp.sender": sender,
+                    "stjp.receiver": receiver,
+                    "stjp.label": label,
+                    "stjp.gate_verdict": ev.get("gate_verdict", ""),
+                }
+                # True per-turn tokens when the reflect script recovered them
+                # from the original run's `chat <model>` spans. Absent = we
+                # genuinely do not know for this turn; never a fabricated split.
+                if index <= len(turn_usage):
+                    per_turn = turn_usage[index - 1]
+                    turn_attrs["gen_ai.usage.input_tokens"] = int(
+                        per_turn.get("input_tokens", 0))
+                    turn_attrs["gen_ai.usage.output_tokens"] = int(
+                        per_turn.get("output_tokens", 0))
+                with _replay_span(f"invoke_agent {sender}", turn_attrs):
+                    _add_span_event("replayed_message", {
+                        "sender": sender, "receiver": receiver,
+                        "label": label, "payload": payload,
+                    })
+                previous = emitted
+                transcript.append(
+                    f"{index}. {sender} -> {receiver or '(broadcast)'} : "
+                    f"{label}({payload})")
+
+        await ctx.yield_output(json.dumps({
+            "replay": True,
+            "reflected_from": "local",
+            "arm": arm,
+            "trial": trial,
+            "model": record.get("model", ""),
+            "case": record.get("case") or self._case_meta.get("case_id", ""),
+            "original_trace_id": record.get("trace_id"),
+            "original_usage": original_usage,
+            "reflected_trace_id": _current_trace_id(),
+            "steps": len(events),
+            "terminated_by": record.get("terminated_by"),
+            "goal_succeeded": record.get("goal_succeeded"),
+            "transcript": transcript,
+        }))
 
     @af.handler
     async def handle(self, message: list[af.Message], ctx: af.WorkflowContext[str, str]) -> None:
@@ -1011,6 +1202,10 @@ class Coordinator(af.Executor):
                     "error": f"{type(e).__name__}: {e}",
                 }
             await ctx.yield_output(json.dumps(record))
+            return
+
+        if req.get("stjp_replay") is True:
+            await self._handle_replay(req, ctx)
             return
 
         arm = req.get("stjp_arm")
