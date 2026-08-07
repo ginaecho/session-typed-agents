@@ -1,8 +1,4 @@
-# How we use nuScr on this branch — a short guide
-
-This is a plain-English guide for anyone joining the branch
-`gc/user_intent_validation_loop`. It explains what nuScr is, how we run it,
-and — important — the two fallback mechanisms built around it.
+# How we use nuScr — a short guide
 
 ## What nuScr is, in one paragraph
 
