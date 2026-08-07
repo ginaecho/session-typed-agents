@@ -142,7 +142,19 @@ def _atomic_write_json(path: Path, payload: dict) -> None:
     try:
         tmp.write_text(json.dumps(payload, indent=2, sort_keys=True),
                        encoding="utf-8")
-        os.replace(tmp, path)
+        # Windows: os.replace fails with PermissionError while ANY other
+        # process holds the target open (python's open() does not grant
+        # FILE_SHARE_DELETE) — a monitoring read colliding with this rename
+        # crashed a whole model wave on 2026-08-07. Readers hold the file
+        # for milliseconds, so a short retry loop makes the writer immune.
+        for attempt in range(20):
+            try:
+                os.replace(tmp, path)
+                break
+            except PermissionError:
+                if attempt == 19:
+                    raise
+                time.sleep(0.1 * (attempt + 1))
     finally:
         if tmp.exists():
             tmp.unlink()
