@@ -167,7 +167,21 @@ Standing rules: only run paid trials when the project owner has said go;
 one campaign at a time; "stop" means stopping the servers, the driver,
 and any watcher loops together.
 
-## 7. Every document in this folder
+## 7. Where the results live
+
+This folder is the **methodology** — what we test and how to run it. The
+**results** live in two places:
+
+- [`../results/`](../results/README.md) — the numbered evidence reports
+  (`RESULT_01` through `RESULT_13`), each written in plain English: why
+  the experiment was run, the numbers, and what they mean.
+- [`analysis/`](analysis/) (in this folder) — shorter per-model,
+  per-case analysis notes from individual runs.
+
+The raw data behind every report — conversation logs, prompts, and score
+summaries — is committed under `experiments/cases/<case>/runs/`.
+
+## 8. Every document in this folder
 
 | document | what it is for |
 |---|---|
