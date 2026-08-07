@@ -444,10 +444,14 @@ every case is:
    at the same time; every test run makes REAL calls to the AI models. As
    each test runs, a recording system called OpenTelemetry sends the
    recorded conversation live to the project's Application Insights
-   (Azure's monitoring tool) — so it shows up on the Foundry Tracing page
-   as genuine, honestly-labeled activity:
-   `OTEL_RESOURCE_ATTRIBUTES=stjp.execution=local`, with the service name
-   `stjp-<case>-local-<model>`. This keeps us to the same honesty standard
+   (Azure's monitoring tool) — so it shows up on the PROJECT-level
+   Tracing page (NOT on a hosted agent's own "Traces" tab, which lists
+   only runs the deployed cloud agent executed itself; see "Where runs
+   appear in Azure AI Foundry" in BENCHMARK_HANDOFF.md) as genuine,
+   honestly-labeled activity: the recording carries the hosted group's
+   identity (`gen_ai.agent.name = stjp-<case>-group-<model>`) with agent
+   version `local`, so local activity can never be mistaken for hosted
+   execution. This keeps us to the same honesty standard
    as our earlier, non-hosted benchmarks: every record comes from a real
    run, correctly labeled as such. All of the report's tables come from
    these local runs.
@@ -520,11 +524,38 @@ needing to watch:
   prompt-writing rules), and the intent file's fingerprint (a short unique
   code identifying the exact file used). Safety-checker decisions are
   logged as events inside the recording.
-- **Where to look**: the Tracing tab in the Azure portal (direct link:
-  `https://ai.azure.com/resource/tracing?wsid=<ARM-id>`); it takes about
-  30–60 seconds for a new recording to show up there. Filter by the exact
-  trace ID persisted in the cell result and confirm the per-model agent
-  identity. Do not use a broad time-window query as benchmark evidence.
+- **Where to look**: the PROJECT Tracing tab in the Azure portal (direct
+  link: `https://ai.azure.com/resource/tracing?wsid=<ARM-id>`); it takes
+  about 30–60 seconds for a new recording to show up there. This is a
+  different page from a hosted agent's own "Traces" tab — that tab lists
+  ONLY runs the deployed cloud agent executed itself, so local waves
+  never appear there (and must never be uploaded there; §4 step 3).
+  Filter by the exact trace ID persisted in the cell result and confirm
+  the per-model agent identity. Do not use a broad time-window query as
+  benchmark evidence.
+- **Known defect (2026-08-07, first n=10 wave) and the fail-closed
+  rule.** In local mode the trace ID persisted in each cell did NOT
+  match the ID the recording actually landed under in Application
+  Insights, so the "filter by the exact trace ID" step fails for that
+  run. The per-trial tags still work: each trial's coordinator recording
+  carries `stjp.arm` / `stjp.model` / `stjp.trial`, and every model call
+  of that trial sits under the same operation ID — attribution is
+  recoverable by filtering on those three tags together (verified
+  2026-08-07). Before any future wave: (a) fix the runner so the
+  persisted trace ID is the exported root ID, and (b) run a fail-closed
+  telemetry preflight — one probe trial, then query Application Insights
+  and refuse to start the wave unless the probe's tagged recording is
+  found under the persisted trace ID. A configured exporter is NOT
+  evidence that telemetry works; only the queried span is.
+- **Live export is best-effort; the disk is the evidence.** The Azure
+  Monitor exporter can drop batches on transient network failures
+  (observed 2026-08-07: non-retryable connection resets in the server
+  logs). A missing recording never invalidates a run — the run folder
+  (events, results, usage captured at the client boundary) is the
+  authoritative record; Application Insights is the viewing layer and
+  its totals are a lower bound. Per-call recordings also carry
+  `gen_ai.usage.cache_read.input_tokens`, which is the backfill source
+  for cached-token pricing of runs recorded before 2026-08-07.
 - **Every test run leaves three separate records** (PLAN_V3 §2.3): a
   local one (the event log file `events_*.jsonl`, summary files, the
   prompts used in `prompts/<arm>/`, and the task description in

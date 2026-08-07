@@ -219,6 +219,41 @@ caused by the one mechanism we are testing:
    instructions and names it used, so old and new runs are never combined
    in one table.
 
+### Where runs appear in Azure AI Foundry (added 2026-08-07)
+
+Two different pages in the Foundry portal show "traces", and they show
+different things. Confusing them makes a healthy campaign look missing:
+
+1. **A hosted agent's own "Traces" tab** (Agents → open the agent →
+   Traces) lists ONLY runs that the deployed cloud agent executed
+   itself. Local campaign waves never appear here — that is expected,
+   not a failure. The entries dated 2026-08-05 are the hosted smoke runs
+   from deployment day.
+2. **The project's Tracing page** (Observability → Tracing) reads the
+   project's Application Insights. This is where every LOCAL run's
+   recording streams, live, while the campaign runs — labeled with the
+   hosted group's identity (`gen_ai.agent.name =
+   stjp-<case>-group-<model>`) and agent version `local`, plus per-trial
+   tags (`stjp.arm`, `stjp.model`, `stjp.trial`).
+
+**What "reflect to Foundry" means here** (the honesty rule, spelled out
+in `BENCHMARK_IMPLEMENTATION_STEPS.md` §4): local recordings stream to
+Foundry LIVE during the run, honestly labeled as local; separately, the
+deployed hosted groups execute their own small verification sample (3–5
+runs per setup and model). A local recording is never relabeled as
+hosted, and recordings are never batch-uploaded after the fact — so a
+local wave will never populate the agent's own Traces tab, and that must
+not be "fixed" by uploading recordings; that would fabricate hosted
+evidence.
+
+**Known defect and its workaround (2026-08-07 n=10 wave):** the trace ID
+saved in each cell does not match the ID the recording actually landed
+under in Application Insights, so looking a cell up by its saved trace
+ID fails for that wave. Look it up by the `stjp.arm` + `stjp.model` +
+`stjp.trial` tags instead (verified working on 2026-08-07). The code
+fix and the required fail-closed telemetry preflight are specified in
+`BENCHMARK_IMPLEMENTATION_STEPS.md` §6.
+
 ## 7. Every document you need, and what it is for
 
 **Start here (this file):** `BENCHMARK_HANDOFF.md` — the plain-English
