@@ -13,7 +13,7 @@
 # GroupChat + local contracts + EFSM-driven speaker selection; feasibility
 # confirmed the same day by reading the installed agent_framework_orchestrations
 # package: GroupChatBuilder(selection_func=...) is a documented first-class
-# alternative to orchestrator_agent). See docs/BENCHMARK_PLAN_V3.md §10.8 for
+# alternative to orchestrator_agent). See docs/benchmarks/BENCHMARK_PLAN_V3.md §10.8 for
 # the full old-name/new-name table. This container has NO legacy-key aliasing
 # (unlike experiments/baselines/registry.py) — it is rebuilt from
 # build_hosted_artifacts.py on every deploy, so there is no old run dir that

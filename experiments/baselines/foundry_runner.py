@@ -137,7 +137,7 @@ class FoundryRunner(BaselineRunner):
         # comparing min_llmvalid_gate_lastrecv vs min_llmvalid_sched
         # (identical prompt + gate) isolates what the protocol-derived
         # scheduler adds BEYOND this heuristic. See
-        # docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 4: in a mostly-linear
+        # docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md, Problem 4: in a mostly-linear
         # pipeline "ask whoever just got a message" removes most idle polls
         # without session types; the EFSM scheduler must earn its keep on
         # branching / fan-in / concurrency, not on beating a fixed circle.

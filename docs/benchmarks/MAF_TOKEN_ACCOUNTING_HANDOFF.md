@@ -129,13 +129,34 @@ Two structural causes, both verified in the installed MAF source under
   `maf_localvalid` its system prompt is ~2,827 tokens (it embeds the full
   9,487-char intent document **and** the whole protocol; for `maf_globalvalid`
   / `maf_skills` it is ~1,791 tokens). That entire system prompt is re-sent on
-  every orchestrator call, and the orchestrator reads the **full growing
-  transcript** each round (`_get_conversation()` in the installed
-  `agent_framework_orchestrations/_group_chat.py`). Non-MAF round-robin selects
-  the next speaker with a free Python `pop(0)` — no LLM call.
+  every orchestrator call, and the model processes the whole accumulated
+  transcript each round. Non-MAF round-robin selects the next speaker with a
+  free Python `pop(0)` — no LLM call.
+
+  **Correction (2026-08-07):** an earlier version of this section said the
+  orchestrator re-sends the full transcript via `_get_conversation()`. That is
+  not what the code does. `AgentBasedGroupChatOrchestrator._invoke_agent`
+  (installed `agent_framework_orchestrations/_group_chat.py`) copies only
+  `self._cache` — the messages new since last round — clears it, appends its
+  instruction block, and passes `session=self._session`; the comment there reads
+  *"We only need the last message for context since history is maintained in the
+  thread."* History lives server-side in the session thread, so the client sends
+  a delta, not the transcript. `_get_conversation()` feeds the `selection_func`
+  path (`GroupChatState`) and the termination check, not the LLM orchestrator's
+  call. The **billing** conclusion is unchanged — each call still processes the
+  accumulated thread, so input grows per round — but the request is append-only,
+  which is the shape automatic prompt caching serves best. Caching discounts
+  dollars, not tokens; token counts, the benchmark's primary metric, are
+  unaffected either way.
 - **Participants get broadcast context, not a projected view.** MAF broadcasts
   each reply to all participants and each `AgentExecutor` defaults to
-  `context_mode="full"`. Non-MAF calls `session_view.build_view`, which filters
+  `context_mode="full"`. Note that `context_mode` is **not** a usable lever here:
+  it is consulted only in the `from_response` chaining handler, while group-chat
+  broadcasts arrive as an `AgentExecutorRequest` and hit `run()`, which does an
+  unfiltered `self._cache.extend(request.messages)`. Projecting MAF's broadcast
+  would require a custom orchestrator passing a receiver subset to
+  `_broadcast_messages_to_participants`, not a `context_filter`.
+  Non-MAF calls `session_view.build_view`, which filters
   history to **only messages where this role is sender or receiver** — the STJP
   projection. (Broadcast growth is linear, not quadratic: `AgentExecutor._cache`
   is cleared after each run and only the newest message is rebroadcast — so
@@ -275,16 +296,65 @@ undercount problem. It is the source used to *fix* it.**
 
 ## 8. What to do next
 
-1. **Fix Bug A (empty message list on GPT).** Guarantee every participant
-   request carries a non-empty user message even when the orchestrator picks
-   the same speaker twice, so `maf_*` arms produce valid cells on `sol` and
-   `mini`. Without this there is **no GPT MAF data** at all.
-2. **Fix Bug B (`maf_localvalid_sched` non-convergence).** Make the EFSM
-   `selection_func` / terminal condition stop the workflow on the `Deployed`
-   terminal label before the 100-superstep limit, on both DeepSeek models.
+**Status update 2026-08-07: items 1–3 are done; the campaign is running.**
+
+1. ~~**Fix Bug A (empty message list on GPT).**~~ **RESOLVED — no new fix was
+   needed.** The guard (`_MAF_TURN_INSTRUCTION`, forced on every
+   `_send_request_to_participant` path) landed in commit `5150995` at 16:58 on
+   2026-08-06 — *after* the pilot started at 09:18, so every Bug-A failure
+   recorded in that run was produced by code that no longer exists. Verified by
+   re-running the exact failing combination (`mini` / `maf_localvalid`, the
+   Responses API path GPT uses): **valid**, goal achieved, 36 calls, 228,360
+   tokens, zero empty-message errors. Lesson for the next reader: the manifest
+   stores only an error *string*, never a stack trace, and the run-owned server
+   logs are not kept — so a stored failure cannot be re-diagnosed by reading,
+   only by re-running.
+2. ~~**Fix Bug B (`maf_localvalid_sched` non-convergence).**~~ **FIXED** in
+   `main.py`. The cause was not the terminal condition: MAF's workflow runner
+   raises `WorkflowConvergenceException` after `DEFAULT_MAX_ITERATIONS` (100)
+   **supersteps**, and `GroupChatBuilder.build()` does not expose that knob. One
+   group-chat round costs several supersteps, so this case's 52-round budget
+   (`max_steps` 48 + 4) exhausted a MAF-internal counter long before the
+   benchmark's own turn budget. Two changes, both applied to **all three MAF
+   arms identically** so no arm's stopping rule differs:
+   - `_lift_maf_superstep_ceiling()` raises the runner ceiling to
+     `6 * max_rounds + 20`, making `max_rounds` the only turn budget any arm can
+     hit. Supersteps are a MAF implementation detail, not a benchmark quantity,
+     so this does not change what is being compared. It must set
+     `workflow._runner._max_iterations` as well as the public attribute — the
+     runner captures the value in `Workflow.__init__`.
+   - the EFSM `selection_func` now records `efsm_end` when no role has an
+     enabled SEND, and the termination condition stops on it. This is the MAF
+     twin of `RoundRobinGateLoop`'s `terminated_by="efsm_end"`; without it the
+     scheduler polled an arbitrary role until the budget drained.
+
+   Verified on the exact failing cell (`v4flash` / `maf_localvalid_sched`):
+   **valid**, goal achieved, 12 calls, 9,591 tokens, $0.002, finished in about a
+   minute instead of hitting the wall.
 3. **Re-run the pilot gate cleanly** so MAF passes on all four models (the
    handoff rule), then confirm the local-vs-trace usage cross-check on a MAF
-   cell (proves the `b1252fd` fix end-to-end).
+   cell (proves the `b1252fd` fix end-to-end). **Superseded in practice:** the
+   n=10 campaign started 2026-08-07 08:00 local
+   (`runs/20260807T080010-hosted-n10-4model-10arm-...-n10`, 10 arms × 4 models ×
+   10 trials = 400 cells) is itself the gate — every MAF arm now produces valid
+   cells on every model. The usage cross-check still wants doing on one MAF cell.
+
+   Two early observations from that run worth carrying forward: the `skills`
+   baseline is **not** the 0%-goal floor the n=1 pilot implied (5 of the first 11
+   trials met their goals, 4 of 6 on `v4pro`) — a single trial per cell simply
+   could not show that; and per-cell cost of `skills` (136–360 calls, 0.5–2.4M
+   tokens) against `localvalid` (14 calls, 6,559 tokens on `v4pro`) is the
+   clearest contrast in the data so far.
+3b. **Dollar cost is now reported alongside tokens.**
+   `experiments/scripts/cost_summary.py` runs automatically at the end of every
+   campaign and writes `cost_summary.json` (per model, per arm, grand total,
+   with the same `comparable` flag as the token tables and an explicit list of
+   unpriced cells). `experiments/config/model_prices.json` now holds **verified
+   Azure meter rates**, not analogs — it previously carried placeholders that
+   were badly off (DeepSeek-V4-Pro listed at $0.25/1M input against a real
+   $1.74), so any dollar figure produced before 2026-08-07 understates spend.
+   Rates are UNCACHED input, making every total an upper bound; the runtime does
+   not yet record how many prompt tokens were served from cache.
 4. **Only report matched-model ratios** (§5) until every arm has the same valid
    model/trial denominator; never show the pooled arm-average table.
 5. Then proceed to `n=30` per `BENCHMARK_HANDOFF.md` §8, owner's go required

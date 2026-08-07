@@ -231,7 +231,7 @@ entry point (arms, models, fairness, doc list, run steps).
 | [`BENCHMARK_PLAN_V3.md`](BENCHMARK_PLAN_V3.md) | The full design and reasoning. **§10.8** is the authoritative arm list; **§10** is the fairness rules; **§1** is the models. The top has a "read this first" banner. Older sections are design history. |
 | [`BENCHMARK_IMPLEMENTATION_STEPS.md`](BENCHMARK_IMPLEMENTATION_STEPS.md) | The step-by-step "how to run it." **§0a** lists the infrastructure traps a fresh machine will hit (read it first — it will save you a day). |
 | [`BENCHMARK_CASE_RANKING.md`](BENCHMARK_CASE_RANKING.md) | Which real cases to run and in what order, with the reasoning. |
-| [`reference/SDLC_HOSTED_WORKFLOW_SPEC.md`](reference/SDLC_HOSTED_WORKFLOW_SPEC.md) | The technical build recipe for turning one case into a runnable package. For a programmer; opens with a plain summary and a key-terms list. |
+| [`reference/SDLC_HOSTED_WORKFLOW_SPEC.md`](../reference/SDLC_HOSTED_WORKFLOW_SPEC.md) | The technical build recipe for turning one case into a runnable package. For a programmer; opens with a plain summary and a key-terms list. |
 | [`BENCHMARK_TIMELOG.md`](BENCHMARK_TIMELOG.md) | Measured timings, so you can estimate how long the remaining cases will take. |
 | [`BENCHMARK_FAIRNESS_REVIEW.md`](BENCHMARK_FAIRNESS_REVIEW.md) | The original fairness audit — *why* the fairness rules exist. (Historical: uses the old arm names; §10.8 maps them.) |
 

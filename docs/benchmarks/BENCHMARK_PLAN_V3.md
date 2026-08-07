@@ -18,7 +18,7 @@
 
 **Date: 2026-08-01 (design), amended through 2026-08-05.** This is the design
 document for the STJP real-case benchmark campaign — why it is built the way
-it is. It supersedes `reference/BENCHMARK_PLAN_V2.md`. It states what runs,
+it is. It supersedes `BENCHMARK_PLAN_V2.md`. It states what runs,
 where it runs, which tools must be installed, how results are graded, and
 what result tables the campaign produces. The step-by-step "how to run it" is
 [`BENCHMARK_IMPLEMENTATION_STEPS.md`](BENCHMARK_IMPLEMENTATION_STEPS.md).
@@ -123,7 +123,7 @@ per-turn control (the scheduler). These run on the Foundry **Agent Service**:
 one classic agent per role per setting (`stjp-<case>-<setting>-<role>`) and
 one thread per role per trial. These appear in the portal's
 previous/classic agents view (NOT the "New Foundry" page). Visibility rules
-and deep links: `reference/FOUNDRY_VISIBILITY.md`.
+and deep links: `../reference/FOUNDRY_VISIBILITY.md`.
 
 ### 2.3 Evidence, three layers, every trial
 
@@ -885,5 +885,5 @@ resolvable alias); `experiments/scripts/evaluate_run.py`'s
 (`ARM_CONFIG`) and its artifact builder,
 `experiments/scripts/build_hosted_artifacts.py`; and
 `docs/reference/SDLC_HOSTED_WORKFLOW_SPEC.md`. See
-`docs/BENCHMARK_IMPLEMENTATION_STEPS.md` §4.3 and `docs/BENCHMARK_CASE_RANKING.md`
+`docs/benchmarks/BENCHMARK_IMPLEMENTATION_STEPS.md` §4.3 and `docs/benchmarks/BENCHMARK_CASE_RANKING.md`
 for the same table applied to the run-order playbook.

@@ -8,7 +8,7 @@ result — all logs and summaries are written by case_runner.py itself into
 experiments/cases/<case>/runs/<run folder>/.
 
 Safety rules (each one exists because its absence caused a real incident,
-2026-07-28 — see docs/reference/HOW_TO_RUN_BENCHMARKS.md):
+2026-07-28 — see docs/benchmarks/HOW_TO_RUN_BENCHMARKS.md):
 
   1. ONE JOB PER DEPLOYMENT AT A TIME. Deployments run in parallel with each
      other, but each deployment runs its queue strictly one case at a time.

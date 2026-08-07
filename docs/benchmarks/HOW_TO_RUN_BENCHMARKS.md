@@ -2,7 +2,7 @@
 
 The complete, committed procedure for producing benchmark results — from
 launching hosted-agent runs to the files the report tables are written from.
-Terms used here are the canonical ones from [`GLOSSARY.md`](GLOSSARY.md):
+Terms used here are the canonical ones from [`GLOSSARY.md`](../reference/GLOSSARY.md):
 **case** (a scenario under `experiments/cases/<case>/`), **setting** (one
 configuration of a case — the harness flag is named `--arms` for historical
 reasons), **deployment** (a model deployment in the Azure AI Foundry project,

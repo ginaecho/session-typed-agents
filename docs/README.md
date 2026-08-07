@@ -10,17 +10,23 @@ Clean, organized guides to the Session-Typed Judge Panel (STJP) — a system tha
 
 If you are here for the **benchmark campaign** (comparing our approach
 against baselines and Microsoft's multi-agent tool, on 10 setups × 4 AI
-models), start with these six documents — they are the current set, all
-named `BENCHMARK_*`, all in plain English:
+models), everything now lives in one folder: **[`benchmarks/`](benchmarks/)**
+(consolidated 2026-08-07; all in plain English).
 
 | read in this order | what it gives you |
 |---|---|
-| [`BENCHMARK_HANDOFF.md`](BENCHMARK_HANDOFF.md) | **Start here.** The whole picture: what we measure, the 10 setups, the 4 models, the fairness reasoning, every document, and the run steps. |
-| [`BENCHMARK_PLAN_V3.md`](BENCHMARK_PLAN_V3.md) | The full design and reasoning. §10.8 = the authoritative setup names. Top banner explains which parts are history. |
-| [`BENCHMARK_IMPLEMENTATION_STEPS.md`](BENCHMARK_IMPLEMENTATION_STEPS.md) | Step-by-step how to run it. §0a = the setup traps a fresh machine will hit. |
-| [`BENCHMARK_CASE_RANKING.md`](BENCHMARK_CASE_RANKING.md) | Which test cases to run, in what order, and why. |
-| [`BENCHMARK_TIMELOG.md`](BENCHMARK_TIMELOG.md) | Measured timings for estimating future work. |
-| [`BENCHMARK_FAIRNESS_REVIEW.md`](BENCHMARK_FAIRNESS_REVIEW.md) | The original fairness audit (historical names; the mapping is in PLAN_V3 §10.8). |
+| [`benchmarks/README.md`](benchmarks/README.md) | **Start here.** The plain-English overview: what the benchmark measures, the 10 setups, the 4 models, the ranked test cases with reasons, and the run steps. |
+| [`benchmarks/BENCHMARK_HANDOFF.md`](benchmarks/BENCHMARK_HANDOFF.md) | The detailed handoff: the fairness reasoning, every document, and the full run checklist. |
+| [`benchmarks/BENCHMARK_PLAN_V3.md`](benchmarks/BENCHMARK_PLAN_V3.md) | The full design and reasoning. §10.8 = the authoritative setup names. Top banner explains which parts are history. |
+| [`benchmarks/BENCHMARK_IMPLEMENTATION_STEPS.md`](benchmarks/BENCHMARK_IMPLEMENTATION_STEPS.md) | Step-by-step how to run it. §0a = the setup traps a fresh machine will hit. |
+| [`benchmarks/BENCHMARK_CASE_RANKING.md`](benchmarks/BENCHMARK_CASE_RANKING.md) | Which test cases to run, in what order, and why. |
+| [`benchmarks/BENCHMARK_TIMELOG.md`](benchmarks/BENCHMARK_TIMELOG.md) | Measured timings for estimating future work. |
+| [`benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`](benchmarks/BENCHMARK_FAIRNESS_REVIEW.md) | The original fairness audit (historical names; the mapping is in PLAN_V3 §10.8). |
+
+The folder also holds `MAF_TOKEN_ACCOUNTING_HANDOFF.md` (token counting
+for the Microsoft-tool setups), `HOW_TO_RUN_BENCHMARKS.md` (the older
+local runner's procedure), `BENCHMARK_PLAN_V2.md` (the previous,
+superseded plan), and `analysis/` (per-model analysis write-ups).
 
 Older benchmark guides (`2_TESTING_STRATEGIES`, `3_BENCHMARK_DESIGN_EXPLAINED`,
 `5_ARMS_EXPLAINED`, `CAMPAIGN_STATUS`) were **moved to [`archive/`](archive/)**
@@ -75,7 +81,7 @@ pointing here.
 - **Running the nuscr / nuscribble compiler backend?** → See [`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md) (install routes + `STJP_COMPILER_BACKEND=nuscr`)
 - **Verifying the results from the raw traces?** → See [`reference/HOW_TO_USE_TRACES.md`](reference/HOW_TO_USE_TRACES.md) (re-derive every metric; read a trace by eye)
 - **Which developer use cases fit STJP (interview format)?** → See [`FABLE5_INTERVIEW_DEV_USE_CASES.md`](FABLE5_INTERVIEW_DEV_USE_CASES.md)
-- **Is the benchmark itself fair?** → See [`BENCHMARK_FAIRNESS_REVIEW.md`](BENCHMARK_FAIRNESS_REVIEW.md) (a skeptical audit of the scoring and cost claims)
+- **Is the benchmark itself fair?** → See [`benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`](benchmarks/BENCHMARK_FAIRNESS_REVIEW.md) (a skeptical audit of the scoring and cost claims)
 - **What changed on 2026-07-25 (related-work sweep + the mechanisms built from it)?** → Two key documents, each linking every implemented script: [`reference/RELATED_WORK_2026-07-25.md`](reference/RELATED_WORK_2026-07-25.md) and [`../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md`](../paper-writing/RELATED_WORK_DISCUSSION_2026-07-25.md)
 - **What does a run cost in real money?** → See [`reference/COST_ESTIMATES.md`](reference/COST_ESTIMATES.md) (which commands touch Azure; per-model dollar table)
 
@@ -253,7 +259,7 @@ a human doing it by hand.
 | [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) | **Results.** How do I read benchmark results? What do the numbers mean? |
 | [`7_USE_CASE_DEADLOCK_SAFETY.md`](7_USE_CASE_DEADLOCK_SAFETY.md) | **Safety cases.** Why do protocols matter? Real examples. |
 | [`8_INTENT_TO_PROTOCOL_TRAINING.md`](8_INTENT_TO_PROTOCOL_TRAINING.md) | **Training the front door.** How does intent → protocol drafting get machine-learned? What exists today, and how do I run it? |
-| [`BENCHMARK_FAIRNESS_REVIEW.md`](BENCHMARK_FAIRNESS_REVIEW.md) | **Fairness audit.** A skeptical review of the benchmark itself: what it already does well, the scoring problems found (all leaning in STJP's favor), and how to fix the measurements. |
+| [`benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`](benchmarks/BENCHMARK_FAIRNESS_REVIEW.md) | **Fairness audit.** A skeptical review of the benchmark itself: what it already does well, the scoring problems found (all leaning in STJP's favor), and how to fix the measurements. |
 | [`FABLE5_INTERVIEW_DEV_USE_CASES.md`](FABLE5_INTERVIEW_DEV_USE_CASES.md) | **Developer use cases, interview format.** Which real developer workflows fit STJP, argued case by case. |
 
 ### `reference/` — technical deep-dives (current, for researchers)
@@ -267,7 +273,7 @@ a human doing it by hand.
 - [`reference/PROTOCOL_EVOLUTION.md`](reference/PROTOCOL_EVOLUTION.md) — How to update a protocol and re-validate (now includes the built incremental sub-protocol slice: child verified once, projection diff, monitor regen for affected roles only)
 - [`reference/CRITIC_REVISOR.md`](reference/CRITIC_REVISOR.md) — The Critic (a rule checker for rules that span several messages — e.g. who may see what, what must come first, what may happen at most once), and the Revisor (the loop that automatically repairs a plan the checker rejected)
 - [`reference/SKILL_COMPACTION.md`](reference/SKILL_COMPACTION.md) — Bottom-up STJP: distill EXISTING prose skill files into each agent's formal slice of a plan ("local types"), assemble them into the team-wide plan ("global type"), and have Scribble validate it
-- [`reference/BENCHMARK_PLAN_V2.md`](reference/BENCHMARK_PLAN_V2.md) — Benchmark hardening (E1–E7 + verdict corpus): what each experiment measures, real numbers vs measurement-pending, and how to swap real data into the figures/tables
+- [`benchmarks/BENCHMARK_PLAN_V2.md`](benchmarks/BENCHMARK_PLAN_V2.md) — Benchmark hardening (E1–E7 + verdict corpus): what each experiment measures, real numbers vs measurement-pending, and how to swap real data into the figures/tables (moved to `benchmarks/` 2026-08-07)
 - [`reference/GAP_CLOSED.md`](reference/GAP_CLOSED.md) — Refinement call-site closure record (referenced by `experiments/README.md` and `stjp_core/README.md`)
 - [`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md) — **How to run the coinductive nuscr ("nuscribble") backend** in the cloud env: Docker route, CI-artifact native-binary route, building scribble-java from source, the `STJP_COMPILER_BACKEND=nuscr` / `STJP_NUSCR_BIN` env vars, and the 2017-Maven-release pitfall
 - [`reference/HOW_TO_USE_TRACES.md`](reference/HOW_TO_USE_TRACES.md) — **Verify the results yourself from the committed raw traces**: what each trace file contains, how to read one message by eye, and how to re-derive every headline metric
@@ -322,7 +328,7 @@ Each report follows the same template: at-a-glance summary → the story → how
 - [`results/RESULT_03_PROTOCOL_LADDER.md`](results/RESULT_03_PROTOCOL_LADDER.md) — **More protocol support, better outcomes** (8 settings, n=10): no protocol 0% → rejected protocol 10% → validated text 40% → projected contracts 60–100%. Also the best place to see, with real traces, exactly what "a violation" and "success" mean.
 - [`results/RESULT_04_FULL_STACK.md`](results/RESULT_04_FULL_STACK.md) — **The latest headline** (pre-registered, 2026-07-02): full STJP stack is simultaneously the safest (100%, 0 disasters) and the cheapest/fastest (13.3k tokens, 32s per delivered report — 9× cheaper than the same protocol as text).
 - [`results/RESULT_05_SUBAGENT_VALIDATION.md`](results/RESULT_05_SUBAGENT_VALIDATION.md) — **Foundry-free validation of the 2026-07 components** (Critic/Revisor, skill compaction, incremental extension): 211/211 stress checks over generated protocols; subagent-driven trials n=10 — unchecked prose skills 0/10 (all deadlock) vs STJP 10/10 at protocol-minimum cost, extended protocol 10/10, compaction gauntlet 10/10 detect + 10/10 repair.
-- [`results/RESULT_06_BENCHMARK_HARDENING.md`](results/RESULT_06_BENCHMARK_HARDENING.md) — **Benchmark Plan v2** (test the testers + mutation testing + adversarial gate + pass^k + translation fidelity + roles/portability): verdict corpus 40/40, checker 95.6% detection/0% FP, gate exfiltration ladder 0→41.7→91.7→100%, pass^10 CI story, equivalence scorer 100%. Design in [`reference/BENCHMARK_PLAN_V2.md`](reference/BENCHMARK_PLAN_V2.md).
+- [`results/RESULT_06_BENCHMARK_HARDENING.md`](results/RESULT_06_BENCHMARK_HARDENING.md) — **Benchmark Plan v2** (test the testers + mutation testing + adversarial gate + pass^k + translation fidelity + roles/portability): verdict corpus 40/40, checker 95.6% detection/0% FP, gate exfiltration ladder 0→41.7→91.7→100%, pass^10 CI story, equivalence scorer 100%. Design in [`benchmarks/BENCHMARK_PLAN_V2.md`](benchmarks/BENCHMARK_PLAN_V2.md).
 - [`results/RESULT_07_N100_SCALE.md`](results/RESULT_07_N100_SCALE.md) — **n=100 scale run** (all deterministic benchmarks): Wilson CI narrows from [72,100]% to [96.3,100]%; pass^10@floor jumps 0.039→0.686 (17.6×); integration stress 2105/2110; 100-protocol mutation corpus 95.1%/0% FP; subagent trials 0/100 unchecked vs 100/100 STJP; equivalence scorer 300/300.
 - [`results/RESULT_08_SKILL_SAFETY.md`](results/RESULT_08_SKILL_SAFETY.md) — **Real public skills, unvalidated vs STJP** (4 teams built from real OpenAI Agents SDK / CrewAI / AutoGen / LangGraph example skills — benign, MIT-licensed, provenance in each case's `SOURCES.md`). The compiler rejected all 4 combined plans at design time, and at runtime every unvalidated trial failed (40/40 stall or deadlock). Writing the contract in as text fixed completion but produced 20 double-charge/double-write disasters; full STJP: 100% success, 0 disasters, cheapest. An n=100 re-run with a stronger model (Sonnet) confirmed all of it — the weak settings fail *differently* under a different model, but the design-time rejection is model-independent.
 - [`results/RESULT_09_REAL_SKILLS_TWO_MODELS.md`](results/RESULT_09_REAL_SKILLS_TWO_MODELS.md) — **Real Anthropic + GitHub Copilot skills, the same experiment run on two models** (2 teams built from [anthropics/skills](https://github.com/anthropics/skills) and [github/awesome-copilot](https://github.com/github/awesome-copilot) files × 3 settings × n=10, once with Haiku subagents and once with Sonnet subagents; written fully jargon-free, every term explained in place). Headline: with no coordination plan, *which* team fails is model-dependent — Haiku finished the code-change team's job 0 times out of 10, Sonnet finished the announcement team's job 0 times out of 10, on identical skills; with full STJP both models were flawless and indistinguishable (40/40, 0 rule-breaking messages, exactly 4 AI calls/trial, ~1.8k tokens = 3× cheaper than no-plan, 2.4× cheaper than plan-as-text). Evidence: `experiments/subagent_trials/reports/ss2026_new_skills/`.
@@ -415,11 +421,15 @@ Each archived file is also indexed, with what superseded it, in
 ```
 docs/
 ├── 1_...md … 8_...md + README.md   ← the numbered guides (plain English; start here)
-│                                      plus the top-level reviews (BENCHMARK_FAIRNESS_REVIEW,
-│                                      FABLE5_INTERVIEW_DEV_USE_CASES)
+│                                      plus the top-level reviews
+│                                      (FABLE5_INTERVIEW_DEV_USE_CASES)
+├── benchmarks/                      ← EVERYTHING about the benchmark campaign in one
+│                                      folder (start at benchmarks/README.md): the plan,
+│                                      run steps, case ranking, fairness audit, timings,
+│                                      token accounting, and per-model analyses
 ├── reference/                       ← current technical deep-dives (glossary, Scribble
 │                                      extensions, gate internals, Foundry wiring, v3 plan,
-│                                      Benchmark Plan v2, cost estimates)
+│                                      cost estimates)
 ├── results/                         ← current evidence, plain English: RESULT_00_SUMMARY …
 │                                      RESULT_11_DOC_COAUTHOR_SHIP (latest), plus runs/
 ├── predictions/                     ← pre-registered predictions (written BEFORE a run,

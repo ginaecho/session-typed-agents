@@ -46,11 +46,11 @@ Multi-agent systems fail in the spaces *between* agents: one agent acts before a
 
 **Quick tours:**
 - **What is STJP?** → [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md) (15 min)
-- **How do we test it?** → [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md) (20 min)
-- **What is each "arm"?** → [`docs/5_ARMS_EXPLAINED.md`](docs/5_ARMS_EXPLAINED.md) (10 min)
+- **How do we test it?** → [`docs/2_TESTING_STRATEGIES.md`](docs/archive/2_TESTING_STRATEGIES.md) (20 min)
+- **What is each "arm"?** → [`docs/5_ARMS_EXPLAINED.md`](docs/archive/5_ARMS_EXPLAINED.md) (10 min)
 - **Latest results** → [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) (plain English)
 - **Why safety matters** → [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md) (real examples)
-- **Is the benchmark fair?** → [`docs/BENCHMARK_FAIRNESS_REVIEW.md`](docs/BENCHMARK_FAIRNESS_REVIEW.md) (the audit)
+- **Is the benchmark fair?** → [`docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`](docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md) (the audit)
 
 ---
 
@@ -212,7 +212,7 @@ groups of a medical trial):
 - **min_llmvalid_sched** — lean contract + gate + EFSM scheduler (full STJP)
 
 Each arm is drawn as a one-line flow diagram in
-[`docs/5_ARMS_EXPLAINED.md`](docs/5_ARMS_EXPLAINED.md).
+[`docs/5_ARMS_EXPLAINED.md`](docs/archive/5_ARMS_EXPLAINED.md).
 
 ### 4. Run a different case
 
@@ -520,7 +520,7 @@ az login --use-device-code
 **The headline:** STJP is 9× cheaper, 4× faster, same safety as global protocol text.
 
 **Read this table with two caveats** (from the
-[fairness review](docs/BENCHMARK_FAIRNESS_REVIEW.md)): bare's 0% was scored
+[fairness review](docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md)): bare's 0% was scored
 under the strict label-matching rule, which grades the bare team on message
 labels it was never shown — so treat 0% as a lower bound until the fair-rule
 re-run lands. And the seconds column came from arms running in parallel
@@ -540,7 +540,7 @@ See [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) for the
 3. Read [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) to interpret results
 
 **Run the full benchmark:**
-1. Read [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md) (understand fairness)
+1. Read [`docs/2_TESTING_STRATEGIES.md`](docs/archive/2_TESTING_STRATEGIES.md) (understand fairness)
 2. Run: `python experiments/scripts/case_runner.py finance 10`
 3. View: `python experiments/scripts/index_builder.py && open INDEX.html`
 
@@ -566,7 +566,7 @@ See [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md) for the
 
 - **How do I run STJP?** → This README (you are here)
 - **What is STJP technically?** → [`docs/1_TECH_SETUP.md`](docs/1_TECH_SETUP.md)
-- **Why are tests confounded?** → [`docs/2_TESTING_STRATEGIES.md`](docs/2_TESTING_STRATEGIES.md)
+- **Why are tests confounded?** → [`docs/2_TESTING_STRATEGIES.md`](docs/archive/2_TESTING_STRATEGIES.md)
 - **How do I read results?** → [`docs/6_RUN_REPORTS_EXPLAINED.md`](docs/6_RUN_REPORTS_EXPLAINED.md)
 - **Why does safety matter?** → [`docs/7_USE_CASE_DEADLOCK_SAFETY.md`](docs/7_USE_CASE_DEADLOCK_SAFETY.md)
 - **How do I create a case?** → [`docs/4_HOW_TO_CREATE_USE_CASES.md`](docs/4_HOW_TO_CREATE_USE_CASES.md)

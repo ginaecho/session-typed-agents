@@ -436,7 +436,7 @@ _min_llmvalid_sched_alias_factory = _make_foundry_llm_drafted_factory(
 # protocol. min_llmvalid_gate_lastrecv vs localvalid_sched isolates what
 # the protocol-derived EFSM scheduler adds beyond this trivial heuristic
 # (expected: little on linear pipelines, a real gap on branching / fan-in /
-# concurrent cases). See docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 4.
+# concurrent cases). See docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md, Problem 4.
 # NOT part of the 2026-08-05 rename table (ablation-tier only); key unchanged.
 _min_llmvalid_gate_lastrecv_factory = _make_foundry_llm_drafted_factory(
     "valid", "min_llmvalid_gate_lastrecv", "WITH-min-GATE-LASTRECV",
@@ -445,7 +445,7 @@ _min_llmvalid_gate_lastrecv_factory = _make_foundry_llm_drafted_factory(
 # per-turn liveness nudge ("you are at state N; the available action is
 # SEND X to Y"). localvalid_gate vs min_llmvalid_gate_nohint separates
 # pure enforcement (block + explain rejections) from per-turn ground-truth
-# guidance. See docs/BENCHMARK_FAIRNESS_REVIEW.md, Problem 5.
+# guidance. See docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md, Problem 5.
 # NOT part of the 2026-08-05 rename table (ablation-tier only); key unchanged.
 _min_llmvalid_gate_nohint_factory = _make_foundry_llm_drafted_factory(
     "valid", "min_llmvalid_gate_nohint", "WITH-min-GATE-NOHINT",

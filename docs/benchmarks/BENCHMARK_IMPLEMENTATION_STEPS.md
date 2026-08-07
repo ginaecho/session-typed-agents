@@ -10,13 +10,13 @@ style (see step 4 for why; this replaces PLAN_V3 section 2.2). How the
 package is **executed** is section 4.5: the main test runs execute the
 identical package locally (fast, parallel), and the cloud-hosted copies
 run a small verification sample. More detail in:
-[`reference/FOUNDRY_VISIBILITY.md`](reference/FOUNDRY_VISIBILITY.md),
-[`reference/HOW_TO_IMPLEMENT_SUBSESSIONS.md`](reference/HOW_TO_IMPLEMENT_SUBSESSIONS.md),
-[`reference/HOW_TO_USE_TRACES.md`](reference/HOW_TO_USE_TRACES.md),
-[`reference/NUSCR_AND_SKILL_SAFETY_PLAN.md`](reference/NUSCR_AND_SKILL_SAFETY_PLAN.md),
-[`reference/NUSCR_BACKEND_COMPARISON.md`](reference/NUSCR_BACKEND_COMPARISON.md),
-[`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md),
-[`reference/PROTOCOL_EVOLUTION.md`](reference/PROTOCOL_EVOLUTION.md).
+[`reference/FOUNDRY_VISIBILITY.md`](../reference/FOUNDRY_VISIBILITY.md),
+[`reference/HOW_TO_IMPLEMENT_SUBSESSIONS.md`](../reference/HOW_TO_IMPLEMENT_SUBSESSIONS.md),
+[`reference/HOW_TO_USE_TRACES.md`](../reference/HOW_TO_USE_TRACES.md),
+[`reference/NUSCR_AND_SKILL_SAFETY_PLAN.md`](../reference/NUSCR_AND_SKILL_SAFETY_PLAN.md),
+[`reference/NUSCR_BACKEND_COMPARISON.md`](../reference/NUSCR_BACKEND_COMPARISON.md),
+[`reference/NUSCR_CLOUD_INSTALL.md`](../reference/NUSCR_CLOUD_INSTALL.md),
+[`reference/PROTOCOL_EVOLUTION.md`](../reference/PROTOCOL_EVOLUTION.md).
 
 ## Menu
 
@@ -50,7 +50,7 @@ meet the same landmines:
    background tasks of the AI-helper harness are silently killed at
    exactly 60 minutes (our model server died at 59 min 53 s with no error
    message — same signature as the old memory_race stall in
-   archive/CAMPAIGN_STATUS.md). FIX: start servers and campaign drivers as
+   ../archive/CAMPAIGN_STATUS.md). FIX: start servers and campaign drivers as
    **detached processes** (owned by cmd.exe, output redirected to log
    files), never as harness background tasks.
 3. **Stale login variables break authentication.** This machine had

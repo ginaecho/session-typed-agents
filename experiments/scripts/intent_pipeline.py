@@ -1,7 +1,7 @@
 """intent_pipeline.py — intent authoring + interrogation/distillation front-end.
 
 Produces the intent artifacts under experiments/cases/<case>/intent/ that the
-fair intent-carrying policy needs (docs/BENCHMARK_PLAN_V3.md, V3.1 amendment):
+fair intent-carrying policy needs (docs/benchmarks/BENCHMARK_PLAN_V3.md, V3.1 amendment):
 
   intent.md            document-scale user intent. Two provenances:
                          --from-file  : quoted VERBATIM from the real use

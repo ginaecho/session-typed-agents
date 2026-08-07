@@ -104,7 +104,7 @@ is presentational. All edits in `main.tex` (plus title lines in the READMEs).
 ## v10.1 (2026-07-19) — fairness-audit alignment, statistical rigor, reproducibility
 
 Purpose: bring every claim in line with the 2026-07-17 benchmark fairness
-audit (`docs/BENCHMARK_FAIRNESS_REVIEW.md`) and ICLR statistical/reporting
+audit (`docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`) and ICLR statistical/reporting
 norms. No experimental number was added or changed; only qualifications,
 pending-framed ablations, and reporting infrastructure. All edits in
 `main.tex`.

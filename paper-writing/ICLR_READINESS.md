@@ -38,7 +38,7 @@ the message-blocking gate, and the turn scheduler.
 
 ## What v10.1 already fixed
 
-The 2026-07-17 fairness audit (`docs/BENCHMARK_FAIRNESS_REVIEW.md`) found
+The 2026-07-17 fairness audit (`docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`) found
 that the old headline metric graded the bare arm against message labels it
 was never shown — like grading an essay by whether it contains the answer
 key's exact sentence. The v10.1 edit aligned the paper with the fixes: the

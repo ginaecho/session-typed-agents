@@ -1,6 +1,6 @@
 """scaling_chart.py — the "does the saving grow with team size?" experiment.
 
-Why this experiment matters (docs/BENCHMARK_FAIRNESS_REVIEW.md, item 2 of
+Why this experiment matters (docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md, item 2 of
 "How to make STJP's advantages genuinely convincing"): a single "9x cheaper"
 number on one case can always be argued with. The structural claim cannot:
 an agent that is handed only ITS OWN slice of the plan reads a prompt whose

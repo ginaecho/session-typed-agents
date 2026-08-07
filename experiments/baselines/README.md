@@ -69,7 +69,7 @@ be attributed to that one thing:
 - **`min_llmvalid_gate_lastrecv` vs `min_llmvalid_sched`** — identical
   prompts and gate; only the scheduler differs. Isolates what the
   protocol-derived scheduler adds beyond a trivial heuristic (see
-  `docs/BENCHMARK_FAIRNESS_REVIEW.md`, Problem 4).
+  `docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`, Problem 4).
 
 ## LLM-drafted-protocol dependency
 

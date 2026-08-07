@@ -83,3 +83,7 @@ experiments/intent_loop/lessons.json
 # Local benchmark run logs (large, machine-specific; evidence lives in experiments/cases/*/runs/)
 foundry_hosted_agents/**/.localcheck-logs/
 foundry_hosted_agents/**/.localsmoke2-logs/
+
+# MAF runtime checkpoints (machine-generated, long UUID paths that break Windows clones)
+.checkpoints/
+**/.checkpoints/

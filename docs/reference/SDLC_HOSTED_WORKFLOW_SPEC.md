@@ -57,12 +57,12 @@ that depends on the container resolving an old key).
 
 **Orchestrator-authored spec, 2026-08-05.** This is what the S4 subagent
 (the AI helper assigned to build the workflow — "S4" is the build stage
-defined in `docs/BENCHMARK_IMPLEMENTATION_STEPS.md`) must implement. Any
+defined in `docs/benchmarks/BENCHMARK_IMPLEMENTATION_STEPS.md`) must implement. Any
 deviation from this spec requires the orchestrator's sign-off. Pattern to
 follow:
 `foundry_hosted_agents/agent-framework-agent-with-remote-mcp-tools-responses/agents/airline_seat/`
 (agent.yaml / Dockerfile / main.py / requirements.txt + `azure.yaml`
-entry). Rules source: `docs/BENCHMARK_IMPLEMENTATION_STEPS.md` §4,
+entry). Rules source: `docs/benchmarks/BENCHMARK_IMPLEMENTATION_STEPS.md` §4,
 PLAN_V3 §10.6.
 
 ## 1. Two components

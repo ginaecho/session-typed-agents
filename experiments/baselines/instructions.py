@@ -16,7 +16,7 @@ The MAF runners (maf_native, maf_foundry) also use build_bare_instructions
 so that the WITHOUT-side comparison is apples-to-apples on the prompt:
 only the orchestration layer differs across bare / maf_native / maf_foundry.
 
-Intent-carrying policy (docs/BENCHMARK_PLAN_V3.md, V3.1 amendment): builders
+Intent-carrying policy (docs/benchmarks/BENCHMARK_PLAN_V3.md, V3.1 amendment): builders
 that put the user intent into a WORKER prompt use ``case.intent_effective`` —
 identical to ``case.intent`` at the default short scale, but the full
 intent/intent.md document at --intent-scale doc. Fair-intent arms never put
@@ -121,7 +121,7 @@ def build_bare_fairintent_instructions(case: "Case", role: str) -> str:
     scripts/intent_pipeline.py). Goals, role descriptions, termination hint
     and output rules are byte-identical to the bare arm.
 
-    Rationale (docs/BENCHMARK_PLAN_V3.md V3.1): no practitioner pastes a
+    Rationale (docs/benchmarks/BENCHMARK_PLAN_V3.md V3.1): no practitioner pastes a
     handbook-sized intent into all N worker prompts — someone (a human or a
     front-end LLM) distills it into per-role instructions first. Charging
     the baselines for the broadcast is a confound; this arm charges them

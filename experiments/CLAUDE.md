@@ -344,7 +344,7 @@ update the matching `prompts_schema_version`.
   right amount from Fetcher to TaxSpecialist under a made-up label counts as
   a success; a `localvalid`-arm trial doing the same thing fails, because its
   prompt named the label. Rationale + history:
-  `docs/BENCHMARK_FAIRNESS_REVIEW.md` Problem 1.
+  `docs/benchmarks/BENCHMARK_FAIRNESS_REVIEW.md` Problem 1.
   Each arm also carries:
   - `success_rate_ci95_pct` — a 95% Wilson confidence interval (the plausible
     range for the true rate given the sample size). Quote it, not just the
