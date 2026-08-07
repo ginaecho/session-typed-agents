@@ -36,9 +36,9 @@ harness with real anchors and clearly-tagged synthetic placeholders.
 
 ## How this experiment is set
 
-- **Case(s):** not a single live-agent case — deterministic scripts and a hand-derived verdict corpus over generated protocols and traces (see [`docs/benchmarks/BENCHMARK_PLAN_V2.md`](../benchmarks/BENCHMARK_PLAN_V2.md))
+- **Case(s):** not a single live-agent case — deterministic scripts and a hand-derived verdict corpus over generated protocols and traces (see [`docs/benchmarks/BENCHMARK_PLAN_V2.md`](../archive/BENCHMARK_PLAN_V2.md))
 - **Arms/settings:** seven experiments (E1–E7, each isolating one STJP component) plus the verdict corpus; E1 (checker soundness), the verdict corpus, the gate-defense ladder, the Wilson-CI analysis, the equivalence scorer, and the coordination-cost scaling check are reported here as real numbers — E3/E5/E6/E7's live-run percentages are still pending (see "What is still pending")
-- **Trials:** varies by experiment — see [`docs/benchmarks/BENCHMARK_PLAN_V2.md`](../benchmarks/BENCHMARK_PLAN_V2.md) for each experiment's n
+- **Trials:** varies by experiment — see [`docs/benchmarks/BENCHMARK_PLAN_V2.md`](../archive/BENCHMARK_PLAN_V2.md) for each experiment's n
 - **Who plays the roles:** no LLM in the reported deterministic experiments — real Scribble-compiler runs and scripted mutation/adversarial tests; not applicable to the still-pending live-run experiments
 - **Isolation:** not applicable (deterministic, no agents)
 - **Harness & budgets:** `experiments/scripts/{mutation_bench,adversarial_bench,stats,translation_fidelity,efsm_equiv,roles_sweep,capability_sweep,cross_runtime,make_figs_v2}.py`; not applicable

@@ -194,5 +194,11 @@ summaries — is committed under `experiments/cases/<case>/runs/`.
 | [`BENCHMARK_TIMELOG.md`](BENCHMARK_TIMELOG.md) | Measured timings from real runs, for estimating how long remaining work will take. |
 | [`MAF_TOKEN_ACCOUNTING_HANDOFF.md`](MAF_TOKEN_ACCOUNTING_HANDOFF.md) | How token counting works for the Microsoft-tool setups, and how older runs were reconciled. |
 | [`HOW_TO_RUN_BENCHMARKS.md`](HOW_TO_RUN_BENCHMARKS.md) | The run procedure for the **older, pre-campaign** local runner (`case_runner.py`) — still valid for re-running earlier published results. New campaign runs use the steps in section 6 above instead. |
-| [`BENCHMARK_PLAN_V2.md`](BENCHMARK_PLAN_V2.md) | The previous benchmark plan (historical) — the design behind the older hardening experiments in `docs/results/RESULT_06`. Superseded by PLAN_V3. |
 | [`analysis/`](analysis/) | Per-model, per-case analysis write-ups from earlier runs. |
+
+One historical document is deliberately **not** here: the previous plan
+(v2), which designed the already-completed tool-hardening experiments
+reported in [`../results/RESULT_06_BENCHMARK_HARDENING.md`](../results/RESULT_06_BENCHMARK_HARDENING.md).
+It lives in [`../archive/BENCHMARK_PLAN_V2.md`](../archive/BENCHMARK_PLAN_V2.md)
+with the other superseded designs, so this folder only contains what you
+need for the current campaign.

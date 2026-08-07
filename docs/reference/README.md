@@ -30,9 +30,10 @@ Supporting records behind the two key documents:
 
 > **All benchmark guidance moved to [`../benchmarks/`](../benchmarks/README.md)
 > on 2026-08-07** — the campaign plan, run steps, case ranking, fairness
-> audit, timings, token accounting, the older runner's procedure
-> (`HOW_TO_RUN_BENCHMARKS.md`), and the superseded Plan v2 all live there
-> now. Start at `../benchmarks/README.md`.
+> audit, timings, token accounting, and the older runner's procedure
+> (`HOW_TO_RUN_BENCHMARKS.md`) all live there now. The completed,
+> superseded Plan v2 is in [`../archive/BENCHMARK_PLAN_V2.md`](../archive/BENCHMARK_PLAN_V2.md).
+> Start at `../benchmarks/README.md`.
 
 - [`GLOSSARY.md`](GLOSSARY.md) — plain-language meaning of every term used in the STJP docs (metrics, severity ladder, arms, machinery).
 - [`HOW_TO_USE_TRACES.md`](HOW_TO_USE_TRACES.md) — how to re-derive every headline number yourself from the raw per-trial traces committed in the repo.

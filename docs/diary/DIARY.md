@@ -23,6 +23,14 @@ benchmark from one starting point:
   10 setups, the 4 models, the ranked cases with reasons, and the run
   steps. All cross-links in docs, code comments, and the paper notes were
   updated; nothing was deleted.
+- **Plan v2 archived.** `BENCHMARK_PLAN_V2.md` moved from the new
+  `benchmarks/` folder to [`../archive/`](../archive/README.md) with a
+  banner: its experiments (E1–E7, the verdict corpus) are complete and
+  reported in RESULT_06/07, so it is a finished design record, not
+  current methodology. Not deleted and not merged into V3 — published
+  results, a preregistration, and seven scripts cite it by name, and the
+  preregistration→design→result audit trail only works if the document
+  stays intact.
 - **Untracked the MAF `.checkpoints/` files.** 28 machine-generated
   checkpoint files with 192-character paths were tracked in git; paths
   that long can push a Windows clone past the 260-character limit (this

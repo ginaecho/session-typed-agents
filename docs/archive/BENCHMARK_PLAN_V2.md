@@ -1,5 +1,16 @@
 # Benchmark Plan v2 — hardening the STJP evaluation
 
+> **ARCHIVED 2026-08-07.** This plan is complete and superseded. The
+> experiments it designed (E1–E7 and the verdict corpus) were run and are
+> reported in [`../results/RESULT_06_BENCHMARK_HARDENING.md`](../results/RESULT_06_BENCHMARK_HARDENING.md)
+> and [`../results/RESULT_07_N100_SCALE.md`](../results/RESULT_07_N100_SCALE.md);
+> their pre-registered predictions are graded in
+> [`../predictions/BENCHMARK_V2_PREREGISTRATION.md`](../predictions/BENCHMARK_V2_PREREGISTRATION.md).
+> The current benchmark campaign is designed in
+> [`../benchmarks/BENCHMARK_PLAN_V3.md`](../benchmarks/BENCHMARK_PLAN_V3.md) —
+> start at [`../benchmarks/README.md`](../benchmarks/README.md). This file
+> is kept unchanged below the line as the design record those results cite.
+
 Implemented 2026-07-04. Closes the six honesty gaps in the original benchmark
 (too few repeats; one model family; we grade our own homework; only friendly
 agents; the translator is unmeasured; one task size). Design rule: **each

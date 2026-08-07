@@ -18,7 +18,7 @@
 
 **Date: 2026-08-01 (design), amended through 2026-08-05.** This is the design
 document for the STJP real-case benchmark campaign — why it is built the way
-it is. It supersedes `BENCHMARK_PLAN_V2.md`. It states what runs,
+it is. It supersedes `../archive/BENCHMARK_PLAN_V2.md`. It states what runs,
 where it runs, which tools must be installed, how results are graded, and
 what result tables the campaign produces. The step-by-step "how to run it" is
 [`BENCHMARK_IMPLEMENTATION_STEPS.md`](BENCHMARK_IMPLEMENTATION_STEPS.md).

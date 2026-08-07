@@ -1066,7 +1066,7 @@ Every number in Part 2 is reproducible from files in the repository:
 | **Full technical write-up** | `experiments/reports/n100/REPORT_N100.md` | — |
 
 The design rationale for each experiment (the deeper "why") is in
-`reference/BENCHMARK_PLAN_V2.md`; the plain-English component tour is in
+`archive/BENCHMARK_PLAN_V2.md`; the plain-English component tour is in
 `results/RESULT_07_N100_SCALE.md`.
 
 ---
