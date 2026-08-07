@@ -1006,6 +1006,17 @@ class Coordinator(af.Executor):
         the recorded events, so a reflected conversation cannot diverge from
         what actually happened.
 
+        Conversation id (fixed 2026-08-07): every span's `gen_ai.conversation.id`
+        must be a REAL, service-minted conversation, or the portal's
+        Conversation view 404s with "Conversation Not found" -- it resolves
+        against the SERVICE's own conversation store, not an arbitrary string.
+        The caller (reflect_run_to_foundry.py) creates one through the
+        endpoint's OpenAI-compatible Conversations API
+        (POST .../endpoint/protocols/openai/conversations -- served by the
+        platform gateway in front of this container; the container's own
+        agent_framework_foundry_hosting SDK exposes no such route) and passes
+        the id in as `req["conversation_id"]`.
+
         Honesty contract (BENCHMARK_IMPLEMENTATION_STEPS §4.5.3 forbids passing
         a local run off as hosted execution, so every reflected row is marked):
           * span name  `stjp.replay <arm>`, never `stjp.trial`
@@ -1060,8 +1071,25 @@ class Coordinator(af.Executor):
         }
 
         model_name = record.get("model", "")
-        conversation_id = (record.get("trace_id")
-                           or f"{arm}-{trial}")  # stable per reflected trial
+        # A REAL, service-minted conversation id. The reflect script creates
+        # it up front through the endpoint's OpenAI Conversations API
+        # (POST .../endpoint/protocols/openai/conversations -- confirmed live
+        # 2026-08-07: the platform gateway in front of this container serves
+        # a genuine Conversations resource, returning ids like
+        # "conv_...", even though the container's own
+        # agent_framework_foundry_hosting SDK registers no /conversations
+        # route at all) and passes it in as `conversation_id`. Falling back
+        # to the old synthetic value (the original local trace id) is kept
+        # only so a replay invoked without going through the current reflect
+        # script does not crash -- but that synthetic fallback is exactly
+        # what caused "Conversation Not found" in the portal: the portal
+        # resolves `gen_ai.conversation.id` against the SERVICE's own
+        # conversation store, which never heard of a locally-invented string.
+        conversation_id = (req.get("conversation_id")
+                           or record.get("trace_id")
+                           or f"{arm}-{trial}")
+        attrs["gen_ai.conversation.id"] = conversation_id
+        attrs["microsoft.gen_ai.main_agent.conversation_id"] = conversation_id
         # Optional true per-turn token counts, recovered by the reflect script
         # from the original run's `chat <model>` spans (see fetch_turn_usage).
         turn_usage = record.get("turn_usage") or []
@@ -1101,6 +1129,7 @@ class Coordinator(af.Executor):
                     "gen_ai.provider.name": "microsoft.agent_framework",
                     "gen_ai.agent.name": sender,
                     "gen_ai.conversation.id": conversation_id,
+                    "microsoft.gen_ai.main_agent.conversation_id": conversation_id,
                     "gen_ai.request.model": model_name,
                     "gen_ai.input.messages": _messages("user", previous),
                     "gen_ai.output.messages": _messages("assistant", emitted),
@@ -1134,6 +1163,23 @@ class Coordinator(af.Executor):
                     f"{index}. {sender} -> {receiver or '(broadcast)'} : "
                     f"{label}({payload})")
 
+        # Force-flush the tracer provider before returning. The exporter
+        # batches and ships spans on its own schedule; without an explicit
+        # flush here, a long replay's tail can still be sitting in the
+        # exporter's batch buffer when this handler returns and the request
+        # completes -- observed 2026-08-07: a 48-step replay landed only
+        # steps 1-24 in Application Insights, a clean sequential cutoff
+        # consistent with later export batches never making it out. A flush
+        # failure must never break the reply -- it is best-effort exactly
+        # like every other tracing call in this file (see _replay_span,
+        # _add_span_event above).
+        try:
+            from opentelemetry import trace
+            provider = trace.get_tracer_provider()
+            provider.force_flush(timeout_millis=30000)
+        except Exception:  # noqa: BLE001 - flush is best-effort
+            pass
+
         await ctx.yield_output(json.dumps({
             "replay": True,
             "reflected_from": "local",
@@ -1144,6 +1190,7 @@ class Coordinator(af.Executor):
             "original_trace_id": record.get("trace_id"),
             "original_usage": original_usage,
             "reflected_trace_id": _current_trace_id(),
+            "conversation_id": conversation_id,
             "steps": len(events),
             "terminated_by": record.get("terminated_by"),
             "goal_succeeded": record.get("goal_succeeded"),
@@ -1247,14 +1294,34 @@ class Coordinator(af.Executor):
             elif event == "gated":
                 _add_span_event("gate_rejected", kw)
 
+        # Hard per-trial timeout (2026-08-07): a single hung model call used
+        # to hang the whole trial forever — the invoking client gave up, the
+        # run was abandoned mid-flight, and the single-instance WorkflowAgent
+        # was left wedged at WorkflowRunState.IN_PROGRESS, failing EVERY
+        # subsequent request on this server ("invalid state to restart")
+        # until a process restart. Twice in one day that cascade opened a
+        # circuit breaker and killed a whole model wave. Bounding the trial
+        # here means the handler always completes and yields — a hung trial
+        # costs one invalid cell, never the server.
+        trial_timeout_s = float(os.environ.get("STJP_TRIAL_TIMEOUT_S", "2700"))
         try:
-            result = await run_trial_with_agents(
-                arm, role_agents, orchestrator_agent, roles=roles,
-                terminal_label=self._case_meta["terminal_label"],
-                max_steps=max_steps, efsms=self._efsms,
-                payload_guards=self._payload_guards,
-                choice_guards=self._choice_guards, branch_hint=branch_hint,
-                log_fn=log_fn)
+            import asyncio
+            result = await asyncio.wait_for(
+                run_trial_with_agents(
+                    arm, role_agents, orchestrator_agent, roles=roles,
+                    terminal_label=self._case_meta["terminal_label"],
+                    max_steps=max_steps, efsms=self._efsms,
+                    payload_guards=self._payload_guards,
+                    choice_guards=self._choice_guards, branch_hint=branch_hint,
+                    log_fn=log_fn),
+                timeout=trial_timeout_s)
+        except TimeoutError:
+            logger.error("trial TIMED OUT after %.0fs: arm=%s trial=%s "
+                         "(bounded so the workflow completes instead of "
+                         "wedging the server)", trial_timeout_s, arm, trial)
+            result = RoleLoopResult(
+                terminated_by="error",
+                error=f"TrialTimeout: exceeded {trial_timeout_s:.0f}s server-side cap")
         except Exception as e:
             logger.exception("trial failed: arm=%s trial=%s", arm, trial)
             result = RoleLoopResult(terminated_by="error",
