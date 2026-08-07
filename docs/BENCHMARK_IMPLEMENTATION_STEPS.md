@@ -618,6 +618,18 @@ the same table column as older, version-1 rows, for the setups that were
 corrected. Report tables follow PLAN_V3 §7, plus the new intent-scaling
 table.
 
+**Dollar cost is part of every summary (added 2026-08-06).** Tokens stay
+the primary metric, but each run is also priced in dollars because the
+four models' rates differ by more than 10×. The driver writes
+`cost_summary.json` automatically at end of campaign; before reporting,
+run `python experiments/scripts/cost_summary.py <run-dir> --write` — it
+prices valid cells from `experiments/config/model_prices.json` (verified
+Azure meter rates, editable; re-run the script after edits), fails loudly
+on a missing price entry, lists unpriced (invalid/pending) cells instead
+of hiding their spend, and marks per-arm pooled rows `comparable: false`
+whenever arms pool different model mixes — the paired-comparison rule
+applies to dollars exactly as it does to tokens (§7).
+
 ## 9. Subagent task breakdown
 
 The director hands off the following work packages to AI helpers, one

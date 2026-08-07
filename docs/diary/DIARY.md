@@ -7,6 +7,24 @@ history reads as it was.
 
 ---
 
+## 2026-08-06 — MAF token accounting investigation (handoff)
+
+Investigated the "huge token gap between MAF and non-MAF arms" on the
+`sdlc_release_gate` `n=1` localcheck pilot. Findings, evidence, and next
+steps are written up in full in
+[`../MAF_TOKEN_ACCOUNTING_HANDOFF.md`](../MAF_TOKEN_ACCOUNTING_HANDOFF.md).
+Short version: the gap is real and honest (MAF's LLM orchestrator + broadcast
+vs non-MAF's free round-robin + projected views); the old local counter
+undercounted MAF 2–9× by missing orchestrator calls (fixed `b1252fd`;
+historical cells reconciled from Foundry OTel spans via
+`reconcile_maf_usage.py`, `516ffc5`); the pooled arm-average table is a
+model-mix artifact and must not be used (matched-model shows MAF 3.2–7.0× on
+the projected arms); and the real blocker before `n=30` is two MAF runtime
+bugs (GPT empty-message-list; DeepSeek `maf_localvalid_sched` non-convergence)
+that leave GPT and the MAF scheduler arm with no valid cells.
+
+---
+
 <!-- MENU:START (auto-generated — edit headings, then regenerate) -->
 ## Menu
 

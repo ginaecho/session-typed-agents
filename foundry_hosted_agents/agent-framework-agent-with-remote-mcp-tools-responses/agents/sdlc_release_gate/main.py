@@ -406,8 +406,15 @@ _MAF_TURN_INSTRUCTION = (
     "Continue the group task. Produce your next JSON action now.")
 
 
-def _maf_terminal_condition(terminal_label: str):
+def _maf_terminal_condition(terminal_label: str, extra_stop=None):
+    """Stop the group chat once the protocol's terminal label is emitted.
+
+    `extra_stop` is an optional zero-arg predicate for a second, arm-specific
+    stopping reason (the EFSM scheduler uses it to stop when no role has an
+    enabled SEND — the MAF twin of RoundRobinGateLoop's `efsm_end`)."""
     def condition(messages) -> bool:
+        if extra_stop is not None and extra_stop():
+            return True
         for message in reversed(messages):
             if getattr(message, "role", None) != "assistant":
                 continue
@@ -417,6 +424,29 @@ def _maf_terminal_condition(terminal_label: str):
                 return action.get("label") == terminal_label
         return False
     return condition
+
+
+def _lift_maf_superstep_ceiling(workflow, max_rounds: int):
+    """Make `max_rounds` the only turn budget a MAF arm can hit.
+
+    MAF's workflow runner raises WorkflowConvergenceException after
+    DEFAULT_MAX_ITERATIONS (100) supersteps, and GroupChatBuilder.build() does
+    not expose that knob. One group-chat round costs several supersteps
+    (broadcast + request + response), so this case's 52-round budget
+    (max_steps 48 + 4) trips the runner's counter long before the benchmark's
+    own budget is spent — which is what made `maf_localvalid_sched` fail as an
+    infrastructure error instead of producing a result. Supersteps are a MAF
+    implementation detail, not a benchmark quantity: raising the ceiling leaves
+    every arm's real turn budget identical, so this does not change what is
+    being compared. Applied to ALL MAF arms, never selectively."""
+    ceiling = max(100, 6 * max_rounds + 20)
+    workflow.max_iterations = ceiling
+    # The runner captures the value at construction time, so setting only the
+    # public attribute would have no effect.
+    runner = getattr(workflow, "_runner", None)
+    if runner is not None:
+        runner._max_iterations = ceiling
+    return workflow
 
 
 def _build_maf_agent_orchestrator(
@@ -445,7 +475,7 @@ def _build_maf_agent_orchestrator(
 
 def _build_maf_selection_orchestrator(
         participant_executors, selection_func, *,
-        max_rounds, terminal_label):
+        max_rounds, terminal_label, extra_stop=None):
     from agent_framework.orchestrations import GroupChatOrchestrator
     from agent_framework_orchestrations._base_group_chat_orchestrator import (
         ParticipantRegistry)
@@ -466,7 +496,8 @@ def _build_maf_selection_orchestrator(
         selection_func=selection_func,
         name="EFSMScheduler",
         max_rounds=max_rounds,
-        termination_condition=_maf_terminal_condition(terminal_label))
+        termination_condition=_maf_terminal_condition(
+            terminal_label, extra_stop=extra_stop))
 
 
 def _build_maf_gated_orchestrator(
@@ -679,11 +710,19 @@ class MafGroupChatLoop:
 
             enabled = [role for role in tie_break_queue
                       if monitors[role].enabled_sends()]
+            # No role can legally send: the protocol has run out of moves.
+            # RoundRobinGateLoop stops here (`terminated_by="efsm_end"`); MAF's
+            # selection_func cannot say "stop", so record it for the
+            # termination condition instead of polling an arbitrary role until
+            # the round budget runs out. Guarded on `events` so a cold start
+            # (nothing said yet) is never mistaken for exhaustion.
+            selection_func.efsm_end = bool(events) and not enabled
             actor = enabled[0] if enabled else tie_break_queue[0]
             tie_break_queue.remove(actor)
             tie_break_queue.append(actor)
             return actor
 
+        selection_func.efsm_end = False
         return selection_func
 
     async def run(self, branch_hint: Optional[str] = None) -> RoleLoopResult:
@@ -697,10 +736,13 @@ class MafGroupChatLoop:
             for agent in self.participant_agents.values()
         ]
         if self.schedule == "efsm":
+            efsm_selection_func = self._build_efsm_selection_func()
             selection_orchestrator = _build_maf_selection_orchestrator(
-                participant_executors, self._build_efsm_selection_func(),
+                participant_executors, efsm_selection_func,
                 max_rounds=self.max_steps + 4,
-                terminal_label=self.terminal_label)
+                terminal_label=self.terminal_label,
+                extra_stop=lambda: getattr(
+                    efsm_selection_func, "efsm_end", False))
             workflow = GroupChatBuilder(
                 participants=participant_executors,
                 orchestrator=selection_orchestrator,
@@ -727,6 +769,9 @@ class MafGroupChatLoop:
                 participants=participant_executors,
                 orchestrator=agent_orchestrator,
             ).build()
+        # Applied to every MAF arm, after whichever orchestrator was chosen, so
+        # the three arms keep byte-identical stopping rules.
+        _lift_maf_superstep_ceiling(workflow, self.max_steps + 4)
         hint_clause = (f"  Branch hint: this scenario is a {branch_hint}-revenue case."
                        if branch_hint else "")
         task = (f"Start the sdlc_release_gate pipeline now. Each participant "

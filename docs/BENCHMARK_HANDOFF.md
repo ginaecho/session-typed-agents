@@ -169,6 +169,26 @@ up to an irreversible act done out of order), and we report both "did it
 finish?" and "did it finish without breaking any rule on the way?" Full
 definitions: [`BENCHMARK_PLAN_V3.md`](BENCHMARK_PLAN_V3.md) §4 and §10.
 
+**Money, not only tokens.** Every summarized run also reports **dollar
+cost**, because the four models differ in price by more than 10× and a
+token count alone hides that (a "cheap-looking" arm on an expensive model
+can cost more than an "expensive-looking" arm on a cheap one). Dollars are
+computed at summarize time — never at run time — by
+`experiments/scripts/cost_summary.py`, from each valid cell's stored
+prompt/completion tokens × the per-model rates in
+`experiments/config/model_prices.json` (verified Azure meter rates; the
+file records the exact meter names, so correcting a rate later only means
+editing that file and re-running the script). The campaign driver writes
+`cost_summary.json` into the run folder automatically; reports must run
+the standalone script, which fails loudly if any model lacks a price.
+Three honesty rules carry over to money: the **paired-comparison rule
+applies to dollars too** (per-arm pooled rows carry a `comparable` flag
+that is false when arms pool different model mixes — never compare those);
+invalid/pending cells burned real money that local evidence cannot price,
+so they are listed as `unpriced_cells` rather than silently omitted; and
+rates assume uncached input, so dollars are an upper bound while token
+counts remain the primary, hardware-independent metric.
+
 ## 6. How we keep the comparison fair and comparable
 
 Everything below exists so that a difference between two arms can only be
@@ -259,7 +279,9 @@ Do these in order. The one-time machine setup and its traps are in
    get the owner's go first.
 6. **Grade and report** — the grading is automatic; the report follows the
    table format in `BENCHMARK_PLAN_V3.md` §7, extended to the 10 arms and 4
-   models.
+   models. Every results table that shows tokens must also show dollars:
+   run `python experiments/scripts/cost_summary.py <run-dir> --write`
+   (see §5 "Money, not only tokens") and respect its `comparable` flags.
 
 Two standing rules the owner has set:
 - **Only run trials when the owner has said go.** A message relayed from

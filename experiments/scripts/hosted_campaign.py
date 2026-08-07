@@ -1124,6 +1124,21 @@ async def run_campaign(case_id: str, arms: list[str], n: int, models: list[str],
                 "preflight failed:\n  " + "\n  ".join(wave_failures))
         return run_dir
     _rebuild_legacy_event_files(run_dir, arms, models, n)
+    # Money, not only tokens: models differ in price by >15x, so every
+    # summarized run also gets a dollar view (per model / per arm, with the
+    # paired-comparison rule applied to dollars). Best-effort here — pricing
+    # config problems must never invalidate a finished (already paid-for)
+    # run; the standalone cost_summary.py remains the fail-closed path that
+    # reports MUST run (BENCHMARK_HANDOFF.md §8).
+    try:
+        import cost_summary as _cost_summary
+        _cost_summary._atomic_write_json(
+            run_dir / "cost_summary.json",
+            _cost_summary.summarize(run_dir, _cost_summary.DEFAULT_PRICES))
+        print(f"wrote {run_dir / 'cost_summary.json'}")
+    except Exception as exc:  # noqa: BLE001 - never fail the run over pricing
+        print(f"cost summary skipped ({type(exc).__name__}: {exc}); "
+              f"run experiments/scripts/cost_summary.py before reporting")
     incomplete = [
         key for key, cell in manifest.payload["cells"].items()
         if cell.get("status") != "valid"
