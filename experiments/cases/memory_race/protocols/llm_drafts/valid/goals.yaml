@@ -17,7 +17,7 @@ goals:
 - id: G2
   description: WriterA commits the correct post-A balance (150)
   metric: a_committed
-  predicate: 'True'
+  predicate: float(x) == 150
   anchor:
     sender: WriterA
     receiver: MemoryStore
@@ -26,7 +26,7 @@ goals:
 - id: G3
   description: The final balance is 180 with no lost update (verified by environment.py)
   metric: final_balance
-  predicate: 'True'
+  predicate: float(x) == 180
   anchor:
     sender: MemoryStore
     receiver: Coordinator

@@ -1,0 +1,36 @@
+{
+  "arm_key": "unchecked_skills",
+  "scenario_name": "WITHOUT-unchecked-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Author",
+      "chars": 2989,
+      "sha256": "562c4df5d4d7f95934d5ebc89006066a13818a1500efb30d4d64d464b6fe6340",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "CodeReviewer",
+      "chars": 2951,
+      "sha256": "c30fed958840872c1b2ca3a2ad9df2a0ea39f051643ecd9bba84ed0908b46510",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SecurityReviewer",
+      "chars": 2923,
+      "sha256": "35f31014be4cae6cf3d3e6acd3470dbf6eea5794c72e20fa975fca8e75aa4990",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Merger",
+      "chars": 2684,
+      "sha256": "cf8a5113a79ec59612a19b19a24a0a3c44a932698fa8131c5d16c06bf23bc0b4",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

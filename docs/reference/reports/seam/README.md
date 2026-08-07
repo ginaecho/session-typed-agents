@@ -20,7 +20,7 @@ are read-only scout reports; both id schemes come from
 - [`W2_grammar_gcd.md`](W2_grammar_gcd.md) — a Lark grammar for the Scribble surface syntax plus the vLLM adapter for grammar-constrained decoding (forcing every model draft to be parseable protocol text).
 - [`W3_data_builders.md`](W3_data_builders.md) — the D1–D3 training-data builders (protocol expansion, back-translation to intents, repair tuples) and the signature-based dedupe/splitter.
 - [`W4_t0_runner.md`](W4_t0_runner.md) — the T0 baseline runner: how well untrained API models draft protocols, filling the pending E5 cells.
-- [`W6_judge_panel.md`](W6_judge_panel.md) — the faithfulness judge panel implementation: five isolation layers, canary battery (a canary is a planted check item with a known correct answer), and code-only aggregation.
+- [`W6_judge_panel.md`](W6_judge_panel.md) — the faithfulness judge panel implementation: five isolation layers, canary battery, and code-only aggregation.
 - [`W8_miner.md`](W8_miner.md) — the real-world skills miner (D5) with its provenance/license ledger; a measured-yield report (deterministic-only yield was 0%, and why that was expected).
 - [`W15_recursion_gen.md`](W15_recursion_gen.md) — a recursion generator for D1: the recursion axis of the training data grew from ~9 families to 200+.
 - [`W16_llm_read_extraction.md`](W16_llm_read_extraction.md) — LLM-read extraction over W8's 13 mined teams: can a model recover coordination structure that deterministic parsing could not?

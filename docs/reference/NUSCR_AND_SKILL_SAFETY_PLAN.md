@@ -150,7 +150,7 @@ This plan covers two deliverables the user asked for:
   - Invoke as `docker run --rm -v <case_dir>:/work nuscr-coind nuscr /work/<file>`;
     pin the image tag so results are reproducible.
   - Record the exact working build + run recipe in
-    [docs/1_TECH_SETUP.md](../1_TECH_SETUP.md) and a new
+    [docs/guides/1_TECH_SETUP.md](../guides/1_TECH_SETUP.md) and a new
     `/memories/repo/nuscr-build.md`.
 - Smoke test (a quick end-to-end check): `docker run … nuscr --help`, then project one bundled example
   (`nuscr examples/… --project Role@Proto`) and one `--fsm` to capture the exact

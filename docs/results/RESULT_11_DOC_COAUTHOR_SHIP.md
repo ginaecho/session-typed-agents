@@ -237,7 +237,7 @@ event (0% = never finished, 100% = all 10 trials finished). **CGC**
 verified plan along the way. **Cost-to-goal** = total tokens ÷ GCR (∞ when
 GCR is 0%) — the true cost of one delivered, shipped document, charging the
 setting for its failures. (Column meanings follow
-[`6_RUN_REPORTS_EXPLAINED.md` §2](../6_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table).)
+[`6_RUN_REPORTS_EXPLAINED.md` §2](../guides/6_RUN_REPORTS_EXPLAINED.md#2-reading-the-results-table).)
 
 Note: seconds/trial above and in the detail table below is **batched
 wall-clock** (all trials of a round were answered in one subagent call), so
@@ -402,7 +402,7 @@ calls):
 | `stjp` | 12.0 | 120 | **$0.15** |
 
 Whole-run total: 760 calls → **~$0.95 (estimated)**. This prices *calls*,
-not the raw token counts above (the two are different accounting views used
+not the raw token counts above (the two are different lenses used
 elsewhere in this project — see `COST_ESTIMATE.md`'s own caveat that
 per-call pricing is a lean-deployment lower bound, while the raw
 `tokens_est` figures include this run's CLI-driver batching overhead).
@@ -414,7 +414,7 @@ This run used the deterministic subagent trial engine
 (`experiments/subagent_trials/engine.py`) with independent Claude Haiku 4.5
 subagents — no cloud services and no Azure AI Foundry. To reproduce it with
 Azure AI Foundry-hosted agents instead, follow the standard recipe in
-[`1_TECH_SETUP.md` section 5](../1_TECH_SETUP.md#5-running-stjp-with-azure-ai-foundry-hosted-agents)
+[`1_TECH_SETUP.md` section 5](../guides/1_TECH_SETUP.md#5-running-stjp-with-azure-ai-foundry-hosted-agents)
 plus the four registration points listed in
 [`experiments/CLAUDE.md`](../../experiments/CLAUDE.md) (`registry.py`
 `SCENARIOS`, `case_runner.py` `_FOUNDRY_INSTALL_KEYS` and `FOUNDRY_KEYS`,

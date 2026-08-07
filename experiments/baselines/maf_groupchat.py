@@ -370,10 +370,15 @@ class MAFGroupChatRunner(BaselineRunner):
         orch_instr = _build_orchestrator_instructions(
             self.case, protocol_text=orch_protocol_text)
         self._role_prompts["__orchestrator__"] = orch_instr
+        # Collision-proof name: gem_dev_team has a ROLE literally named
+        # "Orchestrator", which would duplicate the executor ID otherwise.
+        orch_name = "StjpProtocolOrchestrator"
+        while orch_name in self.case.roles:
+            orch_name = "_" + orch_name
         self._orchestrator = Agent(
             client=self._chat_client,
             instructions=orch_instr,
-            name="Orchestrator",
+            name=orch_name,
             description=f"Speaker selector for {self.case.case_id} GroupChat",
         )
 

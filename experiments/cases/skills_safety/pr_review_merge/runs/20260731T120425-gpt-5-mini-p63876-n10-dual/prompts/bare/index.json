@@ -1,0 +1,36 @@
+{
+  "arm_key": "bare",
+  "scenario_name": "WITHOUT-skills",
+  "install_truncates": true,
+  "install_limit": 8000,
+  "roles": [
+    {
+      "role": "Author",
+      "chars": 2196,
+      "sha256": "533bbf371ea216ebad0a681c28551537d87b9de6f1183197cf6ebba982aa67d9",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "CodeReviewer",
+      "chars": 2196,
+      "sha256": "abfdb35e59a444d8021256ce92d1d140ccc5154f733ce6f60e6cd4aec9a62108",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "SecurityReviewer",
+      "chars": 2196,
+      "sha256": "95240eb8231f008dcadd8a6207eb73c37d379b681210c5de6a4e44eb58ebd9c4",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    },
+    {
+      "role": "Merger",
+      "chars": 2196,
+      "sha256": "713ffbfdddd748a111795f69d967e6ec40cf1ad5ebcba7f0f1d567f116959882",
+      "install_limit": 8000,
+      "truncated_on_install": false
+    }
+  ]
+}

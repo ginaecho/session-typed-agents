@@ -16,7 +16,7 @@ space, "OneDrive - Microsoft", which nuscr's CLI — like Scribble's — dislike
 Environments whose network policy blocks Docker Hub (e.g. Claude Code on the
 web) can point ``STJP_NUSCR_BIN`` at a native nuscr binary instead — built by
 the fork's ``build-nuscr`` GitHub Actions workflow and fetched from the
-``ci-artifacts`` branch (see docs/1_TECH_SETUP.md). When set, all invocations
+``ci-artifacts`` branch (see docs/guides/1_TECH_SETUP.md). When set, all invocations
 run the binary directly and Docker is not required.
 """
 from __future__ import annotations

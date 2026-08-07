@@ -80,7 +80,7 @@ raw day-of-run records they were distilled from.
 - **Setting** (older reports say **"arm"** — same thing) — one configuration
   of the experiment: what the agents are given and what machinery is switched
   on. We compare settings that differ in exactly one thing. All settings are
-  drawn as pictures in [`../5_ARMS_EXPLAINED.md`](../5_ARMS_EXPLAINED.md).
+  drawn as pictures in [`../5_ARMS_EXPLAINED.md`](../guides/5_ARMS_EXPLAINED.md).
 - **Token** — the unit AI usage is billed in; roughly 4 characters of text.
   Fewer tokens = cheaper.
 - **Disaster** — an irreversible action done before its required approval, or
@@ -94,7 +94,7 @@ Real, well-written agent instruction files are published every day —
 Anthropic's [skills](https://github.com/anthropics/skills), GitHub's
 [awesome-copilot](https://github.com/github/awesome-copilot), the example
 folders of every agent framework. Each file describes one job well. **None
-of them says how a team of them must work together** — and a team assembled
+of them says how a team of them must work together** — and a team wired
 from them fails in ways no file predicts:
 
 - **Deadlock** — everyone waits, forever, politely. Four agents each obeying

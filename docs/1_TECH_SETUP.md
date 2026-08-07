@@ -71,7 +71,7 @@ run (`6_RUN_REPORTS_EXPLAINED.md`) was projected through nuscr.
 
 **Full install + run instructions** (Docker route, CI-artifact native-binary
 route, building scribble-java from source, and the env-var reference) are in
-[`reference/NUSCR_CLOUD_INSTALL.md`](reference/NUSCR_CLOUD_INSTALL.md).
+[`reference/NUSCR_CLOUD_INSTALL.md`](../reference/NUSCR_CLOUD_INSTALL.md).
 
 ---
 
@@ -278,7 +278,7 @@ STJP becomes a **policy generator**: it takes a verified protocol and automatica
 - Each value condition (refinement or choice guard) → a rule condition
 - Everything else → "deny" by default (fail closed)
 
-**Status: built and verified.** The [`finance`](../experiments/cases/finance/) case exports 30 rules; the [`banking`](../experiments/cases/banking/) case exports 44. A benchmark run now also produces a **compliance audit trail** — every message logged with an allow/deny decision and which rule matched — not just a benchmark log. This is the enterprise story: the same protocol that keeps agents safe also produces the evidence auditors ask for.
+**Status: built and verified.** The [`finance`](../../experiments/cases/finance/) case exports 30 rules; the [`banking`](../../experiments/cases/banking/) case exports 44. A benchmark run now also produces a **compliance audit trail** — every message logged with an allow/deny decision and which rule matched — not just a benchmark log. This is the enterprise story: the same protocol that keeps agents safe also produces the evidence auditors ask for.
 
 ### Plane B — Decentralized execution ("run it fast without a central boss, safely")
 

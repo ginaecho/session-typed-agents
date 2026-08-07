@@ -42,7 +42,7 @@ SDK, CrewAI examples, AutoGen, LangGraph — MIT-licensed, benign; provenance in
 each case's `SOURCES.md`). Three arms per case, n=10 trials per arm, 120
 trials total, every role played by an independent Haiku-class subagent.
 
-Terms used in the tables (see [`../5_ARMS_EXPLAINED.md`](../5_ARMS_EXPLAINED.md)
+Terms used in the tables (see [`../5_ARMS_EXPLAINED.md`](../guides/5_ARMS_EXPLAINED.md)
 for the settings themselves):
 
 - **STJP** = Session-Typed Judge Panel — this project's system: machine-check
@@ -155,7 +155,7 @@ compare within this block, not across model tiers.
   subagent answered all 10 trials for a role, those 10 trials are not fully
   independent repetitions.
 - **Metrics:** GCR / CGC / disasters / cost-to-goal per
-  [3_BENCHMARK_DESIGN_EXPLAINED.md](../3_BENCHMARK_DESIGN_EXPLAINED.md).
+  [3_BENCHMARK_DESIGN_EXPLAINED.md](../guides/3_BENCHMARK_DESIGN_EXPLAINED.md).
   A disaster is a delivered violation of a case's safety policy: a
   `[sequence]` order (B before A) or an `[aggregate]` at-most-once rule on
   the case's irreversible act (charge, publish, execute, seat-write).
@@ -281,4 +281,4 @@ How to run the nuscr backend:
 
 ## Run it on Azure AI Foundry (later)
 
-This run used Claude subagents (Haiku, then Sonnet) in a Claude Code cloud sandbox, driven by `experiments/subagent_trials/engine.py` — no Azure AI Foundry anywhere in the loop. To reproduce it with Azure AI Foundry-hosted agents instead, follow the standard recipe in [`1_TECH_SETUP.md` section 5](../1_TECH_SETUP.md#5-running-stjp-with-azure-ai-foundry-hosted-agents) plus the four registration points listed in [`experiments/CLAUDE.md`](../../experiments/CLAUDE.md) (`registry.py` SCENARIOS, `case_runner.py` `_FOUNDRY_INSTALL_KEYS` and `FOUNDRY_KEYS`, `evaluate_run.py` `VOCABULARY_ARMS`).
+This run used Claude subagents (Haiku, then Sonnet) in a Claude Code cloud sandbox, driven by `experiments/subagent_trials/engine.py` — no Azure AI Foundry anywhere in the loop. To reproduce it with Azure AI Foundry-hosted agents instead, follow the standard recipe in [`1_TECH_SETUP.md` section 5](../guides/1_TECH_SETUP.md#5-running-stjp-with-azure-ai-foundry-hosted-agents) plus the four registration points listed in [`experiments/CLAUDE.md`](../../experiments/CLAUDE.md) (`registry.py` SCENARIOS, `case_runner.py` `_FOUNDRY_INSTALL_KEYS` and `FOUNDRY_KEYS`, `evaluate_run.py` `VOCABULARY_ARMS`).

@@ -260,8 +260,10 @@ a human doing it by hand.
 | [`6_RUN_REPORTS_EXPLAINED.md`](6_RUN_REPORTS_EXPLAINED.md) | **Results.** How do I read benchmark results? What do the numbers mean? |
 | [`7_USE_CASE_DEADLOCK_SAFETY.md`](7_USE_CASE_DEADLOCK_SAFETY.md) | **Safety cases.** Why do protocols matter? Real examples. |
 | [`8_INTENT_TO_PROTOCOL_TRAINING.md`](8_INTENT_TO_PROTOCOL_TRAINING.md) | **Training the front door.** How does intent → protocol drafting get machine-learned? What exists today, and how do I run it? |
+| [`8_ANALYSIS_FINDINGS.md`](8_ANALYSIS_FINDINGS.md) | **Findings.** Six numbered findings derived from the result tables (scheduling dividend, model-invariance, cost mechanisms, …). |
+| [`9_EVALUATION_REPORT.md`](9_EVALUATION_REPORT.md) | **Evaluation report.** The paper-style evaluation report (methodology + results). |
 | [`benchmarks/BENCHMARK_FAIRNESS_REVIEW.md`](benchmarks/BENCHMARK_FAIRNESS_REVIEW.md) | **Fairness audit.** A skeptical review of the benchmark itself: what it already does well, the scoring problems found (all leaning in STJP's favor), and how to fix the measurements. |
-| [`FABLE5_INTERVIEW_DEV_USE_CASES.md`](FABLE5_INTERVIEW_DEV_USE_CASES.md) | **Developer use cases, interview format.** Which real developer workflows fit STJP, argued case by case. |
+| [`FABLE5_INTERVIEW_DEV_USE_CASES.md`](archive/FABLE5_INTERVIEW_DEV_USE_CASES.md) | **Developer use cases, interview format.** Which real developer workflows fit STJP, argued case by case. |
 
 ### `reference/` — technical deep-dives (current, for researchers)
 

@@ -336,7 +336,7 @@ above, each independently verified by the planner before integration:
 
 | commit | addition | verification evidence |
 |---|---|---|
-| 5f3e2fa | docs guide 8 (`docs/8_INTENT_TO_PROTOCOL_TRAINING.md`) + README index | every documented entry-point file confirmed present on the branch |
+| 5f3e2fa | docs guide 8 (`docs/guides/8_INTENT_TO_PROTOCOL_TRAINING.md`) + README index | every documented entry-point file confirmed present on the branch |
 | adbd7b4 | `docs/reference/GPU_TRAINING_RUNBOOK.md` (710 lines) | spot-checks: R2 pin block verbatim (vllm==0.23.0 cap), generation_kwargs grammar pass-through, az-login owner-machine rule |
 | 8d3bec7 | this audit report | — |
 | 4dc329b | T0 baseline runner (`experiments/seam_bench/t0/`) | independent re-run: 47/47 tests; 23/23 gold pairs validate under real Scribble (`smoke_gold`) |

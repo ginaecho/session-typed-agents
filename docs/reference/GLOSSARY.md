@@ -112,6 +112,14 @@ graded by consequence (this answers the fair objection that "different ≠ wrong
 - **The gate** — the monitor run in *enforcing* mode: it rejects a wrong message
   before delivery instead of merely recording it. "Gate" is the engine-code name
   for the monitor's enforce mode, not a second component.
+- **The scheduler** — the component that decides whose turn it is. It is a small
+  plain-Python dispatcher (not an AI agent, and not itself a state machine): each
+  turn it reads the per-role state machines — the same ones the monitor uses —
+  asks "which role currently has a send allowed?", and gives the turn to exactly
+  that role instead of polling every role in a circle. It makes no model calls of
+  its own; and because the state machines advance only on messages the gate has
+  accepted, scheduling requires the gate to be on. Its entire saving comes from
+  never spending a turn on a role that cannot act.
 - **Choice guard** — a rule attached to a decision point saying which branch the
   data requires (e.g. "if revenue is over $50,000 you must take the audit
   branch"). Checked by the monitor against values it has already seen.
