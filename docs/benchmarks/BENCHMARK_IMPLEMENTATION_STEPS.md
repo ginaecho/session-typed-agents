@@ -472,6 +472,24 @@ every case is:
    recorded conversation proves it really is a multi-role run). Our
    anti-fabrication check searches the local logs and compares them
    against the server-recorded conversations to make sure they match.
+   **Presentation replays (allowed from 2026-08-07, for viewing only):**
+   the portal's conversation ("user") view cannot render a local run's
+   live recording, so a recorded conversation MAY additionally be
+   replayed through the group's endpoint purely to make it viewable —
+   under mandatory markers that keep a mirror impossible to confuse
+   with evidence: the replay's root span is named `stjp.replay <arm>`
+   and every span in it carries `stjp.replay=true` plus the ORIGINAL
+   local trace ID; a replay makes zero model calls and reports zero
+   token usage of its own (the original run's usage rides along as
+   metadata only); and no grading, cost, or report table may ever read
+   a replay trace — evidence remains the run folder and the original
+   live-labeled recording. For the portal to actually render the
+   conversation, replayed turns must use the standard gen-AI span shape
+   (an `invoke_agent`-style span per turn carrying
+   `gen_ai.input.messages` / `gen_ai.output.messages` and a
+   `gen_ai.conversation.id`) — custom span names render only in the
+   trajectory tree, not the user view. A replay missing the honesty
+   markers is fabrication and must be deleted.
 4. We start analyzing local results as soon as each model's batch of runs
    starts producing them — we don't wait for everything to finish before
    beginning analysis.

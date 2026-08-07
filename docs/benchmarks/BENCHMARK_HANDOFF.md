@@ -232,7 +232,11 @@ to the project's Application Insights LIVE while it runs, under the
 hosted group's identity, resolvable by the trace ID saved in the cell;
 and the deployed groups additionally execute their own verification
 sample so genuine hosted runs exist too. If either half is missing, the
-deliverable is not met.
+deliverable is not met. Where the portal cannot render a live local
+recording as a conversation (its "user view"), a clearly-marked
+presentation replay of the recorded conversation is allowed for viewing
+only — the markers that keep a replay impossible to confuse with
+evidence are defined in `BENCHMARK_IMPLEMENTATION_STEPS.md` §4.
 
 Two different pages in the Foundry portal show "traces", and they show
 different things. Confusing them makes a healthy campaign look missing:
