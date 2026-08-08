@@ -82,6 +82,147 @@ def iter_cells(run_dir: Path, models, arms):
         yield result_path, data
 
 
+def _create_conversation(invoker: HostedAgentInvoker, metadata: dict) -> str:
+    """Mint a REAL, service-recognized conversation via the hosted endpoint's
+    OpenAI-compatible Conversations API, so the reflected trace's
+    `gen_ai.conversation.id` resolves in the portal's Conversation view
+    instead of 404ing on a synthetic value (the bug this fixes, 2026-08-07:
+    the replay previously used the original local trace id as the
+    conversation id -- a string the service had never seen).
+
+    Route surface, confirmed live against the v4flash group (2026-08-07):
+    the platform gateway in front of the container serves a genuine
+    Conversations resource --
+        GET  {project}/agents/{group}/endpoint/protocols/openai/conversations
+        POST {project}/agents/{group}/endpoint/protocols/openai/conversations
+    -- even though the container's own installed `agent_framework_foundry_hosting`
+    / `azure-ai-agentserver-responses` SDK (agents/sdlc_release_gate/.venv)
+    registers NO /conversations route anywhere in its route table; only
+    POST /responses, GET /responses/{id}, DELETE /responses/{id},
+    POST /responses/{id}/cancel, and GET /responses/{id}/input_items
+    (azure/ai/agentserver/responses/hosting/_routing.py). So this call is
+    served by Azure's platform layer, not by our code. POSTing (verified
+    with both an empty body and a metadata payload) returns a real,
+    service-issued `conv_...` id that is subsequently listable via GET --
+    that persistence in the service's own store is what "service-minted"
+    means here, as opposed to a client-invented string.
+    """
+    import requests
+    url = (f"{invoker.project_endpoint}/agents/{invoker.group_name}"
+           f"/endpoint/protocols/openai/conversations?api-version=v1")
+    headers = {"Authorization": f"Bearer {invoker._bearer_token()}",
+               "Content-Type": "application/json"}
+    clean_metadata = {str(k): str(v) for k, v in metadata.items() if v}
+    resp = requests.post(url, headers=headers, json={"metadata": clean_metadata},
+                         timeout=30)
+    resp.raise_for_status()
+    conv = resp.json()
+    conv_id = conv.get("id")
+    if not conv_id:
+        raise RuntimeError(f"conversation create returned no id: {conv}")
+    return conv_id
+
+
+def _populate_conversation_items(invoker: HostedAgentInvoker, conv_id: str,
+                                 events: list) -> int:
+    """Add the trial's recorded protocol messages to the conversation AS
+    real conversation items, so the portal's conversation/user view actually
+    RENDERS the exchange. Creating the conversation (`_create_conversation`)
+    was not enough on its own: a real conv_... id existed, but nothing had
+    ever been POSTed to it, so `GET .../items` returned 0 rows -- verified
+    empty (2026-08-08) for conv_a3106b44ac69e73e00yBRV99u6YibbFJWYHxJ3TKFHEQE9UF1a
+    (group stjp-sdlc-release-gate-group-v4flash) even though that cell's
+    replay had already run.
+
+    Route + accepted shape were not documented anywhere and had to be found
+    empirically against that same group/conversation (2026-08-08):
+        POST {project}/agents/{group}/endpoint/protocols/openai
+             /conversations/{conv_id}/items?api-version=v1
+        body: {"items": [{"type": "message", "role": "assistant",
+                           "content": [{"type": "output_text",
+                                        "text": "<sender> -> <receiver> : "
+                                                "<label>(<payload>)"}]}, ...]}
+    That shape returned 200 with each item echoed back (server-assigned
+    msg_... id) on the first attempt. Two things do NOT work, also found by
+    trying rather than assumed:
+      - A single POST is capped at 20 items -- beyond that the service
+        returns 400 invalid_payload, "maxItems: Value should have at most
+        20 items". So this batches in chunks of 20 (48 events -> 3 POSTs).
+      - Metadata on an item -- tried both per-item ("metadata" inside an
+        item object) and as a sibling of "items" on the POST body -- is
+        accepted with 200 but silently DROPPED; a follow-up GET of the same
+        item never shows it. So no per-item stjp_replay/original_trace_id
+        tag is attempted here; that provenance already rides on the
+        CONVERSATION's own metadata, set once at creation time in
+        _create_conversation.
+
+    Items are POSTed in `events` order, chunk by chunk, so creation order
+    matches recorded order. (GET's default list order is newest-first --
+    callers that need recorded order back, like --verify, must pass
+    order=asc; see _list_conversation_items.)
+
+    Called BEFORE the replay POST (`invoker.invoke`) in the main reflect
+    loop, on purpose: if the replay call itself then fails, the
+    conversation is still left complete, which is what a human checking the
+    portal actually needs.
+    """
+    import requests
+    headers = {"Authorization": f"Bearer {invoker._bearer_token()}",
+               "Content-Type": "application/json"}
+    url = (f"{invoker.project_endpoint}/agents/{invoker.group_name}"
+           f"/endpoint/protocols/openai/conversations/{conv_id}"
+           f"/items?api-version=v1")
+    texts = [
+        f"{ev.get('sender', '?')} -> {ev.get('receiver', '?')} : "
+        f"{ev.get('label', '?')}({ev.get('payload', '')})"
+        for ev in events
+    ]
+    CHUNK = 20
+    posted = 0
+    for i in range(0, len(texts), CHUNK):
+        chunk_items = [
+            {"type": "message", "role": "assistant",
+             "content": [{"type": "output_text", "text": t}]}
+            for t in texts[i:i + CHUNK]
+        ]
+        resp = requests.post(url, headers=headers, json={"items": chunk_items},
+                             timeout=60)
+        resp.raise_for_status()
+        posted += len(resp.json().get("data") or [])
+    return posted
+
+
+def _list_conversation_items(project_endpoint: str, group: str,
+                             conv_id: str) -> list:
+    """Return every item in a hosted conversation, in CREATION order.
+
+    Same route surface as `_populate_conversation_items`, but GET with
+    `order=asc` -- confirmed empirically (2026-08-08) that the endpoint's
+    default list order is newest-first (DESC), which would make a
+    first/last completeness check read the recorded transcript backwards.
+    Paginates via the standard `after=<last item id>` cursor when
+    `has_more` is true, though no reflected trial has needed a second page
+    yet (48 events, 100-row default page).
+    """
+    import requests
+    headers = {"Authorization": f"Bearer {HostedAgentInvoker._bearer_token()}"}
+    base = (f"{project_endpoint}/agents/{group}/endpoint/protocols/openai"
+           f"/conversations/{conv_id}/items")
+    url = f"{base}?api-version=v1&order=asc&limit=100"
+    items: list = []
+    while url:
+        resp = requests.get(url, headers=headers, timeout=30)
+        resp.raise_for_status()
+        page = resp.json()
+        items.extend(page.get("data") or [])
+        if page.get("has_more") and items:
+            url = (f"{base}?api-version=v1&order=asc&limit=100"
+                   f"&after={items[-1].get('id')}")
+        else:
+            url = None
+    return items
+
+
 def _query_app_insights(app_id: str, kql: str, offset: str = "P2D") -> list:
     """Run one KQL query and return its rows.
 
@@ -129,15 +270,29 @@ def fetch_turn_usage(app_id: str, original_trace_id: str) -> list[dict]:
     return [{"input_tokens": r[0] or 0, "output_tokens": r[1] or 0} for r in rows]
 
 
-def verify(run_dir: Path, app_id: str, models, arms, clear: bool) -> int:
-    """Confirm every reflected cell really landed in Foundry.
+def verify(run_dir: Path, app_id: str, project_endpoint: str, models, arms,
+          clear: bool) -> int:
+    """Confirm every reflected cell really landed in Foundry -- COMPLETELY.
 
-    A reflection is only real if its trace resolves AND sits under the expected
-    hosted group AND carries the `reflected_from_local` marking. Anything else
-    is treated as not reflected: with --clear-failed its marker is removed so a
-    subsequent reflect run retries it. This exists because reflecting is not
-    self-verifying — the first cells reflected against a cold container landed
-    incomplete, and 'the script printed OK' is not evidence the row is there.
+    A reflection is only real if its trace resolves, sits under the expected
+    hosted group, carries the `reflected_from_local` marking, its
+    invoke_agent turn-span count EQUALS the cell's recorded event count, AND
+    its conversation's ITEM count equals that same event count. The
+    turn-span check alone is not enough to call the reflection usable:
+    `spans > 0` previously called a reflection "verified" even when it had
+    silently lost its tail (observed 2026-08-07 -- a 48-step trial's replay
+    landed only steps 1-24 in Application Insights). The conversation-items
+    check catches a DIFFERENT failure mode found 2026-08-07/08 -- traces and
+    turn spans landing completely while the conversation object itself has
+    ZERO items, because nothing had ever been POSTed to it (see
+    _populate_conversation_items). A trial can pass the telemetry check and
+    still render as an empty conversation in the portal; only checking both
+    catches that.
+
+    Anything that fails is treated as not reflected: with --clear-failed its
+    marker is removed so a subsequent reflect run retries it. This exists
+    because reflecting is not self-verifying — 'the script printed OK' is not
+    evidence the row is there, complete, in Foundry.
     """
     ok = bad = 0
     unlanded: list[Path] = []
@@ -147,17 +302,33 @@ def verify(run_dir: Path, app_id: str, models, arms, clear: bool) -> int:
         if not tid:
             continue
         expected_group = refl.get("group", "")
+        expected_turns = len((data.get("record") or {}).get("events") or [])
         kql = (f"union dependencies, traces | where operation_Id == '{tid}' "
                f"| summarize spans=count(), "
                f"roles=make_set(cloud_RoleName), "
-               f"marked=countif(tostring(customDimensions) has 'reflected_from_local')")
+               f"marked=countif(tostring(customDimensions) has 'reflected_from_local'), "
+               f"turn_spans=countif(name startswith 'invoke_agent')")
         try:
             row = _query_app_insights(app_id, kql)[0]
         except Exception as e:  # noqa: BLE001
             print(f"  ?    {result_path.parent.name}: query failed: {e}")
             continue
-        spans, roles, marked = row[0], row[1], row[2]
-        good = spans > 0 and marked > 0 and expected_group in str(roles)
+        spans, roles, marked, turn_spans = row[0], row[1], row[2], row[3]
+        complete = expected_turns > 0 and turn_spans == expected_turns
+
+        conv_id = refl.get("conversation_id")
+        items_count = None
+        items_ok = False
+        if conv_id:
+            try:
+                items = _list_conversation_items(project_endpoint,
+                                                 expected_group, conv_id)
+                items_count = len(items)
+                items_ok = expected_turns > 0 and items_count == expected_turns
+            except Exception as e:  # noqa: BLE001
+                print(f"  ?    {result_path.parent.name}: items query failed: {e}")
+        good = (spans > 0 and marked > 0 and expected_group in str(roles)
+               and complete and items_ok)
         if good:
             ok += 1
         else:
@@ -165,7 +336,8 @@ def verify(run_dir: Path, app_id: str, models, arms, clear: bool) -> int:
             unlanded.append(result_path)
             print(f"  MISS {data.get('model_key')}/{data.get('arm')}/"
                   f"{data.get('trial')}  spans={spans} marked={marked} "
-                  f"roles={roles}")
+                  f"roles={roles} turn_spans={turn_spans}/{expected_turns} "
+                  f"items={items_count}/{expected_turns}")
     print(f"\nverified={ok}  not-landed={bad}")
     if bad and clear:
         for path in unlanded:
@@ -206,12 +378,20 @@ def main() -> int:
     models = {m.strip() for m in args.models.split(",") if m.strip()}
     arms = {a.strip() for a in args.arms.split(",") if a.strip()}
 
+    project_endpoint = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "").rstrip("/")
+
     if args.verify:
         if not args.app_id:
             raise SystemExit("--verify needs --app-id (or STJP_APPINSIGHTS_APP_ID)")
-        return verify(run_dir, args.app_id, models, arms, args.clear_failed)
+        if not project_endpoint:
+            raise SystemExit(
+                "FOUNDRY_PROJECT_ENDPOINT is not set — load stjp_core/.env first "
+                "(--verify now also checks conversation item counts, which needs "
+                "the endpoint).")
+        return verify(run_dir, args.app_id, project_endpoint, models, arms,
+                     args.clear_failed)
 
-    if not os.environ.get("FOUNDRY_PROJECT_ENDPOINT"):
+    if not project_endpoint:
         raise SystemExit(
             "FOUNDRY_PROJECT_ENDPOINT is not set — load stjp_core/.env first "
             "(the hosted invoker reads the project endpoint from it).")
@@ -265,11 +445,35 @@ def main() -> int:
                 print(f"       (per-turn usage skipped for {label}: "
                       f"{len(turn_usage)} spans vs {len(record['events'])} turns)")
 
+        # A REAL, service-minted conversation, created up front through the
+        # endpoint's OpenAI Conversations API so the reflected spans'
+        # gen_ai.conversation.id resolves in the portal instead of 404ing
+        # (the old behavior used the original local trace id as the
+        # conversation id -- a value the service had never seen). See
+        # _create_conversation's docstring for the route evidence.
         try:
+            conversation_id = _create_conversation(invoker, metadata={
+                "stjp_case": record.get("case", ""),
+                "stjp_arm": arm or "",
+                "stjp_model": model_key or "",
+                "stjp_trial": trial,
+                "stjp_original_trace_id": record.get("trace_id", "") or "",
+                "stjp_replay": "true",
+            })
+            # Populate the conversation's ITEMS before replaying, so the
+            # portal's conversation view is complete even if the replay
+            # call below fails (see _populate_conversation_items docstring
+            # for the empirically-determined route/shape/batch-limit).
+            items_posted = _populate_conversation_items(
+                invoker, conversation_id, record["events"])
+            if items_posted != len(record["events"]):
+                print(f"       (WARNING {label}: posted {items_posted}/"
+                      f"{len(record['events'])} conversation items)")
             response = invoker.invoke({
                 "stjp_replay": True,
                 "record": record,
                 "run_dir": str(run_dir),
+                "conversation_id": conversation_id,
             })
         except Exception as e:  # noqa: BLE001 - one bad cell must not stop the run
             print(f"  FAIL {label} -> {group}: {type(e).__name__}: {e}")
@@ -285,6 +489,10 @@ def main() -> int:
             "original_trace_id": record.get("trace_id"),
             "group": group,
             "execution": "reflected_from_local",
+            "conversation_id": (response or {}).get("conversation_id")
+                                or conversation_id,
+            "conversation_id_source": "service_minted",
+            "conversation_items_posted": items_posted,
             "steps": len((response or {}).get("transcript") or record["events"]),
             "reflected_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         }
